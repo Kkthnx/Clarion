@@ -18,6 +18,9 @@ public interface IOperationHandler
     /// </summary>
     bool IsVacuous(Operation op) => false;
 
+    /// <summary>Loads anything slow up front for these operations, so reading state afterward is quick.</summary>
+    void Warm(IReadOnlyList<Operation> operations) { }
+
     /// <summary>Builds the operation that puts the current state back.</summary>
     Operation CaptureUndo(Operation op);
 

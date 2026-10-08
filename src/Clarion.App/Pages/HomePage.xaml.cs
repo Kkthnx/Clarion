@@ -1,5 +1,6 @@
 using Clarion.App.Controls;
 using Clarion.App.Services;
+using Clarion.Engine;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -21,10 +22,17 @@ public sealed partial class HomePage : Page
     public HomePage()
     {
         InitializeComponent();
-        Loaded += (_, _) =>
+        Loaded += async (_, _) =>
         {
             if (PresetList.Items.Count == 0) BuildPresets();
             Refresh();
+            var account = await Task.Run(AccountCheck.Detect);
+            if (account.Differs)
+            {
+                AccountBar.Message = $"You are signed in as {account.SignedInAs}, but Clarion was started with {account.ElevatedAs}. " +
+                    "Settings that apply to one account will change that other account. Close Clarion and start it again from your own account.";
+                AccountBar.IsOpen = true;
+            }
         };
         _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(Refresh);
     }

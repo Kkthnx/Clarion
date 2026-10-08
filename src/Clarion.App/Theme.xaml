@@ -100,5 +100,49 @@
             <SolidColorBrush x:Key="ClDangerBrush" Color="{StaticResource ClDangerColor}" />
             <SolidColorBrush x:Key="ClDangerTintBrush" Color="{StaticResource ClDangerTintColor}" />
         </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <StaticResource x:Key="ClAccentTintColor" ResourceKey="SystemColorWindowColor" />
+            <StaticResource x:Key="ClBorderColor" ResourceKey="SystemColorWindowTextColor" />
+            <StaticResource x:Key="ClSurface3Color" ResourceKey="SystemColorButtonFaceColor" />
+            <StaticResource x:Key="ClDangerTintColor" ResourceKey="SystemColorWindowColor" />
+            <StaticResource x:Key="ClSurface2Color" ResourceKey="SystemColorWindowColor" />
+            <StaticResource x:Key="ClCyanColor" ResourceKey="SystemColorHotlightColor" />
+            <StaticResource x:Key="ClSidebarColor" ResourceKey="SystemColorWindowColor" />
+            <StaticResource x:Key="ClSurface1Color" ResourceKey="SystemColorWindowColor" />
+            <StaticResource x:Key="ClDangerColor" ResourceKey="SystemColorWindowTextColor" />
+            <StaticResource x:Key="ClCyanTintColor" ResourceKey="SystemColorWindowColor" />
+            <StaticResource x:Key="ClTextSecondaryColor" ResourceKey="SystemColorWindowTextColor" />
+            <StaticResource x:Key="ClOkColor" ResourceKey="SystemColorWindowTextColor" />
+            <StaticResource x:Key="ClAccentColor" ResourceKey="SystemColorHotlightColor" />
+            <StaticResource x:Key="ClWarnTintColor" ResourceKey="SystemColorWindowColor" />
+            <StaticResource x:Key="ClBaseColor" ResourceKey="SystemColorWindowColor" />
+            <StaticResource x:Key="ClOnAccentColor" ResourceKey="SystemColorHighlightTextColor" />
+            <StaticResource x:Key="ClWarnColor" ResourceKey="SystemColorWindowTextColor" />
+            <StaticResource x:Key="ClTextPrimaryColor" ResourceKey="SystemColorWindowTextColor" />
+            <StaticResource x:Key="ClOkTintColor" ResourceKey="SystemColorWindowColor" />
+            <StaticResource x:Key="ClTextMutedColor" ResourceKey="SystemColorGrayTextColor" />
+            <StaticResource x:Key="ClDividerColor" ResourceKey="SystemColorWindowTextColor" />
+            <SolidColorBrush x:Key="ClAccentTintBrush" Color="{StaticResource ClAccentTintColor}" />
+            <SolidColorBrush x:Key="ClBorderBrush" Color="{StaticResource ClBorderColor}" />
+            <SolidColorBrush x:Key="ClSurface3Brush" Color="{StaticResource ClSurface3Color}" />
+            <SolidColorBrush x:Key="ClDangerTintBrush" Color="{StaticResource ClDangerTintColor}" />
+            <SolidColorBrush x:Key="ClSurface2Brush" Color="{StaticResource ClSurface2Color}" />
+            <SolidColorBrush x:Key="ClCyanBrush" Color="{StaticResource ClCyanColor}" />
+            <SolidColorBrush x:Key="ClSidebarBrush" Color="{StaticResource ClSidebarColor}" />
+            <SolidColorBrush x:Key="ClSurface1Brush" Color="{StaticResource ClSurface1Color}" />
+            <SolidColorBrush x:Key="ClDangerBrush" Color="{StaticResource ClDangerColor}" />
+            <SolidColorBrush x:Key="ClCyanTintBrush" Color="{StaticResource ClCyanTintColor}" />
+            <SolidColorBrush x:Key="ClTextSecondaryBrush" Color="{StaticResource ClTextSecondaryColor}" />
+            <SolidColorBrush x:Key="ClOkBrush" Color="{StaticResource ClOkColor}" />
+            <SolidColorBrush x:Key="ClAccentBrush" Color="{StaticResource ClAccentColor}" />
+            <SolidColorBrush x:Key="ClWarnTintBrush" Color="{StaticResource ClWarnTintColor}" />
+            <SolidColorBrush x:Key="ClBaseBrush" Color="{StaticResource ClBaseColor}" />
+            <SolidColorBrush x:Key="ClOnAccentBrush" Color="{StaticResource ClOnAccentColor}" />
+            <SolidColorBrush x:Key="ClWarnBrush" Color="{StaticResource ClWarnColor}" />
+            <SolidColorBrush x:Key="ClTextPrimaryBrush" Color="{StaticResource ClTextPrimaryColor}" />
+            <SolidColorBrush x:Key="ClOkTintBrush" Color="{StaticResource ClOkTintColor}" />
+            <SolidColorBrush x:Key="ClTextMutedBrush" Color="{StaticResource ClTextMutedColor}" />
+            <SolidColorBrush x:Key="ClDividerBrush" Color="{StaticResource ClDividerColor}" />
+        </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

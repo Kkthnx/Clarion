@@ -24,8 +24,16 @@ public partial class App : Application
         _window?.ApplyTheme(theme);
     }
 
+    private static Mutex? _instanceLock;
+
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        _instanceLock = new Mutex(true, "Global\\Clarion.SingleInstance", out var first);
+        if (!first)
+        {
+            Exit();
+            return;
+        }
         _window = new MainWindow();
         _window.Activate();
     }

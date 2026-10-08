@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Clarion.Core.Catalog;
 using Clarion.Core.Engine;
 using Clarion.Core.Model;
@@ -59,31 +60,82 @@ public sealed partial class AppServices : ObservableObject
     public int PendingCount => Pending.Count;
 
     public event EventHandler? ExpertModeChangedByUser;
+    public event EventHandler? StatesRefreshed;
 
 
-    /// <summary>Reads the real state of every tweak on a background thread.</summary>
+    /// <summary>
+    /// Reads the real state of every tweak. Registry based ones come back at once. The ones that need
+    /// PowerShell are warmed up in parallel and fill in a moment later.
+    /// </summary>
     public async Task RefreshStatesAsync()
     {
         IsBusy = true;
-        var states = await Task.Run(() =>
-        {
-            var map = new Dictionary<string, TweakState>();
-            foreach (var item in Items)
-            {
-                if (!item.IsSupported) { map[item.Id] = TweakState.Unavailable; continue; }
-                try { map[item.Id] = Runtime.Engine.Detect(item.Tweak); }
-                catch (Exception) { map[item.Id] = TweakState.Unavailable; }
-            }
-            return map;
-        });
+        Status = "Reading your system";
+        var started = Stopwatch.StartNew();
 
-        foreach (var item in Items) item.SyncToState(states[item.Id]);
+        var fast = Items.Where(i => i.IsSupported && i.ReadsQuickly).ToList();
+        var slow = Items.Where(i => i.IsSupported && !i.ReadsQuickly).ToList();
+        foreach (var item in Items.Where(i => !i.IsSupported)) item.SyncToState(TweakState.Unavailable);
+        foreach (var item in slow) item.MarkChecking();
+
+        var fastStates = await Task.Run(() => DetectAll(fast));
+        Apply(fast, fastStates);
+        AppliedCount = Items.Count(i => i.IsApplied);
+
+        if (slow.Count > 0)
+        {
+            // Windows features go through DISM, which is much slower than apps, services and tasks.
+            // Each group fills in as soon as it is ready instead of waiting for the slowest one.
+            var features = slow.Where(i => i.Tweak.Apply.Any(o => o is SetWindowsFeature or SetWindowsCapability)).ToList();
+            var others = slow.Except(features).ToList();
+            await Task.WhenAll(ReadGroupAsync(features), ReadGroupAsync(others));
+        }
+
         AppliedCount = Items.Count(i => i.IsApplied);
         RefreshPending();
+        Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings");
         Status = IsElevated ? "Ready" : "Not running as administrator. Machine wide changes are locked.";
         IsBusy = false;
+        StatesRefreshed?.Invoke(this, EventArgs.Empty);
     }
 
+    private async Task ReadGroupAsync(List<TweakItem> group)
+    {
+        if (group.Count == 0) return;
+        var states = await Task.Run(() =>
+        {
+            Runtime.Engine.WarmUp(group.Select(i => i.Tweak));
+            return DetectAll(group);
+        });
+        Apply(group, states);
+        AppliedCount = Items.Count(i => i.IsApplied);
+    }
+
+    private Dictionary<string, TweakState> DetectAll(IEnumerable<TweakItem> items)
+    {
+        var map = new Dictionary<string, TweakState>();
+        foreach (var item in items)
+        {
+            try { map[item.Id] = Runtime.Engine.Detect(item.Tweak); }
+            catch (Exception ex)
+            {
+                Log.Write($"Could not read {item.Id}: {ex.Message}");
+                map[item.Id] = TweakState.Unavailable;
+            }
+        }
+        return map;
+    }
+
+    private void Apply(IEnumerable<TweakItem> items, Dictionary<string, TweakState> states)
+    {
+        var outstanding = Runtime.Journal.TweakIdsWithOutstanding();
+        foreach (var item in items)
+        {
+            var state = states[item.Id];
+            var drifted = state != TweakState.Applied && outstanding.Contains(item.Id);
+            item.SyncToState(state, drifted);
+        }
+    }
     public void RefreshPending()
     {
         Pending.Clear();
@@ -116,7 +168,12 @@ public sealed partial class AppServices : ObservableObject
         var toRevert = Pending.Where(p => !p.IsOn).Select(p => p.Tweak).ToList();
         var options = new BatchOptions { CreateRestorePoint = restorePoint, ContinueWithoutRestorePoint = !restorePoint };
 
-        var result = await Task.Run(() => Runtime.Runner.Execute(toApply, toRevert, Profile, options, log));
+        Action<string> both = msg => { Log.Write(msg); log(msg); };
+        Log.Write($"Run started: {toApply.Count} to apply, {toRevert.Count} to revert, restore point {(restorePoint ? "on" : "off")}");
+        var result = await Task.Run(() => Runtime.Runner.Execute(toApply, toRevert, Profile, options, both));
+        foreach (var entry in result.Items)
+            Log.Write($"{entry.TweakId}: {(entry.Result.Success ? (entry.Skipped ? "skipped" : "ok") : "failed " + entry.Result.Error)}");
+        if (result.Blocked is not null) Log.Write($"Blocked: {result.Blocked}");
         await RefreshStatesAsync();
 
         foreach (var entry in result.Items)

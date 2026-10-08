@@ -14,6 +14,7 @@ public sealed class FakeFeatureStore : IFeatureStore
     private readonly Dictionary<string, bool> _caps = new(StringComparer.OrdinalIgnoreCase);
     public List<string> Calls { get; } = [];
 
+    public void Prefetch() { }
     public void AddFeature(string name, bool on) => _features[name] = on;
     public void AddCapability(string name, bool on) => _caps[name] = on;
 

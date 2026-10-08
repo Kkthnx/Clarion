@@ -50,6 +50,9 @@ public sealed partial class TweakItem : ObservableObject
     public string Summary => Tweak.Summary;
     public string Category => Tweak.Category;
 
+    private bool _syncing;
+    private bool _isChecking = true;
+    private bool _isDrifted;
     private TweakState _state = TweakState.NotApplied;
     private bool _isOn;
     private string _lastError = "";
@@ -77,7 +80,7 @@ public sealed partial class TweakItem : ObservableObject
             if (!SetProperty(ref _isOn, value)) return;
             OnPropertyChanged(nameof(IsPending));
             OnPropertyChanged(nameof(PendingText));
-            PendingChanged?.Invoke(this, EventArgs.Empty);
+            if (!_syncing) PendingChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -91,12 +94,32 @@ public sealed partial class TweakItem : ObservableObject
     }
 
     public bool IsLocked => !IsSupported;
+    /// <summary>True while the real state is still being read.</summary>
+    public bool IsChecking
+    {
+        get => _isChecking;
+        private set
+        {
+            if (!SetProperty(ref _isChecking, value)) return;
+            OnPropertyChanged(nameof(CanToggle));
+            OnPropertyChanged(nameof(StateText));
+        }
+    }
+
+    /// <summary>True when Clarion applied this earlier but Windows has since changed it back.</summary>
+    public bool IsDrifted { get => _isDrifted; set => SetProperty(ref _isDrifted, value); }
+
+    /// <summary>Registry only tweaks read in milliseconds. Services, apps and features need PowerShell.</summary>
+    public bool ReadsQuickly => Tweak.Apply.All(o => o is SetRegistryValue or DeleteRegistryValue);
+
     public bool IsApplied => State == TweakState.Applied;
     public bool IsUnavailable => State == TweakState.Unavailable;
-    public bool CanToggle => IsSupported && State != TweakState.Unavailable;
+    public bool CanToggle => IsSupported && !IsChecking && State != TweakState.Unavailable;
     public bool IsPending => CanToggle && IsOn != IsApplied;
 
     public string StateText => !IsSupported ? "Not on this PC"
+        : IsChecking ? "Checking"
+        : IsDrifted ? "Changed back by Windows"
         : State switch
         {
             TweakState.Applied => "On",
@@ -112,13 +135,26 @@ public sealed partial class TweakItem : ObservableObject
     public event EventHandler? PendingChanged;
 
     /// <summary>Sets the toggle to match the real state without counting as a user change.</summary>
-    public void SyncToState(TweakState state)
+    public void SyncToState(TweakState state, bool drifted = false)
     {
-        State = state;
-        IsOn = state == TweakState.Applied;
+        _syncing = true;
+        try
+        {
+            State = state;
+            IsOn = state == TweakState.Applied;
+            IsChecking = false;
+            IsDrifted = drifted;
+        }
+        finally
+        {
+            _syncing = false;
+        }
         OnPropertyChanged(nameof(IsPending));
         OnPropertyChanged(nameof(PendingText));
+        OnPropertyChanged(nameof(StateText));
     }
+
+    public void MarkChecking() => IsChecking = true;
 
     private static string BuildLockReason(Tweak t, MachineProfile p)
     {

@@ -41,10 +41,23 @@ public sealed class ChangeJournal
         {
             using var fs = new FileStream(_path, FileMode.Append, FileAccess.Write, FileShare.Read);
             using var w = new StreamWriter(fs);
+            if (EndsWithPartialLine()) w.Write(Environment.NewLine);
             w.Write(line);
             w.Flush();
             fs.Flush(true);
         }
+    }
+
+    /// <summary>How many damaged lines the last read skipped, for example after a power cut mid write.</summary>
+    public int SkippedLines { get; private set; }
+
+    private bool EndsWithPartialLine()
+    {
+        if (!File.Exists(_path)) return false;
+        using var fs = new FileStream(_path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        if (fs.Length == 0) return false;
+        fs.Seek(-1, SeekOrigin.End);
+        return fs.ReadByte() != (int)'\n';
     }
 
     public IReadOnlyList<JournalEntry> ReadAll()
@@ -53,14 +66,35 @@ public sealed class ChangeJournal
         {
             if (!File.Exists(_path)) return [];
             var list = new List<JournalEntry>();
+            SkippedLines = 0;
             foreach (var line in File.ReadLines(_path))
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
-                var e = JsonSerializer.Deserialize<JournalEntry>(line, Options);
-                if (e is not null) list.Add(e);
+                try
+                {
+                    var e = JsonSerializer.Deserialize<JournalEntry>(line, Options);
+                    if (e is not null) list.Add(e);
+                }
+                catch (JsonException)
+                {
+                    SkippedLines++;
+                }
             }
             return list;
         }
+    }
+
+    /// <summary>Ids of every tweak that has applied changes not yet reverted. Reads the file once.</summary>
+    public IReadOnlySet<string> TweakIdsWithOutstanding()
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var group in ReadAll().GroupBy(e => e.TweakId))
+        {
+            var list = group.ToList();
+            var lastApply = list.FindLastIndex(e => e.Action == JournalAction.Apply);
+            if (lastApply >= 0 && !list.Skip(lastApply + 1).Any(e => e.Action == JournalAction.Revert)) result.Add(group.Key);
+        }
+        return result;
     }
 
     /// <summary>

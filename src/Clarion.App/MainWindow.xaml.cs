@@ -19,6 +19,7 @@ public sealed partial class MainWindow : Window
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
         ResizeToFit();
+        AppWindow.Closing += OnClosing;
 
         _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
         _app.Pending.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
@@ -26,6 +27,27 @@ public sealed partial class MainWindow : Window
         Nav.SelectedItem = Nav.MenuItems[0];
         UpdateBar();
         _ = _app.RefreshStatesAsync();
+    }
+
+    private async void OnClosing(AppWindow sender, AppWindowClosingEventArgs args)
+    {
+        if (!_app.IsBusy) return;
+        args.Cancel = true;
+        await new ContentDialog
+        {
+            Title = "Clarion is still working",
+            Content = "Closing now could leave a change half done. Wait for it to finish, then close the window.",
+            CloseButtonText = "OK",
+            XamlRoot = Content.XamlRoot,
+        }.ShowAsync();
+    }
+
+    private void OnGlobalSearch(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    {
+        var q = args.QueryText.Trim();
+        if (q.Length == 0) return;
+        Nav.SelectedItem = null;
+        ContentFrame.Navigate(typeof(TweakListPage), new PageArgs("Search results", $"Settings matching \"{q}\"", [], q));
     }
 
     public void ApplyTheme(ElementTheme theme) => Root.RequestedTheme = theme;

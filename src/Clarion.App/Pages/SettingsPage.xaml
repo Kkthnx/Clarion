@@ -31,8 +31,13 @@
                     BorderThickness="1" CornerRadius="8" Padding="20">
                 <StackPanel Spacing="6">
                     <TextBlock Text="About" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock x:Name="VersionText" Foreground="{ThemeResource ClTextMutedBrush}" FontSize="12" />
                     <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
                                Text="Clarion has no telemetry and sends nothing anywhere. Logs stay on this PC. Source links in Expert mode open in your browser." />
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
+                        <Button Content="Open log" Click="OnOpenLog" />
+                        <Button Content="Copy support info" Click="OnCopySupport" />
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </StackPanel>

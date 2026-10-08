@@ -11,6 +11,9 @@
                 <TextBlock Text="See it. Set it. Done." FontSize="16" Foreground="{ThemeResource ClAccentBrush}" />
             </StackPanel>
 
+            <InfoBar x:Name="AccountBar" Severity="Warning" IsOpen="False" IsClosable="False"
+                     Title="Clarion is running as a different account" />
+
             <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="20">
                 <Grid ColumnSpacing="24" RowSpacing="12">

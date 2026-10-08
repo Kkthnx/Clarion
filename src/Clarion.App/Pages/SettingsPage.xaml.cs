@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Reflection;
 using Clarion.App.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -25,7 +27,27 @@ public sealed partial class SettingsPage : Page
             ElementTheme.Light => 2,
             _ => 0,
         };
+        VersionText.Text = $"Clarion {Version}";
         _loading = false;
+    }
+
+    private static string Version =>
+        (Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.1.0").Split('+')[0];
+
+    private void OnOpenLog(object sender, RoutedEventArgs e)
+    {
+        if (!File.Exists(Log.Path)) Log.Write("Log opened");
+        Process.Start(new ProcessStartInfo(Log.Path) { UseShellExecute = true });
+    }
+
+    private void OnCopySupport(object sender, RoutedEventArgs e)
+    {
+        var tail = File.Exists(Log.Path) ? string.Join(Environment.NewLine, File.ReadLines(Log.Path).TakeLast(40)) : "";
+        var text = $"Clarion {Version}{Environment.NewLine}Windows build {_app.Profile.Build}, {_app.Profile.Edition}{Environment.NewLine}" +
+                   $"Administrator: {_app.IsElevated}{Environment.NewLine}Settings in effect: {_app.AppliedCount}{Environment.NewLine}{Environment.NewLine}{tail}";
+        var package = new Windows.ApplicationModel.DataTransfer.DataPackage();
+        package.SetText(text);
+        Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(package);
     }
 
     private void OnExpertToggled(object sender, RoutedEventArgs e)

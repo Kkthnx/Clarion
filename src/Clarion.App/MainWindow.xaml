@@ -11,10 +11,20 @@
         </Grid.RowDefinitions>
 
         <Grid x:Name="AppTitleBar" Background="{ThemeResource ClSidebarBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="150" />
+            </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Spacing="10" Padding="16,0,0,0" VerticalAlignment="Center">
                 <Rectangle Width="10" Height="10" RadiusX="2" RadiusY="2" Fill="{ThemeResource ClAccentBrush}" />
                 <TextBlock Text="Clarion" FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
             </StackPanel>
+            <AutoSuggestBox x:Name="GlobalSearch" Grid.Column="2" Width="340" Height="32" Margin="0,4,0,4"
+                            PlaceholderText="Search every setting" QueryIcon="Find"
+                            AutomationProperties.Name="Search every setting"
+                            QuerySubmitted="OnGlobalSearch" />
         </Grid>
 
         <NavigationView x:Name="Nav" Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="220"

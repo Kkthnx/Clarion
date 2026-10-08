@@ -9,6 +9,15 @@ public sealed class FeatureHandler(IFeatureStore store) : IOperationHandler
 {
     public bool Handles(Operation op) => op is SetWindowsFeature or SetWindowsCapability;
 
+    public void Warm(IReadOnlyList<Operation> operations)
+    {
+        var mine = operations.Where(Handles).ToList();
+        if (mine.Count == 0) return;
+        var work = new List<Action> { store.Prefetch };
+        work.AddRange(mine.OfType<SetWindowsCapability>().Select(c => c.Name).Distinct().Select(n => (Action)(() => store.IsCapabilityInstalled(n))));
+        Parallel.Invoke(work.ToArray());
+    }
+
     public bool IsApplicable(Operation op) => op switch
     {
         SetWindowsFeature f => store.IsFeatureEnabled(f.Name) is not null,

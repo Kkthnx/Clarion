@@ -8,26 +8,39 @@
     <Grid Padding="32,24,32,16" RowSpacing="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid ColumnSpacing="16">
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="TitleText" FontSize="28" FontWeight="SemiBold"
+                       Foreground="{ThemeResource ClTextPrimaryBrush}" />
+            <TextBlock x:Name="SubtitleText" TextWrapping="Wrap"
+                       Foreground="{ThemeResource ClTextSecondaryBrush}" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" ColumnSpacing="12">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="280" />
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <StackPanel Spacing="4">
-                <TextBlock x:Name="TitleText" FontSize="28" FontWeight="SemiBold"
-                           Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                <TextBlock x:Name="SubtitleText" TextWrapping="Wrap"
-                           Foreground="{ThemeResource ClTextSecondaryBrush}" />
-            </StackPanel>
-            <AutoSuggestBox Grid.Column="1" x:Name="SearchBox" PlaceholderText="Search settings"
-                            QueryIcon="Find" VerticalAlignment="Top"
+            <AutoSuggestBox x:Name="SearchBox" PlaceholderText="Search settings" QueryIcon="Find"
+                            AutomationProperties.Name="Search settings on this page"
                             TextChanged="OnSearchTextChanged" />
+            <ComboBox x:Name="FilterBox" Grid.Column="1" HorizontalAlignment="Stretch"
+                      AutomationProperties.Name="Filter settings" SelectionChanged="OnFilterChanged">
+                <ComboBoxItem Content="All settings" Tag="all" IsSelected="True" />
+                <ComboBoxItem Content="Suggested" Tag="suggested" />
+                <ComboBoxItem Content="Currently on" Tag="on" />
+                <ComboBoxItem Content="Currently off" Tag="off" />
+                <ComboBoxItem Content="Needs attention" Tag="attention" />
+            </ComboBox>
+            <TextBlock x:Name="CountText" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"
+                       Foreground="{ThemeResource ClTextMutedBrush}" />
         </Grid>
 
-        <Grid Grid.Row="1" ColumnSpacing="20">
+        <Grid Grid.Row="2" ColumnSpacing="20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="360" />
                 <ColumnDefinition Width="400" />
@@ -49,9 +62,10 @@
                                 BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1"
                                 CornerRadius="8" Padding="16,14,16,14">
                             <ToolTipService.ToolTip>
-                                <ToolTip MaxWidth="440" Padding="16" Background="{ThemeResource ClSurface2Brush}"
+                                <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
+                                         Background="{ThemeResource ClSurface2Brush}"
                                          BorderBrush="{ThemeResource ClBorderBrush}">
-                                    <controls:TweakDetail Item="{x:Bind}" ShowTechnical="False" Width="400" />
+                                    <TextBlock Text="Loading" Width="400" />
                                 </ToolTip>
                             </ToolTipService.ToolTip>
                             <Grid ColumnSpacing="16">
@@ -69,6 +83,8 @@
                                         <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" />
                                         <controls:Chip Text="{x:Bind PendingText, Mode=OneWay}" Kind="Accent"
                                                        Visibility="{x:Bind IsPending, Mode=OneWay}" />
+                                        <controls:Chip Text="Changed back by Windows" Kind="Warn"
+                                                       Visibility="{x:Bind IsDrifted, Mode=OneWay}" />
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Spacing="6"
                                                 Visibility="{x:Bind HasLastError, Mode=OneWay}">
@@ -84,6 +100,7 @@
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4" HorizontalAlignment="Right">
                                     <ToggleSwitch IsOn="{x:Bind IsOn, Mode=TwoWay}" IsEnabled="{x:Bind CanToggle, Mode=OneWay}"
+                                                  AutomationProperties.Name="{x:Bind Name}"
                                                   OnContent="" OffContent="" MinWidth="0" HorizontalAlignment="Right" />
                                     <TextBlock Text="{x:Bind StateText, Mode=OneWay}" FontSize="12" HorizontalAlignment="Right"
                                                Foreground="{ThemeResource ClTextMutedBrush}" />

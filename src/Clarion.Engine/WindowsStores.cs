@@ -128,26 +128,27 @@ public static class WindowsMachine
 public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(5);
+    private readonly object _gate = new();
     private AppxSnapshot? _cache;
 
     public AppxSnapshot GetSnapshot()
     {
-        if (_cache is not null) return _cache;
-        var result = Run(AppxScripts.Inventory());
-        _cache = AppxSnapshot.Parse(result.Output);
-        return _cache;
+        lock (_gate)
+        {
+            return _cache ??= AppxSnapshot.Parse(Run(AppxScripts.Inventory()).Output);
+        }
     }
 
     public void Remove(string name, bool allUsers, bool deprovision)
     {
-        _cache = null;
+        lock (_gate) _cache = null;
         Run(AppxScripts.Remove(name, allUsers, deprovision));
-        _cache = null;
+        lock (_gate) _cache = null;
     }
 
     public void Restore(string familyName)
     {
-        _cache = null;
+        lock (_gate) _cache = null;
         try
         {
             Run(AppxScripts.Restore(familyName));
@@ -156,7 +157,7 @@ public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
         {
             throw new InvalidOperationException($"{ex.Message} If Windows no longer has the package files, reinstall the app from the Microsoft Store.");
         }
-        _cache = null;
+        lock (_gate) _cache = null;
     }
 
     private ProcessResult Run(string script)
@@ -176,36 +177,46 @@ public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
 public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(30);
+    private readonly object _gate = new();
     private Dictionary<string, string>? _features;
     private readonly Dictionary<string, string?> _capabilities = new(StringComparer.OrdinalIgnoreCase);
 
-    public bool? IsFeatureEnabled(string name)
+    public void Prefetch() => LoadFeatures();
+
+    private Dictionary<string, string> LoadFeatures()
     {
-        _features ??= FeatureScripts.ParseStates(Run(FeatureScripts.Inventory()), "features", "FeatureName");
-        return _features.TryGetValue(name, out var state) ? FeatureRules.IsEnabledState(state) : null;
+        lock (_gate)
+        {
+            return _features ??= FeatureScripts.ParseStates(Run(FeatureScripts.Inventory()), "features", "FeatureName");
+        }
     }
+
+    public bool? IsFeatureEnabled(string name) =>
+        LoadFeatures().TryGetValue(name, out var state) ? FeatureRules.IsEnabledState(state) : null;
 
     public void SetFeature(string name, bool enabled)
     {
         Run(FeatureScripts.SetFeature(name, enabled));
-        _features = null;
+        lock (_gate) _features = null;
     }
 
     public bool? IsCapabilityInstalled(string name)
     {
-        if (!_capabilities.TryGetValue(name, out var state))
+        string? state;
+        lock (_gate)
         {
-            var map = FeatureScripts.ParseStates(Run(FeatureScripts.CapabilityState(name)), "capabilities", "Name");
-            state = map.Count == 0 ? null : map.Values.First();
-            _capabilities[name] = state;
+            if (_capabilities.TryGetValue(name, out state)) return state is null ? null : FeatureRules.IsInstalledState(state);
         }
+        var map = FeatureScripts.ParseStates(Run(FeatureScripts.CapabilityState(name)), "capabilities", "Name");
+        state = map.Count == 0 ? null : map.Values.First();
+        lock (_gate) _capabilities[name] = state;
         return state is null ? null : FeatureRules.IsInstalledState(state);
     }
 
     public void SetCapability(string name, bool installed)
     {
         Run(FeatureScripts.SetCapability(name, installed));
-        _capabilities.Remove(name);
+        lock (_gate) _capabilities.Remove(name);
     }
 
     private string Run(string script)

@@ -19,6 +19,14 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
     private readonly IReadOnlyList<IOperationHandler> _handlers = handlers.ToList();
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
 
+    /// <summary>Runs every handler warm-up at the same time. Slow lookups overlap instead of queueing.</summary>
+    public void WarmUp(IEnumerable<Tweak> tweaks)
+    {
+        var ops = tweaks.SelectMany(t => t.Apply).ToList();
+        try { Parallel.ForEach(_handlers, h => h.Warm(ops)); }
+        catch (AggregateException) { }
+    }
+
     public IReadOnlyList<string> Plan(Tweak tweak) => tweak.Apply.Select(o => o.Describe()).ToList();
 
     public TweakState Detect(Tweak tweak)
