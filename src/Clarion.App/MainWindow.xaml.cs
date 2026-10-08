@@ -12,6 +12,8 @@ public sealed partial class MainWindow : Window
 {
     private readonly AppServices _app = AppServices.Instance;
 
+    public ActivityLog Activity => _app.Activity;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -23,6 +25,9 @@ public sealed partial class MainWindow : Window
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets", "Clarion.ico"));
         Root.ActualThemeChanged += (_, _) => UpdateCaptionButtons();
         UpdateCaptionButtons();
+
+        Activity.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateActivity);
+        Activity.Lines.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(ScrollActivity);
 
         _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
         _app.Pending.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
@@ -111,6 +116,7 @@ public sealed partial class MainWindow : Window
         switch (tag)
         {
             case "home": ContentFrame.Navigate(typeof(HomePage)); break;
+            case "feedback": ContentFrame.Navigate(typeof(FeedbackPage)); break;
             case "system": ContentFrame.Navigate(typeof(SystemPage)); break;
             case "safety": ContentFrame.Navigate(typeof(SafetyPage)); break;
             case "cleanup": ContentFrame.Navigate(typeof(CleanupPage)); break;
@@ -118,6 +124,26 @@ public sealed partial class MainWindow : Window
             case not null when Sections.TryGetValue(tag, out var args2): ContentFrame.Navigate(typeof(TweakListPage), args2); break;
         }
     }
+
+    private void UpdateActivity()
+    {
+        ActivityPanel.Visibility = Activity.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        ActivityBar.IsIndeterminate = Activity.Indeterminate;
+        ActivityBar.Maximum = Math.Max(1, Activity.Total);
+        ActivityBar.Value = Activity.Value;
+        ActivityHide.IsEnabled = !Activity.IsRunning;
+    }
+
+    private void ScrollActivity()
+    {
+        ActivityScroll.UpdateLayout();
+        ActivityScroll.ChangeView(null, ActivityScroll.ScrollableHeight, null, disableAnimation: true);
+    }
+
+    private void OnHideActivity(object sender, RoutedEventArgs e) => Activity.Close();
+
+    private void OnOpenLog(object sender, RoutedEventArgs e) =>
+        Process.Start(new ProcessStartInfo("notepad.exe", $"\"{Log.Path}\"") { UseShellExecute = true });
 
     private void UpdateBar()
     {
@@ -189,7 +215,12 @@ public sealed partial class MainWindow : Window
         var needsReboot = _app.Pending.Any(p => p.Tweak.NeedsReboot);
         var needsSignOut = _app.Pending.Any(p => p.Tweak.NeedsSignOut);
 
-        var result = await _app.ApplyPendingAsync(restorePoint, msg => DispatcherQueue.TryEnqueue(() => _app.Status = msg));
+        Activity.Start(restorePoint ? "Applying changes, making a restore point first" : "Applying changes");
+        var result = await _app.ApplyPendingAsync(restorePoint,
+            msg => DispatcherQueue.TryEnqueue(() => { _app.Status = msg; Activity.Info(msg); }),
+            step => DispatcherQueue.TryEnqueue(() => Activity.Step(step)));
+        if (result.Blocked is not null) Activity.Close();
+        else Activity.Finish(result.Items.Count(i => i.Result.Success && !i.Skipped), result.Items.Count(i => !i.Result.Success));
 
         if (result.Blocked is not null)
         {
@@ -205,7 +236,9 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        await ShowSummaryAsync(result, restartsExplorer, needsReboot, needsSignOut);
+        var anyFailed = result.Items.Any(i => !i.Result.Success);
+        if (anyFailed || restartsExplorer || needsReboot || needsSignOut)
+            await ShowSummaryAsync(result, restartsExplorer, needsReboot, needsSignOut);
     }
 
     private async Task ShowSummaryAsync(Clarion.Core.Engine.BatchResult result, bool restartsExplorer, bool needsReboot, bool needsSignOut)

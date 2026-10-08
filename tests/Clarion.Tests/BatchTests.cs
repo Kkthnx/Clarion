@@ -120,4 +120,25 @@ public sealed class BatchTests : IDisposable
         Assert.True(result.AllSucceeded);
         Assert.False(_reg.Read(tweak.Apply.OfType<SetRegistryValue>().First().Target).Exists);
     }
+
+    [Fact]
+    public void Steps_report_each_setting_across_apply_and_revert_with_a_shared_count()
+    {
+        var already = UserTweak("u.done");
+        var fresh = UserTweak("u.fresh");
+        var back = UserTweak("u.back");
+        var runner = Runner();
+        runner.Apply([already, back], Win11, new BatchOptions { CreateRestorePoint = false });
+
+        var steps = new List<BatchStep>();
+        var result = runner.Execute([already, fresh], [back], Win11, new BatchOptions { CreateRestorePoint = false, Step = steps.Add });
+
+        Assert.True(result.AllSucceeded);
+        Assert.All(steps, s => Assert.Equal(3, s.Total));
+        Assert.Equal([1, 1, 2, 2, 3, 3], steps.Select(s => s.Index));
+        Assert.Equal(
+            [BatchStepState.Running, BatchStepState.Skipped, BatchStepState.Running, BatchStepState.Done, BatchStepState.Running, BatchStepState.Done],
+            steps.Select(s => s.State));
+        Assert.True(steps[^1].Reverting);
+    }
 }

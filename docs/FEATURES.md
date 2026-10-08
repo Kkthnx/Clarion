@@ -221,7 +221,12 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 - Install check weighs known signs of a stripped or rebranded image: image names in system info, setup hardware check bypass, missing core services, missing Update or Defender services. Each sign is shown with its reason.
 - DNS shows as one dropdown with an encryption switch.
 
-## 16. Not yet included
+## 16. Feedback and live progress
+
+- Report a problem page builds a report with version, Windows and hardware details, applied settings and recent log lines. Computer name, user name, user folders, e-mail, IP and MAC addresses, account IDs and serial numbers are removed. The person reads the exact text first and submits it themselves.
+- Applying shows a live panel with a progress bar and one line per setting.
+
+## 17. Not yet included
 
 - Microsoft 365 and Office telemetry policies.
 - Per app permission lists.

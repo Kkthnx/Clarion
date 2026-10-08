@@ -31,23 +31,12 @@ public sealed partial class SettingsPage : Page
         _loading = false;
     }
 
-    private static string Version =>
-        (Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.1.0").Split('+')[0];
+    private static string Version => AppServices.Version;
 
     private void OnOpenLog(object sender, RoutedEventArgs e)
     {
         if (!File.Exists(Log.Path)) Log.Write("Log opened");
         Process.Start(new ProcessStartInfo(Log.Path) { UseShellExecute = true });
-    }
-
-    private void OnCopySupport(object sender, RoutedEventArgs e)
-    {
-        var tail = File.Exists(Log.Path) ? string.Join(Environment.NewLine, File.ReadLines(Log.Path).TakeLast(40)) : "";
-        var text = $"Clarion {Version}{Environment.NewLine}Windows build {_app.Profile.Build}, {_app.Profile.Edition}{Environment.NewLine}" +
-                   $"Administrator: {_app.IsElevated}{Environment.NewLine}Settings in effect: {_app.AppliedCount}{Environment.NewLine}{Environment.NewLine}{tail}";
-        var package = new Windows.ApplicationModel.DataTransfer.DataPackage();
-        package.SetText(text);
-        Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(package);
     }
 
     private async void OnSaveSetup(object sender, RoutedEventArgs e)

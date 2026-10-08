@@ -9,7 +9,6 @@ namespace Clarion.App.Pages;
 
 public sealed partial class SystemPage : Page
 {
-    private static SystemReport? _cached;
     private readonly AppServices _app = AppServices.Instance;
     private SystemReport? _report;
 
@@ -20,11 +19,11 @@ public sealed partial class SystemPage : Page
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
-        if (_cached is not null) Show(_cached);
-        else await LoadAsync();
+        if (_app.CachedSystemReport is { } cached) Show(cached);
+        else await LoadAsync(false);
     }
 
-    private async Task LoadAsync()
+    private async Task LoadAsync(bool refresh)
     {
         RefreshButton.IsEnabled = false;
         CopyButton.IsEnabled = false;
@@ -32,9 +31,7 @@ public sealed partial class SystemPage : Page
         StatusLabel.Text = "Reading your system, this takes a few seconds.";
         try
         {
-            var report = await Task.Run(_app.Runtime.System.Read);
-            _cached = report;
-            Show(report);
+            Show(await _app.GetSystemReportAsync(refresh));
         }
         catch (Exception ex)
         {
@@ -63,8 +60,7 @@ public sealed partial class SystemPage : Page
 
     private async void OnRefresh(object sender, RoutedEventArgs e)
     {
-        _cached = null;
-        await LoadAsync();
+        await LoadAsync(true);
     }
 
     private void OnCopy(object sender, RoutedEventArgs e)

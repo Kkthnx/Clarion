@@ -64,6 +64,22 @@ public sealed partial class AppServices : UiObservableObject
     }
 
     public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
+    public ActivityLog Activity { get; } = new();
+
+    public static string Version { get; } =
+        (System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(System.Reflection.Assembly.GetEntryAssembly()!)?.InformationalVersion ?? "0.1.0").Split('+')[0];
+
+    private Clarion.Core.SystemInfo.SystemReport? _systemReport;
+
+    /// <summary>The system report from the last read, or null before the first one finishes.</summary>
+    public Clarion.Core.SystemInfo.SystemReport? CachedSystemReport => _systemReport;
+
+    public async Task<Clarion.Core.SystemInfo.SystemReport> GetSystemReportAsync(bool refresh = false)
+    {
+        if (refresh || _systemReport is null) _systemReport = await Task.Run(Runtime.System.Read);
+        return _systemReport;
+    }
+
     public string Status { get => _status; set => SetProperty(ref _status, value); }
     public int AppliedCount { get => _appliedCount; set => SetProperty(ref _appliedCount, value); }
 
@@ -181,7 +197,7 @@ public sealed partial class AppServices : UiObservableObject
 
     public IReadOnlyList<string> AppliedIds() => Items.Where(i => i.IsApplied && i.IsSupported).Select(i => i.Id).ToList();
 
-    public async Task<BatchResult> ApplyPendingAsync(bool restorePoint, Action<string> log)
+    public async Task<BatchResult> ApplyPendingAsync(bool restorePoint, Action<string> log, Action<BatchStep>? step = null)
     {
         IsBusy = true;
         var toApply = Pending.Where(p => p.IsOn).Select(p => p.Tweak).ToList();
@@ -189,7 +205,7 @@ public sealed partial class AppServices : UiObservableObject
         var replacedGroups = toApply.Select(t => t.ExclusiveGroup).Where(g => g is not null).ToHashSet();
         var toRevert = Pending.Where(p => !p.IsOn && !(p.Tweak.ExclusiveGroup is not null && replacedGroups.Contains(p.Tweak.ExclusiveGroup)))
             .Select(p => p.Tweak).ToList();
-        var options = new BatchOptions { CreateRestorePoint = restorePoint, ContinueWithoutRestorePoint = !restorePoint };
+        var options = new BatchOptions { CreateRestorePoint = restorePoint, ContinueWithoutRestorePoint = !restorePoint, Step = step };
 
         Action<string> both = msg => { Log.Write(msg); log(msg); };
         Log.Write($"Run started: {toApply.Count} to apply, {toRevert.Count} to revert, restore point {(restorePoint ? "on" : "off")}");

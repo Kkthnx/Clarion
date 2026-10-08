@@ -18,6 +18,8 @@ Beta (0.1.0-beta.2). Expect rough edges and report them in Issues. The version s
 - DNS providers with optional encrypted lookups.
 - Restore point before every batch, a change journal that restores the real prior value, and one click revert.
 - System page with hardware, security state and a check for customized Windows images.
+- Report a problem page that prepares a private bug report or suggestion for GitHub.
+- Live progress panel while changes apply.
 - Save your choices to a setup file and apply them later or on another PC.
 
 ## Command line

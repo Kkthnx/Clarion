@@ -10,6 +10,25 @@ public static class Log
 
     public static string Path { get; } = System.IO.Path.Combine(EngineFactory.DefaultDataDirectory, "clarion.log");
 
+    /// <summary>The last lines of the log, or none when there is no log yet.</summary>
+    public static IReadOnlyList<string> Tail(int lines)
+    {
+        try
+        {
+            lock (Gate)
+            {
+                if (!File.Exists(Path)) return [];
+                using var stream = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using var reader = new StreamReader(stream);
+                var all = new List<string>();
+                while (reader.ReadLine() is { } line) all.Add(line);
+                return all.TakeLast(lines).ToList();
+            }
+        }
+        catch (IOException) { return []; }
+        catch (UnauthorizedAccessException) { return []; }
+    }
+
     public static void Write(string message)
     {
         try

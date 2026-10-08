@@ -9,7 +9,10 @@
 - DNS is now one dropdown with an encryption switch, since only one provider can be active.
 - Faster startup state read, about 5 seconds instead of 20 after the DNS entries were added.
 - Scrollbar colors follow the theme and the lists leave room for it.
-- New tests cover the system report and install check.
+- Report a problem page: builds a bug report or suggestion with system details and recent activity, with names, addresses and accounts removed. You read it, then open it on GitHub yourself.
+- Live activity panel while changes apply: progress bar, one line per setting, problems shown inline, and an Open log button.
+- The summary dialog now only appears when something failed or a restart or sign out is needed.
+- New tests cover the system report, install check, live progress steps and the report scrubbing.
 ## 0.1.0-beta.1
 
 First public beta.

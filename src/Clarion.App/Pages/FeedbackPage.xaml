@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.FeedbackPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer>
+        <StackPanel Padding="32,24,46,24" Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Report a problem or suggest something" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           Text="Clarion builds the report for you. Nothing is sent from here. You read it below, then open it on GitHub and press Submit yourself." />
+            </StackPanel>
+
+            <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="Kept private"
+                     Message="Your computer name, Windows user name, folders under your user name, e-mail addresses, IP and MAC addresses, account IDs and serial numbers are never included." />
+
+            <RadioButtons x:Name="KindBox" Header="What is it?" SelectedIndex="0" MaxColumns="2" SelectionChanged="OnKindChanged">
+                <RadioButton Content="Something is wrong" />
+                <RadioButton Content="A suggestion" />
+            </RadioButtons>
+
+            <TextBox x:Name="TitleBox" Header="Short title" PlaceholderText="For example: Apply stops at 3 of 12" MaxLength="120"
+                     TextChanged="OnTextChanged" />
+            <TextBox x:Name="DescriptionBox" Header="Details" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="130"
+                     PlaceholderText="What did you do, what did you expect, and what happened instead?" TextChanged="OnTextChanged" />
+
+            <StackPanel Spacing="4">
+                <CheckBox x:Name="SystemBox" Content="Include my Windows and hardware details" IsChecked="True" Checked="OnChanged" Unchecked="OnChanged" />
+                <CheckBox x:Name="LogBox" Content="Include the recent activity log" IsChecked="True" Checked="OnChanged" Unchecked="OnChanged" />
+            </StackPanel>
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="This is exactly what will be shared" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBox x:Name="PreviewBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Cascadia Mono" FontSize="12"
+                         MinHeight="200" MaxHeight="360" AutomationProperties.Name="Report preview" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button x:Name="OpenButton" Content="Open on GitHub" Style="{StaticResource AccentButtonStyle}" Click="OnOpen" />
+                <Button Content="Copy report" Click="OnCopy" />
+                <Button Content="Save to a file" Click="OnSave" />
+                <TextBlock x:Name="StatusLabel" VerticalAlignment="Center" Foreground="{ThemeResource ClTextMutedBrush}" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
