@@ -37,6 +37,9 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
 
     public TweakState Detect(Tweak tweak)
     {
+        // A setting made of an operation this build does not know how to run is simply not available here.
+        if (tweak.Apply.Any(o => !_handlers.Any(h => h.Handles(o)))) return TweakState.Unavailable;
+
         var applicable = tweak.Apply.Where(o => HandlerFor(o).IsApplicable(o)).ToList();
         if (applicable.Count == 0) return TweakState.Unavailable;
         var matched = applicable.Count(o => HandlerFor(o).IsSatisfied(o));

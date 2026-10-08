@@ -20,6 +20,8 @@ public sealed partial class MainWindow : Window
         SetTitleBar(AppTitleBar);
         ResizeToFit();
         AppWindow.Closing += OnClosing;
+        Root.ActualThemeChanged += (_, _) => UpdateCaptionButtons();
+        UpdateCaptionButtons();
 
         _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
         _app.Pending.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
@@ -53,7 +55,27 @@ public sealed partial class MainWindow : Window
         ContentFrame.Navigate(typeof(TweakListPage), new PageArgs("Search results", $"Settings matching \"{q}\"", [], q));
     }
 
-    public void ApplyTheme(ElementTheme theme) => Root.RequestedTheme = theme;
+    public void ApplyTheme(ElementTheme theme)
+    {
+        Root.RequestedTheme = theme;
+        UpdateCaptionButtons();
+    }
+
+    /// <summary>The minimize, maximize and close buttons draw on top of our own title bar, so they need to follow the theme.</summary>
+    private void UpdateCaptionButtons()
+    {
+        var bar = AppWindow.TitleBar;
+        var dark = Root.ActualTheme != ElementTheme.Light;
+        var fg = dark ? Windows.UI.Color.FromArgb(255, 230, 235, 242) : Windows.UI.Color.FromArgb(255, 19, 26, 36);
+        var hover = dark ? Windows.UI.Color.FromArgb(255, 36, 48, 64) : Windows.UI.Color.FromArgb(255, 214, 222, 232);
+        bar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+        bar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
+        bar.ButtonForegroundColor = fg;
+        bar.ButtonHoverForegroundColor = fg;
+        bar.ButtonHoverBackgroundColor = hover;
+        bar.ButtonPressedForegroundColor = fg;
+        bar.ButtonInactiveForegroundColor = Windows.UI.Color.FromArgb(255, 122, 135, 153);
+    }
 
     private void ResizeToFit()
     {
@@ -71,7 +93,7 @@ public sealed partial class MainWindow : Window
         ["debloat"] = new("Debloat", "Remove apps you do not use. Every removal can be reverted.", ["Debloat"]),
         ["tweaks"] = new("Tweaks", "Look, feel and everyday behavior of Windows.", ["Appearance", "Explorer", "Input", "System"]),
         ["power"] = new("Power", "Pick how the PC trades speed for energy. Only one power plan is active at a time.", ["Power"]),
-        ["network"] = new("Network", "Update sharing and connection behavior.", ["Network"]),
+        ["network"] = new("Network", "Update sharing, public DNS providers and encrypted DNS.", ["Network"]),
         ["features"] = new("Windows features", "Optional parts of Windows you can turn on or off.", ["Features"]),
         ["updates"] = new("Updates", "Keep updates predictable without turning off protection.", ["Updates"]),
     };

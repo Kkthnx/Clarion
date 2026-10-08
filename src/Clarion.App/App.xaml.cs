@@ -16,6 +16,8 @@ public partial class App : Application
         };
     }
 
+    public IntPtr WindowHandle => _window is null ? IntPtr.Zero : WinRT.Interop.WindowNative.GetWindowHandle(_window);
+
     public ElementTheme Theme { get; private set; } = ElementTheme.Default;
 
     public void SetTheme(ElementTheme theme)
@@ -28,6 +30,14 @@ public partial class App : Application
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        var cli = Clarion.Core.Profiles.CliOptions.Parse(Environment.GetCommandLineArgs().Skip(1).ToList());
+        if (cli.IsCli)
+        {
+            var code = Clarion.Engine.HeadlessRunner.Run(cli, Clarion.Engine.HeadlessRunner.OpenConsole(), Services.Log.Write);
+            Environment.Exit(code);
+            return;
+        }
+
         _instanceLock = new Mutex(true, "Global\\Clarion.SingleInstance", out var first);
         if (!first)
         {

@@ -1,3 +1,4 @@
+using Clarion.Core.Model;
 using Clarion.Core.Actions;
 using Clarion.App.Controls;
 using Clarion.App.Services;
@@ -45,7 +46,7 @@ public sealed partial class CleanupPage : Page
         CleanButton.IsEnabled = !busy;
         StopButton.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
         ProgressPanel.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
-        LiveText.Text = $"{FolderCleaner.Format(_svc.FreedLive)} freed so far, {_svc.FilesLive:N0} files";
+        LiveText.Text = $"{ByteSize.Format(_svc.FreedLive)} freed so far, {_svc.FilesLive:N0} files";
         FileText.Text = _svc.CurrentFile;
         UpdateSelected();
     }
@@ -53,7 +54,7 @@ public sealed partial class CleanupPage : Page
     private void UpdateSelected()
     {
         var chosen = _svc.Items.Count(i => i.IsChecked && i.CanSelect);
-        SelectedText.Text = chosen == 0 ? "Nothing selected" : $"{chosen} selected, {FolderCleaner.Format(_svc.SelectedBytes)}";
+        SelectedText.Text = chosen == 0 ? "Nothing selected" : $"{chosen} selected, {ByteSize.Format(_svc.SelectedBytes)}";
     }
 
     private async void OnScan(object sender, RoutedEventArgs e)
@@ -132,7 +133,7 @@ public sealed partial class CleanupPage : Page
     {
         ResultBar.Severity = s.Cancelled ? InfoBarSeverity.Warning : InfoBarSeverity.Success;
         ResultBar.Title = s.Cancelled ? "Stopped" : s.Preview ? "Preview finished" : "Done";
-        var text = $"{(s.Preview ? "Would free" : "Freed")} {FolderCleaner.Format(s.BytesFreed)} from {s.FilesDeleted:N0} files in {s.Duration.TotalSeconds:0.0} seconds.";
+        var text = $"{(s.Preview ? "Would free" : "Freed")} {ByteSize.Format(s.BytesFreed)} from {s.FilesDeleted:N0} files in {s.Duration.TotalSeconds:0.0} seconds.";
         if (s.FilesLocked > 0) text += $" {s.FilesLocked:N0} files were in use and left alone.";
         if (s.Queued > 0) text += $" {s.Queued:N0} files will be removed at the next restart.";
         ResultBar.Message = text;
@@ -187,9 +188,7 @@ public sealed partial class CleanupPage : Page
     {
         if (e.OriginalSource is Microsoft.UI.Xaml.Controls.Primitives.ToggleButton) return;
         if ((sender as FrameworkElement)?.Tag is not CleanupItem item) return;
-        Detail.Item = item;
-        Detail.Visibility = Visibility.Visible;
-        EmptyDetail.Visibility = Visibility.Collapsed;
+        Pane.Show(item, technical: true);
     }
 
     private void OnTipOpened(object sender, RoutedEventArgs e) => DetailHelpers.FillTipOnOpen(sender);

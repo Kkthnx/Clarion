@@ -206,3 +206,23 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 - Debloat that cannot be undone erodes trust. Every removal in Clarion records what it removed so it can be restored.
 - Security feature switches (memory integrity, Defender real time protection, BitLocker) are not offered.
 - Network and scheduler tweaks without published measurements are held back as Unproven.
+
+## 14. Cleanup, repair, DNS, command line
+
+- Cleanup: 23 targets in shader caches, launcher caches, browsers and Windows housekeeping. Scan first, allow listed paths only, links never followed, files in use skipped, locked files queued for restart, last cleanup report.
+- Repair: 10 jobs using only built in Windows tools resolved from System32, with streaming output and Stop.
+- DNS: five providers, plain or encrypted, exact restore of prior servers.
+- Command line and setup files: apply a preset, a saved setup, or run cleanup without the window.
+- Privacy entries carry the policy file and name they come from, and a test checks each against the local definitions.
+
+## 15. Not yet included
+
+- Microsoft 365 and Office telemetry policies.
+- Per app permission lists.
+- Apps page for installing and updating packages.
+- Startup app manager.
+- Host file blocklists.
+- IPv6 DNS servers.
+- Background service that reapplies settings after Windows updates.
+- Per GPU driver change tracking for cache cleanup.
+- Code signing and winget packaging.

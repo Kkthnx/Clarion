@@ -113,16 +113,7 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <Border Grid.Column="1" Background="{ThemeResource ClSurface1Brush}"
-                    BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="8">
-                <ScrollViewer Padding="20">
-                    <Grid>
-                        <TextBlock x:Name="EmptyDetail" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}"
-                                   Text="Select a row to see what it is, what it frees, and the exact folders it touches." />
-                        <controls:TweakDetail x:Name="Detail" Visibility="Collapsed" ShowTechnical="True" TechnicalTitle="Exact folders" />
-                    </Grid>
-                </ScrollViewer>
-            </Border>
+            <controls:DetailPane x:Name="Pane" Grid.Column="1" TechnicalTitle="Exact folders" EmptyMessage="Select a row to see what it is, what it frees, and the exact folders it touches." />
         </Grid>
     </Grid>
 </Page>

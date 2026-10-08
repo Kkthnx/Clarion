@@ -1,3 +1,4 @@
+using Clarion.Core.Model;
 using System.Text;
 using Clarion.App.Controls;
 using Clarion.App.Services;
@@ -33,7 +34,7 @@ public sealed partial class RepairPage : Page
 
         if (_app.PendingCount > 0)
         {
-            await Info("Apply or clear your queued changes first", "Repair jobs and queued settings should not run together.");
+            await Dialogs.Say(XamlRoot, "Apply or clear your queued changes first", "Repair jobs and queued settings should not run together.");
             return;
         }
 
@@ -144,7 +145,7 @@ public sealed partial class RepairPage : Page
         scroller.ChangeView(null, scroller.ScrollableHeight, null, true);
         ring.IsActive = false;
         status.Text = result.Success
-            ? $"Finished in {result.Duration.TotalSeconds:0} seconds.{(result.BytesFreed > 0 ? $" Freed {FolderCleaner.Format(result.BytesFreed)}." : "")}{(item.Def.NeedsReboot ? " Restart to finish." : "")}"
+            ? $"Finished in {result.Duration.TotalSeconds:0} seconds.{(result.BytesFreed > 0 ? $" Freed {ByteSize.Format(result.BytesFreed)}." : "")}{(item.Def.NeedsReboot ? " Restart to finish." : "")}"
             : result.Cancelled ? "Stopped." : $"Did not finish. {result.Error}";
         dialog.PrimaryButtonText = "";
         dialog.CloseButtonText = "Close";
@@ -152,16 +153,11 @@ public sealed partial class RepairPage : Page
         _running = false;
     }
 
-    private async Task Info(string title, string message) =>
-        await new ContentDialog { Title = title, Content = message, CloseButtonText = "OK", XamlRoot = XamlRoot }.ShowAsync();
-
     private void OnCardTapped(object sender, TappedRoutedEventArgs e)
     {
         if (e.OriginalSource is FrameworkElement { Tag: ActionItem }) return;
         if ((sender as FrameworkElement)?.Tag is not ActionItem item) return;
-        Detail.Item = item;
-        Detail.Visibility = Visibility.Visible;
-        EmptyDetail.Visibility = Visibility.Collapsed;
+        Pane.Show(item, technical: true);
     }
 
     private void OnTipOpened(object sender, RoutedEventArgs e) => DetailHelpers.FillTipOnOpen(sender);

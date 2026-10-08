@@ -68,16 +68,7 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <Border Grid.Column="1" Background="{ThemeResource ClSurface1Brush}"
-                    BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="8">
-                <ScrollViewer Padding="20">
-                    <Grid>
-                        <TextBlock x:Name="EmptyDetail" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}"
-                                   Text="Select a job to see what it does, how long it takes, and the exact commands it runs." />
-                        <controls:TweakDetail x:Name="Detail" Visibility="Collapsed" ShowTechnical="True" TechnicalTitle="Exact commands" />
-                    </Grid>
-                </ScrollViewer>
-            </Border>
+            <controls:DetailPane x:Name="Pane" Grid.Column="1" TechnicalTitle="Exact commands" EmptyMessage="Select a job to see what it does, how long it takes, and the exact commands it runs." />
         </Grid>
     </Grid>
 </Page>

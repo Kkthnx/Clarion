@@ -160,18 +160,26 @@ public sealed partial class AppServices : UiObservableObject
         foreach (var item in Items.Where(i => i.IsPending).ToList()) item.IsOn = item.IsApplied;
     }
 
-    public int QueuePreset(string name)
+    public int QueuePreset(string name) => Presets.TryGetValue(name, out var ids) ? QueueIds(ids).Queued : 0;
+
+    /// <summary>Queues the listed settings to be turned on. Returns how many were queued and which names are not in this catalog.</summary>
+    public (int Queued, IReadOnlyList<string> Unknown, int NotAvailable) QueueIds(IEnumerable<string> ids)
     {
-        if (!Presets.TryGetValue(name, out var ids)) return 0;
-        var count = 0;
-        foreach (var item in Items.Where(i => ids.Contains(i.Id, StringComparer.OrdinalIgnoreCase)))
+        var wanted = ids.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var queued = 0;
+        var notAvailable = 0;
+        foreach (var item in Items.Where(i => wanted.Contains(i.Id)))
         {
-            if (!item.CanToggle || item.IsApplied) continue;
+            if (item.IsApplied) continue;
+            if (!item.CanToggle) { notAvailable++; continue; }
             item.IsOn = true;
-            count++;
+            queued++;
         }
-        return count;
+        var unknown = wanted.Where(id => Items.All(i => !i.Id.Equals(id, StringComparison.OrdinalIgnoreCase))).Order().ToList();
+        return (queued, unknown, notAvailable);
     }
+
+    public IReadOnlyList<string> AppliedIds() => Items.Where(i => i.IsApplied && i.IsSupported).Select(i => i.Id).ToList();
 
     public async Task<BatchResult> ApplyPendingAsync(bool restorePoint, Action<string> log)
     {

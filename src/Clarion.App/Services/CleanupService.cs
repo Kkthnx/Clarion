@@ -1,3 +1,4 @@
+using Clarion.Core.Model;
 using Clarion.Core.Actions;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -64,7 +65,7 @@ public sealed class CleanupService : UiObservableObject
                 }
             });
             var total = Items.Where(i => i.IsPresent).Sum(i => i.ScannedBytes);
-            Status = $"Found {FolderCleaner.Format(total)} that can be cleaned";
+            Status = $"Found {ByteSize.Format(total)} that can be cleaned";
         }
         catch (OperationCanceledException)
         {
@@ -124,7 +125,7 @@ public sealed class CleanupService : UiObservableObject
                     queued += result.QueuedForRestart;
                     FreedLive = freed;
                     FilesLive = deleted;
-                    Log.Write($"cleanup {item.Id}: {(preview ? "preview " : "")}{FolderCleaner.Format(result.BytesFreed)}, {result.FilesDeleted} files, {result.FilesLocked} in use, {result.QueuedForRestart} queued{(result.Skipped ? ", skipped" : "")}");
+                    Log.Write($"cleanup {item.Id}: {(preview ? "preview " : "")}{ByteSize.Format(result.BytesFreed)}, {result.FilesDeleted} files, {result.FilesLocked} in use, {result.QueuedForRestart} queued{(result.Skipped ? ", skipped" : "")}");
                 }
             });
         }
@@ -144,8 +145,8 @@ public sealed class CleanupService : UiObservableObject
         var summary = new CleanupSummary(freed, deleted, locked, queued, DateTime.UtcNow - started, preview, cancelled);
         LastSummary = summary;
         Status = cancelled ? "Stopped. What is already gone stays gone."
-            : preview ? $"Would free {FolderCleaner.Format(freed)}"
-            : $"Freed {FolderCleaner.Format(freed)}";
+            : preview ? $"Would free {ByteSize.Format(freed)}"
+            : $"Freed {ByteSize.Format(freed)}";
         if (!preview) SaveReport(chosen, summary);
         OnPropertyChanged(nameof(SelectedBytes));
         return summary;
@@ -155,12 +156,12 @@ public sealed class CleanupService : UiObservableObject
     {
         var sb = new StringBuilder();
         sb.AppendLine($"Clarion cleanup {DateTime.Now:yyyy-MM-dd HH:mm}{(s.Preview ? " (preview)" : "")}");
-        sb.AppendLine($"Freed {FolderCleaner.Format(s.BytesFreed)} from {s.FilesDeleted} files in {s.Duration.TotalSeconds:0.0} s");
+        sb.AppendLine($"Freed {ByteSize.Format(s.BytesFreed)} from {s.FilesDeleted} files in {s.Duration.TotalSeconds:0.0} s");
         if (s.FilesLocked > 0) sb.AppendLine($"{s.FilesLocked} files were in use and left alone");
         if (s.Queued > 0) sb.AppendLine($"{s.Queued} files are queued for removal at the next restart");
         sb.AppendLine();
         foreach (var r in rows.Where(r => r.Result is not null))
-            sb.AppendLine($"{r.Name,-34} {FolderCleaner.Format(r.Result!.BytesFreed),10}  {string.Join(" ", r.Result.Notes)}");
+            sb.AppendLine($"{r.Name,-34} {ByteSize.Format(r.Result!.BytesFreed),10}  {string.Join(" ", r.Result.Notes)}");
         return sb.ToString();
     }
 

@@ -119,7 +119,7 @@ public static class FolderCleaner
             catch (IOException) { }
             catch (UnauthorizedAccessException) { }
         }
-        log($"Freed {Format(freed)} in {folder}");
+        log($"Freed {ByteSize.Format(freed)} in {folder}");
         return freed;
     }
 
@@ -139,15 +139,7 @@ public static class FolderCleaner
         var size = Directory.EnumerateFiles(folder, "*", new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true })
             .Sum(f => { try { return new FileInfo(f).Length; } catch (IOException) { return 0L; } });
         Directory.Delete(folder, recursive: true);
-        log($"Deleted {folder} and freed {Format(size)}");
+        log($"Deleted {folder} and freed {ByteSize.Format(size)}");
         return size;
     }
-
-    public static string Format(long bytes) => bytes switch
-    {
-        >= 1L << 30 => $"{bytes / (double)(1L << 30):0.0} GB",
-        >= 1L << 20 => $"{bytes / (double)(1L << 20):0.0} MB",
-        >= 1L << 10 => $"{bytes / (double)(1L << 10):0.0} KB",
-        _ => $"{bytes} bytes",
-    };
 }

@@ -114,16 +114,7 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Border Grid.Column="1" Background="{ThemeResource ClSurface1Brush}"
-                    BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="8">
-                <ScrollViewer Padding="20">
-                    <Grid>
-                        <TextBlock x:Name="EmptyDetail" Text="Select a setting to see what it does, what you gain, and what could go wrong."
-                                   TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
-                        <controls:TweakDetail x:Name="Detail" Visibility="Collapsed" />
-                    </Grid>
-                </ScrollViewer>
-            </Border>
+            <controls:DetailPane x:Name="Pane" Grid.Column="1" EmptyMessage="Select a setting to see what it does, what you gain, and what could go wrong." />
         </Grid>
     </Grid>
 </Page>

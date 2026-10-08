@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="Clarion.App.Controls.DetailPane"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Clarion.App.Controls">
+
+    <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+            BorderThickness="1" CornerRadius="8">
+        <ScrollViewer Padding="20">
+            <Grid>
+                <TextBlock x:Name="EmptyText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
+                <controls:TweakDetail x:Name="Detail" Visibility="Collapsed" />
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</UserControl>

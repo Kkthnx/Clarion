@@ -44,7 +44,7 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
     public IReadOnlyList<string> ExactChanges =>
         _scan is null
             ? Target.Rules.Select(DescribeRule).ToList()
-            : _scan.Folders.Select(f => f.Exists ? $"{f.Folder}  ({FolderCleaner.Format(f.Bytes)}, {f.Files} files)" : $"{f.Folder}  (not on this PC)").ToList();
+            : _scan.Folders.Select(f => f.Exists ? $"{f.Folder}  ({ByteSize.Format(f.Bytes)}, {f.Files} files)" : $"{f.Folder}  (not on this PC)").ToList();
 
     public bool IsChecked
     {
@@ -97,10 +97,10 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
     {
         get
         {
-            if (_result is { Skipped: false }) return $"{FolderCleaner.Format(_result.BytesFreed)} freed";
+            if (_result is { Skipped: false }) return $"{ByteSize.Format(_result.BytesFreed)} freed";
             if (_scan is null) return "";
             if (!_scan.Present) return "";
-            return _scan.Bytes == 0 ? "Empty" : FolderCleaner.Format(_scan.Bytes);
+            return _scan.Bytes == 0 ? "Empty" : ByteSize.Format(_scan.Bytes);
         }
     }
 

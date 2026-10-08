@@ -138,19 +138,5 @@ public sealed partial class TweakListPage : Page
 
     private void OnTipOpened(object sender, RoutedEventArgs e) => DetailHelpers.FillTipOnOpen(sender);
 
-    private void UpdateDetail()
-    {
-        if (List.SelectedItem is TweakItem item)
-        {
-            Detail.Item = item;
-            Detail.ShowTechnical = _app.ExpertMode;
-            Detail.Visibility = Visibility.Visible;
-            EmptyDetail.Visibility = Visibility.Collapsed;
-        }
-        else
-        {
-            Detail.Visibility = Visibility.Collapsed;
-            EmptyDetail.Visibility = Visibility.Visible;
-        }
-    }
+    private void UpdateDetail() => Pane.Show(List.SelectedItem as TweakItem, _app.ExpertMode);
 }
