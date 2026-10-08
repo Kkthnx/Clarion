@@ -14,7 +14,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 ![Platform](https://img.shields.io/badge/Windows-10%20%7C%2011-5C8BCF)
 ![.NET](https://img.shields.io/badge/.NET-9-3FD0E0)
 
-[**Download**](https://github.com/Kkthnx/Clarion/releases/latest) &nbsp;|&nbsp; [Report a problem](https://github.com/Kkthnx/Clarion/issues/new/choose) &nbsp;|&nbsp; [Changelog](CHANGELOG.md)
+[**Download**](https://github.com/Kkthnx/Clarion/releases/latest) | [Report a problem](https://github.com/Kkthnx/Clarion/issues/new/choose) | [Changelog](CHANGELOG.md)
 
 </div>
 
