@@ -1,0 +1,480 @@
+[
+  {
+    "id": "updates.defer-feature-30",
+    "category": "Updates",
+    "topic": "Updates",
+    "name": "Delay feature updates by 30 days",
+    "summary": "Wait 30 days after release before a new Windows version is offered.",
+    "what": "Applies the Windows Update policy that defers feature updates for 30 days.",
+    "benefit": "Other people find the early problems first. Security updates still arrive on time.",
+    "risk": "Low. New features arrive 30 days later than they would otherwise.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if you want a month for early problems to be found and fixed before a new Windows version reaches you.",
+    "facts": [
+      "Only feature updates are delayed, monthly security updates still install",
+      "You choose one delay, picking another replaces it",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy values"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "exclusiveGroup": "feature-deferral",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "DeferFeatureUpdates"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "DeferFeatureUpdatesPeriodInDays"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "30"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update"
+    ],
+    "provenance": [
+      "WindowsUpdate.admx DeferFeatureUpdates"
+    ]
+  },
+  {
+    "id": "updates.defer-feature-90",
+    "category": "Updates",
+    "topic": "Updates",
+    "name": "Delay feature updates by 90 days",
+    "summary": "Wait 90 days after release before a new Windows version is offered.",
+    "what": "Applies the Windows Update policy that defers feature updates for 90 days.",
+    "benefit": "Other people find the early problems first. Security updates still arrive on time.",
+    "risk": "Low. New features arrive 90 days later than they would otherwise.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you value stability over new features. A good fit for work PCs.",
+    "facts": [
+      "Only feature updates are delayed, monthly security updates still install",
+      "You choose one delay, picking another replaces it",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy values"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "exclusiveGroup": "feature-deferral",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "DeferFeatureUpdates"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "DeferFeatureUpdatesPeriodInDays"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "90"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update"
+    ],
+    "provenance": [
+      "WindowsUpdate.admx DeferFeatureUpdates"
+    ]
+  },
+  {
+    "id": "updates.defer-feature-180",
+    "category": "Updates",
+    "topic": "Updates",
+    "name": "Delay feature updates by 180 days",
+    "summary": "Wait 180 days after release before a new Windows version is offered.",
+    "what": "Applies the Windows Update policy that defers feature updates for 180 days.",
+    "benefit": "Other people find the early problems first. Security updates still arrive on time.",
+    "risk": "Low. New features arrive 180 days later than they would otherwise.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for PCs that must stay stable for months. You will get new Windows versions late.",
+    "facts": [
+      "Only feature updates are delayed, monthly security updates still install",
+      "You choose one delay, picking another replaces it",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy values"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "exclusiveGroup": "feature-deferral",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "DeferFeatureUpdates"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "DeferFeatureUpdatesPeriodInDays"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "180"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update"
+    ],
+    "provenance": [
+      "WindowsUpdate.admx DeferFeatureUpdates"
+    ]
+  },
+  {
+    "id": "updates.exclude-drivers",
+    "category": "Updates",
+    "topic": "Updates",
+    "name": "Keep drivers out of Windows Update",
+    "summary": "Windows Update will not install hardware drivers.",
+    "what": "Applies the policy that excludes drivers from Windows quality updates.",
+    "benefit": "No surprise driver swaps. Graphics, audio and network drivers stay what you chose.",
+    "risk": "Low. You update drivers yourself from the maker or a tool you trust.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for gamers and creators who install drivers from the vendor. Skip it if you rely on Windows to keep drivers current.",
+    "facts": [
+      "Security and quality updates still install",
+      "Windows may offer older driver versions than the maker",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "ExcludeWUDriversInQualityUpdate"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update"
+    ],
+    "provenance": [
+      "WindowsUpdate.admx ExcludeWUDriversInQualityUpdate"
+    ]
+  },
+  {
+    "id": "updates.no-wake-for-updates",
+    "category": "Updates",
+    "topic": "Updates",
+    "name": "Do not wake the PC for updates",
+    "summary": "Windows Update will not wake a sleeping PC to install updates.",
+    "what": "Applies the policy that turns off Windows Update power management wake up.",
+    "benefit": "The PC stays asleep at night and does not wake to restart.",
+    "risk": "None. Updates install when the PC is on.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone.",
+    "facts": [
+      "Updates still install, just not by waking the PC",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "AUPowerManagement"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update"
+    ],
+    "provenance": [
+      "WindowsUpdate.admx AUPowerManagement_Title"
+    ]
+  },
+  {
+    "id": "edge.personalization",
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Stop Edge from personalizing ads with your browsing",
+    "summary": "Edge will not send browsing data to Microsoft to personalize ads, search and news.",
+    "what": "Applies the Edge policy that stops sending browsing history, favorites and usage to Microsoft for personalization.",
+    "benefit": "Your browsing is not used to personalize ads and services.",
+    "risk": "None. Ads are not removed, they are just less personalized.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who uses Edge.",
+    "facts": [
+      "Not available for child or enterprise accounts",
+      "Users cannot change it while it is on",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+          "name": "PersonalizationReportingEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/personalizationreportingenabled"
+    ]
+  },
+  {
+    "id": "edge.sidebar",
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Hide the Edge sidebar",
+    "summary": "Remove the launcher bar on the right side of Edge.",
+    "what": "Applies the Edge policy that never shows the sidebar.",
+    "benefit": "More room for pages and fewer built in shortcuts and promotions.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you never use the sidebar tools.",
+    "facts": [
+      "Hides the sidebar for everyone who uses Edge on this PC",
+      "Edge may show that it is managed",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+          "name": "HubsSidebarEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/hubssidebarenabled"
+    ]
+  },
+  {
+    "id": "edge.startup-boost",
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Stop Edge from starting with Windows",
+    "summary": "Edge will not preload itself at sign in.",
+    "what": "Applies the Edge policy that turns startup boost off.",
+    "benefit": "Less memory use at sign in and a lighter background footprint.",
+    "risk": "Low. Edge may take a moment longer to open the first time.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone, especially if you use another browser.",
+    "facts": [
+      "Startup boost keeps Edge processes ready in the background",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+          "name": "StartupBoostEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/startupboostenabled"
+    ]
+  },
+  {
+    "id": "edge.background",
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Stop Edge running after you close it",
+    "summary": "Edge will fully quit when you close the last window.",
+    "what": "Applies the Edge policy that turns background mode off.",
+    "benefit": "No Edge process or tray icon after you close it.",
+    "risk": "Low. Web apps and notifications from Edge stop when it is closed.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who does not rely on Edge web app notifications.",
+    "facts": [
+      "Background mode keeps apps and session cookies alive after the window closes",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+          "name": "BackgroundModeEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/backgroundmodeenabled"
+    ]
+  },
+  {
+    "id": "edge.shopping",
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Turn off Edge shopping features",
+    "summary": "No price comparison, coupons or checkout autofill banners.",
+    "what": "Applies the Edge policy that disables the shopping assistant.",
+    "benefit": "No banners about coupons and prices, and fewer requests to shopping servers about the pages you visit.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who does not use Edge coupons.",
+    "facts": [
+      "Coupons and prices are fetched from a server when it is on",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Edge",
+          "name": "EdgeShoppingAssistantEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/edgeshoppingassistantenabled"
+    ]
+  }
+]

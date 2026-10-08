@@ -59,6 +59,49 @@ public static class CatalogLoader
         return all;
     }
 
+    public static IReadOnlyList<Cleanup.CleanTarget> LoadCleanup()
+    {
+        var asm = typeof(CatalogLoader).Assembly;
+        var all = new List<Cleanup.CleanTarget>();
+        foreach (var name in asm.GetManifestResourceNames().Where(n => n.Contains(".Catalog.Cleanup.", StringComparison.Ordinal)).Order())
+        {
+            using var stream = asm.GetManifestResourceStream(name)!;
+            all.AddRange(JsonSerializer.Deserialize<List<Cleanup.CleanTarget>>(stream, Options) ?? []);
+        }
+        return all;
+    }
+
+    private static readonly string[] CleanupTokens = ["%LOCALAPPDATA%", "%APPDATA%", "%LOCALLOW%", "%PROGRAMDATA%", "%SystemRoot%", "%TEMP%", "%SystemDrive%"];
+
+    public static IReadOnlyList<string> ValidateCleanup(IEnumerable<Cleanup.CleanTarget> targets)
+    {
+        var errors = new List<string>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var t in targets)
+        {
+            if (!seen.Add(t.Id)) errors.Add($"{t.Id}: duplicate id.");
+            if (string.IsNullOrWhiteSpace(t.Advice)) errors.Add($"{t.Id}: advice is empty.");
+            if (t.Facts.Count < 2 || t.Facts.Count > 6) errors.Add($"{t.Id}: needs 2 to 6 facts for the tooltip.");
+            if (t.Rules.Count == 0) errors.Add($"{t.Id}: no rules.");
+            if (t.Recommendation == Recommendation.Recommended && t.RiskLevel >= RiskLevel.Medium) errors.Add($"{t.Id}: a Medium or High risk item cannot be marked Recommended.");
+            if (t.Irreversible && t.DefaultOn) errors.Add($"{t.Id}: an irreversible row cannot start ticked.");
+            if (t.Irreversible && t.RiskLevel < RiskLevel.Medium) errors.Add($"{t.Id}: an irreversible row must be Medium risk or higher.");
+            foreach (var rule in t.Rules)
+            {
+                var path = rule switch { Cleanup.FolderRule f => f.Path, Cleanup.FilePatternRule p => p.Folder, _ => null };
+                if (path is null) continue;
+                if (path.Contains("..", StringComparison.Ordinal)) errors.Add($"{t.Id}: path must not contain .. : {path}");
+                if (!CleanupTokens.Any(tok => path.StartsWith(tok, StringComparison.OrdinalIgnoreCase)))
+                    errors.Add($"{t.Id}: path must start with a known folder token: {path}");
+                if (!path.Equals("%TEMP%", StringComparison.OrdinalIgnoreCase) && CleanupTokens.Any(tok => path.Equals(tok, StringComparison.OrdinalIgnoreCase)))
+                    errors.Add($"{t.Id}: path must go below the folder token: {path}");
+                if (rule is Cleanup.FilePatternRule fp && (fp.Pattern.Contains('\\') || fp.Pattern.Contains('/')))
+                    errors.Add($"{t.Id}: pattern must be a file name pattern: {fp.Pattern}");
+            }
+        }
+        return errors;
+    }
+
     public static IReadOnlyList<Actions.ActionDef> ParseActions(string json) =>
         JsonSerializer.Deserialize<List<Actions.ActionDef>>(json, Options) ?? [];
 

@@ -1,0 +1,642 @@
+[
+  {
+    "id": "shaders.nvidia",
+    "group": "Shader caches",
+    "name": "NVIDIA shader caches",
+    "summary": "Compiled graphics shaders the NVIDIA driver keeps for your games.",
+    "advice": "Suggested when a game crashes on launch, stutters, flickers or shows visual glitches, or after a big driver change. Not needed after every driver update.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "The driver rebuilds these files the next time a game runs",
+      "The first launch after cleaning can be a little slower while shaders rebuild",
+      "Drivers version their caches, so old shaders are ignored on their own",
+      "A few index files are held by the driver and are removed at the next restart"
+    ],
+    "benefit": "Frees disk space and can clear crashes or stutter caused by a damaged cache.",
+    "risk": "None. Only regenerable cache files are removed.",
+    "riskLevel": "Safe",
+    "queueLockedAtRestart": true,
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\NVIDIA\\DXCache"
+      },
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\NVIDIA\\GLCache"
+      },
+      {
+        "type": "folder",
+        "path": "%LOCALLOW%\\NVIDIA\\DXCache"
+      },
+      {
+        "type": "folder",
+        "path": "%LOCALLOW%\\NVIDIA\\PerDriverVersion"
+      },
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\NVIDIA\\ComputeCache"
+      },
+      {
+        "type": "folder",
+        "path": "%PROGRAMDATA%\\NVIDIA Corporation\\NV_Cache"
+      }
+    ],
+    "sources": [
+      "https://nvidia.custhelp.com/app/answers/detail/a_id/5735/"
+    ]
+  },
+  {
+    "id": "shaders.amd",
+    "group": "Shader caches",
+    "name": "AMD shader caches",
+    "summary": "Compiled graphics shaders the AMD driver keeps for your games.",
+    "advice": "Suggested when a game crashes, stutters or shows glitches. Not needed after every driver update.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "The driver rebuilds these files the next time a game runs",
+      "The first launch after cleaning can be a little slower",
+      "Covers the DirectX 9, DirectX, DXC, OpenGL and Vulkan caches"
+    ],
+    "benefit": "Frees disk space and can clear problems caused by a damaged cache.",
+    "risk": "None. Only regenerable cache files are removed.",
+    "riskLevel": "Safe",
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\AMD\\DX9Cache"
+      },
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\AMD\\DxCache"
+      },
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\AMD\\DxcCache"
+      },
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\AMD\\OglCache"
+      },
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\AMD\\VkCache"
+      }
+    ]
+  },
+  {
+    "id": "shaders.intel",
+    "group": "Shader caches",
+    "name": "Intel shader cache",
+    "summary": "Compiled graphics shaders the Intel driver keeps.",
+    "advice": "Suggested when a game crashes, stutters or shows glitches on Intel graphics.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "The driver rebuilds these files when a game runs",
+      "The first launch after cleaning can be a little slower"
+    ],
+    "benefit": "Frees disk space and can clear problems caused by a damaged cache.",
+    "risk": "None. Only regenerable cache files are removed.",
+    "riskLevel": "Safe",
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALLOW%\\Intel\\ShaderCache"
+      }
+    ]
+  },
+  {
+    "id": "shaders.directx",
+    "group": "Shader caches",
+    "name": "Windows DirectX shader cache",
+    "summary": "The shader cache Windows keeps for every DirectX game.",
+    "advice": "Suggested when a DirectX game crashes or glitches. Windows rebuilds it by itself.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "Windows ships a Disk Cleanup entry for this cache",
+      "The cache is tied to the driver version, so old entries are ignored",
+      "The first launch after cleaning can be a little slower"
+    ],
+    "benefit": "Frees disk space and can clear problems caused by a damaged cache.",
+    "risk": "None. Only regenerable cache files are removed.",
+    "riskLevel": "Safe",
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\D3DSCache"
+      }
+    ],
+    "sources": [
+      "https://microsoft.github.io/DirectX-Specs/d3d/ShaderCache.html"
+    ]
+  },
+  {
+    "id": "shaders.steam",
+    "group": "Shader caches",
+    "name": "Steam shader caches",
+    "summary": "Shaders Steam pre-builds for your games, kept in every Steam library.",
+    "advice": "Suggested when a Steam game crashes or stutters, or to win back disk space. Steam rebuilds them.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "Found in the steamapps folder of every Steam library",
+      "Steam can download or rebuild them when you start a game",
+      "Games and saves are never touched"
+    ],
+    "benefit": "Frees disk space, often several gigabytes.",
+    "risk": "None. Games stay installed.",
+    "riskLevel": "Safe",
+    "processes": [
+      "steam"
+    ],
+    "rules": [
+      {
+        "type": "steam-shaders"
+      }
+    ]
+  },
+  {
+    "id": "launchers.discord",
+    "group": "Game launchers",
+    "name": "Discord cache",
+    "summary": "Images and web files Discord keeps for faster loading.",
+    "advice": "Suggested when Discord is slow, shows broken images or uses a lot of space. Close Discord first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your login and settings are kept",
+      "Discord rebuilds the cache as you use it",
+      "Covers Discord, PTB and Canary"
+    ],
+    "benefit": "Frees disk space and fixes a stuck or damaged cache.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "processes": [
+      "Discord",
+      "DiscordPTB",
+      "DiscordCanary"
+    ],
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\discord\\Cache"
+      },
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\discord\\Code Cache"
+      },
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\discord\\GPUCache"
+      },
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\discordptb\\Cache"
+      },
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\discordptb\\Code Cache"
+      },
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\discordptb\\GPUCache"
+      },
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\discordcanary\\Cache"
+      },
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\discordcanary\\Code Cache"
+      },
+      {
+        "type": "folder",
+        "path": "%APPDATA%\\discordcanary\\GPUCache"
+      }
+    ]
+  },
+  {
+    "id": "launchers.epic",
+    "group": "Game launchers",
+    "name": "Epic Games Launcher web cache",
+    "summary": "Pages and images the Epic launcher keeps.",
+    "advice": "Suggested when the Epic Games Launcher shows blank pages or loads slowly. Close it first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your login and installed games are kept",
+      "The launcher rebuilds the cache when it starts"
+    ],
+    "benefit": "Fixes a stuck store page and frees space.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "processes": [
+      "EpicGamesLauncher",
+      "EpicWebHelper"
+    ],
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\EpicGamesLauncher\\Saved\\webcache*"
+      }
+    ]
+  },
+  {
+    "id": "launchers.battlenet",
+    "group": "Game launchers",
+    "name": "Battle.net cache",
+    "summary": "Files the Battle.net app keeps for faster loading.",
+    "advice": "Suggested when the Battle.net app is slow or shows blank pages. Close it first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your login and installed games are kept",
+      "Battle.net rebuilds the cache when it starts"
+    ],
+    "benefit": "Fixes a stuck app and frees space.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "processes": [
+      "Battle.net",
+      "Agent"
+    ],
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\Battle.net\\Cache"
+      },
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\Battle.net\\BrowserCaches"
+      }
+    ]
+  },
+  {
+    "id": "launchers.steam-client",
+    "group": "Game launchers",
+    "name": "Steam web browser cache",
+    "summary": "The cache behind the Steam store and library pages.",
+    "advice": "Suggested when Steam pages are blank or slow. This is what Steam's own Delete web browser cache button clears.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your login and games are kept",
+      "Steam rebuilds the cache when it starts"
+    ],
+    "benefit": "Fixes blank Steam pages and frees space.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "processes": [
+      "steam",
+      "steamwebhelper"
+    ],
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\Steam\\htmlcache"
+      }
+    ]
+  },
+  {
+    "id": "launchers.ea",
+    "group": "Game launchers",
+    "name": "EA app cache",
+    "summary": "Files the EA app keeps for faster loading.",
+    "advice": "Suggested when the EA app is slow or stuck. Close it first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your login and games are kept",
+      "The app rebuilds the cache when it starts"
+    ],
+    "benefit": "Fixes a stuck app and frees space.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "processes": [
+      "EADesktop",
+      "EABackgroundService"
+    ],
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\Electronic Arts\\EA Desktop\\Cache"
+      }
+    ]
+  },
+  {
+    "id": "launchers.ubisoft",
+    "group": "Game launchers",
+    "name": "Ubisoft Connect cache",
+    "summary": "Files Ubisoft Connect keeps for faster loading.",
+    "advice": "Suggested when Ubisoft Connect is slow or stuck. Close it first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your login and games are kept",
+      "The app rebuilds the cache when it starts"
+    ],
+    "benefit": "Fixes a stuck app and frees space.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "processes": [
+      "UbisoftConnect",
+      "upc",
+      "UplayWebCore"
+    ],
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\Ubisoft Game Launcher\\cache"
+      }
+    ]
+  },
+  {
+    "id": "launchers.gog",
+    "group": "Game launchers",
+    "name": "GOG Galaxy web cache",
+    "summary": "Pages and images GOG Galaxy keeps.",
+    "advice": "Suggested when GOG Galaxy shows blank pages or loads slowly. Close it first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your login and games are kept",
+      "Galaxy rebuilds the cache when it starts"
+    ],
+    "benefit": "Fixes a stuck app and frees space.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "processes": [
+      "GalaxyClient"
+    ],
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\GOG.com\\Galaxy\\webcache"
+      }
+    ]
+  },
+  {
+    "id": "launchers.wow",
+    "group": "Game launchers",
+    "name": "World of Warcraft cache",
+    "summary": "The Cache folder of each installed World of Warcraft version.",
+    "advice": "Suggested after a patch if the game shows wrong items or stale data. Close the game first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Only the Cache folder is touched",
+      "The WTF, Interface and Data folders, your settings and add-ons are never touched",
+      "The game rebuilds the cache on the next launch"
+    ],
+    "benefit": "Clears stale data after patches and frees space.",
+    "risk": "None. The first launch loads a little slower.",
+    "riskLevel": "Safe",
+    "processes": [
+      "Wow",
+      "WowClassic",
+      "WowB",
+      "WowT"
+    ],
+    "rules": [
+      {
+        "type": "wow-cache"
+      }
+    ]
+  },
+  {
+    "id": "windows.temp",
+    "group": "Windows",
+    "name": "Temporary files",
+    "summary": "Files programs left in the user and system temp folders.",
+    "advice": "Suggested for everyone. Only files untouched for a day are removed, so a running installer is safe.",
+    "recommendation": "Recommended",
+    "facts": [
+      "Only files older than 24 hours are removed",
+      "Files in use are left alone",
+      "Covers your temp folder and the Windows temp folder"
+    ],
+    "benefit": "Frees disk space.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "defaultOn": true,
+    "minAgeHours": 24,
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%TEMP%"
+      },
+      {
+        "type": "folder",
+        "path": "%SystemRoot%\\Temp"
+      }
+    ]
+  },
+  {
+    "id": "windows.thumbnails",
+    "group": "Windows",
+    "name": "Thumbnail cache",
+    "summary": "The picture previews File Explorer keeps for your folders.",
+    "advice": "Suggested if thumbnails look wrong or stale. Windows rebuilds them as you browse.",
+    "recommendation": "Optional",
+    "facts": [
+      "Only the thumbcache database files are removed",
+      "Some files are in use by Explorer and are left alone",
+      "Windows rebuilds thumbnails when you open folders"
+    ],
+    "benefit": "Fixes wrong or missing previews and frees space.",
+    "risk": "None. Folders with many pictures load previews slower once.",
+    "riskLevel": "Safe",
+    "defaultOn": true,
+    "rules": [
+      {
+        "type": "files",
+        "folder": "%LOCALAPPDATA%\\Microsoft\\Windows\\Explorer",
+        "pattern": "thumbcache_*.db"
+      }
+    ]
+  },
+  {
+    "id": "windows.deliveryopt",
+    "group": "Windows",
+    "name": "Delivery Optimization files",
+    "summary": "Update files Windows kept to share with other PCs.",
+    "advice": "Suggested for everyone. Disk Cleanup lists these too.",
+    "recommendation": "Recommended",
+    "facts": [
+      "Windows downloads them again only if it needs them",
+      "Files in use are left alone"
+    ],
+    "benefit": "Frees disk space, often a few gigabytes.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "defaultOn": true,
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%SystemRoot%\\ServiceProfiles\\NetworkService\\AppData\\Local\\Microsoft\\Windows\\DeliveryOptimization\\Cache"
+      }
+    ]
+  },
+  {
+    "id": "windows.wu-downloads",
+    "group": "Windows",
+    "name": "Windows Update downloads",
+    "summary": "Update files already downloaded to the SoftwareDistribution folder.",
+    "advice": "Suggested only when no update is installing. Skip it while Windows Update is working.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "Windows downloads them again if it needs them",
+      "No service is stopped, so files in use are left alone",
+      "Does not remove installed updates"
+    ],
+    "benefit": "Frees disk space and can fix a stuck update download.",
+    "risk": "Low. An update in progress may have to download again.",
+    "riskLevel": "Low",
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%SystemRoot%\\SoftwareDistribution\\Download"
+      }
+    ]
+  },
+  {
+    "id": "windows.prefetch",
+    "group": "Windows",
+    "name": "Prefetch",
+    "summary": "Startup hints Windows keeps for apps.",
+    "advice": "Optional and rarely useful. Clearing it does not make games or Windows faster.",
+    "recommendation": "Optional",
+    "facts": [
+      "Windows rebuilds the hints as you launch apps",
+      "Does not make anything faster",
+      "Apps may start slightly slower once"
+    ],
+    "benefit": "Frees a little space.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%SystemRoot%\\Prefetch"
+      }
+    ]
+  },
+  {
+    "id": "windows.error-reports",
+    "group": "Windows",
+    "name": "Error reports and crash dumps",
+    "summary": "Reports and dumps Windows saved after app crashes.",
+    "advice": "Suggested only if you are not chasing a crash. These files are the evidence when something keeps failing.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "Windows does not recreate old reports",
+      "Includes your crash dumps and the Windows error report archive",
+      "Keep them if a developer or support asked for them"
+    ],
+    "benefit": "Frees disk space.",
+    "risk": "Low. You lose the evidence of past crashes.",
+    "riskLevel": "Low",
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%LOCALAPPDATA%\\CrashDumps"
+      },
+      {
+        "type": "folder",
+        "path": "%SystemRoot%\\Minidump"
+      },
+      {
+        "type": "folder",
+        "path": "%PROGRAMDATA%\\Microsoft\\Windows\\WER\\ReportArchive"
+      },
+      {
+        "type": "folder",
+        "path": "%PROGRAMDATA%\\Microsoft\\Windows\\WER\\ReportQueue"
+      }
+    ]
+  },
+  {
+    "id": "windows.gpu-dumps",
+    "group": "Windows",
+    "name": "GPU crash dumps",
+    "summary": "Dumps Windows saves when the graphics driver stops responding.",
+    "advice": "Suggested to win back space. Keep them if a graphics driver maker may ask for one.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "One dump from a graphics timeout can be several gigabytes",
+      "They are safe to delete",
+      "Windows saves a new one if the driver fails again"
+    ],
+    "benefit": "Frees disk space, sometimes many gigabytes.",
+    "risk": "Low. You lose the evidence of past graphics crashes.",
+    "riskLevel": "Low",
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%SystemRoot%\\LiveKernelReports"
+      }
+    ]
+  },
+  {
+    "id": "windows.recycle-bin",
+    "group": "Windows",
+    "name": "Recycle Bin",
+    "summary": "Empty the Recycle Bin on every drive.",
+    "advice": "Suggested only after you checked that nothing in it is needed. This cannot be undone.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "Emptied through Windows, so it is the same as the Empty Recycle Bin button",
+      "Files cannot be recovered afterward",
+      "Covers every drive"
+    ],
+    "benefit": "Frees disk space.",
+    "risk": "Medium. Deleted files cannot be restored.",
+    "riskLevel": "Medium",
+    "irreversible": true,
+    "rules": [
+      {
+        "type": "recycle-bin"
+      }
+    ]
+  },
+  {
+    "id": "windows.event-logs",
+    "group": "Windows",
+    "name": "Event Viewer logs",
+    "summary": "Clear the Windows event logs, except Security.",
+    "advice": "Suggested only if you do not need the history. The logs help find the cause of problems. This cannot be undone.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "The Security log is never cleared",
+      "Covers the classic logs such as Application and System",
+      "Windows starts new logs right away",
+      "Cleared logs cannot be recovered"
+    ],
+    "benefit": "Frees a little space and gives you a clean log to watch.",
+    "risk": "Medium. You lose the history that explains past problems.",
+    "riskLevel": "Medium",
+    "irreversible": true,
+    "rules": [
+      {
+        "type": "event-logs"
+      }
+    ]
+  },
+  {
+    "id": "windows.driver-leftovers",
+    "group": "Windows",
+    "name": "Driver installer leftovers",
+    "summary": "Folders the AMD and NVIDIA installers unpack on the system drive.",
+    "advice": "Suggested only if you will not roll the driver back. They are the files used to reinstall it.",
+    "recommendation": "OnlyIf",
+    "facts": [
+      "Covers C:\\AMD and C:\\NVIDIA\\DisplayDriver",
+      "Your installed driver is not affected",
+      "Remove them only if you do not need to roll back"
+    ],
+    "benefit": "Frees disk space, often a few gigabytes.",
+    "risk": "Low. You need to download the driver again to reinstall it.",
+    "riskLevel": "Low",
+    "rules": [
+      {
+        "type": "folder",
+        "path": "%SystemDrive%\\AMD"
+      },
+      {
+        "type": "folder",
+        "path": "%SystemDrive%\\NVIDIA\\DisplayDriver"
+      }
+    ]
+  }
+]
