@@ -79,4 +79,10 @@ public static class TweakTooltip
             t.Name, t.Summary, Label(t.Recommendation), t.Recommendation, t.Advice,
             t.Facts, t.Benefit, t.Risk, Label(t.RiskLevel), Label(t.Evidence), notes);
     }
+
+    /// <summary>Builds the same tooltip content for things that are not settings, such as cleanup rows and repair jobs.</summary>
+    public static TooltipContent BuildItem(
+        string title, string summary, Recommendation recommendation, string advice, IReadOnlyList<string> facts,
+        string benefit, string risk, RiskLevel riskLevel, string evidenceLabel, IReadOnlyList<string> notes) =>
+        new(title, summary, Label(recommendation), recommendation, advice, facts, benefit, risk, Label(riskLevel), evidenceLabel, notes);
 }

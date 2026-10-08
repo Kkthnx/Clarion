@@ -61,7 +61,7 @@
         </ItemsControl>
 
         <StackPanel x:Name="TechnicalPanel" Spacing="4" Visibility="{x:Bind ShowTechnical, Mode=OneWay}">
-            <TextBlock Text="Exact changes" FontWeight="SemiBold" Margin="0,6,0,0"
+            <TextBlock Text="{x:Bind TechnicalTitle, Mode=OneWay}" FontWeight="SemiBold" Margin="0,6,0,0"
                        Foreground="{ThemeResource ClTextPrimaryBrush}" />
             <ItemsControl ItemsSource="{x:Bind Item.ExactChanges, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>

@@ -89,6 +89,7 @@ public sealed partial class MainWindow : Window
         {
             case "home": ContentFrame.Navigate(typeof(HomePage)); break;
             case "safety": ContentFrame.Navigate(typeof(SafetyPage)); break;
+            case "cleanup": ContentFrame.Navigate(typeof(CleanupPage)); break;
             case not null when Sections.TryGetValue(tag, out var args2): ContentFrame.Navigate(typeof(TweakListPage), args2); break;
         }
     }

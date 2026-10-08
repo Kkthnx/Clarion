@@ -8,18 +8,24 @@ namespace Clarion.App.Controls;
 public sealed partial class TweakDetail : UserControl
 {
     public static readonly DependencyProperty ItemProperty =
-        DependencyProperty.Register(nameof(Item), typeof(TweakItem), typeof(TweakDetail),
+        DependencyProperty.Register(nameof(Item), typeof(IDetailSource), typeof(TweakDetail),
             new PropertyMetadata(null, (d, _) => ((TweakDetail)d).Bindings?.Update()));
 
     public static readonly DependencyProperty ShowTechnicalProperty =
         DependencyProperty.Register(nameof(ShowTechnical), typeof(bool), typeof(TweakDetail),
             new PropertyMetadata(false, (d, _) => ((TweakDetail)d).Bindings?.Update()));
 
+    public static readonly DependencyProperty TechnicalTitleProperty =
+        DependencyProperty.Register(nameof(TechnicalTitle), typeof(string), typeof(TweakDetail),
+            new PropertyMetadata("Exact changes", (d, _) => ((TweakDetail)d).Bindings?.Update()));
+
+    public string TechnicalTitle { get => (string)GetValue(TechnicalTitleProperty); set => SetValue(TechnicalTitleProperty, value); }
+
     public TweakDetail()
     {
         InitializeComponent();
     }
 
-    public TweakItem? Item { get => (TweakItem?)GetValue(ItemProperty); set => SetValue(ItemProperty, value); }
+    public IDetailSource? Item { get => (IDetailSource?)GetValue(ItemProperty); set => SetValue(ItemProperty, value); }
     public bool ShowTechnical { get => (bool)GetValue(ShowTechnicalProperty); set => SetValue(ShowTechnicalProperty, value); }
 }

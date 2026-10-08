@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Clarion.App.Services;
 
 /// <summary>Holds the catalog, the engine and the queue of pending changes for the whole app.</summary>
-public sealed partial class AppServices : ObservableObject
+public sealed partial class AppServices : UiObservableObject
 {
     public static AppServices Instance { get; } = new();
 

@@ -128,7 +128,25 @@ public sealed partial class WindowsCleanupPlatform : ICleanupPlatform
         return names;
     }
 
-    public bool QueueDeleteAtRestart(string file) => MoveFileEx(file, null, MoveDelayUntilReboot);
+    private readonly List<string> _queued = [];
+
+    /// <summary>Files queued for deletion at the next restart since the last call. The list is cleared.</summary>
+    public IReadOnlyList<string> TakeQueued()
+    {
+        lock (_queued)
+        {
+            var copy = _queued.ToList();
+            _queued.Clear();
+            return copy;
+        }
+    }
+
+    public bool QueueDeleteAtRestart(string file)
+    {
+        var ok = MoveFileEx(file, null, MoveDelayUntilReboot);
+        if (ok) lock (_queued) _queued.Add(file);
+        return ok;
+    }
 
     public long RecycleBinBytes()
     {

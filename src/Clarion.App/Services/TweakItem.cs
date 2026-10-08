@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Clarion.App.Services;
 
 /// <summary>One catalog entry as the UI sees it: its live state, what the user asked for, and why it may be locked.</summary>
-public sealed partial class TweakItem : ObservableObject
+public sealed partial class TweakItem : UiObservableObject, IDetailSource
 {
     public TweakItem(Tweak tweak, MachineProfile profile)
     {
