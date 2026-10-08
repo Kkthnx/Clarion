@@ -145,4 +145,29 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
         Assert.Equal(before.Exists, registry.Read(freq).Exists);
         if (before.Data is not null) Assert.Equal(before.Data, registry.Read(freq).Data);
     }
+
+    [Fact]
+    public void Real_power_plans_list_duplicate_rename_and_clean_up()
+    {
+        if (!Enabled) return;
+        var runner = new WindowsProcessRunner();
+        var store = new WindowsPowerStore(runner);
+
+        var plans = store.List();
+        Assert.NotEmpty(plans);
+        Assert.Single(plans, p => p.IsActive);
+        Assert.NotNull(store.IsHibernationEnabled());
+
+        var created = store.Duplicate(Clarion.Core.Power.PowerPlans.Balanced);
+        try
+        {
+            store.Rename(created, "Clarion Probe Plan");
+            Assert.Contains(store.List(), p => p.Guid == created && p.Name == "Clarion Probe Plan" && !p.IsActive);
+        }
+        finally
+        {
+            runner.Run("powercfg.exe", $"/delete {created}", TimeSpan.FromSeconds(20));
+        }
+        Assert.DoesNotContain(store.List(), p => p.Guid == created);
+    }
 }

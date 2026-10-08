@@ -22,9 +22,20 @@ public sealed partial class AppServices : ObservableObject
         foreach (var t in tweaks)
         {
             var item = new TweakItem(t, Profile);
-            item.PendingChanged += (_, _) => RefreshPending();
+            item.PendingChanged += OnItemPendingChanged;
             Items.Add(item);
         }
+    }
+
+    /// <summary>Choices of one setting, such as a power plan, are exclusive. Picking one clears the other pending picks.</summary>
+    private void OnItemPendingChanged(object? sender, EventArgs e)
+    {
+        if (sender is TweakItem { IsOn: true, IsApplied: false, Tweak.ExclusiveGroup: { } group } picked)
+        {
+            foreach (var other in Items.Where(i => i != picked && i.Tweak.ExclusiveGroup == group && i.IsOn && !i.IsApplied))
+                other.IsOn = false;
+        }
+        RefreshPending();
     }
 
     public ClarionRuntime Runtime { get; }
@@ -67,8 +78,9 @@ public sealed partial class AppServices : ObservableObject
     /// Reads the real state of every tweak. Registry based ones come back at once. The ones that need
     /// PowerShell are warmed up in parallel and fill in a moment later.
     /// </summary>
-    public async Task RefreshStatesAsync()
+    public async Task RefreshStatesAsync(bool fresh = false)
     {
+        if (fresh) Runtime.Engine.Invalidate();
         IsBusy = true;
         Status = "Reading your system";
         var started = Stopwatch.StartNew();
@@ -165,7 +177,10 @@ public sealed partial class AppServices : ObservableObject
     {
         IsBusy = true;
         var toApply = Pending.Where(p => p.IsOn).Select(p => p.Tweak).ToList();
-        var toRevert = Pending.Where(p => !p.IsOn).Select(p => p.Tweak).ToList();
+        // The new choice replaces the old one in an exclusive group, so the old one must not be reverted afterward.
+        var replacedGroups = toApply.Select(t => t.ExclusiveGroup).Where(g => g is not null).ToHashSet();
+        var toRevert = Pending.Where(p => !p.IsOn && !(p.Tweak.ExclusiveGroup is not null && replacedGroups.Contains(p.Tweak.ExclusiveGroup)))
+            .Select(p => p.Tweak).ToList();
         var options = new BatchOptions { CreateRestorePoint = restorePoint, ContinueWithoutRestorePoint = !restorePoint };
 
         Action<string> both = msg => { Log.Write(msg); log(msg); };

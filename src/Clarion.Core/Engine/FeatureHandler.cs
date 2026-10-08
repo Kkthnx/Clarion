@@ -9,6 +9,8 @@ public sealed class FeatureHandler(IFeatureStore store) : IOperationHandler
 {
     public bool Handles(Operation op) => op is SetWindowsFeature or SetWindowsCapability;
 
+    public void Invalidate() => store.Invalidate();
+
     public void Warm(IReadOnlyList<Operation> operations)
     {
         var mine = operations.Where(Handles).ToList();

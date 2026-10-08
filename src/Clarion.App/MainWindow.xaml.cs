@@ -24,6 +24,9 @@ public sealed partial class MainWindow : Window
         _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
         _app.Pending.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
 
+        var refresh = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.F5 };
+        refresh.Invoked += (_, a) => { OnRefresh(this, new RoutedEventArgs()); a.Handled = true; };
+        Root.KeyboardAccelerators.Add(refresh);
         Nav.SelectedItem = Nav.MenuItems[0];
         UpdateBar();
         _ = _app.RefreshStatesAsync();
@@ -67,6 +70,7 @@ public sealed partial class MainWindow : Window
         ["privacy"] = new("Privacy", "Stop Windows from collecting and sharing more than it needs to.", ["Privacy", "Security"]),
         ["debloat"] = new("Debloat", "Remove apps you do not use. Every removal can be reverted.", ["Debloat"]),
         ["tweaks"] = new("Tweaks", "Look, feel and everyday behavior of Windows.", ["Appearance", "Explorer", "Input", "System"]),
+        ["power"] = new("Power", "Pick how the PC trades speed for energy. Only one power plan is active at a time.", ["Power"]),
         ["network"] = new("Network", "Update sharing and connection behavior.", ["Network"]),
         ["features"] = new("Windows features", "Optional parts of Windows you can turn on or off.", ["Features"]),
         ["updates"] = new("Updates", "Keep updates predictable without turning off protection.", ["Updates"]),
@@ -98,9 +102,15 @@ public sealed partial class MainWindow : Window
             : count == 1 ? "1 change queued" : $"{count} changes queued";
         ReviewButton.IsEnabled = count > 0 && !_app.IsBusy;
         ClearButton.IsEnabled = count > 0 && !_app.IsBusy;
+        RefreshButton.IsEnabled = !_app.IsBusy;
     }
 
     private void OnClear(object sender, RoutedEventArgs e) => _app.ClearPending();
+
+    private async void OnRefresh(object sender, RoutedEventArgs e)
+    {
+        if (!_app.IsBusy) await _app.RefreshStatesAsync(fresh: true);
+    }
 
     private async void OnReview(object sender, RoutedEventArgs e)
     {

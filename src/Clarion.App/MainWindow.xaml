@@ -58,6 +58,9 @@
                 <NavigationViewItem Content="Tweaks" Tag="tweaks">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE713;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="Power" Tag="power">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE945;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="Network" Tag="network">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE774;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
@@ -88,6 +91,8 @@
                     <ProgressRing x:Name="BusyRing" Width="18" Height="18" IsActive="False" />
                     <TextBlock x:Name="StatusText" Foreground="{ThemeResource ClTextSecondaryBrush}" VerticalAlignment="Center" />
                 </StackPanel>
+                <Button x:Name="RefreshButton" Grid.Column="0" HorizontalAlignment="Right" Content="Re-check"
+                        ToolTipService.ToolTip="Read the current state of every setting again (F5)" Click="OnRefresh" Margin="0,0,12,0" />
                 <Button x:Name="ClearButton" Grid.Column="1" Content="Clear queue" Click="OnClear" />
                 <Button x:Name="ReviewButton" Grid.Column="2" Content="Review and apply"
                         Style="{StaticResource AccentButtonStyle}" Click="OnReview" />

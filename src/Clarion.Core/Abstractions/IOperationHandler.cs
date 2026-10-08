@@ -21,6 +21,9 @@ public interface IOperationHandler
     /// <summary>Loads anything slow up front for these operations, so reading state afterward is quick.</summary>
     void Warm(IReadOnlyList<Operation> operations) { }
 
+    /// <summary>Forgets anything cached, so the next read reflects what Windows looks like now.</summary>
+    void Invalidate() { }
+
     /// <summary>Builds the operation that puts the current state back.</summary>
     Operation CaptureUndo(Operation op);
 

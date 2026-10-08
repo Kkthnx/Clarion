@@ -48,6 +48,7 @@ public sealed record AppxSnapshot(
 public interface IAppxStore
 {
     AppxSnapshot GetSnapshot();
+    void Invalidate();
     void Remove(string name, bool allUsers, bool deprovision);
     void Restore(string familyName);
 }

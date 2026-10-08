@@ -11,6 +11,8 @@ public sealed class AppxHandler(IAppxStore store) : IOperationHandler
 
     public bool IsApplicable(Operation op) => true;
 
+    public void Invalidate() => store.Invalidate();
+
     public void Warm(IReadOnlyList<Operation> operations)
     {
         if (operations.Any(o => o is RemoveAppxPackage or RestoreAppxPackage)) store.GetSnapshot();

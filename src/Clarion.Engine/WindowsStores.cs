@@ -5,6 +5,7 @@ using System.Security.Principal;
 using Clarion.Core.Abstractions;
 using Clarion.Core.Appx;
 using Clarion.Core.Features;
+using Clarion.Core.Power;
 using Clarion.Core.Model;
 using Microsoft.Win32;
 
@@ -131,6 +132,11 @@ public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
     private readonly object _gate = new();
     private AppxSnapshot? _cache;
 
+    public void Invalidate()
+    {
+        lock (_gate) _cache = null;
+    }
+
     public AppxSnapshot GetSnapshot()
     {
         lock (_gate)
@@ -183,6 +189,15 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
 
     public void Prefetch() => LoadFeatures();
 
+    public void Invalidate()
+    {
+        lock (_gate)
+        {
+            _features = null;
+            _capabilities.Clear();
+        }
+    }
+
     private Dictionary<string, string> LoadFeatures()
     {
         lock (_gate)
@@ -230,4 +245,52 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
         }
         return result.Output;
     }
+}
+
+[SupportedOSPlatform("windows")]
+public sealed class WindowsPowerStore(IProcessRunner runner) : IPowerStore
+{
+    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(30);
+
+    public IReadOnlyList<PowerPlan> List()
+    {
+        var result = runner.Run("powercfg.exe", "/list", Timeout);
+        if (result.ExitCode != 0) throw new InvalidOperationException("Could not read power plans.");
+        return PowerPlans.ParseList(result.Output);
+    }
+
+    public void SetActive(string guid) => Run($"/setactive {Guid(guid)}");
+
+    public string Duplicate(string templateGuid)
+    {
+        var result = Run($"/duplicatescheme {Guid(templateGuid)}");
+        var created = PowerPlans.ParseList(result.Output).FirstOrDefault()
+                      ?? throw new InvalidOperationException("Windows did not create the power plan. Some PCs do not offer it.");
+        return created.Guid;
+    }
+
+    public void Rename(string guid, string name) => Run($"/changename {Guid(guid)} \"{name.Replace("\"", "")}\"");
+
+    public bool? IsHibernationEnabled()
+    {
+        using var key = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Control\\Power");
+        return key?.GetValue("HibernateEnabled") is int v ? v != 0 : null;
+    }
+
+    public void SetHibernation(bool enabled) => Run($"/hibernate {(enabled ? "on" : "off")}");
+
+    private ProcessResult Run(string args)
+    {
+        var result = runner.Run("powercfg.exe", args, Timeout);
+        if (result.ExitCode != 0)
+        {
+            var first = (string.IsNullOrWhiteSpace(result.Error) ? result.Output : result.Error)
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
+            throw new InvalidOperationException(first ?? "powercfg failed.");
+        }
+        return result;
+    }
+
+    private static string Guid(string value) =>
+        PowerPlans.IsGuid(value) ? value : throw new ArgumentException($"Not a GUID: {value}");
 }

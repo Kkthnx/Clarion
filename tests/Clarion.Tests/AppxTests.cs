@@ -21,6 +21,8 @@ public sealed class FakeAppxStore : IAppxStore
         if (provisioned) Provisioned.Add(name);
     }
 
+    public void Invalidate() { }
+
     public AppxSnapshot GetSnapshot() => new(Installed.ToList(), Current.ToHashSet(StringComparer.OrdinalIgnoreCase), Provisioned.ToHashSet(StringComparer.OrdinalIgnoreCase));
 
     public void Remove(string name, bool allUsers, bool deprovision)

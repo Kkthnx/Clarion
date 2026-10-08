@@ -9,6 +9,9 @@ public interface IFeatureStore
     /// <summary>Reads the feature list once so later lookups are instant.</summary>
     void Prefetch();
 
+    /// <summary>Drops cached lists so the next lookup reads Windows again.</summary>
+    void Invalidate();
+
     /// <summary>True when enabled, false when off or only partly installed, null when the feature does not exist here.</summary>
     bool? IsFeatureEnabled(string name);
     void SetFeature(string name, bool enabled);

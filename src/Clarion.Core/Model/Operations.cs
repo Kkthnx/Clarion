@@ -13,6 +13,8 @@ public enum ServiceStartType { Automatic, AutomaticDelayed, Manual, Disabled }
 [JsonDerivedType(typeof(RestoreAppxPackage), "appx.restore")]
 [JsonDerivedType(typeof(SetWindowsFeature), "feature.set")]
 [JsonDerivedType(typeof(SetWindowsCapability), "capability.set")]
+[JsonDerivedType(typeof(SetPowerPlan), "power.plan")]
+[JsonDerivedType(typeof(SetHibernation), "power.hibernation")]
 public abstract record Operation
 {
     public abstract string Describe();
@@ -61,4 +63,14 @@ public sealed record SetWindowsFeature(string Name, bool Enabled) : Operation
 public sealed record SetWindowsCapability(string Name, bool Installed) : Operation
 {
     public override string Describe() => $"{(Installed ? "Install" : "Remove")} Windows capability {Name}";
+}
+/// <summary>Makes a power plan active. Plan is balanced, high-performance, power-saver, ultimate, or a plan GUID.</summary>
+public sealed record SetPowerPlan(string Plan) : Operation
+{
+    public override string Describe() => $"Use power plan {Plan}";
+}
+
+public sealed record SetHibernation(bool Enabled) : Operation
+{
+    public override string Describe() => Enabled ? "Turn hibernation on" : "Turn hibernation off and delete the hibernation file";
 }

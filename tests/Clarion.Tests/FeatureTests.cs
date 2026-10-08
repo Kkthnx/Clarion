@@ -15,6 +15,7 @@ public sealed class FakeFeatureStore : IFeatureStore
     public List<string> Calls { get; } = [];
 
     public void Prefetch() { }
+    public void Invalidate() { }
     public void AddFeature(string name, bool on) => _features[name] = on;
     public void AddCapability(string name, bool on) => _caps[name] = on;
 

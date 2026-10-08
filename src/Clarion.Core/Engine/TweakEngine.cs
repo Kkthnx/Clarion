@@ -27,6 +27,12 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
         catch (AggregateException) { }
     }
 
+    /// <summary>Clears every handler cache so the next read is fresh.</summary>
+    public void Invalidate()
+    {
+        foreach (var h in _handlers) h.Invalidate();
+    }
+
     public IReadOnlyList<string> Plan(Tweak tweak) => tweak.Apply.Select(o => o.Describe()).ToList();
 
     public TweakState Detect(Tweak tweak)

@@ -108,6 +108,13 @@ public static class CatalogLoader
                         break;
                     case RestoreAppxPackage:
                         break;
+                    case SetPowerPlan plan:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: power changes need Machine scope.");
+                        if (!Power.PowerPlans.IsValid(plan.Plan)) errors.Add($"{t.Id}: unknown power plan {plan.Plan}.");
+                        break;
+                    case SetHibernation:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: power changes need Machine scope.");
+                        break;
                     case SetWindowsFeature feat:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: feature changes need Machine scope.");
                         if (!Features.FeatureRules.IsValidName(feat.Name)) errors.Add($"{t.Id}: invalid feature name {feat.Name}.");
