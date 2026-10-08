@@ -6,7 +6,7 @@ A native Windows app to remove bloat, cut tracking, and tune the system. Every c
 
 ## Status
 
-Design phase. No code yet.
+Engine core in place: tweak model, registry engine with verify and rollback, change journal, validated catalog, 14 passing tests. The WinUI 3 app is next.
 
 ## Docs
 

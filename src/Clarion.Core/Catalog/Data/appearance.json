@@ -1,0 +1,95 @@
+[
+  {
+    "id": "appearance.dark-mode",
+    "category": "Appearance",
+    "name": "Dark mode",
+    "summary": "Use the dark theme for Windows and apps.",
+    "what": "Sets the app and system theme values to dark for the current user.",
+    "benefit": "Less glare in dim rooms and a consistent look across apps that follow the system theme.",
+    "risk": "None. Apps that ignore the system theme are not affected.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "restartsExplorer": false,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "AppsUseLightTheme" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "SystemUsesLightTheme" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "AppsUseLightTheme" }, "data": { "kind": "DWord", "value": "1" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "SystemUsesLightTheme" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  },
+  {
+    "id": "appearance.classic-context-menu",
+    "category": "Appearance",
+    "name": "Classic right-click menu",
+    "summary": "Show the full right-click menu without the extra Show more options step.",
+    "what": "Creates an empty default value under a per-user shell class key so Explorer loads the full menu directly.",
+    "benefit": "One fewer click for every extended action such as Open with or Send to.",
+    "risk": "Low. Explorer restarts once. Removing the key restores the compact menu.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "requires": { "minBuild": 22000 },
+    "restartsExplorer": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32", "name": "" }, "data": { "kind": "String", "value": "" } }
+    ]
+  },
+  {
+    "id": "appearance.taskbar-left",
+    "category": "Appearance",
+    "name": "Left-aligned taskbar",
+    "summary": "Move the Start button and icons to the left edge.",
+    "what": "Sets the taskbar alignment value to left for the current user.",
+    "benefit": "Start stays in a fixed corner as icons are added.",
+    "risk": "None.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "requires": { "minBuild": 22000 },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarAl" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarAl" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  },
+  {
+    "id": "explorer.show-extensions",
+    "category": "Explorer",
+    "name": "Show file extensions",
+    "summary": "Always show the end of file names, like .exe or .pdf.",
+    "what": "Turns off the setting that hides known file extensions.",
+    "benefit": "Makes disguised files such as invoice.pdf.exe easy to spot.",
+    "risk": "None.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  },
+  {
+    "id": "input.mouse-accel-off",
+    "category": "Input",
+    "name": "Turn off mouse acceleration",
+    "summary": "Make pointer distance match hand distance.",
+    "what": "Sets the pointer acceleration and both threshold values to 0 for the current user.",
+    "benefit": "Predictable aim and cursor control, which matters most in games and design tools.",
+    "risk": "Pointer feels slower on fast flicks until you raise the speed setting. Sign out to apply.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "needsSignOut": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Mouse", "name": "MouseSpeed" }, "data": { "kind": "String", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Mouse", "name": "MouseThreshold1" }, "data": { "kind": "String", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Mouse", "name": "MouseThreshold2" }, "data": { "kind": "String", "value": "0" } }
+    ]
+  }
+]

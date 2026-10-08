@@ -1,0 +1,90 @@
+[
+  {
+    "id": "privacy.advertising-id",
+    "category": "Privacy",
+    "name": "Turn off advertising ID",
+    "summary": "Stop apps from using a per-user ID to profile you for ads.",
+    "what": "Sets the per-user advertising ID switch to off.",
+    "benefit": "Apps can no longer build an ad profile from a shared identifier.",
+    "risk": "None. Ads you see in apps become less targeted, not fewer.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo", "name": "Enabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo", "name": "Enabled" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy" ]
+  },
+  {
+    "id": "privacy.tailored-experiences",
+    "category": "Privacy",
+    "name": "Turn off tailored experiences",
+    "summary": "Stop Windows from using diagnostic data to suggest tips and ads.",
+    "what": "Turns off the per-user setting that lets diagnostic data personalize tips, ads and recommendations.",
+    "benefit": "Fewer personalized suggestions and less use of your diagnostic data.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy", "name": "TailoredExperiencesWithDiagnosticDataEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy", "name": "TailoredExperiencesWithDiagnosticDataEnabled" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization" ]
+  },
+  {
+    "id": "privacy.web-search-start",
+    "category": "Privacy",
+    "name": "Keep web results out of Start search",
+    "summary": "Search your PC only when typing in Start.",
+    "what": "Applies the per-user policy that turns off search box suggestions.",
+    "benefit": "Typed searches stay on the PC and Start returns local results faster.",
+    "risk": "None. You can still search the web in a browser.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\Windows\\Explorer", "name": "DisableSearchBoxSuggestions" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search" ]
+  },
+  {
+    "id": "privacy.activity-history",
+    "category": "Privacy",
+    "name": "Turn off activity history",
+    "summary": "Stop Windows from recording and uploading what you do.",
+    "what": "Applies the three machine policies for the activity feed, publishing and uploading of user activities.",
+    "benefit": "No activity timeline is kept or sent to Microsoft.",
+    "risk": "Low. Features that resume work across devices stop working.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "EnableActivityFeed" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "PublishUserActivities" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "UploadUserActivities" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy" ]
+  },
+  {
+    "id": "privacy.diagnostic-data-minimum",
+    "category": "Privacy",
+    "name": "Lowest diagnostic data level",
+    "summary": "Send only the minimum data Windows allows.",
+    "what": "Sets the diagnostic data policy to 0. Home and Pro treat 0 as the Required level, which is the lowest those editions support. Enterprise and Education honor the true Security level.",
+    "benefit": "Reduces the amount of diagnostic data sent to Microsoft to the least the edition permits.",
+    "risk": "Low. Some feedback and troubleshooting features have less data to work with.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection", "name": "AllowTelemetry" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization" ]
+  }
+]

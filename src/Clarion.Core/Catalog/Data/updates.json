@@ -1,0 +1,18 @@
+[
+  {
+    "id": "updates.no-auto-restart",
+    "category": "Updates",
+    "name": "No forced restart while signed in",
+    "summary": "Windows will not restart on its own while someone is signed in.",
+    "what": "Applies the update policy that blocks automatic restarts when a user is signed in.",
+    "benefit": "No lost work from surprise restarts. Updates still install.",
+    "risk": "Low. Restart yourself soon after updates install, or protections stay pending.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU", "name": "NoAutoRebootWithLoggedOnUsers" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/deployment/update/waas-restart" ]
+  }
+]
