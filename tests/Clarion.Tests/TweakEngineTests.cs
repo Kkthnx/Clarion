@@ -8,13 +8,16 @@ public sealed class TweakEngineTests : IDisposable
 {
     private readonly string _dir = Path.Combine(Path.GetTempPath(), "clarion-tests-" + Guid.NewGuid().ToString("N"));
     private readonly FakeRegistry _reg = new();
+    private readonly FakeServices _svc = new();
+    private readonly FakeTasks _tasks = new();
+    private const string TaskPath = @"\A\B";
     private readonly ChangeJournal _journal;
     private readonly TweakEngine _engine;
 
     public TweakEngineTests()
     {
         _journal = new ChangeJournal(Path.Combine(_dir, "journal.jsonl"));
-        _engine = new TweakEngine(_reg, _journal);
+        _engine = new TweakEngine([new RegistryHandler(_reg), new ServiceHandler(_svc), new TaskHandler(_tasks)], _journal);
     }
 
     public void Dispose()
@@ -135,5 +138,34 @@ public sealed class TweakEngineTests : IDisposable
         Assert.True(new MachineProfile(26100, "Professional").Supports(req));
         Assert.False(new MachineProfile(19045, "Professional").Supports(req));
         Assert.False(new MachineProfile(26100, "Core").Supports(req));
+    }
+
+    [Fact]
+    public void Service_and_task_steps_apply_and_revert()
+    {
+        _svc.Set("DiagTrack", ServiceStartType.Automatic);
+        _tasks.Set(TaskPath, true);
+        var tweak = Make(new SetServiceStartType("DiagTrack", ServiceStartType.Disabled), new SetTaskEnabled(TaskPath, false));
+
+        Assert.True(_engine.Apply(tweak, Guid.NewGuid()).Success);
+        Assert.Equal(ServiceStartType.Disabled, _svc.GetStartType("DiagTrack"));
+        Assert.False(_tasks.GetEnabled(TaskPath));
+
+        Assert.True(_engine.Revert(tweak, Guid.NewGuid()).Success);
+        Assert.Equal(ServiceStartType.Automatic, _svc.GetStartType("DiagTrack"));
+        Assert.True(_tasks.GetEnabled(TaskPath));
+    }
+
+    [Fact]
+    public void Missing_service_is_skipped_and_all_missing_is_unavailable()
+    {
+        _svc.Set("Here", ServiceStartType.Manual);
+        var mixed = Make(new SetServiceStartType("Gone", ServiceStartType.Disabled), new SetServiceStartType("Here", ServiceStartType.Disabled));
+        Assert.True(_engine.Apply(mixed, Guid.NewGuid()).Success);
+        Assert.Equal(TweakState.Applied, _engine.Detect(mixed));
+
+        var none = Make(new SetServiceStartType("Gone", ServiceStartType.Disabled));
+        Assert.Equal(TweakState.Unavailable, _engine.Detect(none));
+        Assert.False(_engine.Apply(none, Guid.NewGuid()).Success);
     }
 }

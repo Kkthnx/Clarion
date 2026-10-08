@@ -11,53 +11,55 @@ public sealed record TweakResult(bool Success, string? Error = null)
 }
 
 /// <summary>
-/// Applies and reverts tweaks. Every change reads the prior state first, writes,
-/// reads back to verify, and records the result in the journal.
+/// Applies and reverts tweaks. Every step captures its undo first, runs, checks the
+/// result, and is recorded in the journal. A failed step rolls back the earlier ones.
 /// </summary>
-public sealed class TweakEngine(IRegistryStore registry, ChangeJournal journal, TimeProvider? clock = null)
+public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJournal journal, TimeProvider? clock = null)
 {
+    private readonly IReadOnlyList<IOperationHandler> _handlers = handlers.ToList();
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
 
     public IReadOnlyList<string> Plan(Tweak tweak) => tweak.Apply.Select(o => o.Describe()).ToList();
 
     public TweakState Detect(Tweak tweak)
     {
-        var matched = 0;
-        foreach (var op in tweak.Apply)
-        {
-            if (Satisfied(op)) matched++;
-        }
-        if (matched == tweak.Apply.Count) return TweakState.Applied;
+        var applicable = tweak.Apply.Where(o => HandlerFor(o).IsApplicable(o)).ToList();
+        if (applicable.Count == 0) return TweakState.Unavailable;
+        var matched = applicable.Count(o => HandlerFor(o).IsSatisfied(o));
+        if (matched == applicable.Count) return TweakState.Applied;
         return matched == 0 ? TweakState.NotApplied : TweakState.Partial;
     }
 
     public TweakResult Apply(Tweak tweak, Guid batchId)
     {
-        if (Detect(tweak) == TweakState.Applied) return TweakResult.Ok();
+        var state = Detect(tweak);
+        if (state == TweakState.Applied) return TweakResult.Ok();
+        if (state == TweakState.Unavailable) return TweakResult.Fail("Not available on this system.");
 
         var done = new List<JournalEntry>();
         foreach (var op in tweak.Apply)
         {
-            var target = TargetOf(op);
-            RegistrySnapshot prior;
+            var handler = HandlerFor(op);
+            if (!handler.IsApplicable(op)) continue;
+
+            Operation? undo = null;
             try
             {
-                prior = registry.Read(target);
-                Execute(op);
-                var after = registry.Read(target);
-                if (!Satisfied(op, after))
+                undo = handler.CaptureUndo(op);
+                handler.Execute(op);
+                if (!handler.IsSatisfied(op))
                 {
-                    Rollback(tweak.Id, batchId, done, target, prior);
-                    return TweakResult.Fail($"Verification failed for {target}");
+                    RollBack(tweak.Id, batchId, done, undo);
+                    return TweakResult.Fail($"Verification failed: {op.Describe()}");
                 }
-                var entry = new JournalEntry(batchId, tweak.Id, JournalAction.Apply, _clock.GetUtcNow(), target, prior, after);
+                var entry = new JournalEntry(batchId, tweak.Id, JournalAction.Apply, _clock.GetUtcNow(), op, undo);
                 journal.Append(entry);
                 done.Add(entry);
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException or IOException or InvalidOperationException)
+            catch (Exception ex) when (ex is not OutOfMemoryException)
             {
-                Rollback(tweak.Id, batchId, done, null, null);
-                return TweakResult.Fail($"{target}: {ex.Message}");
+                RollBack(tweak.Id, batchId, done, undo);
+                return TweakResult.Fail($"{op.Describe()}: {ex.Message}");
             }
         }
         return TweakResult.Ok();
@@ -72,7 +74,7 @@ public sealed class TweakEngine(IRegistryStore registry, ChangeJournal journal, 
             {
                 foreach (var entry in outstanding.Reverse())
                 {
-                    RestoreAndRecord(tweak.Id, batchId, entry.Target, entry.Prior);
+                    RunAndRecord(tweak.Id, batchId, JournalAction.Revert, entry.Undo, entry.Operation, verify: true);
                 }
                 return TweakResult.Ok();
             }
@@ -81,82 +83,41 @@ public sealed class TweakEngine(IRegistryStore registry, ChangeJournal journal, 
 
             foreach (var op in tweak.Undo)
             {
-                var target = TargetOf(op);
-                var prior = registry.Read(target);
-                Execute(op);
-                var after = registry.Read(target);
-                journal.Append(new JournalEntry(batchId, tweak.Id, JournalAction.Revert, _clock.GetUtcNow(), target, prior, after));
+                var handler = HandlerFor(op);
+                if (!handler.IsApplicable(op)) continue;
+                RunAndRecord(tweak.Id, batchId, JournalAction.Revert, op, handler.CaptureUndo(op), verify: true);
             }
             return TweakResult.Ok();
         }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException or IOException or InvalidOperationException)
+        catch (Exception ex) when (ex is not OutOfMemoryException)
         {
             return TweakResult.Fail(ex.Message);
         }
     }
 
-    private void Rollback(string tweakId, Guid batchId, List<JournalEntry> done, RegistryTarget? failed, RegistrySnapshot? failedPrior)
+    private void RunAndRecord(string tweakId, Guid batchId, JournalAction action, Operation op, Operation inverse, bool verify)
     {
-        if (failed is not null && failedPrior is not null)
+        var handler = HandlerFor(op);
+        handler.Execute(op);
+        if (verify && !handler.IsSatisfied(op)) throw new InvalidOperationException($"Verification failed: {op.Describe()}");
+        journal.Append(new JournalEntry(batchId, tweakId, action, _clock.GetUtcNow(), op, inverse));
+    }
+
+    private void RollBack(string tweakId, Guid batchId, List<JournalEntry> done, Operation? failedUndo)
+    {
+        if (failedUndo is not null)
         {
-            Restore(failed, failedPrior);
+            try { HandlerFor(failedUndo).Execute(failedUndo); }
+            catch (Exception ex) when (ex is not OutOfMemoryException) { }
         }
         foreach (var entry in Enumerable.Reverse(done))
         {
-            RestoreAndRecord(tweakId, batchId, entry.Target, entry.Prior);
+            try { RunAndRecord(tweakId, batchId, JournalAction.Revert, entry.Undo, entry.Operation, verify: false); }
+            catch (Exception ex) when (ex is not OutOfMemoryException) { }
         }
     }
 
-    private void RestoreAndRecord(string tweakId, Guid batchId, RegistryTarget target, RegistrySnapshot to)
-    {
-        var before = registry.Read(target);
-        Restore(target, to);
-        var after = registry.Read(target);
-        journal.Append(new JournalEntry(batchId, tweakId, JournalAction.Revert, _clock.GetUtcNow(), target, before, after));
-    }
-
-    private void Restore(RegistryTarget target, RegistrySnapshot to)
-    {
-        if (to.Exists && to.Data is not null)
-        {
-            registry.Write(target, to.Data);
-            return;
-        }
-        registry.DeleteValue(target);
-        registry.PruneEmptyKeys(target, to.DeepestExistingKey);
-    }
-
-    private void Execute(Operation op)
-    {
-        switch (op)
-        {
-            case SetRegistryValue set:
-                registry.Write(set.Target, set.Data);
-                break;
-            case DeleteRegistryValue del:
-                registry.DeleteValue(del.Target);
-                break;
-            default:
-                throw new InvalidOperationException($"Unsupported operation {op.GetType().Name}");
-        }
-    }
-
-    private bool Satisfied(Operation op) => Satisfied(op, registry.Read(TargetOf(op)));
-
-    private static bool Satisfied(Operation op, RegistrySnapshot now) => op switch
-    {
-        SetRegistryValue set => now.Exists && now.Data is not null && SameData(now.Data, set.Data),
-        DeleteRegistryValue => !now.Exists,
-        _ => false,
-    };
-
-    private static bool SameData(RegistryData a, RegistryData b) =>
-        a.Kind == b.Kind && string.Equals(a.Value, b.Value, StringComparison.OrdinalIgnoreCase);
-
-    private static RegistryTarget TargetOf(Operation op) => op switch
-    {
-        SetRegistryValue set => set.Target,
-        DeleteRegistryValue del => del.Target,
-        _ => throw new InvalidOperationException($"Unsupported operation {op.GetType().Name}"),
-    };
+    private IOperationHandler HandlerFor(Operation op) =>
+        _handlers.FirstOrDefault(h => h.Handles(op))
+        ?? throw new InvalidOperationException($"No handler for {op.GetType().Name}");
 }

@@ -6,7 +6,7 @@ A native Windows app to remove bloat, cut tracking, and tune the system. Every c
 
 ## Status
 
-Engine core in place: tweak model, registry engine with verify and rollback, change journal, validated catalog, 14 passing tests. The WinUI 3 app is next.
+Engine core in place: registry, service and scheduled task operations, verify and rollback, change journal, restore point and batch runner, validated catalog of 12 tweaks, 27 passing tests. The WinUI 3 app is next.
 
 ## Docs
 

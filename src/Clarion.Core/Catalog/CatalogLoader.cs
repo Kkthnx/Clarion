@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Clarion.Core.Model;
@@ -7,6 +6,15 @@ namespace Clarion.Core.Catalog;
 
 public static class CatalogLoader
 {
+    /// <summary>Services that must never be changed, whatever a catalog entry says.</summary>
+    public static readonly IReadOnlySet<string> ProtectedServices = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "WinDefend", "WdNisSvc", "Sense", "SecurityHealthService", "wscsvc", "mpssvc", "BFE",
+        "wuauserv", "UsoSvc", "WaaSMedicSvc", "BITS", "TrustedInstaller", "EventLog", "RpcSs",
+        "RpcEptMapper", "DcomLaunch", "LSM", "SamSs", "CryptSvc", "Dhcp", "Dnscache", "nsi",
+        "ProfSvc", "UserManager", "Winmgmt", "Schedule", "gpsvc", "StateRepository", "TimeBrokerSvc",
+    };
+
     public static readonly JsonSerializerOptions Options = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -53,26 +61,41 @@ public static class CatalogLoader
 
             foreach (var op in t.Apply.Concat(t.Undo))
             {
-                var target = op switch
+                switch (op)
                 {
-                    SetRegistryValue s => s.Target,
-                    DeleteRegistryValue d => d.Target,
-                    _ => null,
-                };
-                if (target is null) { errors.Add($"{t.Id}: unknown operation type."); continue; }
-                if (string.IsNullOrWhiteSpace(target.Path) || target.Path.StartsWith('\\') || target.Path.StartsWith("HK", StringComparison.OrdinalIgnoreCase))
-                    errors.Add($"{t.Id}: registry path must be relative to the hive: {target.Path}");
-                if (target.Hive == RegistryHive.LocalMachine && t.Scope != TweakScope.Machine)
-                    errors.Add($"{t.Id}: touches HKLM but scope is not Machine.");
-                if (op is SetRegistryValue set)
-                {
-                    if (set.Data.Kind is RegistryKind.DWord && !uint.TryParse(set.Data.Value, out _))
-                        errors.Add($"{t.Id}: DWord value is not a valid unsigned number: {set.Data.Value}");
-                    if (set.Data.Kind is RegistryKind.QWord && !ulong.TryParse(set.Data.Value, out _))
-                        errors.Add($"{t.Id}: QWord value is not a valid unsigned number: {set.Data.Value}");
+                    case SetRegistryValue s:
+                        CheckRegistry(t, s.Target, errors);
+                        if (s.Data.Kind is RegistryKind.DWord && !uint.TryParse(s.Data.Value, out _))
+                            errors.Add($"{t.Id}: DWord value is not a valid unsigned number: {s.Data.Value}");
+                        if (s.Data.Kind is RegistryKind.QWord && !ulong.TryParse(s.Data.Value, out _))
+                            errors.Add($"{t.Id}: QWord value is not a valid unsigned number: {s.Data.Value}");
+                        break;
+                    case DeleteRegistryValue d:
+                        CheckRegistry(t, d.Target, errors);
+                        break;
+                    case SetServiceStartType svc:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: service changes need Machine scope.");
+                        if (string.IsNullOrWhiteSpace(svc.Name)) errors.Add($"{t.Id}: service name is empty.");
+                        if (ProtectedServices.Contains(svc.Name)) errors.Add($"{t.Id}: {svc.Name} is a protected service.");
+                        break;
+                    case SetTaskEnabled task:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: task changes need Machine scope.");
+                        if (!task.Path.StartsWith('\\')) errors.Add($"{t.Id}: task path must start with a backslash: {task.Path}");
+                        break;
+                    default:
+                        errors.Add($"{t.Id}: unknown operation type.");
+                        break;
                 }
             }
         }
         return errors;
+    }
+
+    private static void CheckRegistry(Tweak t, RegistryTarget target, List<string> errors)
+    {
+        if (string.IsNullOrWhiteSpace(target.Path) || target.Path.StartsWith('\\') || target.Path.StartsWith("HK", StringComparison.OrdinalIgnoreCase))
+            errors.Add($"{t.Id}: registry path must be relative to the hive: {target.Path}");
+        if (target.Hive == RegistryHive.LocalMachine && t.Scope != TweakScope.Machine)
+            errors.Add($"{t.Id}: touches HKLM but scope is not Machine.");
     }
 }

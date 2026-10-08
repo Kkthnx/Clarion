@@ -51,7 +51,7 @@ public sealed class WindowsRegistryStoreTests : IDisposable
         var dir = Path.Combine(Path.GetTempPath(), "clarion-real-" + Guid.NewGuid().ToString("N"));
         try
         {
-            var engine = new TweakEngine(new WindowsRegistryStore(), new ChangeJournal(Path.Combine(dir, "j.jsonl")));
+            var engine = new TweakEngine([new RegistryHandler(new WindowsRegistryStore())], new ChangeJournal(Path.Combine(dir, "j.jsonl")));
             var target = new RegistryTarget(RegistryHive.CurrentUser, _root + "\\Created\\Deep", "");
             var tweak = new Tweak
             {

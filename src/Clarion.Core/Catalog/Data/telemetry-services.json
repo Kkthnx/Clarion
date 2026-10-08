@@ -1,0 +1,38 @@
+[
+  {
+    "id": "privacy.telemetry-services",
+    "category": "Privacy",
+    "name": "Stop the diagnostic tracking services",
+    "summary": "Turn off the services that collect and forward diagnostic data.",
+    "what": "Sets the Connected User Experiences and Telemetry service (DiagTrack) and the WAP push message routing service (dmwappushservice) to Disabled and stops them.",
+    "benefit": "Removes the background process that gathers and uploads diagnostic data.",
+    "risk": "Low. Some feedback and diagnostic features report less. Windows Update is not affected.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "scope": "Machine",
+    "needsReboot": false,
+    "apply": [
+      { "type": "service.start-type", "name": "DiagTrack", "startType": "Disabled" },
+      { "type": "service.start-type", "name": "dmwappushservice", "startType": "Disabled" }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization" ]
+  },
+  {
+    "id": "privacy.telemetry-tasks",
+    "category": "Privacy",
+    "name": "Turn off diagnostic scheduled tasks",
+    "summary": "Disable the scheduled jobs that gather app and usage data.",
+    "what": "Disables the Compatibility Appraiser, Program Data Updater, Consolidator and USB CEIP tasks.",
+    "benefit": "Stops periodic data collection jobs and the CPU and disk bursts they cause.",
+    "risk": "Low. Feature updates may take slightly longer to check app compatibility.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "scope": "Machine",
+    "apply": [
+      { "type": "task.set-enabled", "path": "\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser", "enabled": false },
+      { "type": "task.set-enabled", "path": "\\Microsoft\\Windows\\Application Experience\\ProgramDataUpdater", "enabled": false },
+      { "type": "task.set-enabled", "path": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator", "enabled": false },
+      { "type": "task.set-enabled", "path": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip", "enabled": false }
+    ]
+  }
+]

@@ -6,20 +6,21 @@ namespace Clarion.Core.Journal;
 
 public enum JournalAction { Apply, Revert }
 
+/// <summary>One executed step. Undo is the operation that puts the prior state back.</summary>
 public sealed record JournalEntry(
     Guid BatchId,
     string TweakId,
     JournalAction Action,
     DateTimeOffset Time,
-    RegistryTarget Target,
-    RegistrySnapshot Prior,
-    RegistrySnapshot Resulting);
+    Operation Operation,
+    Operation Undo);
 
-/// <summary>Append-only JSON lines file recording every change with its prior state.</summary>
+/// <summary>Append-only JSON lines file recording every change with the operation that reverses it.</summary>
 public sealed class ChangeJournal
 {
     private static readonly JsonSerializerOptions Options = new()
     {
+        AllowOutOfOrderMetadataProperties = true,
         Converters = { new JsonStringEnumConverter() },
     };
 
