@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.TweakListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Clarion.App.Controls"
+    xmlns:svc="using:Clarion.App.Services">
+
+    <Grid Padding="32,24,32,16" RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="280" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Spacing="4">
+                <TextBlock x:Name="TitleText" FontSize="28" FontWeight="SemiBold"
+                           Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock x:Name="SubtitleText" TextWrapping="Wrap"
+                           Foreground="{ThemeResource ClTextSecondaryBrush}" />
+            </StackPanel>
+            <AutoSuggestBox Grid.Column="1" x:Name="SearchBox" PlaceholderText="Search settings"
+                            QueryIcon="Find" VerticalAlignment="Top"
+                            TextChanged="OnSearchTextChanged" />
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnSpacing="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="360" />
+                <ColumnDefinition Width="400" />
+            </Grid.ColumnDefinitions>
+
+            <ListView x:Name="List" SelectionMode="Single" SelectionChanged="OnSelectionChanged"
+                      IsItemClickEnabled="False" ItemsSource="{x:Bind Visible}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0,0,0,8" />
+                        <Setter Property="MinHeight" Value="0" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="svc:TweakItem">
+                        <Border Background="{ThemeResource ClSurface1Brush}"
+                                BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1"
+                                CornerRadius="8" Padding="16,14,16,14">
+                            <ToolTipService.ToolTip>
+                                <ToolTip MaxWidth="440" Padding="16" Background="{ThemeResource ClSurface2Brush}"
+                                         BorderBrush="{ThemeResource ClBorderBrush}">
+                                    <controls:TweakDetail Item="{x:Bind}" ShowTechnical="False" Width="400" />
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+                            <Grid ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{x:Bind Name}" FontSize="15" FontWeight="SemiBold"
+                                               TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                    <TextBlock Text="{x:Bind Summary}" TextWrapping="Wrap"
+                                               Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+                                        <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}" />
+                                        <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" />
+                                        <controls:Chip Text="{x:Bind PendingText, Mode=OneWay}" Kind="Accent"
+                                                       Visibility="{x:Bind IsPending, Mode=OneWay}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="6"
+                                                Visibility="{x:Bind HasLastError, Mode=OneWay}">
+                                        <FontIcon Glyph="&#xE783;" FontSize="12" Foreground="{ThemeResource ClDangerBrush}" />
+                                        <TextBlock Text="{x:Bind LastError, Mode=OneWay}" TextWrapping="Wrap" FontSize="12"
+                                                   Foreground="{ThemeResource ClDangerBrush}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="6" Visibility="{x:Bind IsLocked}">
+                                        <FontIcon Glyph="&#xE72E;" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                                        <TextBlock Text="{x:Bind LockReason}" TextWrapping="Wrap" FontSize="12"
+                                                   Foreground="{ThemeResource ClTextMutedBrush}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4" HorizontalAlignment="Right">
+                                    <ToggleSwitch IsOn="{x:Bind IsOn, Mode=TwoWay}" IsEnabled="{x:Bind CanToggle, Mode=OneWay}"
+                                                  OnContent="" OffContent="" MinWidth="0" HorizontalAlignment="Right" />
+                                    <TextBlock Text="{x:Bind StateText, Mode=OneWay}" FontSize="12" HorizontalAlignment="Right"
+                                               Foreground="{ThemeResource ClTextMutedBrush}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Border Grid.Column="1" Background="{ThemeResource ClSurface1Brush}"
+                    BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="8">
+                <ScrollViewer Padding="20">
+                    <Grid>
+                        <TextBlock x:Name="EmptyDetail" Text="Select a setting to see what it does, what you gain, and what could go wrong."
+                                   TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
+                        <controls:TweakDetail x:Name="Detail" Visibility="Collapsed" />
+                    </Grid>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

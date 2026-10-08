@@ -11,7 +11,9 @@ public static class EngineFactory
     public static string DefaultDataDirectory { get; } =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Clarion");
 
-    public static BatchRunner CreateBatchRunner(string? dataDirectory = null)
+    public static BatchRunner CreateBatchRunner(string? dataDirectory = null) => Create(dataDirectory).Runner;
+
+    public static ClarionRuntime Create(string? dataDirectory = null)
     {
         var dir = dataDirectory ?? DefaultDataDirectory;
         var registry = new WindowsRegistryStore();
@@ -24,7 +26,11 @@ public static class EngineFactory
             new AppxHandler(new WindowsAppxStore(runner)),
             new FeatureHandler(new WindowsFeatureStore(runner)),
         };
-        var engine = new TweakEngine(handlers, new ChangeJournal(Path.Combine(dir, "journal.jsonl")));
-        return new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);
+        var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"));
+        var engine = new TweakEngine(handlers, journal);
+        var batch = new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);
+        return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect());
     }
 }
+
+public sealed record ClarionRuntime(BatchRunner Runner, TweakEngine Engine, ChangeJournal Journal, Clarion.Core.Model.MachineProfile Profile);

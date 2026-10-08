@@ -26,7 +26,12 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
         var applicable = tweak.Apply.Where(o => HandlerFor(o).IsApplicable(o)).ToList();
         if (applicable.Count == 0) return TweakState.Unavailable;
         var matched = applicable.Count(o => HandlerFor(o).IsSatisfied(o));
-        if (matched == applicable.Count) return TweakState.Applied;
+        if (matched == applicable.Count)
+        {
+            var allVacuous = applicable.All(o => HandlerFor(o).IsVacuous(o));
+            if (allVacuous && journal.OutstandingFor(tweak.Id).Count == 0) return TweakState.Unavailable;
+            return TweakState.Applied;
+        }
         return matched == 0 ? TweakState.NotApplied : TweakState.Partial;
     }
 

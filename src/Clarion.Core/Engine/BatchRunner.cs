@@ -20,6 +20,19 @@ public sealed record BatchResult(Guid BatchId, IReadOnlyList<BatchItem> Items, s
 /// <summary>Runs pre-flight checks, makes one restore point, then applies each tweak.</summary>
 public sealed class BatchRunner(TweakEngine engine, IRestorePointService restorePoints, Func<bool> isElevated)
 {
+    public TweakEngine Engine => engine;
+    public bool IsElevated => isElevated();
+
+    /// <summary>Applies the first list and reverts the second as one run, with a single restore point.</summary>
+    public BatchResult Execute(IReadOnlyList<Tweak> toApply, IReadOnlyList<Tweak> toRevert, MachineProfile profile, BatchOptions options, Action<string>? log = null)
+    {
+        var applied = toApply.Count > 0 ? Apply(toApply, profile, options, log) : new BatchResult(Guid.NewGuid(), []);
+        if (applied.Blocked is not null || toRevert.Count == 0) return applied;
+
+        var reverted = Revert(toRevert, log);
+        return new BatchResult(applied.BatchId, applied.Items.Concat(reverted.Items).ToList());
+    }
+
     public BatchResult Apply(IReadOnlyList<Tweak> tweaks, MachineProfile profile, BatchOptions options, Action<string>? log = null)
     {
         var batch = Guid.NewGuid();

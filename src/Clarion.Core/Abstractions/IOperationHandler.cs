@@ -12,6 +12,12 @@ public interface IOperationHandler
 
     bool IsSatisfied(Operation op);
 
+    /// <summary>
+    /// True when the goal is met only because there is nothing to act on, such as removing an
+    /// app that was never installed. Such steps do not count as something Clarion changed.
+    /// </summary>
+    bool IsVacuous(Operation op) => false;
+
     /// <summary>Builds the operation that puts the current state back.</summary>
     Operation CaptureUndo(Operation op);
 

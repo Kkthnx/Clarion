@@ -6,7 +6,18 @@ A native Windows app to remove bloat, cut tracking, and tune the system. Every c
 
 ## Status
 
-Engine core in place: registry, service and scheduled task operations, verify and rollback, change journal, restore point and batch runner, validated app removal with restore, optional features and capabilities, a catalog of 61 tweaks with tooltips and 4 presets, 74 passing tests. The WinUI 3 app is next.
+Working app. Home with presets, category pages with a tooltip and detail pane on every setting, a pending changes bar with review and apply, a Safety page with history and revert, and Expert mode. The engine covers registry, services, scheduled tasks, app packages and Windows features, with restore points and a change journal.
+
+## Build and run
+
+Needs the .NET 9 SDK and the Windows 11 SDK. The app asks for administrator rights.
+
+```
+dotnet test
+dotnet build src/Clarion.App -p:Platform=x64
+```
+
+The executable is under `src/Clarion.App/bin/x64/Debug/net9.0-windows10.0.19041.0/Clarion.exe`.
 
 ## Docs
 

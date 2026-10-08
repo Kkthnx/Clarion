@@ -26,6 +26,8 @@ public sealed class AppxHandler(IAppxStore store) : IOperationHandler
         }
     }
 
+    public bool IsVacuous(Operation op) => op is RemoveAppxPackage r && IsSatisfied(op) && !store.GetSnapshot().IsInstalledForAnyone(r.Name);
+
     public Operation CaptureUndo(Operation op) => op switch
     {
         RemoveAppxPackage r => new RestoreAppxPackage(r.Name, store.GetSnapshot().Find(r.Name)?.FamilyName),

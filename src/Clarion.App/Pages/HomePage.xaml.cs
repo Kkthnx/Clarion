@@ -1,0 +1,85 @@
+using Clarion.App.Controls;
+using Clarion.App.Services;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+
+namespace Clarion.App.Pages;
+
+public sealed partial class HomePage : Page
+{
+    private readonly AppServices _app = AppServices.Instance;
+
+    private static readonly (string Key, string Title, string Text)[] PresetInfo =
+    [
+        ("minimal", "Minimal", "Stop promotions and drop diagnostic data to the lowest level your edition allows. The gentlest choice."),
+        ("standard", "Standard", "Minimal plus private search, no activity history, no update sharing and a few Explorer basics. Best for most people."),
+        ("advanced", "Advanced", "Standard plus telemetry services and tasks, location off, classic right-click menu and tidier taskbar."),
+        ("gaming", "Gaming", "Pointer, key and menu tweaks, fewer background jobs and no update sharing."),
+    ];
+
+    public HomePage()
+    {
+        InitializeComponent();
+        Loaded += (_, _) =>
+        {
+            if (PresetList.Items.Count == 0) BuildPresets();
+            Refresh();
+        };
+        _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(Refresh);
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e) => Refresh();
+
+    private void Refresh()
+    {
+        BuildText.Text = _app.Profile.Build.ToString();
+        EditionText.Text = _app.Profile.Edition;
+        AdminText.Text = _app.IsElevated ? "Yes" : "No";
+        AppliedText.Text = $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
+        Busy.IsActive = _app.IsBusy;
+    }
+
+    private void BuildPresets()
+    {
+        foreach (var (key, title, text) in PresetInfo)
+        {
+            var queue = new Button { Content = "Queue this preset", Style = (Style)Application.Current.Resources["AccentButtonStyle"] };
+            queue.Click += (_, _) =>
+            {
+                var added = _app.QueuePreset(key);
+                ToolTipService.SetToolTip(queue, added == 0 ? "Everything in this preset is already on" : $"{added} settings queued");
+            };
+
+            var count = _app.Presets.TryGetValue(key, out var ids) ? ids.Count : 0;
+            var card = new Border
+            {
+                Background = ThemeBrushes.Get("ClSurface1", ActualTheme),
+                BorderBrush = ThemeBrushes.Get("ClBorder", ActualTheme),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(8),
+                Padding = new Thickness(20),
+                Child = BuildCardContent(title, text, count, queue),
+            };
+            PresetList.Items.Add(card);
+        }
+    }
+
+    private Grid BuildCardContent(string title, string text, int count, Button action)
+    {
+        var grid = new Grid { ColumnSpacing = 20 };
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+        var left = new StackPanel { Spacing = 4 };
+        left.Children.Add(new TextBlock { Text = title, FontSize = 18, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = ThemeBrushes.Get("ClTextPrimary", ActualTheme) });
+        left.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Foreground = ThemeBrushes.Get("ClTextSecondary", ActualTheme) });
+        left.Children.Add(new TextBlock { Text = $"{count} settings", FontSize = 12, Foreground = ThemeBrushes.Get("ClTextMuted", ActualTheme) });
+        grid.Children.Add(left);
+
+        Grid.SetColumn(action, 1);
+        action.VerticalAlignment = VerticalAlignment.Center;
+        grid.Children.Add(action);
+        return grid;
+    }
+}

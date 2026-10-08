@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="Clarion.App.Controls.TweakDetail"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Clarion.App.Controls"
+    xmlns:svc="using:Clarion.App.Services">
+
+    <StackPanel Spacing="10">
+        <TextBlock Text="{x:Bind Item.Name, Mode=OneWay}" FontSize="18" FontWeight="SemiBold"
+                   TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+        <TextBlock Text="{x:Bind Item.Summary, Mode=OneWay}" TextWrapping="Wrap"
+                   Foreground="{ThemeResource ClTextSecondaryBrush}" />
+
+        <StackPanel Orientation="Horizontal" Spacing="6">
+            <controls:Chip Text="{x:Bind Item.RecommendationText, Mode=OneWay}" Kind="{x:Bind Item.RecommendationKind, Mode=OneWay}" />
+            <controls:Chip Text="{x:Bind Item.RiskText, Mode=OneWay}" Kind="{x:Bind Item.RiskKind, Mode=OneWay}" />
+        </StackPanel>
+
+        <TextBlock Text="{x:Bind Item.Tooltip.Advice, Mode=OneWay}" TextWrapping="Wrap"
+                   Foreground="{ThemeResource ClTextPrimaryBrush}" />
+
+        <TextBlock Text="Good to know" FontWeight="SemiBold" Margin="0,4,0,0"
+                   Foreground="{ThemeResource ClTextPrimaryBrush}" />
+        <ItemsControl ItemsSource="{x:Bind Item.Tooltip.Facts, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <Grid ColumnSpacing="8" Margin="0,2,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Ellipse Width="5" Height="5" Margin="0,7,0,0" VerticalAlignment="Top"
+                                 Fill="{ThemeResource ClAccentBrush}" />
+                        <TextBlock Grid.Column="1" Text="{x:Bind}" TextWrapping="Wrap"
+                                   Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <StackPanel Spacing="2">
+            <TextBlock Text="What you gain" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+            <TextBlock Text="{x:Bind Item.Tooltip.Benefit, Mode=OneWay}" TextWrapping="Wrap"
+                       Foreground="{ThemeResource ClTextSecondaryBrush}" />
+        </StackPanel>
+        <StackPanel Spacing="2">
+            <TextBlock Text="What could go wrong" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+            <TextBlock Text="{x:Bind Item.Tooltip.Risk, Mode=OneWay}" TextWrapping="Wrap"
+                       Foreground="{ThemeResource ClTextSecondaryBrush}" />
+        </StackPanel>
+        <TextBlock Text="{x:Bind Item.EvidenceText, Mode=OneWay}" FontSize="12"
+                   Foreground="{ThemeResource ClTextMutedBrush}" />
+
+        <ItemsControl ItemsSource="{x:Bind Item.Tooltip.Notes, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <TextBlock Text="{x:Bind}" FontSize="12" TextWrapping="Wrap" Margin="0,1,0,1"
+                               Foreground="{ThemeResource ClTextMutedBrush}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <StackPanel x:Name="TechnicalPanel" Spacing="4" Visibility="{x:Bind ShowTechnical, Mode=OneWay}">
+            <TextBlock Text="Exact changes" FontWeight="SemiBold" Margin="0,6,0,0"
+                       Foreground="{ThemeResource ClTextPrimaryBrush}" />
+            <ItemsControl ItemsSource="{x:Bind Item.ExactChanges, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <TextBlock Text="{x:Bind}" FontFamily="Cascadia Mono" FontSize="12" TextWrapping="Wrap"
+                                   IsTextSelectionEnabled="True" Margin="0,2,0,2"
+                                   Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{x:Bind Item.SourceLinks, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="svc:SourceLink">
+                        <HyperlinkButton Content="{x:Bind Text}" NavigateUri="{x:Bind Link}" Padding="0" FontSize="12" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

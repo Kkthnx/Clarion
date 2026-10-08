@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Clarion.App.Controls">
+
+    <ScrollViewer>
+        <StackPanel Padding="32,24,32,24" Spacing="24" MaxWidth="1100" HorizontalAlignment="Left">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Clarion" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock Text="See it. Set it. Done." FontSize="16" Foreground="{ThemeResource ClAccentBrush}" />
+            </StackPanel>
+
+            <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="20">
+                <Grid ColumnSpacing="24" RowSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Windows build" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                        <TextBlock x:Name="BuildText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Edition" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                        <TextBlock x:Name="EditionText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Administrator" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                        <TextBlock x:Name="AdminText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="3">
+                        <TextBlock Text="Settings in effect" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock x:Name="AppliedText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClCyanBrush}" />
+                            <ProgressRing x:Name="Busy" Width="16" Height="16" IsActive="False" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="Start with a preset" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           Text="A preset queues a group of settings. Nothing changes until you review and press Apply at the bottom." />
+            </StackPanel>
+
+            <ItemsControl x:Name="PresetList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="12" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <Border Background="{ThemeResource ClAccentTintBrush}" BorderBrush="{ThemeResource ClAccentBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="16">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Your safety net" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                               Text="Clarion makes a System Restore point before every batch, records the exact value it replaced, and can revert any single setting from the Safety page." />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

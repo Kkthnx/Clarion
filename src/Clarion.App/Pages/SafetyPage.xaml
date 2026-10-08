@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.SafetyPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:svc="using:Clarion.App.Pages">
+
+    <ScrollViewer>
+        <StackPanel Padding="32,24,32,24" Spacing="20" MaxWidth="1000" HorizontalAlignment="Left">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Safety" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           Text="Everything Clarion changed is recorded here with the value it replaced. Revert puts back what was really there." />
+            </StackPanel>
+
+            <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Restore points" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                               Text="A System Restore point is made before every batch. If Windows ever misbehaves, open System Restore and pick the Clarion point from before the change. From the Windows recovery screen you can reach the same tool under Advanced options." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="Open System Restore" Click="OnOpenRestore" />
+                        <Button Content="Open Clarion data folder" Click="OnOpenData" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBlock Text="Changes made by Clarion" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"
+                           Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <Button x:Name="RevertAll" Content="Queue revert for all" Click="OnRevertAll" />
+            </StackPanel>
+
+            <TextBlock x:Name="EmptyText" Text="Nothing yet. Settings you apply will show up here."
+                       Foreground="{ThemeResource ClTextMutedBrush}" />
+
+            <ItemsControl x:Name="History">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="svc:HistoryRow">
+                        <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+                                BorderThickness="1" CornerRadius="8" Padding="16,12,16,12" Margin="0,0,0,8">
+                            <Grid ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                    <TextBlock Text="{x:Bind When}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                                    <TextBlock Text="{x:Bind Detail}" FontSize="12" TextWrapping="Wrap" FontFamily="Cascadia Mono"
+                                               Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                                </StackPanel>
+                                <Button Grid.Column="1" Content="Queue revert" VerticalAlignment="Center"
+                                        Click="OnRevertOne" Tag="{x:Bind TweakId}" IsEnabled="{x:Bind CanRevert}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

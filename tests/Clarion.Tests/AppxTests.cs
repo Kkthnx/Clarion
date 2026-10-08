@@ -81,11 +81,10 @@ public sealed class AppxTests : IDisposable
     }
 
     [Fact]
-    public void Not_installed_reads_as_already_applied()
+    public void An_app_that_was_never_installed_reads_as_nothing_to_change()
     {
         var tweak = Make("Contoso.Gone");
-        Assert.Equal(TweakState.Applied, _engine.Detect(tweak));
-        Assert.True(_engine.Apply(tweak, Guid.NewGuid()).Success);
+        Assert.Equal(TweakState.Unavailable, _engine.Detect(tweak));
         Assert.Empty(_store.Calls);
     }
 
