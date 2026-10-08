@@ -1,0 +1,159 @@
+[
+  {
+    "id": "features.wsl",
+    "category": "Features",
+    "name": "Windows Subsystem for Linux",
+    "summary": "Run Linux command line tools inside Windows.",
+    "what": "Turns on the Windows Subsystem for Linux and the Virtual Machine Platform it needs for version 2.",
+    "benefit": "Use Linux shells, package managers and developer tools without a separate virtual machine.",
+    "risk": "Low. Needs a restart. Hardware virtualization must be enabled in the firmware.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for developers and anyone who needs Linux tools. Skip it if you do not.",
+    "facts": ["WSL 2 also needs the Virtual Machine Platform, so both are turned on", "Works on Home and Pro", "Restart required", "A Linux distribution is installed separately afterward"],
+    "scope": "Machine",
+    "requires": { "minBuild": 19041 },
+    "needsReboot": true,
+    "apply": [
+      { "type": "feature.set", "name": "Microsoft-Windows-Subsystem-Linux", "enabled": true },
+      { "type": "feature.set", "name": "VirtualMachinePlatform", "enabled": true }
+    ]
+  },
+  {
+    "id": "features.hyper-v",
+    "category": "Features",
+    "name": "Hyper-V virtual machines",
+    "summary": "Run virtual machines with the built in hypervisor.",
+    "what": "Turns on all Hyper-V components, including the hypervisor, management tools and services.",
+    "benefit": "Create and run virtual machines with no extra software.",
+    "risk": "Low. Windows then runs on top of the hypervisor, which a few older emulators and some anti-cheat or VR tools do not support.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you run virtual machines. Skip it if you play games with strict anti-cheat or use older emulators.",
+    "facts": ["Not available on Home", "Needs hardware virtualization with second level address translation", "Windows runs on top of the hypervisor once it is on", "Restart required"],
+    "scope": "Machine",
+    "requires": { "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education" ] },
+    "needsReboot": true,
+    "apply": [
+      { "type": "feature.set", "name": "Microsoft-Hyper-V-All", "enabled": true }
+    ]
+  },
+  {
+    "id": "features.sandbox",
+    "category": "Features",
+    "name": "Windows Sandbox",
+    "summary": "A throwaway Windows desktop for testing unknown files.",
+    "what": "Turns on the disposable desktop environment. Everything inside is erased when the window closes.",
+    "benefit": "Open a suspicious download or try an installer without risking your real system.",
+    "risk": "Low. Needs a restart and virtualization support.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if you try unknown programs. Safe to skip otherwise.",
+    "facts": ["Not available on Home", "Everything inside is deleted when you close it", "Needs hardware virtualization enabled", "Restart required"],
+    "scope": "Machine",
+    "requires": { "minBuild": 18362, "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education" ] },
+    "needsReboot": true,
+    "apply": [
+      { "type": "feature.set", "name": "Containers-DisposableClientVM", "enabled": true }
+    ]
+  },
+  {
+    "id": "features.dotnet35",
+    "category": "Features",
+    "name": ".NET Framework 3.5",
+    "summary": "Support for older programs built on .NET 2.0 to 3.5.",
+    "what": "Turns on .NET Framework 3.5, which includes 2.0 and 3.0.",
+    "benefit": "Lets older apps and installers that ask for .NET 3.5 run.",
+    "risk": "Low. Windows may need to download files through Windows Update, so an internet connection is needed.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if an app asks for .NET 3.5. Otherwise leave it off.",
+    "facts": ["Newer .NET versions do not replace it for apps built on 2.0 to 3.5", "Files are downloaded from Windows Update when needed", "Turning it off removes it again"],
+    "scope": "Machine",
+    "apply": [
+      { "type": "feature.set", "name": "NetFx3", "enabled": true }
+    ]
+  },
+  {
+    "id": "features.legacy-games",
+    "category": "Features",
+    "name": "Legacy game components",
+    "summary": "Support for very old games that use DirectPlay.",
+    "what": "Turns on Legacy Components and DirectPlay.",
+    "benefit": "Lets a small number of games from the late 1990s and 2000s start and use their networking.",
+    "risk": "Low.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if an old game asks for DirectPlay. Otherwise leave it off.",
+    "facts": ["DirectPlay is an old game networking library", "Only a few old titles need it", "Turning it off removes it again"],
+    "scope": "Machine",
+    "apply": [
+      { "type": "feature.set", "name": "LegacyComponents", "enabled": true },
+      { "type": "feature.set", "name": "DirectPlay", "enabled": true }
+    ]
+  },
+  {
+    "id": "features.nfs-client",
+    "category": "Features",
+    "name": "NFS client",
+    "summary": "Connect to Network File System shares from Linux and NAS devices.",
+    "what": "Turns on the client side of Services for NFS.",
+    "benefit": "Mount shares from NFS servers as drives.",
+    "risk": "Low.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if you use NFS shares.",
+    "facts": ["Client only, it does not share your files", "Not available on Home", "Turning it off removes it again"],
+    "scope": "Machine",
+    "requires": { "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education" ] },
+    "apply": [
+      { "type": "feature.set", "name": "ServicesForNFS-ClientOnly", "enabled": true }
+    ]
+  },
+  {
+    "id": "features.openssh-server",
+    "category": "Features",
+    "name": "OpenSSH server",
+    "summary": "Let other computers sign in to this PC over SSH.",
+    "what": "Installs the OpenSSH server component. It does not start the service for you.",
+    "benefit": "Remote command line access and file copy over an encrypted connection.",
+    "risk": "Medium. Once started it is a remote sign in service. Use key based sign in and a firewall.",
+    "evidence": "Situational",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if you need remote access to this PC. Skip it otherwise.",
+    "facts": ["Installs the component only and you choose when to start the sshd service", "A running SSH server is reachable from the network", "Turning it off removes the component"],
+    "scope": "Machine",
+    "apply": [
+      { "type": "capability.set", "name": "OpenSSH.Server~~~~0.0.1.0", "installed": true }
+    ]
+  },
+  {
+    "id": "security.smb1-off",
+    "category": "Security",
+    "name": "Turn off SMB 1.0",
+    "summary": "Disable the old, insecure file sharing protocol.",
+    "what": "Turns off the SMB 1.0 client and server features.",
+    "benefit": "Closes a protocol the vendor tells everyone to stop using.",
+    "risk": "Low. Very old network drives and printers that only speak SMB 1.0 stop connecting.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. Skip it only if an old device on your network needs it.",
+    "facts": ["SMB 1.0 is deprecated by the vendor", "Recent Windows versions already ship with it off", "Only very old NAS devices and printers still need it", "Restart may be needed"],
+    "scope": "Machine",
+    "needsReboot": true,
+    "apply": [
+      { "type": "feature.set", "name": "SMB1Protocol-Client", "enabled": false },
+      { "type": "feature.set", "name": "SMB1Protocol-Server", "enabled": false },
+      { "type": "feature.set", "name": "SMB1Protocol", "enabled": false }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3" ]
+  }
+]

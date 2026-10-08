@@ -37,8 +37,7 @@
     "explorer.open-to-this-pc",
     "appearance.classic-context-menu",
     "taskbar.hide-task-view",
-    "system.long-paths",
-    "system.wpbt-off"
+    "system.long-paths"
   ],
   "gaming": [
     "input.mouse-accel-off",

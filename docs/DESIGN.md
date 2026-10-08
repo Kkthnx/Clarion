@@ -210,3 +210,9 @@ Each tweak carries:
 - **Benefit and risk,** plus a risk level, an evidence label, and the sources.
 
 The tooltip is built from these fields and always adds notes for scope, Windows version, editions, restarts and sign out. A plain text version of the same content feeds the detail pane, search, and exports. A tweak with no advice or fewer than two facts fails validation, and a Medium or High risk item can never be marked Recommended.
+
+## 10. Verification gate
+
+- A tweak whose registry value, key or behavior cannot be confirmed from vendor documentation or a read-only check on a real machine is not shipped. It waits in the backlog until it is confirmed.
+- `scripts/check-sources.ps1` checks that every source link in the catalog still resolves. Run it before each release.
+- Names of features, capabilities and services are read from a real machine before they go into the catalog.

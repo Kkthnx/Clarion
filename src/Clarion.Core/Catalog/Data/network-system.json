@@ -144,43 +144,6 @@
     ]
   },
   {
-    "id": "system.wpbt-off",
-    "category": "System",
-    "name": "Block vendor programs at boot",
-    "summary": "Stop firmware from injecting a program into Windows at startup.",
-    "what": "Sets the setting that blocks execution of the Windows Platform Binary Table, which lets a PC maker run a program during boot.",
-    "benefit": "Removes a path for pre-installed vendor software to reinstall itself on a clean Windows.",
-    "risk": "Low. OEM anti-theft or management tools that rely on it will not run.",
-    "evidence": "Situational",
-    "riskLevel": "Low",
-    "scope": "Machine",
-    "needsReboot": true,
-    "apply": [
-      {
-        "type": "registry.set",
-        "target": {
-          "hive": "LocalMachine",
-          "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager",
-          "name": "DisableWpbtExecution"
-        },
-        "data": {
-          "kind": "DWord",
-          "value": "1"
-        }
-      }
-    ],
-    "sources": [
-      "https://learn.microsoft.com/en-us/windows-hardware/drivers/bringup/windows-platform-binary-table"
-    ],
-    "recommendation": "Optional",
-    "advice": "Suggested after a clean install. Skip it if your PC maker needs it for anti-theft or management tools.",
-    "facts": [
-      "WPBT lets firmware run a program while Windows starts",
-      "Some makers use it to reinstall their own software",
-      "Restart required"
-    ]
-  },
-  {
     "id": "explorer.end-task-menu",
     "category": "Explorer",
     "name": "End task from the taskbar menu",

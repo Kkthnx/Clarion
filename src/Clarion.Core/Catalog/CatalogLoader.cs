@@ -108,6 +108,15 @@ public static class CatalogLoader
                         break;
                     case RestoreAppxPackage:
                         break;
+                    case SetWindowsFeature feat:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: feature changes need Machine scope.");
+                        if (!Features.FeatureRules.IsValidName(feat.Name)) errors.Add($"{t.Id}: invalid feature name {feat.Name}.");
+                        else if (!feat.Enabled && !Features.FeatureRules.CanDisable(feat.Name)) errors.Add($"{t.Id}: {feat.Name} is a protected feature.");
+                        break;
+                    case SetWindowsCapability cap:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: capability changes need Machine scope.");
+                        if (!Features.FeatureRules.IsValidName(cap.Name)) errors.Add($"{t.Id}: invalid capability name {cap.Name}.");
+                        break;
                     default:
                         errors.Add($"{t.Id}: unknown operation type.");
                         break;

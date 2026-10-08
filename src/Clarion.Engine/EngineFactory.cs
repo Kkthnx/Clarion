@@ -22,6 +22,7 @@ public static class EngineFactory
             new ServiceHandler(new WindowsServiceStore(runner)),
             new TaskHandler(new WindowsTaskStore()),
             new AppxHandler(new WindowsAppxStore(runner)),
+            new FeatureHandler(new WindowsFeatureStore(runner)),
         };
         var engine = new TweakEngine(handlers, new ChangeJournal(Path.Combine(dir, "journal.jsonl")));
         return new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);

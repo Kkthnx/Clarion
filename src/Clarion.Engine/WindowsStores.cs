@@ -4,6 +4,7 @@ using System.Runtime.Versioning;
 using System.Security.Principal;
 using Clarion.Core.Abstractions;
 using Clarion.Core.Appx;
+using Clarion.Core.Features;
 using Clarion.Core.Model;
 using Microsoft.Win32;
 
@@ -168,5 +169,54 @@ public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
             throw new InvalidOperationException(first ?? "PowerShell command failed.");
         }
         return result;
+    }
+}
+
+[SupportedOSPlatform("windows")]
+public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
+{
+    private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(30);
+    private Dictionary<string, string>? _features;
+    private readonly Dictionary<string, string?> _capabilities = new(StringComparer.OrdinalIgnoreCase);
+
+    public bool? IsFeatureEnabled(string name)
+    {
+        _features ??= FeatureScripts.ParseStates(Run(FeatureScripts.Inventory()), "features", "FeatureName");
+        return _features.TryGetValue(name, out var state) ? FeatureRules.IsEnabledState(state) : null;
+    }
+
+    public void SetFeature(string name, bool enabled)
+    {
+        Run(FeatureScripts.SetFeature(name, enabled));
+        _features = null;
+    }
+
+    public bool? IsCapabilityInstalled(string name)
+    {
+        if (!_capabilities.TryGetValue(name, out var state))
+        {
+            var map = FeatureScripts.ParseStates(Run(FeatureScripts.CapabilityState(name)), "capabilities", "Name");
+            state = map.Count == 0 ? null : map.Values.First();
+            _capabilities[name] = state;
+        }
+        return state is null ? null : FeatureRules.IsInstalledState(state);
+    }
+
+    public void SetCapability(string name, bool installed)
+    {
+        Run(FeatureScripts.SetCapability(name, installed));
+        _capabilities.Remove(name);
+    }
+
+    private string Run(string script)
+    {
+        var result = runner.Run("powershell.exe", FeatureScripts.ToArguments(script), Timeout);
+        if (result.ExitCode != 0)
+        {
+            var first = (string.IsNullOrWhiteSpace(result.Error) ? result.Output : result.Error)
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
+            throw new InvalidOperationException(first ?? "PowerShell command failed.");
+        }
+        return result.Output;
     }
 }

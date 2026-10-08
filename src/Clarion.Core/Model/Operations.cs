@@ -11,6 +11,8 @@ public enum ServiceStartType { Automatic, AutomaticDelayed, Manual, Disabled }
 [JsonDerivedType(typeof(SetTaskEnabled), "task.set-enabled")]
 [JsonDerivedType(typeof(RemoveAppxPackage), "appx.remove")]
 [JsonDerivedType(typeof(RestoreAppxPackage), "appx.restore")]
+[JsonDerivedType(typeof(SetWindowsFeature), "feature.set")]
+[JsonDerivedType(typeof(SetWindowsCapability), "capability.set")]
 public abstract record Operation
 {
     public abstract string Describe();
@@ -48,4 +50,15 @@ public sealed record RemoveAppxPackage(string Name, bool AllUsers = false, bool 
 public sealed record RestoreAppxPackage(string Name, string? FamilyName) : Operation
 {
     public override string Describe() => $"Restore app {Name}";
+}
+/// <summary>Turns a Windows optional feature on or off. Turning on also enables the features it depends on.</summary>
+public sealed record SetWindowsFeature(string Name, bool Enabled) : Operation
+{
+    public override string Describe() => $"{(Enabled ? "Turn on" : "Turn off")} Windows feature {Name}";
+}
+
+/// <summary>Installs or removes a Windows capability such as the SSH server.</summary>
+public sealed record SetWindowsCapability(string Name, bool Installed) : Operation
+{
+    public override string Describe() => $"{(Installed ? "Install" : "Remove")} Windows capability {Name}";
 }
