@@ -11,8 +11,28 @@
     "riskLevel": "Low",
     "scope": "Machine",
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU", "name": "NoAutoRebootWithLoggedOnUsers" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU",
+          "name": "NoAutoRebootWithLoggedOnUsers"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/deployment/update/waas-restart" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/deployment/update/waas-restart"
+    ],
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. Restart yourself soon after updates install.",
+    "facts": [
+      "Updates still install",
+      "Some fixes stay inactive until you restart",
+      "Applies only while someone is signed in"
+    ]
   }
 ]

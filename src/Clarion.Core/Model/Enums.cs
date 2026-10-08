@@ -11,3 +11,5 @@ public enum RegistryHive { CurrentUser, LocalMachine }
 public enum RegistryKind { String, ExpandString, DWord, QWord, Binary }
 
 public enum TweakState { NotApplied, Applied, Partial, Unavailable }
+
+public enum Recommendation { Recommended, Optional, OnlyIf, Avoid }

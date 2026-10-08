@@ -66,6 +66,14 @@ public static class CatalogLoader
                 if (string.IsNullOrWhiteSpace(text)) errors.Add($"{t.Id}: {label} is empty.");
             }
 
+            if (string.IsNullOrWhiteSpace(t.Advice)) errors.Add($"{t.Id}: advice is empty.");
+            if (t.Facts.Count < 2 || t.Facts.Count > 6) errors.Add($"{t.Id}: needs 2 to 6 facts for the tooltip.");
+            foreach (var fact in t.Facts)
+            {
+                if (string.IsNullOrWhiteSpace(fact) || fact.Length > 140) errors.Add($"{t.Id}: each fact must be 1 to 140 characters.");
+            }
+            if (t.Recommendation == Recommendation.Recommended && t.RiskLevel >= RiskLevel.Medium)
+                errors.Add($"{t.Id}: a Medium or High risk item cannot be marked Recommended.");
             if (t.Apply.Count == 0) errors.Add($"{t.Id}: no apply operations.");
             if (t.Evidence is Evidence.Proven && t.Sources.Count == 0) errors.Add($"{t.Id}: Proven evidence needs at least one source.");
 

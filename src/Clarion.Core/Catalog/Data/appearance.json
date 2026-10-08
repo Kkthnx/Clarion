@@ -12,12 +12,63 @@
     "scope": "User",
     "restartsExplorer": false,
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "AppsUseLightTheme" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "SystemUsesLightTheme" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+          "name": "AppsUseLightTheme"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+          "name": "SystemUsesLightTheme"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
     "undo": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "AppsUseLightTheme" }, "data": { "kind": "DWord", "value": "1" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "SystemUsesLightTheme" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+          "name": "AppsUseLightTheme"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+          "name": "SystemUsesLightTheme"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "recommendation": "Optional",
+    "advice": "A matter of taste. Turn it on if you prefer less glare in dim rooms.",
+    "facts": [
+      "Changes the theme for the current account only",
+      "Apps that ignore the system theme stay as they are",
+      "Takes effect immediately"
     ]
   },
   {
@@ -31,10 +82,31 @@
     "evidence": "Cosmetic",
     "riskLevel": "Safe",
     "scope": "User",
-    "requires": { "minBuild": 22000 },
+    "requires": {
+      "minBuild": 22000
+    },
     "restartsExplorer": true,
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32", "name": "" }, "data": { "kind": "String", "value": "" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32",
+          "name": ""
+        },
+        "data": {
+          "kind": "String",
+          "value": ""
+        }
+      }
+    ],
+    "recommendation": "Optional",
+    "advice": "Suggested if you often use Open with, Send to or entries added by other programs.",
+    "facts": [
+      "Windows 11 only",
+      "Adds one per account shell class entry that nothing else uses",
+      "Explorer restarts once to apply",
+      "Revert removes the entry completely"
     ]
   },
   {
@@ -48,12 +120,43 @@
     "evidence": "Cosmetic",
     "riskLevel": "Safe",
     "scope": "User",
-    "requires": { "minBuild": 22000 },
+    "requires": {
+      "minBuild": 22000
+    },
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarAl" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "TaskbarAl"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
     "undo": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarAl" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "TaskbarAl"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "recommendation": "Optional",
+    "advice": "A matter of taste. Windows 10 is already left aligned.",
+    "facts": [
+      "Windows 11 only",
+      "Per account setting",
+      "Takes effect immediately"
     ]
   },
   {
@@ -68,10 +171,39 @@
     "riskLevel": "Safe",
     "scope": "User",
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "HideFileExt"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
     "undo": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "HideFileExt"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. It is a basic safety habit.",
+    "facts": [
+      "Malware often hides as a name like invoice.pdf.exe",
+      "Per account setting",
+      "Does not rename or change any file"
     ]
   },
   {
@@ -87,9 +219,49 @@
     "scope": "User",
     "needsSignOut": true,
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Mouse", "name": "MouseSpeed" }, "data": { "kind": "String", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Mouse", "name": "MouseThreshold1" }, "data": { "kind": "String", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Mouse", "name": "MouseThreshold2" }, "data": { "kind": "String", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Control Panel\\Mouse",
+          "name": "MouseSpeed"
+        },
+        "data": {
+          "kind": "String",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Control Panel\\Mouse",
+          "name": "MouseThreshold1"
+        },
+        "data": {
+          "kind": "String",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Control Panel\\Mouse",
+          "name": "MouseThreshold2"
+        },
+        "data": {
+          "kind": "String",
+          "value": "0"
+        }
+      }
+    ],
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for games, design work and precise pointing. Leave it as is if you use a trackpad or like the default feel.",
+    "facts": [
+      "Windows calls this Enhance pointer precision",
+      "Pointer distance then matches hand distance",
+      "Sign out to apply"
     ]
   }
 ]

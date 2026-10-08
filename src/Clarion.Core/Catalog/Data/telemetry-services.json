@@ -12,10 +12,28 @@
     "scope": "Machine",
     "needsReboot": false,
     "apply": [
-      { "type": "service.start-type", "name": "DiagTrack", "startType": "Disabled" },
-      { "type": "service.start-type", "name": "dmwappushservice", "startType": "Disabled" }
+      {
+        "type": "service.start-type",
+        "name": "DiagTrack",
+        "startType": "Disabled"
+      },
+      {
+        "type": "service.start-type",
+        "name": "dmwappushservice",
+        "startType": "Disabled"
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization"
+    ],
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you want the collector off. Skip it if you use Insider builds or send feedback often.",
+    "facts": [
+      "DiagTrack is the Connected User Experiences and Telemetry service",
+      "dmwappushservice routes push messages used by diagnostics",
+      "Clarion never touches the Windows Update services",
+      "Windows may turn them back on after a big update and Clarion will flag it"
+    ]
   },
   {
     "id": "privacy.telemetry-tasks",
@@ -29,10 +47,33 @@
     "riskLevel": "Low",
     "scope": "Machine",
     "apply": [
-      { "type": "task.set-enabled", "path": "\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser", "enabled": false },
-      { "type": "task.set-enabled", "path": "\\Microsoft\\Windows\\Application Experience\\ProgramDataUpdater", "enabled": false },
-      { "type": "task.set-enabled", "path": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator", "enabled": false },
-      { "type": "task.set-enabled", "path": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip", "enabled": false }
+      {
+        "type": "task.set-enabled",
+        "path": "\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser",
+        "enabled": false
+      },
+      {
+        "type": "task.set-enabled",
+        "path": "\\Microsoft\\Windows\\Application Experience\\ProgramDataUpdater",
+        "enabled": false
+      },
+      {
+        "type": "task.set-enabled",
+        "path": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator",
+        "enabled": false
+      },
+      {
+        "type": "task.set-enabled",
+        "path": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip",
+        "enabled": false
+      }
+    ],
+    "recommendation": "Optional",
+    "advice": "Suggested if you want fewer background jobs. Safe to skip.",
+    "facts": [
+      "Covers four tasks: Compatibility Appraiser, ProgramDataUpdater, Consolidator and UsbCeip",
+      "Tasks missing on your build are skipped",
+      "Stops periodic scans that cause short CPU and disk bursts"
     ]
   }
 ]

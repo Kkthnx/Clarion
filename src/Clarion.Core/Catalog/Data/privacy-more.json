@@ -10,11 +10,40 @@
     "evidence": "Proven",
     "riskLevel": "Low",
     "scope": "Machine",
-    "requires": { "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ] },
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors", "name": "DisableLocation" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors",
+          "name": "DisableLocation"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ],
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for desktops that do not need location. Skip it on laptops and tablets that use maps or find my device.",
+    "facts": [
+      "Applies to every account and cannot be changed in Settings afterward",
+      "The policy is documented by the vendor",
+      "Not available on Home, which ignores it"
+    ]
   },
   {
     "id": "debloat.consumer-features-policy",
@@ -27,11 +56,37 @@
     "evidence": "Proven",
     "riskLevel": "Safe",
     "scope": "Machine",
-    "requires": { "editions": [ "Enterprise", "Education", "IoTEnterprise" ] },
+    "requires": {
+      "editions": [
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent", "name": "DisableWindowsConsumerFeatures" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent",
+          "name": "DisableWindowsConsumerFeatures"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience"
+    ],
+    "recommendation": "Recommended",
+    "advice": "Suggested on Enterprise and Education. On Home and Pro use the per account version.",
+    "facts": [
+      "Windows honors this policy on Enterprise and Education only",
+      "The setting is documented by the vendor",
+      "Also covers accounts created later"
+    ]
   },
   {
     "id": "debloat.content-delivery-user",
@@ -45,14 +100,109 @@
     "riskLevel": "Safe",
     "scope": "User",
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SilentInstalledAppsEnabled" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SystemPaneSuggestionsEnabled" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "OemPreInstalledAppsEnabled" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "PreInstalledAppsEnabled" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338388Enabled" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338389Enabled" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-353694Enabled" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-353696Enabled" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "SilentInstalledAppsEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "SystemPaneSuggestionsEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "OemPreInstalledAppsEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "PreInstalledAppsEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "SubscribedContent-338388Enabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "SubscribedContent-338389Enabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "SubscribedContent-353694Enabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "SubscribedContent-353696Enabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone, especially on Home and Pro.",
+    "facts": [
+      "Works on every edition",
+      "Not a documented policy, so Windows may reset it after big updates",
+      "Clarion detects a reset and offers one click reapply"
     ]
   },
   {
@@ -66,11 +216,40 @@
     "evidence": "Proven",
     "riskLevel": "Medium",
     "scope": "Machine",
-    "requires": { "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ] },
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\OneDrive", "name": "DisableFileSyncNGSC" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\OneDrive",
+          "name": "DisableFileSyncNGSC"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ],
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if you do not use OneDrive. Skip it if you do.",
+    "facts": [
+      "Does not uninstall OneDrive",
+      "Move Desktop, Documents and Pictures back to local folders first",
+      "Available on Pro, Enterprise and Education"
+    ]
   },
   {
     "id": "privacy.device-metadata-offline",
@@ -84,7 +263,25 @@
     "riskLevel": "Low",
     "scope": "Machine",
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata", "name": "PreventDeviceMetadataFromNetwork" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata",
+          "name": "PreventDeviceMetadataFromNetwork"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "recommendation": "Optional",
+    "advice": "Suggested if you dislike vendor prompts when plugging in hardware.",
+    "facts": [
+      "Windows will not download device names, icons and companion app hints",
+      "Devices still work",
+      "Applies to every account on the PC"
     ]
   }
 ]

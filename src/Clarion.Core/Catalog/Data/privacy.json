@@ -11,12 +11,43 @@
     "riskLevel": "Safe",
     "scope": "User",
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo", "name": "Enabled" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo",
+          "name": "Enabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
     "undo": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo", "name": "Enabled" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo",
+          "name": "Enabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. You lose nothing you need.",
+    "facts": [
+      "Apps use the ID to build an ad profile across apps",
+      "Ads do not go away, they just stop being personalized",
+      "Per account setting"
+    ]
   },
   {
     "id": "privacy.tailored-experiences",
@@ -30,12 +61,43 @@
     "riskLevel": "Safe",
     "scope": "User",
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy", "name": "TailoredExperiencesWithDiagnosticDataEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy",
+          "name": "TailoredExperiencesWithDiagnosticDataEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
     "undo": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy", "name": "TailoredExperiencesWithDiagnosticDataEnabled" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy",
+          "name": "TailoredExperiencesWithDiagnosticDataEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization"
+    ],
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who wants less profiling.",
+    "facts": [
+      "Uses your diagnostic data to personalize tips and ads",
+      "Does not change how much diagnostic data is sent",
+      "Per account setting"
+    ]
   },
   {
     "id": "privacy.web-search-start",
@@ -49,9 +111,29 @@
     "riskLevel": "Safe",
     "scope": "User",
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\Windows\\Explorer", "name": "DisableSearchBoxSuggestions" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Policies\\Microsoft\\Windows\\Explorer",
+          "name": "DisableSearchBoxSuggestions"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search"
+    ],
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you like web results in Start.",
+    "facts": [
+      "When on, text typed in Start can be sent to Bing",
+      "Start returns local results faster without it",
+      "Per account policy"
+    ]
   },
   {
     "id": "privacy.activity-history",
@@ -65,11 +147,53 @@
     "riskLevel": "Low",
     "scope": "Machine",
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "EnableActivityFeed" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "PublishUserActivities" }, "data": { "kind": "DWord", "value": "0" } },
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "UploadUserActivities" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+          "name": "EnableActivityFeed"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+          "name": "PublishUserActivities"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+          "name": "UploadUserActivities"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you rely on picking up activities across devices.",
+    "facts": [
+      "Turns off three policies: activity feed, publish and upload",
+      "Applies to every account on the PC",
+      "Revert removes the policy values"
+    ]
   },
   {
     "id": "privacy.diagnostic-data-minimum",
@@ -83,8 +207,29 @@
     "riskLevel": "Low",
     "scope": "Machine",
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection", "name": "AllowTelemetry" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+          "name": "AllowTelemetry"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization"
+    ],
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. It only lowers what is sent to the minimum your edition allows.",
+    "facts": [
+      "Home and Pro treat 0 as Required, the lowest they support",
+      "Enterprise and Education honor the true Security level",
+      "The setting is a documented vendor policy",
+      "Applies to every account on the PC"
+    ]
   }
 ]

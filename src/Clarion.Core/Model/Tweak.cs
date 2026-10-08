@@ -17,6 +17,9 @@ public sealed record Tweak
     public required string Risk { get; init; }
     public required Evidence Evidence { get; init; }
     public required RiskLevel RiskLevel { get; init; }
+    public Recommendation Recommendation { get; init; } = Recommendation.Optional;
+    public string Advice { get; init; } = "";
+    public IReadOnlyList<string> Facts { get; init; } = [];
     public TweakScope Scope { get; init; } = TweakScope.User;
     public Requirements Requires { get; init; } = new();
     public bool NeedsReboot { get; init; }

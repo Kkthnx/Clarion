@@ -197,3 +197,16 @@ None. No analytics, no crash upload. Logs stay on disk and the user can export t
 3. **M3.** Debloat with protected list, Edge containment, OneDrive unhook.
 4. **M4.** Apps page, Updates controls, Repair tools.
 5. **M5.** Profiles, localization, signing, winget release.
+
+## 9. Tooltips and detail cards
+
+Every setting must explain itself so nobody has to research it. The catalog enforces this at build time.
+
+Each tweak carries:
+
+- **Recommendation.** Recommended, Optional, Only if it fits you, or Not suggested for most people.
+- **Advice.** One or two plain sentences saying who should turn it on and who should skip it.
+- **Facts.** Two to six short, checkable statements, each 140 characters or fewer.
+- **Benefit and risk,** plus a risk level, an evidence label, and the sources.
+
+The tooltip is built from these fields and always adds notes for scope, Windows version, editions, restarts and sign out. A plain text version of the same content feeds the detail pane, search, and exports. A tweak with no advice or fewer than two facts fails validation, and a Medium or High risk item can never be marked Recommended.
