@@ -1,0 +1,677 @@
+[
+  {
+    "id": "debloat.app.bingnews",
+    "category": "Debloat",
+    "name": "Remove News",
+    "summary": "Uninstall the News app for your account.",
+    "what": "Removes the Microsoft.BingNews package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you read news in this app.",
+    "facts": [
+      "A news reader app that is separate from the taskbar and Widgets feeds",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.BingNews",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.bingweather",
+    "category": "Debloat",
+    "name": "Remove Weather",
+    "summary": "Uninstall the Weather app for your account.",
+    "what": "Removes the Microsoft.BingWeather package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Skip it if you check weather in this app.",
+    "facts": [
+      "Separate from the weather shown on the taskbar",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.BingWeather",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.bingsearch",
+    "category": "Debloat",
+    "name": "Remove Bing Search",
+    "summary": "Uninstall the Bing Search app for your account.",
+    "what": "Removes the Microsoft.BingSearch package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested if you keep web results out of Start.",
+    "facts": [
+      "Provides web search results inside Windows search",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.BingSearch",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.gethelp",
+    "category": "Debloat",
+    "name": "Remove Get Help",
+    "summary": "Uninstall the Get Help app for your account.",
+    "what": "Removes the Microsoft.GetHelp package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Skip it if you contact Microsoft support from Windows.",
+    "facts": [
+      "Opens when you choose Get help in some Settings pages",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.GetHelp",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.getstarted",
+    "category": "Debloat",
+    "name": "Remove Tips",
+    "summary": "Uninstall the Tips app for your account.",
+    "what": "Removes the Microsoft.Getstarted package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who knows their way around Windows.",
+    "facts": [
+      "Shows tips and shortcuts, and can show suggestions",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.Getstarted",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.microsoftofficehub",
+    "category": "Debloat",
+    "name": "Remove Microsoft 365 app",
+    "summary": "Uninstall the Microsoft 365 app app for your account.",
+    "what": "Removes the Microsoft.MicrosoftOfficeHub package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you use it to launch Office.",
+    "facts": [
+      "A launcher for Microsoft 365 and does not contain Word or Excel itself",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.MicrosoftOfficeHub",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.microsoftsolitairecollection",
+    "category": "Debloat",
+    "name": "Remove Solitaire Collection",
+    "summary": "Uninstall the Solitaire Collection app for your account.",
+    "what": "Removes the Microsoft.MicrosoftSolitaireCollection package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you play it.",
+    "facts": [
+      "The free version shows ads",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.MicrosoftSolitaireCollection",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.windowsfeedbackhub",
+    "category": "Debloat",
+    "name": "Remove Feedback Hub",
+    "summary": "Uninstall the Feedback Hub app for your account.",
+    "what": "Removes the Microsoft.WindowsFeedbackHub package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Skip it if you send bug reports or run Insider builds.",
+    "facts": [
+      "The app used to send feedback and bug reports to Microsoft",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.WindowsFeedbackHub",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.powerautomatedesktop",
+    "category": "Debloat",
+    "name": "Remove Power Automate",
+    "summary": "Uninstall the Power Automate app for your account.",
+    "what": "Removes the Microsoft.PowerAutomateDesktop package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you build desktop automations.",
+    "facts": [
+      "A tool for recording and running automated tasks",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.PowerAutomateDesktop",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.todos",
+    "category": "Debloat",
+    "name": "Remove Microsoft To Do",
+    "summary": "Uninstall the Microsoft To Do app for your account.",
+    "what": "Removes the Microsoft.Todos package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Skip it if you keep tasks in To Do.",
+    "facts": [
+      "Tasks sync with your Microsoft account and stay there after removal",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.Todos",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.quickassist",
+    "category": "Debloat",
+    "name": "Remove Quick Assist",
+    "summary": "Uninstall the Quick Assist app for your account.",
+    "what": "Removes the MicrosoftCorporationII.QuickAssist package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Skip it if you help someone remotely or get remote help.",
+    "facts": [
+      "A remote help tool where one person shares their screen with another",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "MicrosoftCorporationII.QuickAssist",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.clipchamp.clipchamp",
+    "category": "Debloat",
+    "name": "Remove Clipchamp",
+    "summary": "Uninstall the Clipchamp app for your account.",
+    "what": "Removes the Clipchamp.Clipchamp package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested unless you edit video with it.",
+    "facts": [
+      "A video editor with a free and a paid tier",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Clipchamp.Clipchamp",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.yourphone",
+    "category": "Debloat",
+    "name": "Remove Phone Link",
+    "summary": "Uninstall the Phone Link app for your account.",
+    "what": "Removes the Microsoft.YourPhone package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Skip it if you link a phone to this PC.",
+    "facts": [
+      "Connects Android and iPhone to the PC for calls, texts and photos",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.YourPhone",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.windowsmaps",
+    "category": "Debloat",
+    "name": "Remove Maps",
+    "summary": "Uninstall the Maps app for your account.",
+    "what": "Removes the Microsoft.WindowsMaps package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested unless you use it for directions.",
+    "facts": [
+      "Offline maps need the app and location access",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.WindowsMaps",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.zunevideo",
+    "category": "Debloat",
+    "name": "Remove Movies and TV",
+    "summary": "Uninstall the Movies and TV app for your account.",
+    "what": "Removes the Microsoft.ZuneVideo package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested unless you play or buy video with it.",
+    "facts": [
+      "Older Microsoft video store and player app",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.ZuneVideo",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.people",
+    "category": "Debloat",
+    "name": "Remove People",
+    "summary": "Uninstall the People app for your account.",
+    "what": "Removes the Microsoft.People package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone.",
+    "facts": [
+      "A contacts app",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.People",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.microsoftstickynotes",
+    "category": "Debloat",
+    "name": "Remove Sticky Notes",
+    "summary": "Uninstall the Sticky Notes app for your account.",
+    "what": "Removes the Microsoft.MicrosoftStickyNotes package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Skip it if you keep notes there.",
+    "facts": [
+      "Notes sync with your Microsoft account",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.MicrosoftStickyNotes",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.microsoftteams",
+    "category": "Debloat",
+    "name": "Remove Chat (Microsoft Teams, personal)",
+    "summary": "Uninstall the Chat (Microsoft Teams, personal) app for your account.",
+    "what": "Removes the MicrosoftTeams package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you chat with family through it.",
+    "facts": [
+      "The personal chat app that sits on the taskbar of some Windows 11 builds",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "MicrosoftTeams",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.outlookforwindows",
+    "category": "Debloat",
+    "name": "Remove Outlook (new)",
+    "summary": "Uninstall the Outlook (new) app for your account.",
+    "what": "Removes the Microsoft.OutlookForWindows package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Skip it if you read mail in it.",
+    "facts": [
+      "The new Outlook replaces the older Mail and Calendar apps",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.OutlookForWindows",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.copilot",
+    "category": "Debloat",
+    "name": "Remove Copilot app",
+    "summary": "Uninstall the Copilot app app for your account.",
+    "what": "Removes the Microsoft.Copilot package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use it.",
+    "facts": [
+      "A chat assistant app. Removing it does not remove other Windows features",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.Copilot",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.gamingapp",
+    "category": "Debloat",
+    "name": "Remove Xbox app",
+    "summary": "Uninstall the Xbox app app for your account.",
+    "what": "Removes the Microsoft.GamingApp package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Skip it if you use Game Pass or install Xbox store games.",
+    "facts": [
+      "Needed to install and launch many Xbox and Game Pass titles",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.GamingApp",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.xboxgamingoverlay",
+    "category": "Debloat",
+    "name": "Remove Xbox Game Bar",
+    "summary": "Uninstall the Xbox Game Bar app for your account.",
+    "what": "Removes the Microsoft.XboxGamingOverlay package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Skip it if you record clips or use Win+G.",
+    "facts": [
+      "The overlay behind Win+G for capture and performance widgets",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.XboxGamingOverlay",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.mixedreality.portal",
+    "category": "Debloat",
+    "name": "Remove Mixed Reality Portal",
+    "summary": "Uninstall the Mixed Reality Portal app for your account.",
+    "what": "Removes the Microsoft.MixedReality.Portal package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you use a Windows Mixed Reality headset.",
+    "facts": [
+      "Only useful with a Windows Mixed Reality headset",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.MixedReality.Portal",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.microsoft3dviewer",
+    "category": "Debloat",
+    "name": "Remove 3D Viewer",
+    "summary": "Uninstall the 3D Viewer app for your account.",
+    "what": "Removes the Microsoft.Microsoft3DViewer package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested unless you open 3D model files with it.",
+    "facts": [
+      "A viewer for 3D model files",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.Microsoft3DViewer",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  },
+  {
+    "id": "debloat.app.skypeapp",
+    "category": "Debloat",
+    "name": "Remove Skype",
+    "summary": "Uninstall the Skype app for your account.",
+    "what": "Removes the Microsoft.SkypeApp package for the current account. Other accounts are not touched.",
+    "benefit": "Less clutter in Start and search, and no background updates for the app.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested unless you use Skype.",
+    "facts": [
+      "A consumer video calling app",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "appx.remove",
+        "name": "Microsoft.SkypeApp",
+        "allUsers": false,
+        "deprovision": false
+      }
+    ]
+  }
+]

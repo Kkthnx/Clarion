@@ -9,6 +9,8 @@ public enum ServiceStartType { Automatic, AutomaticDelayed, Manual, Disabled }
 [JsonDerivedType(typeof(DeleteRegistryValue), "registry.delete")]
 [JsonDerivedType(typeof(SetServiceStartType), "service.start-type")]
 [JsonDerivedType(typeof(SetTaskEnabled), "task.set-enabled")]
+[JsonDerivedType(typeof(RemoveAppxPackage), "appx.remove")]
+[JsonDerivedType(typeof(RestoreAppxPackage), "appx.restore")]
 public abstract record Operation
 {
     public abstract string Describe();
@@ -33,4 +35,17 @@ public sealed record SetServiceStartType(string Name, ServiceStartType StartType
 public sealed record SetTaskEnabled(string Path, bool Enabled) : Operation
 {
     public override string Describe() => $"{(Enabled ? "Enable" : "Disable")} scheduled task {Path}";
+}
+
+/// <summary>Removes an app package. AllUsers removes it for every account, Deprovision stops new accounts from getting it.</summary>
+public sealed record RemoveAppxPackage(string Name, bool AllUsers = false, bool Deprovision = false) : Operation
+{
+    public override string Describe() =>
+        $"Remove app {Name}{(AllUsers ? " for all accounts" : " for this account")}{(Deprovision ? " and from new accounts" : "")}";
+}
+
+/// <summary>Registers a removed app again. A null FamilyName means there was nothing to restore.</summary>
+public sealed record RestoreAppxPackage(string Name, string? FamilyName) : Operation
+{
+    public override string Describe() => $"Restore app {Name}";
 }

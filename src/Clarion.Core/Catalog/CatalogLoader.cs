@@ -100,6 +100,14 @@ public static class CatalogLoader
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: task changes need Machine scope.");
                         if (!task.Path.StartsWith('\\')) errors.Add($"{t.Id}: task path must start with a backslash: {task.Path}");
                         break;
+                    case RemoveAppxPackage app:
+                        if (!Appx.AppxSafety.IsValidName(app.Name)) errors.Add($"{t.Id}: invalid package name {app.Name}.");
+                        else if (Appx.AppxSafety.IsProtected(app.Name)) errors.Add($"{t.Id}: {app.Name} is a protected package.");
+                        if ((app.AllUsers || app.Deprovision) && t.Scope != TweakScope.Machine)
+                            errors.Add($"{t.Id}: all account app removal needs Machine scope.");
+                        break;
+                    case RestoreAppxPackage:
+                        break;
                     default:
                         errors.Add($"{t.Id}: unknown operation type.");
                         break;

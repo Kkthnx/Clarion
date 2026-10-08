@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Principal;
 using Clarion.Core.Abstractions;
+using Clarion.Core.Appx;
 using Clarion.Core.Model;
 using Microsoft.Win32;
 
@@ -119,5 +120,53 @@ public static class WindowsMachine
         using var key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion");
         var edition = key?.GetValue("EditionID") as string ?? "Unknown";
         return new MachineProfile(Environment.OSVersion.Version.Build, edition);
+    }
+}
+
+[SupportedOSPlatform("windows")]
+public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
+{
+    private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(5);
+    private AppxSnapshot? _cache;
+
+    public AppxSnapshot GetSnapshot()
+    {
+        if (_cache is not null) return _cache;
+        var result = Run(AppxScripts.Inventory());
+        _cache = AppxSnapshot.Parse(result.Output);
+        return _cache;
+    }
+
+    public void Remove(string name, bool allUsers, bool deprovision)
+    {
+        _cache = null;
+        Run(AppxScripts.Remove(name, allUsers, deprovision));
+        _cache = null;
+    }
+
+    public void Restore(string familyName)
+    {
+        _cache = null;
+        try
+        {
+            Run(AppxScripts.Restore(familyName));
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new InvalidOperationException($"{ex.Message} If Windows no longer has the package files, reinstall the app from the Microsoft Store.");
+        }
+        _cache = null;
+    }
+
+    private ProcessResult Run(string script)
+    {
+        var result = runner.Run("powershell.exe", AppxScripts.ToArguments(script), Timeout);
+        if (result.ExitCode != 0)
+        {
+            var first = (string.IsNullOrWhiteSpace(result.Error) ? result.Output : result.Error)
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
+            throw new InvalidOperationException(first ?? "PowerShell command failed.");
+        }
+        return result;
     }
 }

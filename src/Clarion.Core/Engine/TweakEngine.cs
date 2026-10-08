@@ -107,7 +107,11 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
     {
         if (failedUndo is not null)
         {
-            try { HandlerFor(failedUndo).Execute(failedUndo); }
+            try
+            {
+                var handler = HandlerFor(failedUndo);
+                if (!handler.IsSatisfied(failedUndo)) handler.Execute(failedUndo);
+            }
             catch (Exception ex) when (ex is not OutOfMemoryException) { }
         }
         foreach (var entry in Enumerable.Reverse(done))

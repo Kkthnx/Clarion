@@ -52,4 +52,14 @@ public sealed class WindowsReadOnlyTests
         Assert.Contains(errors, e => e.Contains("protected service"));
         Assert.Contains(errors, e => e.Contains("start with a backslash"));
     }
+
+    [Fact]
+    public void Appx_inventory_runs_for_real_and_parses()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var snap = new WindowsAppxStore(new WindowsProcessRunner()).GetSnapshot();
+        Assert.NotEmpty(snap.Installed);
+        Assert.True(snap.Installed.All(p => p.Name.Length > 0 && p.FamilyName.Length > 0));
+        Assert.Contains(snap.Installed, p => p.SignatureKind.Length > 0);
+    }
 }
