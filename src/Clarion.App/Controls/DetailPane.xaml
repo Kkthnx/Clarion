@@ -6,7 +6,7 @@
 
     <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
             BorderThickness="1" CornerRadius="8">
-        <ScrollViewer Padding="20">
+        <ScrollViewer Padding="20,20,26,20">
             <Grid>
                 <TextBlock x:Name="EmptyText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
                 <controls:TweakDetail x:Name="Detail" Visibility="Collapsed" />

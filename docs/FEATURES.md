@@ -215,7 +215,13 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 - Command line and setup files: apply a preset, a saved setup, or run cleanup without the window.
 - Privacy entries carry the policy file and name they come from, and a test checks each against the local definitions.
 
-## 15. Not yet included
+## 15. System information and install check
+
+- Windows edition, build, install date, activation, hardware, security state. One PowerShell start, read in the background.
+- Install check weighs known signs of a stripped or rebranded image: image names in system info, setup hardware check bypass, missing core services, missing Update or Defender services. Each sign is shown with its reason.
+- DNS shows as one dropdown with an encryption switch.
+
+## 16. Not yet included
 
 - Microsoft 365 and Office telemetry policies.
 - Per app permission lists.

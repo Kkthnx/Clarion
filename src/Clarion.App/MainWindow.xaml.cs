@@ -20,6 +20,7 @@ public sealed partial class MainWindow : Window
         SetTitleBar(AppTitleBar);
         ResizeToFit();
         AppWindow.Closing += OnClosing;
+        AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets", "Clarion.ico"));
         Root.ActualThemeChanged += (_, _) => UpdateCaptionButtons();
         UpdateCaptionButtons();
 
@@ -110,6 +111,7 @@ public sealed partial class MainWindow : Window
         switch (tag)
         {
             case "home": ContentFrame.Navigate(typeof(HomePage)); break;
+            case "system": ContentFrame.Navigate(typeof(SystemPage)); break;
             case "safety": ContentFrame.Navigate(typeof(SafetyPage)); break;
             case "cleanup": ContentFrame.Navigate(typeof(CleanupPage)); break;
             case "repair": ContentFrame.Navigate(typeof(RepairPage)); break;

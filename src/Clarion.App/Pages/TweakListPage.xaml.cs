@@ -98,7 +98,12 @@ public sealed partial class TweakListPage : Page
                 .ToList();
 
             FillTopics(inScope);
+            var dns = inScope.Where(DnsChooser.IsDnsItem).ToList();
+            var useChooser = dns.Count > 0 && _query.Length == 0 && _filter == "all";
+            Chooser.Visibility = useChooser && (_topic.Length == 0 || _topic == dns[0].Tweak.Topic) ? Visibility.Visible : Visibility.Collapsed;
+            if (useChooser) Chooser.Bind(dns);
             var items = inScope
+                .Where(i => !useChooser || !DnsChooser.IsDnsItem(i))
                 .Where(i => _topic.Length == 0 || i.Tweak.Topic == _topic)
                 .Where(Matches)
                 .Where(PassesFilter)
@@ -109,7 +114,9 @@ public sealed partial class TweakListPage : Page
 
             Visible.Clear();
             foreach (var i in items) Visible.Add(i);
-            CountText.Text = items.Count == inScope.Count ? $"{items.Count} settings" : $"{items.Count} of {inScope.Count} settings";
+            var total = useChooser ? inScope.Count - dns.Count + 1 : inScope.Count;
+            var shown = items.Count + (Chooser.Visibility == Visibility.Visible ? 1 : 0);
+            CountText.Text = shown == total ? $"{shown} settings" : $"{shown} of {total} settings";
             if (selected is not null) List.SelectedItem = items.FirstOrDefault(i => i.Id == selected);
             UpdateDetail();
         }

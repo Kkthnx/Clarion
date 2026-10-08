@@ -10,15 +10,41 @@ namespace Clarion.Core.Engine;
 /// </summary>
 public sealed class DnsHandler(IDnsStore store) : IOperationHandler
 {
+    private readonly object _gate = new();
+    private IReadOnlyList<AdapterDns>? _adapters;
+    private IReadOnlyList<DohRegistration>? _doh;
+
     public bool Handles(Operation op) => op is SetDnsProvider or RestoreDns;
 
-    public bool IsApplicable(Operation op) => store.GetAdapters().Count > 0;
+    // Each lookup starts PowerShell, so the answers are kept until something is written or Invalidate is called.
+    private IReadOnlyList<AdapterDns> Adapters()
+    {
+        lock (_gate) return _adapters ??= store.GetAdapters();
+    }
+
+    private IReadOnlyList<DohRegistration> Doh()
+    {
+        lock (_gate) return _doh ??= store.GetDohRegistrations();
+    }
+
+    public void Invalidate()
+    {
+        lock (_gate) { _adapters = null; _doh = null; }
+    }
+
+    public void Warm(IReadOnlyList<Operation> operations)
+    {
+        if (!operations.Any(Handles)) return;
+        Parallel.Invoke(() => Adapters(), () => Doh());
+    }
+
+    public bool IsApplicable(Operation op) => Adapters().Count > 0;
 
     public bool IsSatisfied(Operation op)
     {
-        var adapters = store.GetAdapters();
+        var adapters = Adapters();
         if (adapters.Count == 0) return false;
-        var doh = store.GetDohRegistrations();
+        var doh = Doh();
         switch (op)
         {
             case SetDnsProvider s:
@@ -38,12 +64,12 @@ public sealed class DnsHandler(IDnsStore store) : IOperationHandler
 
     public Operation CaptureUndo(Operation op)
     {
-        var adapters = store.GetAdapters();
+        var adapters = Adapters();
         var remove = new List<string>();
         var restore = new List<DohRegistration>();
         if (op is SetDnsProvider { Encrypted: true } s && DnsProviders.Find(s.Provider) is { } p)
         {
-            var existing = store.GetDohRegistrations();
+            var existing = Doh();
             foreach (var ip in p.Servers)
             {
                 var found = existing.FirstOrDefault(x => x.Address == ip);
@@ -55,6 +81,12 @@ public sealed class DnsHandler(IDnsStore store) : IOperationHandler
     }
 
     public void Execute(Operation op)
+    {
+        try { Run(op); }
+        finally { Invalidate(); }
+    }
+
+    private void Run(Operation op)
     {
         switch (op)
         {

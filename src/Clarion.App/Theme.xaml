@@ -13,6 +13,14 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
+            <SolidColorBrush x:Key="ScrollBarThumbFill" Color="#3A4A60" />
+            <SolidColorBrush x:Key="ScrollBarThumbFillPointerOver" Color="#5C8BCF" />
+            <SolidColorBrush x:Key="ScrollBarThumbFillPressed" Color="#7AA3DD" />
+            <SolidColorBrush x:Key="ScrollBarPanningThumbBackground" Color="#3A4A60" />
+            <SolidColorBrush x:Key="ScrollBarTrackFill" Color="#161D27" />
+            <SolidColorBrush x:Key="ScrollBarTrackFillPointerOver" Color="#161D27" />
+            <SolidColorBrush x:Key="ScrollBarTrackStroke" Color="Transparent" />
+            <SolidColorBrush x:Key="ScrollBarTrackStrokePointerOver" Color="Transparent" />
             <Color x:Key="ClBaseColor">#0F141B</Color>
             <Color x:Key="ClSidebarColor">#121820</Color>
             <Color x:Key="ClSurface1Color">#161D27</Color>
@@ -57,6 +65,14 @@
             <SolidColorBrush x:Key="ClDangerTintBrush" Color="{StaticResource ClDangerTintColor}" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="ScrollBarThumbFill" Color="#B4BFCE" />
+            <SolidColorBrush x:Key="ScrollBarThumbFillPointerOver" Color="#3F6DB5" />
+            <SolidColorBrush x:Key="ScrollBarThumbFillPressed" Color="#2F5A9E" />
+            <SolidColorBrush x:Key="ScrollBarPanningThumbBackground" Color="#B4BFCE" />
+            <SolidColorBrush x:Key="ScrollBarTrackFill" Color="#E8ECF2" />
+            <SolidColorBrush x:Key="ScrollBarTrackFillPointerOver" Color="#E8ECF2" />
+            <SolidColorBrush x:Key="ScrollBarTrackStroke" Color="Transparent" />
+            <SolidColorBrush x:Key="ScrollBarTrackStrokePointerOver" Color="Transparent" />
             <Color x:Key="ClBaseColor">#F3F5F8</Color>
             <Color x:Key="ClSidebarColor">#E9EDF2</Color>
             <Color x:Key="ClSurface1Color">#FFFFFF</Color>

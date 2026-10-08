@@ -24,7 +24,7 @@
                 <ColumnDefinition Width="400" />
             </Grid.ColumnDefinitions>
 
-            <ScrollViewer>
+            <ScrollViewer Padding="0,0,14,0">
                 <ItemsControl x:Name="Groups">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="pages:RepairGroup">

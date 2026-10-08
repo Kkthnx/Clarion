@@ -6,7 +6,7 @@ A native Windows app to remove bloat, cut tracking, clean up, repair and tune th
 
 ## Status
 
-Beta (0.1.0-beta.1). Expect rough edges and report them in Issues. The version stays below 1.0 until the beta is ironed out.
+Beta (0.1.0-beta.2). Expect rough edges and report them in Issues. The version stays below 1.0 until the beta is ironed out.
 
 ## What it does
 
@@ -17,6 +17,7 @@ Beta (0.1.0-beta.1). Expect rough edges and report them in Issues. The version s
 - Presets: Minimal, Standard, Advanced, Gaming and Privacy.
 - DNS providers with optional encrypted lookups.
 - Restore point before every batch, a change journal that restores the real prior value, and one click revert.
+- System page with hardware, security state and a check for customized Windows images.
 - Save your choices to a setup file and apply them later or on another PC.
 
 ## Command line
@@ -42,7 +43,7 @@ dotnet build src/Clarion.App -p:Platform=x64
 
 The executable is under `src/Clarion.App/bin/x64/Debug/net9.0-windows10.0.19041.0/Clarion.exe`.
 
-The release build is unsigned, so SmartScreen may warn on first run. Check the published SHA256 file.
+Releases include a setup program and a zip. They are unsigned, so SmartScreen may warn on first run. Check the published SHA256 files. To build the setup yourself, run `scripts/build-installer.ps1`.
 
 ## Docs
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="Clarion.App.Controls.DnsChooser"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+            BorderThickness="1" CornerRadius="8" Padding="16,14,16,14">
+        <StackPanel Spacing="10">
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="DNS provider" FontSize="15" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock x:Name="CurrentText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                    <ComboBox x:Name="ProviderBox" Width="220" AutomationProperties.Name="DNS provider"
+                              SelectionChanged="OnProviderChanged" />
+                    <ToggleSwitch x:Name="EncryptSwitch" OnContent="Encrypted" OffContent="Encrypted" MinWidth="0"
+                                  AutomationProperties.Name="Encrypt DNS lookups" Toggled="OnEncryptToggled" />
+                </StackPanel>
+            </Grid>
+            <TextBlock x:Name="AdviceText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
+        </StackPanel>
+    </Border>
+</UserControl>
