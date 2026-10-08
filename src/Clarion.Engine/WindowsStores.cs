@@ -4,6 +4,9 @@ using System.Runtime.Versioning;
 using System.Security.Principal;
 using Clarion.Core.Abstractions;
 using Clarion.Core.Appx;
+using Clarion.Core.Dns;
+using Clarion.Core.Engine;
+using System.Text.Json;
 using Clarion.Core.Features;
 using Clarion.Core.Power;
 using Clarion.Core.Model;
@@ -141,7 +144,7 @@ public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
     {
         lock (_gate)
         {
-            return _cache ??= AppxSnapshot.Parse(Run(AppxScripts.Inventory()).Output);
+            return _cache ??= AppxSnapshot.Parse(Run(AppxScripts.Inventory()));
         }
     }
 
@@ -166,17 +169,7 @@ public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
         lock (_gate) _cache = null;
     }
 
-    private ProcessResult Run(string script)
-    {
-        var result = runner.Run("powershell.exe", AppxScripts.ToArguments(script), Timeout);
-        if (result.ExitCode != 0)
-        {
-            var first = (string.IsNullOrWhiteSpace(result.Error) ? result.Output : result.Error)
-                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
-            throw new InvalidOperationException(first ?? "PowerShell command failed.");
-        }
-        return result;
-    }
+    private string Run(string script) => PowerShellHost.Run(runner, script, Timeout);
 }
 
 [SupportedOSPlatform("windows")]
@@ -234,17 +227,7 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
         lock (_gate) _capabilities.Remove(name);
     }
 
-    private string Run(string script)
-    {
-        var result = runner.Run("powershell.exe", FeatureScripts.ToArguments(script), Timeout);
-        if (result.ExitCode != 0)
-        {
-            var first = (string.IsNullOrWhiteSpace(result.Error) ? result.Output : result.Error)
-                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
-            throw new InvalidOperationException(first ?? "PowerShell command failed.");
-        }
-        return result.Output;
-    }
+    private string Run(string script) => PowerShellHost.Run(runner, script, Timeout);
 }
 
 [SupportedOSPlatform("windows")]
@@ -282,12 +265,7 @@ public sealed class WindowsPowerStore(IProcessRunner runner) : IPowerStore
     private ProcessResult Run(string args)
     {
         var result = runner.Run("powercfg.exe", args, Timeout);
-        if (result.ExitCode != 0)
-        {
-            var first = (string.IsNullOrWhiteSpace(result.Error) ? result.Output : result.Error)
-                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
-            throw new InvalidOperationException(first ?? "powercfg failed.");
-        }
+        if (result.ExitCode != 0) throw new InvalidOperationException(PowerShellHost.FirstLine(result.Error, result.Output, "powercfg failed."));
         return result;
     }
 
@@ -359,5 +337,71 @@ public sealed class WindowsStreamingRunner : Clarion.Core.Actions.IStreamingRunn
         var text = line.ToString().Trim();
         line.Clear();
         if (text.Length > 0) onLine(text);
+    }
+}
+
+[SupportedOSPlatform("windows")]
+public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
+{
+    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(60);
+
+    public IReadOnlyList<AdapterDns> GetAdapters()
+    {
+        const string script =
+            "$a=@(Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.HardwareInterface } | ForEach-Object { " +
+            "$s=@((Get-DnsClientServerAddress -InterfaceIndex $_.InterfaceIndex -AddressFamily IPv4).ServerAddresses); " +
+            "[pscustomobject]@{IfIndex=[int]$_.InterfaceIndex;Alias=$_.Name;Servers=$s} }); " +
+            "ConvertTo-Json -InputObject @{adapters=$a} -Depth 4 -Compress";
+        using var doc = JsonDocument.Parse(PowerShellHost.Run(runner, script, Timeout));
+        return doc.RootElement.GetProperty("adapters").EnumerateArray().Select(e => new AdapterDns(
+            e.GetProperty("IfIndex").GetInt32(),
+            e.GetProperty("Alias").GetString() ?? "",
+            e.GetProperty("Servers").ValueKind == JsonValueKind.Array
+                ? e.GetProperty("Servers").EnumerateArray().Select(x => x.GetString() ?? "").Where(DnsProviders.IsIpv4).ToList()
+                : [])).ToList();
+    }
+
+    public void SetServers(int ifIndex, IReadOnlyList<string> servers)
+    {
+        if (!servers.All(DnsProviders.IsIpv4)) throw new ArgumentException("DNS servers must be IPv4 addresses.");
+        PowerShellHost.Run(runner, $"Set-DnsClientServerAddress -InterfaceIndex {ifIndex} -ServerAddresses ({string.Join(",", servers.Select(s => $"'{s}'"))})", Timeout);
+    }
+
+    public void ResetServers(int ifIndex) =>
+        PowerShellHost.Run(runner, $"Set-DnsClientServerAddress -InterfaceIndex {ifIndex} -ResetServerAddresses", Timeout);
+
+    public IReadOnlyList<DohRegistration> GetDohRegistrations()
+    {
+        const string script =
+            "$d=@(Get-DnsClientDohServerAddress | ForEach-Object { [pscustomobject]@{Address=$_.ServerAddress;Template=$_.DohTemplate;Auto=[bool]$_.AutoUpgrade;Fallback=[bool]$_.AllowFallbackToUdp} }); " +
+            "ConvertTo-Json -InputObject @{doh=$d} -Depth 4 -Compress";
+        try
+        {
+            using var doc = JsonDocument.Parse(PowerShellHost.Run(runner, script, Timeout));
+            return doc.RootElement.GetProperty("doh").EnumerateArray().Select(e => new DohRegistration(
+                e.GetProperty("Address").GetString() ?? "", e.GetProperty("Template").GetString() ?? "",
+                e.GetProperty("Auto").GetBoolean(), e.GetProperty("Fallback").GetBoolean()))
+                .Where(r => DnsProviders.IsIpv4(r.Address)).ToList();
+        }
+        catch (InvalidOperationException)
+        {
+            return []; // Windows 10 has no encrypted DNS client
+        }
+    }
+
+    public void UpsertDoh(DohRegistration r)
+    {
+        if (!DnsProviders.IsIpv4(r.Address) || !Uri.TryCreate(r.Template, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
+            throw new ArgumentException("Not a valid encrypted DNS entry.");
+        var known = GetDohRegistrations().Any(x => x.Address == r.Address);
+        var verb = known ? "Set" : "Add";
+        PowerShellHost.Run(runner,
+            $"{verb}-DnsClientDohServerAddress -ServerAddress '{r.Address}' -DohTemplate '{r.Template}' -AutoUpgrade ${r.AutoUpgrade} -AllowFallbackToUdp ${r.AllowFallbackToUdp}", Timeout);
+    }
+
+    public void RemoveDoh(string address)
+    {
+        if (!DnsProviders.IsIpv4(address)) throw new ArgumentException("Not an IPv4 address.");
+        PowerShellHost.Run(runner, $"Remove-DnsClientDohServerAddress -ServerAddress '{address}'", Timeout);
     }
 }

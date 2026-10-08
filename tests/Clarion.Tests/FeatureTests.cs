@@ -147,7 +147,7 @@ public sealed class FeatureTests : IDisposable
     [Fact]
     public void Scripts_use_the_documented_switches_and_are_encoded()
     {
-        var args = FeatureScripts.ToArguments(FeatureScripts.SetFeature("Microsoft-Hyper-V-All", true));
+        var args = PowerShellHost.ToArguments(FeatureScripts.SetFeature("Microsoft-Hyper-V-All", true));
         var b64 = args[(args.IndexOf("-EncodedCommand ", StringComparison.Ordinal) + "-EncodedCommand ".Length)..];
         var on = Encoding.Unicode.GetString(Convert.FromBase64String(b64));
         Assert.Contains("Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-All' -All -NoRestart", on);

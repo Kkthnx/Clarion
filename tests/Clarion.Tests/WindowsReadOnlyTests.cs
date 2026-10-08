@@ -97,4 +97,16 @@ public sealed class WindowsReadOnlyTests(Xunit.Abstractions.ITestOutputHelper ou
             Assert.True(Clarion.Core.Cleanup.PathGuard.IsSafe(folder, platform), $"{folder} is on this PC but fails the safety check");
         }
     }
+
+    [Fact]
+    public void Dns_store_reads_the_real_adapters_and_encrypted_dns_entries()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var store = new WindowsDnsStore(new WindowsProcessRunner());
+        var adapters = store.GetAdapters();
+        output.WriteLine("adapters: " + string.Join("; ", adapters.Select(a => $"{a.Alias} [{string.Join(",", a.Servers)}]")));
+        Assert.All(adapters, a => Assert.True(a.IfIndex > 0));
+        var doh = store.GetDohRegistrations();
+        output.WriteLine($"encrypted dns entries: {doh.Count}");
+    }
 }

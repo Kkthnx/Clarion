@@ -170,4 +170,44 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
         }
         Assert.DoesNotContain(store.List(), p => p.Guid == created);
     }
+
+    [Fact]
+    public void Real_dns_provider_switch_and_exact_restore()
+    {
+        if (!Enabled) return;
+        var runner = new WindowsProcessRunner();
+        var store = new WindowsDnsStore(runner);
+        var before = store.GetAdapters();
+        if (before.Count == 0) return;
+        var dohBefore = store.GetDohRegistrations();
+
+        var engine = new TweakEngine([new DnsHandler(store)], new ChangeJournal(Path.Combine(_dir, "j.jsonl")));
+        var tweak = Make(new SetDnsProvider("google", Encrypted: true));
+        try
+        {
+            var applied = engine.Apply(tweak, Guid.NewGuid());
+            output.WriteLine($"apply: {applied.Success} {applied.Error}");
+            output.WriteLine("after apply: " + string.Join("; ", store.GetAdapters().Select(a => string.Join(",", a.Servers))));
+            Assert.True(applied.Success, applied.Error);
+            Assert.All(store.GetAdapters(), a => Assert.Equal(["8.8.8.8", "8.8.4.4"], a.Servers.Order(StringComparer.Ordinal).Reverse().ToArray()));
+            Assert.Equal(TweakState.Applied, engine.Detect(tweak));
+            var reverted = engine.Revert(tweak, Guid.NewGuid());
+            output.WriteLine($"revert: {reverted.Success} {reverted.Error}");
+            output.WriteLine("after revert: " + string.Join("; ", store.GetAdapters().Select(a => string.Join(",", a.Servers))));
+            Assert.True(reverted.Success, reverted.Error);
+        }
+        finally
+        {
+            foreach (var a in before)
+            {
+                if (a.Servers.Count == 0) store.ResetServers(a.IfIndex); else store.SetServers(a.IfIndex, a.Servers);
+            }
+            foreach (var d in dohBefore) store.UpsertDoh(d);
+        }
+
+        foreach (var a in before)
+            Assert.Equal(a.Servers, store.GetAdapters().Single(x => x.IfIndex == a.IfIndex).Servers);
+        foreach (var d in dohBefore)
+            Assert.Equal(d, store.GetDohRegistrations().Single(x => x.Address == d.Address));
+    }
 }

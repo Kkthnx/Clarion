@@ -23,19 +23,24 @@ public static class CatalogLoader
         Converters = { new JsonStringEnumConverter() },
     };
 
-    public static IReadOnlyList<Tweak> LoadEmbedded()
+    /// <summary>Reads every embedded catalog file whose resource name contains the marker, in name order.</summary>
+    private static List<T> LoadEmbeddedFiles<T>(string marker)
     {
         var asm = typeof(CatalogLoader).Assembly;
-        var all = new List<Tweak>();
-        foreach (var name in asm.GetManifestResourceNames().Where(n => n.Contains(".Catalog.Data.", StringComparison.Ordinal) && n.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).Order())
+        var all = new List<T>();
+        foreach (var name in asm.GetManifestResourceNames().Where(n => n.Contains(marker, StringComparison.Ordinal) && n.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).Order())
         {
             using var stream = asm.GetManifestResourceStream(name)!;
-            var items = JsonSerializer.Deserialize<List<Tweak>>(stream, Options)
-                        ?? throw new InvalidDataException($"Empty catalog file {name}");
-            all.AddRange(items);
+            all.AddRange(JsonSerializer.Deserialize<List<T>>(stream, Options) ?? throw new InvalidDataException($"Empty catalog file {name}"));
         }
         return all;
     }
+
+    public static IReadOnlyList<Tweak> LoadEmbedded() => LoadEmbeddedFiles<Tweak>(".Catalog.Data.");
+
+    public static IReadOnlyList<Actions.ActionDef> LoadActions() => LoadEmbeddedFiles<Actions.ActionDef>(".Catalog.Actions.");
+
+    public static IReadOnlyList<Cleanup.CleanTarget> LoadCleanup() => LoadEmbeddedFiles<Cleanup.CleanTarget>(".Catalog.Cleanup.");
 
     /// <summary>Named groups of tweak ids, such as minimal or gaming.</summary>
     public static IReadOnlyDictionary<string, IReadOnlyList<string>> LoadPresets()
@@ -47,28 +52,18 @@ public static class CatalogLoader
         return raw.ToDictionary(kv => kv.Key, kv => (IReadOnlyList<string>)kv.Value, StringComparer.OrdinalIgnoreCase);
     }
 
-    public static IReadOnlyList<Actions.ActionDef> LoadActions()
-    {
-        var asm = typeof(CatalogLoader).Assembly;
-        var all = new List<Actions.ActionDef>();
-        foreach (var name in asm.GetManifestResourceNames().Where(n => n.Contains(".Catalog.Actions.", StringComparison.Ordinal)).Order())
-        {
-            using var stream = asm.GetManifestResourceStream(name)!;
-            all.AddRange(JsonSerializer.Deserialize<List<Actions.ActionDef>>(stream, Options) ?? []);
-        }
-        return all;
-    }
 
-    public static IReadOnlyList<Cleanup.CleanTarget> LoadCleanup()
+    /// <summary>The rules every catalog item must follow, whether it is a setting, a repair job or a cleanup row.</summary>
+    private static void CheckCommon(string id, string advice, IReadOnlyList<string> facts, Recommendation recommendation, RiskLevel risk, List<string> errors)
     {
-        var asm = typeof(CatalogLoader).Assembly;
-        var all = new List<Cleanup.CleanTarget>();
-        foreach (var name in asm.GetManifestResourceNames().Where(n => n.Contains(".Catalog.Cleanup.", StringComparison.Ordinal)).Order())
+        if (string.IsNullOrWhiteSpace(advice)) errors.Add($"{id}: advice is empty.");
+        if (facts.Count < 2 || facts.Count > 6) errors.Add($"{id}: needs 2 to 6 facts for the tooltip.");
+        foreach (var fact in facts)
         {
-            using var stream = asm.GetManifestResourceStream(name)!;
-            all.AddRange(JsonSerializer.Deserialize<List<Cleanup.CleanTarget>>(stream, Options) ?? []);
+            if (string.IsNullOrWhiteSpace(fact) || fact.Length > 140) errors.Add($"{id}: each fact must be 1 to 140 characters.");
         }
-        return all;
+        if (recommendation == Recommendation.Recommended && risk >= RiskLevel.Medium)
+            errors.Add($"{id}: a Medium or High risk item cannot be marked Recommended.");
     }
 
     private static readonly string[] CleanupTokens = ["%LOCALAPPDATA%", "%APPDATA%", "%LOCALLOW%", "%PROGRAMDATA%", "%SystemRoot%", "%TEMP%", "%SystemDrive%"];
@@ -80,10 +75,8 @@ public static class CatalogLoader
         foreach (var t in targets)
         {
             if (!seen.Add(t.Id)) errors.Add($"{t.Id}: duplicate id.");
-            if (string.IsNullOrWhiteSpace(t.Advice)) errors.Add($"{t.Id}: advice is empty.");
-            if (t.Facts.Count < 2 || t.Facts.Count > 6) errors.Add($"{t.Id}: needs 2 to 6 facts for the tooltip.");
+            CheckCommon(t.Id, t.Advice, t.Facts, t.Recommendation, t.RiskLevel, errors);
             if (t.Rules.Count == 0) errors.Add($"{t.Id}: no rules.");
-            if (t.Recommendation == Recommendation.Recommended && t.RiskLevel >= RiskLevel.Medium) errors.Add($"{t.Id}: a Medium or High risk item cannot be marked Recommended.");
             if (t.Irreversible && t.DefaultOn) errors.Add($"{t.Id}: an irreversible row cannot start ticked.");
             if (t.Irreversible && t.RiskLevel < RiskLevel.Medium) errors.Add($"{t.Id}: an irreversible row must be Medium risk or higher.");
             foreach (var rule in t.Rules)
@@ -112,12 +105,9 @@ public static class CatalogLoader
         foreach (var a in actions)
         {
             if (!seen.Add(a.Id)) errors.Add($"{a.Id}: duplicate id.");
-            if (string.IsNullOrWhiteSpace(a.Advice)) errors.Add($"{a.Id}: advice is empty.");
-            if (a.Facts.Count < 2 || a.Facts.Count > 6) errors.Add($"{a.Id}: needs 2 to 6 facts for the tooltip.");
+            CheckCommon(a.Id, a.Advice, a.Facts, a.Recommendation, a.RiskLevel, errors);
             if (a.Steps.Count == 0) errors.Add($"{a.Id}: no steps.");
             if (a.EstimatedMinutes < 1) errors.Add($"{a.Id}: estimated minutes must be at least 1.");
-            if (a.Recommendation == Recommendation.Recommended && a.RiskLevel >= RiskLevel.Medium)
-                errors.Add($"{a.Id}: a Medium or High risk item cannot be marked Recommended.");
             foreach (var step in a.Steps.Concat(a.Always))
             {
                 switch (step)
@@ -162,14 +152,7 @@ public static class CatalogLoader
             }
 
             if (string.IsNullOrWhiteSpace(t.Topic)) errors.Add($"{t.Id}: topic is empty.");
-            if (string.IsNullOrWhiteSpace(t.Advice)) errors.Add($"{t.Id}: advice is empty.");
-            if (t.Facts.Count < 2 || t.Facts.Count > 6) errors.Add($"{t.Id}: needs 2 to 6 facts for the tooltip.");
-            foreach (var fact in t.Facts)
-            {
-                if (string.IsNullOrWhiteSpace(fact) || fact.Length > 140) errors.Add($"{t.Id}: each fact must be 1 to 140 characters.");
-            }
-            if (t.Recommendation == Recommendation.Recommended && t.RiskLevel >= RiskLevel.Medium)
-                errors.Add($"{t.Id}: a Medium or High risk item cannot be marked Recommended.");
+            CheckCommon(t.Id, t.Advice, t.Facts, t.Recommendation, t.RiskLevel, errors);
             if (t.Apply.Count == 0) errors.Add($"{t.Id}: no apply operations.");
             if (t.Evidence is Evidence.Proven && t.Sources.Count == 0) errors.Add($"{t.Id}: Proven evidence needs at least one source.");
 
@@ -210,6 +193,12 @@ public static class CatalogLoader
                         break;
                     case SetHibernation:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: power changes need Machine scope.");
+                        break;
+                    case SetDnsProvider dns:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: DNS changes need Machine scope.");
+                        if (Dns.DnsProviders.Find(dns.Provider) is null) errors.Add($"{t.Id}: unknown DNS provider {dns.Provider}.");
+                        break;
+                    case RestoreDns:
                         break;
                     case SetWindowsFeature feat:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: feature changes need Machine scope.");

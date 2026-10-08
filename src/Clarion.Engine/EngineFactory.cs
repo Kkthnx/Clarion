@@ -26,6 +26,7 @@ public static class EngineFactory
             new AppxHandler(new WindowsAppxStore(runner)),
             new FeatureHandler(new WindowsFeatureStore(runner)),
             new PowerHandler(new WindowsPowerStore(runner)),
+            new DnsHandler(new WindowsDnsStore(runner)),
         };
         var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"));
         var engine = new TweakEngine(handlers, journal);

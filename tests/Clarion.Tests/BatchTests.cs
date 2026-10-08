@@ -50,7 +50,7 @@ public sealed class BatchTests : IDisposable
         Assert.True(result.AllSucceeded);
         Assert.Equal("0", seenDuring);
         Assert.Equal("1440", _reg.Read(Freq).Data!.Value);
-        Assert.Contains("Checkpoint-Computer", Assert.Single(_proc.Calls));
+        Assert.Contains("Checkpoint-Computer", PowerShellHost.Decode(Assert.Single(_proc.Calls)));
     }
 
     [Fact]
@@ -105,9 +105,9 @@ public sealed class BatchTests : IDisposable
     {
         var svc = new RestorePointService(_reg, _proc);
         svc.Create("x'; Remove-Item C:\\ -Recurse; '");
-        var call = Assert.Single(_proc.Calls);
+        var call = PowerShellHost.Decode(Assert.Single(_proc.Calls));
         Assert.DoesNotContain("'x'", call);
-        Assert.DoesNotContain(";", call.Replace("Checkpoint-Computer", ""));
+        Assert.DoesNotContain(";", call.Replace("Checkpoint-Computer", "").Replace("$ErrorActionPreference='Stop'; [Console]::OutputEncoding=[Text.Encoding]::UTF8; ", ""));
     }
 
     [Fact]

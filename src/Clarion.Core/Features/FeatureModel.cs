@@ -48,16 +48,14 @@ public static partial class FeatureRules
 
 public static class FeatureScripts
 {
-    private const string Prelude = "$ErrorActionPreference='Stop'; [Console]::OutputEncoding=[Text.Encoding]::UTF8; ";
-
-    public static string Inventory() => Prelude +
+    public static string Inventory() =>
         "$f=@(Get-WindowsOptionalFeature -Online | Select-Object FeatureName,@{n='State';e={\"$($_.State)\"}}); " +
         "ConvertTo-Json -InputObject @{features=$f} -Depth 3 -Compress";
 
     public static string CapabilityState(string name)
     {
         Require(name);
-        return Prelude +
+        return
             $"$c=@(Get-WindowsCapability -Online -Name '{name}' | Select-Object Name,@{{n='State';e={{\"$($_.State)\"}}}}); " +
             "ConvertTo-Json -InputObject @{capabilities=$c} -Depth 3 -Compress";
     }
@@ -65,7 +63,7 @@ public static class FeatureScripts
     public static string SetFeature(string name, bool enabled)
     {
         Require(name);
-        return Prelude + (enabled
+        return (enabled
             ? $"Enable-WindowsOptionalFeature -Online -FeatureName '{name}' -All -NoRestart | Out-Null"
             : $"Disable-WindowsOptionalFeature -Online -FeatureName '{name}' -NoRestart | Out-Null");
     }
@@ -73,14 +71,10 @@ public static class FeatureScripts
     public static string SetCapability(string name, bool installed)
     {
         Require(name);
-        return Prelude + (installed
+        return (installed
             ? $"Add-WindowsCapability -Online -Name '{name}' | Out-Null"
             : $"Remove-WindowsCapability -Online -Name '{name}' | Out-Null");
     }
-
-    public static string ToArguments(string script) =>
-        "-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand " +
-        Convert.ToBase64String(Encoding.Unicode.GetBytes(script));
 
     public static Dictionary<string, string> ParseStates(string json, string arrayName, string nameProp)
     {

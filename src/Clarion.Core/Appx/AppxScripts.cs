@@ -8,9 +8,7 @@ namespace Clarion.Core.Appx;
 /// </summary>
 public static class AppxScripts
 {
-    private const string Prelude = "$ErrorActionPreference='Stop'; [Console]::OutputEncoding=[Text.Encoding]::UTF8; ";
-
-    public static string Inventory() => Prelude +
+    public static string Inventory() =>
         "$i=@(Get-AppxPackage -AllUsers | Select-Object Name,PackageFullName,PackageFamilyName,NonRemovable,IsFramework,@{n='SignatureKind';e={\"$($_.SignatureKind)\"}}); " +
         "$c=@(Get-AppxPackage | ForEach-Object { $_.Name }); " +
         "$p=@(); $k=$true; try { $p=@(Get-AppxProvisionedPackage -Online | ForEach-Object { $_.DisplayName }) } catch { $k=$false }; " +
@@ -19,7 +17,7 @@ public static class AppxScripts
     public static string Remove(string name, bool allUsers, bool deprovision)
     {
         RequireSafeName(name);
-        var sb = new StringBuilder(Prelude);
+        var sb = new StringBuilder();
         sb.Append(allUsers
             ? $"Get-AppxPackage -AllUsers -Name '{name}' | Remove-AppxPackage -AllUsers; "
             : $"Get-AppxPackage -Name '{name}' | Remove-AppxPackage; ");
@@ -34,14 +32,7 @@ public static class AppxScripts
     public static string Restore(string familyName)
     {
         RequireSafeName(familyName);
-        return Prelude + $"Add-AppxPackage -RegisterByFamilyName -MainPackage '{familyName}'";
-    }
-
-    /// <summary>Command line arguments that run a script without any shell quoting.</summary>
-    public static string ToArguments(string script)
-    {
-        var encoded = Convert.ToBase64String(Encoding.Unicode.GetBytes(script));
-        return $"-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand {encoded}";
+        return $"Add-AppxPackage -RegisterByFamilyName -MainPackage '{familyName}'";
     }
 
     private static void RequireSafeName(string value)

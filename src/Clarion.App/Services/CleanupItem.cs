@@ -32,27 +32,13 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
     public string Name => Target.Name;
     public string Summary => Target.Summary;
     public string RecommendationText => Tooltip.RecommendationLabel;
-    public string RiskText => Target.RiskLevel == RiskLevel.Safe ? "Safe" : $"{Tooltip.RiskLabel} risk";
+    public string RiskText => DetailHelpers.RiskText(Target.RiskLevel);
     public string EvidenceText => Tooltip.EvidenceLabel;
     public IReadOnlyList<string> Provenance => [];
-    public IReadOnlyList<SourceLink> SourceLinks => Target.Sources
-        .Where(s => Uri.TryCreate(s, UriKind.Absolute, out _))
-        .Select(s => new SourceLink(new Uri(s).Host + new Uri(s).AbsolutePath, new Uri(s))).ToList();
+    public IReadOnlyList<SourceLink> SourceLinks => DetailHelpers.Links(Target.Sources);
 
-    public ChipKind RecommendationKind => Target.Recommendation switch
-    {
-        Recommendation.Recommended => ChipKind.Ok,
-        Recommendation.OnlyIf => ChipKind.Warn,
-        Recommendation.Avoid => ChipKind.Danger,
-        _ => ChipKind.Neutral,
-    };
-
-    public ChipKind RiskKind => Target.RiskLevel switch
-    {
-        RiskLevel.Safe or RiskLevel.Low => ChipKind.Ok,
-        RiskLevel.Medium => ChipKind.Warn,
-        _ => ChipKind.Danger,
-    };
+    public ChipKind RecommendationKind => DetailHelpers.RecommendationKind(Target.Recommendation);
+    public ChipKind RiskKind => DetailHelpers.RiskKind(Target.RiskLevel);
 
     /// <summary>The folders a scan found, so people can see exactly what will be touched.</summary>
     public IReadOnlyList<string> ExactChanges =>

@@ -141,7 +141,7 @@ public sealed class AppxTests : IDisposable
     [Fact]
     public void Scripts_are_encoded_and_decode_to_the_expected_command()
     {
-        var args = AppxScripts.ToArguments(AppxScripts.Remove("Contoso.Widget", true, true));
+        var args = PowerShellHost.ToArguments(AppxScripts.Remove("Contoso.Widget", true, true));
         Assert.Contains("-EncodedCommand", args);
         Assert.DoesNotContain("Contoso", args);
 

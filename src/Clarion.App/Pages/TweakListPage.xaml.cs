@@ -136,13 +136,7 @@ public sealed partial class TweakListPage : Page
 
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateDetail();
 
-    /// <summary>The tooltip body is built the first time it opens, so a long list does not build hundreds of controls up front.</summary>
-    private void OnTipOpened(object sender, RoutedEventArgs e)
-    {
-        if (sender is not ToolTip tip || tip.Content is TweakDetail) return;
-        if (tip.Tag is not TweakItem item) return;
-        tip.Content = new TweakDetail { Item = item, ShowTechnical = false, Width = 400 };
-    }
+    private void OnTipOpened(object sender, RoutedEventArgs e) => DetailHelpers.FillTipOnOpen(sender);
 
     private void UpdateDetail()
     {

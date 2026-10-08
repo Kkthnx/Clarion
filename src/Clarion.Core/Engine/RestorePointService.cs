@@ -30,10 +30,10 @@ public sealed class RestorePointService(IRegistryStore registry, IProcessRunner 
         try
         {
             registry.Write(Frequency, new RegistryData(RegistryKind.DWord, "0"));
-            var result = runner.Run("powershell.exe", Args($"Checkpoint-Computer -Description '{safe}' -RestorePointType MODIFY_SETTINGS -ErrorAction Stop"), Timeout);
+            var result = runner.Run("powershell.exe", PowerShellHost.ToArguments($"Checkpoint-Computer -Description '{safe}' -RestorePointType MODIFY_SETTINGS -ErrorAction Stop"), Timeout);
             return result.ExitCode == 0
                 ? TweakResult.Ok()
-                : TweakResult.Fail(FirstLine(result.Error, result.Output, "Restore point failed."));
+                : TweakResult.Fail(PowerShellHost.FirstLine(result.Error, result.Output, "Restore point failed."));
         }
         finally
         {
@@ -45,21 +45,12 @@ public sealed class RestorePointService(IRegistryStore registry, IProcessRunner 
     public TweakResult EnableProtection(string drive)
     {
         var safe = Sanitize(drive);
-        var result = runner.Run("powershell.exe", Args($"Enable-ComputerRestore -Drive '{safe}' -ErrorAction Stop"), Timeout);
+        var result = runner.Run("powershell.exe", PowerShellHost.ToArguments($"Enable-ComputerRestore -Drive '{safe}' -ErrorAction Stop"), Timeout);
         return result.ExitCode == 0
             ? TweakResult.Ok()
-            : TweakResult.Fail(FirstLine(result.Error, result.Output, "Could not turn on System Protection."));
+            : TweakResult.Fail(PowerShellHost.FirstLine(result.Error, result.Output, "Could not turn on System Protection."));
     }
-
-    private static string Args(string command) =>
-        $"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"{command}\"";
 
     private static string Sanitize(string text) =>
         new(text.Where(c => char.IsLetterOrDigit(c) || c is ' ' or ':' or '\\' or '-' or '_' or '.').ToArray());
-
-    private static string FirstLine(string error, string output, string fallback)
-    {
-        var text = string.IsNullOrWhiteSpace(error) ? output : error;
-        return text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault() ?? fallback;
-    }
 }

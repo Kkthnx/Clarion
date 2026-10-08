@@ -22,29 +22,15 @@ public sealed class ActionItem : IDetailSource
     public string Summary => Def.Summary;
     public string Category => Def.Category;
     public string RecommendationText => Tooltip.RecommendationLabel;
-    public string RiskText => Def.RiskLevel == RiskLevel.Safe ? "Safe" : $"{Tooltip.RiskLabel} risk";
+    public string RiskText => DetailHelpers.RiskText(Def.RiskLevel);
     public string EvidenceText => Tooltip.EvidenceLabel;
     public string DurationText => Def.EstimatedMinutes <= 1 ? "About a minute" : $"About {Def.EstimatedMinutes} minutes";
     public IReadOnlyList<string> Provenance => [];
     public IReadOnlyList<string> ExactChanges => Def.Steps.Select(s => s.Describe()).ToList();
-    public IReadOnlyList<SourceLink> SourceLinks => Def.Sources
-        .Where(s => Uri.TryCreate(s, UriKind.Absolute, out _))
-        .Select(s => new SourceLink(new Uri(s).Host + new Uri(s).AbsolutePath, new Uri(s))).ToList();
+    public IReadOnlyList<SourceLink> SourceLinks => DetailHelpers.Links(Def.Sources);
 
-    public ChipKind RecommendationKind => Def.Recommendation switch
-    {
-        Recommendation.Recommended => ChipKind.Ok,
-        Recommendation.OnlyIf => ChipKind.Warn,
-        Recommendation.Avoid => ChipKind.Danger,
-        _ => ChipKind.Neutral,
-    };
-
-    public ChipKind RiskKind => Def.RiskLevel switch
-    {
-        RiskLevel.Safe or RiskLevel.Low => ChipKind.Ok,
-        RiskLevel.Medium => ChipKind.Warn,
-        _ => ChipKind.Danger,
-    };
+    public ChipKind RecommendationKind => DetailHelpers.RecommendationKind(Def.Recommendation);
+    public ChipKind RiskKind => DetailHelpers.RiskKind(Def.RiskLevel);
 
     private static IReadOnlyList<string> BuildNotes(ActionDef d)
     {

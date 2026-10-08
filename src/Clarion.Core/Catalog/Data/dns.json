@@ -1,0 +1,352 @@
+[
+  {
+    "id": "dns.cloudflare",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use Cloudflare DNS",
+    "summary": "Look up websites through Cloudflare instead of your provider.",
+    "what": "Sets the DNS servers of every connected network adapter to 1.1.1.1 and 1.0.0.1. A fast public resolver run by Cloudflare. It does not filter anything.",
+    "benefit": "Websites can load faster and you are no longer tied to your internet provider DNS.",
+    "risk": "Low. Networks that require their own DNS, such as work and school networks, may stop resolving internal names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if your provider DNS is slow or unreliable. Skip it on work or school networks.",
+    "facts": [
+      "No filtering of sites",
+      "Servers: 1.1.1.1 and 1.0.0.1",
+      "Lookups are not encrypted unless you choose the encrypted version",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "cloudflare",
+        "encrypted": false
+      }
+    ],
+    "sources": [
+      "https://developers.cloudflare.com/1.1.1.1/ip-addresses/"
+    ]
+  },
+  {
+    "id": "dns.cloudflare-encrypted",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use Cloudflare DNS with encryption",
+    "summary": "Use Cloudflare and encrypt the lookups so others on the network cannot read them.",
+    "what": "Sets the DNS servers of every connected network adapter to 1.1.1.1 and 1.0.0.1 and turns on encrypted DNS (DNS over HTTPS) for them. A fast public resolver run by Cloudflare. It does not filter anything.",
+    "benefit": "Websites can load faster, and the sites you look up are hidden from anyone watching the network between you and the resolver.",
+    "risk": "Low. Some networks that force their own DNS, such as work and school networks, may stop resolving names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested on Windows 11 if you want private lookups. Skip it on work or school networks.",
+    "facts": [
+      "No filtering of sites",
+      "Servers: 1.1.1.1 and 1.0.0.1",
+      "Uses DNS over HTTPS and does not fall back to unencrypted lookups",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22000
+    },
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "cloudflare",
+        "encrypted": true
+      }
+    ],
+    "sources": [
+      "https://developers.cloudflare.com/1.1.1.1/ip-addresses/",
+      "https://learn.microsoft.com/en-us/windows-server/networking/dns/doh-client-support"
+    ]
+  },
+  {
+    "id": "dns.google",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use Google DNS",
+    "summary": "Look up websites through Google instead of your provider.",
+    "what": "Sets the DNS servers of every connected network adapter to 8.8.8.8 and 8.8.4.4. The long running public resolver run by Google. It does not filter anything.",
+    "benefit": "Websites can load faster and you are no longer tied to your internet provider DNS.",
+    "risk": "Low. Networks that require their own DNS, such as work and school networks, may stop resolving internal names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if your provider DNS is slow or unreliable. Skip it on work or school networks.",
+    "facts": [
+      "No filtering of sites",
+      "Servers: 8.8.8.8 and 8.8.4.4",
+      "Lookups are not encrypted unless you choose the encrypted version",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "google",
+        "encrypted": false
+      }
+    ],
+    "sources": [
+      "https://developers.google.com/speed/public-dns/docs/using"
+    ]
+  },
+  {
+    "id": "dns.google-encrypted",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use Google DNS with encryption",
+    "summary": "Use Google and encrypt the lookups so others on the network cannot read them.",
+    "what": "Sets the DNS servers of every connected network adapter to 8.8.8.8 and 8.8.4.4 and turns on encrypted DNS (DNS over HTTPS) for them. The long running public resolver run by Google. It does not filter anything.",
+    "benefit": "Websites can load faster, and the sites you look up are hidden from anyone watching the network between you and the resolver.",
+    "risk": "Low. Some networks that force their own DNS, such as work and school networks, may stop resolving names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested on Windows 11 if you want private lookups. Skip it on work or school networks.",
+    "facts": [
+      "No filtering of sites",
+      "Servers: 8.8.8.8 and 8.8.4.4",
+      "Uses DNS over HTTPS and does not fall back to unencrypted lookups",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22000
+    },
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "google",
+        "encrypted": true
+      }
+    ],
+    "sources": [
+      "https://developers.google.com/speed/public-dns/docs/using",
+      "https://learn.microsoft.com/en-us/windows-server/networking/dns/doh-client-support"
+    ]
+  },
+  {
+    "id": "dns.quad9",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use Quad9 DNS",
+    "summary": "Look up websites through Quad9 instead of your provider.",
+    "what": "Sets the DNS servers of every connected network adapter to 9.9.9.9 and 149.112.112.112. A non profit resolver that blocks domains known to host malware and phishing.",
+    "benefit": "Websites can load faster and you are no longer tied to your internet provider DNS.",
+    "risk": "Low. Networks that require their own DNS, such as work and school networks, may stop resolving internal names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if your provider DNS is slow or unreliable. Skip it on work or school networks.",
+    "facts": [
+      "Blocks known malicious domains",
+      "Servers: 9.9.9.9 and 149.112.112.112",
+      "Lookups are not encrypted unless you choose the encrypted version",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "quad9",
+        "encrypted": false
+      }
+    ],
+    "sources": [
+      "https://docs.quad9.net/"
+    ]
+  },
+  {
+    "id": "dns.quad9-encrypted",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use Quad9 DNS with encryption",
+    "summary": "Use Quad9 and encrypt the lookups so others on the network cannot read them.",
+    "what": "Sets the DNS servers of every connected network adapter to 9.9.9.9 and 149.112.112.112 and turns on encrypted DNS (DNS over HTTPS) for them. A non profit resolver that blocks domains known to host malware and phishing.",
+    "benefit": "Websites can load faster, and the sites you look up are hidden from anyone watching the network between you and the resolver.",
+    "risk": "Low. Some networks that force their own DNS, such as work and school networks, may stop resolving names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested on Windows 11 if you want private lookups. Skip it on work or school networks.",
+    "facts": [
+      "Blocks known malicious domains",
+      "Servers: 9.9.9.9 and 149.112.112.112",
+      "Uses DNS over HTTPS and does not fall back to unencrypted lookups",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22000
+    },
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "quad9",
+        "encrypted": true
+      }
+    ],
+    "sources": [
+      "https://docs.quad9.net/",
+      "https://learn.microsoft.com/en-us/windows-server/networking/dns/doh-client-support"
+    ]
+  },
+  {
+    "id": "dns.opendns",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use OpenDNS DNS",
+    "summary": "Look up websites through OpenDNS instead of your provider.",
+    "what": "Sets the DNS servers of every connected network adapter to 208.67.222.222 and 208.67.220.220. The Cisco run resolver that can add content filtering through an account.",
+    "benefit": "Websites can load faster and you are no longer tied to your internet provider DNS.",
+    "risk": "Low. Networks that require their own DNS, such as work and school networks, may stop resolving internal names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if your provider DNS is slow or unreliable. Skip it on work or school networks.",
+    "facts": [
+      "Optional filtering with an account",
+      "Servers: 208.67.222.222 and 208.67.220.220",
+      "Lookups are not encrypted unless you choose the encrypted version",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "opendns",
+        "encrypted": false
+      }
+    ],
+    "sources": [
+      "https://support.opendns.com/hc/en-us/articles/227986867-Welcome-to-OpenDNS-Support"
+    ]
+  },
+  {
+    "id": "dns.opendns-encrypted",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use OpenDNS DNS with encryption",
+    "summary": "Use OpenDNS and encrypt the lookups so others on the network cannot read them.",
+    "what": "Sets the DNS servers of every connected network adapter to 208.67.222.222 and 208.67.220.220 and turns on encrypted DNS (DNS over HTTPS) for them. The Cisco run resolver that can add content filtering through an account.",
+    "benefit": "Websites can load faster, and the sites you look up are hidden from anyone watching the network between you and the resolver.",
+    "risk": "Low. Some networks that force their own DNS, such as work and school networks, may stop resolving names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested on Windows 11 if you want private lookups. Skip it on work or school networks.",
+    "facts": [
+      "Optional filtering with an account",
+      "Servers: 208.67.222.222 and 208.67.220.220",
+      "Uses DNS over HTTPS and does not fall back to unencrypted lookups",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22000
+    },
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "opendns",
+        "encrypted": true
+      }
+    ],
+    "sources": [
+      "https://support.opendns.com/hc/en-us/articles/227986867-Welcome-to-OpenDNS-Support",
+      "https://learn.microsoft.com/en-us/windows-server/networking/dns/doh-client-support"
+    ]
+  },
+  {
+    "id": "dns.adguard",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use AdGuard DNS DNS",
+    "summary": "Look up websites through AdGuard DNS instead of your provider.",
+    "what": "Sets the DNS servers of every connected network adapter to 94.140.14.14 and 94.140.15.15. A resolver whose default servers block ads, trackers and known malicious domains.",
+    "benefit": "Websites can load faster and you are no longer tied to your internet provider DNS.",
+    "risk": "Low. Networks that require their own DNS, such as work and school networks, may stop resolving internal names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if your provider DNS is slow or unreliable. Skip it on work or school networks.",
+    "facts": [
+      "Blocks ads and trackers by default",
+      "Servers: 94.140.14.14 and 94.140.15.15",
+      "Lookups are not encrypted unless you choose the encrypted version",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "adguard",
+        "encrypted": false
+      }
+    ],
+    "sources": [
+      "https://adguard-dns.io/en/public-dns.html"
+    ]
+  },
+  {
+    "id": "dns.adguard-encrypted",
+    "category": "Network",
+    "topic": "DNS",
+    "name": "Use AdGuard DNS DNS with encryption",
+    "summary": "Use AdGuard DNS and encrypt the lookups so others on the network cannot read them.",
+    "what": "Sets the DNS servers of every connected network adapter to 94.140.14.14 and 94.140.15.15 and turns on encrypted DNS (DNS over HTTPS) for them. A resolver whose default servers block ads, trackers and known malicious domains.",
+    "benefit": "Websites can load faster, and the sites you look up are hidden from anyone watching the network between you and the resolver.",
+    "risk": "Low. Some networks that force their own DNS, such as work and school networks, may stop resolving names.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested on Windows 11 if you want private lookups. Skip it on work or school networks.",
+    "facts": [
+      "Blocks ads and trackers by default",
+      "Servers: 94.140.14.14 and 94.140.15.15",
+      "Uses DNS over HTTPS and does not fall back to unencrypted lookups",
+      "Applies to connected physical adapters, not VPN adapters",
+      "Revert puts back exactly the servers each adapter had"
+    ],
+    "exclusiveGroup": "dns-provider",
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22000
+    },
+    "apply": [
+      {
+        "type": "dns.provider",
+        "provider": "adguard",
+        "encrypted": true
+      }
+    ],
+    "sources": [
+      "https://adguard-dns.io/en/public-dns.html",
+      "https://learn.microsoft.com/en-us/windows-server/networking/dns/doh-client-support"
+    ]
+  }
+]

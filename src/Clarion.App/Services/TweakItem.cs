@@ -21,30 +21,16 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     public string LockReason { get; }
 
     public string RecommendationText => Tooltip.RecommendationLabel;
-    public string RiskText => Tweak.RiskLevel == RiskLevel.Safe ? "Safe" : $"{Tooltip.RiskLabel} risk";
+    public string RiskText => DetailHelpers.RiskText(Tweak.RiskLevel);
     public string EvidenceText => Tooltip.EvidenceLabel;
     public IReadOnlyList<string> ExactChanges => Tweak.Apply.Select(o => o.Describe()).ToList();
-    public IReadOnlyList<SourceLink> SourceLinks => Tweak.Sources
-        .Where(s => Uri.TryCreate(s, UriKind.Absolute, out _))
-        .Select(s => new SourceLink(new Uri(s).Host + new Uri(s).AbsolutePath, new Uri(s))).ToList();
+    public IReadOnlyList<SourceLink> SourceLinks => DetailHelpers.Links(Tweak.Sources);
     public IReadOnlyList<string> Provenance => Tweak.Provenance;
     public bool HasSources => Tweak.Sources.Count > 0;
     public bool HasLastError => LastError.Length > 0;
 
-    public ChipKind RecommendationKind => Tweak.Recommendation switch
-    {
-        Recommendation.Recommended => ChipKind.Ok,
-        Recommendation.OnlyIf => ChipKind.Warn,
-        Recommendation.Avoid => ChipKind.Danger,
-        _ => ChipKind.Neutral,
-    };
-
-    public ChipKind RiskKind => Tweak.RiskLevel switch
-    {
-        RiskLevel.Safe or RiskLevel.Low => ChipKind.Ok,
-        RiskLevel.Medium => ChipKind.Warn,
-        _ => ChipKind.Danger,
-    };
+    public ChipKind RecommendationKind => DetailHelpers.RecommendationKind(Tweak.Recommendation);
+    public ChipKind RiskKind => DetailHelpers.RiskKind(Tweak.RiskLevel);
 
     public string Id => Tweak.Id;
     public string Name => Tweak.Name;

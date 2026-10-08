@@ -192,10 +192,5 @@ public sealed partial class CleanupPage : Page
         EmptyDetail.Visibility = Visibility.Collapsed;
     }
 
-    private void OnTipOpened(object sender, RoutedEventArgs e)
-    {
-        if (sender is not ToolTip tip || tip.Content is TweakDetail) return;
-        if (tip.Tag is not CleanupItem item) return;
-        tip.Content = new TweakDetail { Item = item, ShowTechnical = false, Width = 400 };
-    }
+    private void OnTipOpened(object sender, RoutedEventArgs e) => DetailHelpers.FillTipOnOpen(sender);
 }
