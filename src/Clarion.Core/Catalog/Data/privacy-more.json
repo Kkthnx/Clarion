@@ -1,0 +1,90 @@
+[
+  {
+    "id": "privacy.location-off",
+    "category": "Privacy",
+    "name": "Turn off location for the whole PC",
+    "summary": "Force the location service off for every app and account.",
+    "what": "Applies the machine policy that turns location off. The Location settings page becomes read only.",
+    "benefit": "No app can read where the PC is. Fewer background lookups.",
+    "risk": "Low. Maps, weather, find my device and time zone auto detect stop working.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "scope": "Machine",
+    "requires": { "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ] },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors", "name": "DisableLocation" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system" ]
+  },
+  {
+    "id": "debloat.consumer-features-policy",
+    "category": "Debloat",
+    "name": "Stop promoted app installs and Start suggestions",
+    "summary": "Turn off Microsoft consumer experiences through policy.",
+    "what": "Applies the Cloud Content policy that blocks Start suggestions, post-setup app installs and promoted tiles.",
+    "benefit": "No surprise sponsored apps after updates or on new accounts.",
+    "risk": "None. Windows only honors this policy on Enterprise and Education, so it is hidden on Home and Pro. Use the per user version there.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "scope": "Machine",
+    "requires": { "editions": [ "Enterprise", "Education", "IoTEnterprise" ] },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent", "name": "DisableWindowsConsumerFeatures" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience" ]
+  },
+  {
+    "id": "debloat.content-delivery-user",
+    "category": "Debloat",
+    "name": "Stop suggestions and silent app installs (this account)",
+    "summary": "Turn off tips, suggested apps and silent installs for the current user.",
+    "what": "Sets the per user content delivery values that feed Start suggestions, lock screen tips and silent app installs to off.",
+    "benefit": "Works on every edition, including Home and Pro, where the policy version is ignored.",
+    "risk": "None. These are per account preferences and are not documented as a supported policy, so Windows can reset them after a feature update. Clarion detects that and offers to reapply.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SilentInstalledAppsEnabled" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SystemPaneSuggestionsEnabled" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "OemPreInstalledAppsEnabled" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "PreInstalledAppsEnabled" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338388Enabled" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338389Enabled" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-353694Enabled" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-353696Enabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "privacy.onedrive-sync-policy",
+    "category": "Privacy",
+    "name": "Block OneDrive file sync",
+    "summary": "Stop OneDrive from syncing files without uninstalling it.",
+    "what": "Applies the policy that prevents apps and features from using OneDrive for file storage.",
+    "benefit": "Nothing uploads to OneDrive and it disappears from the File Explorer sidebar.",
+    "risk": "Medium. Files already synced stay on the PC but stop updating. If Desktop, Documents or Pictures were moved into OneDrive, move them back first.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "scope": "Machine",
+    "requires": { "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ] },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\OneDrive", "name": "DisableFileSyncNGSC" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system" ]
+  },
+  {
+    "id": "privacy.device-metadata-offline",
+    "category": "Privacy",
+    "name": "Stop device companion app downloads",
+    "summary": "Do not fetch extra vendor software and icons when a device is plugged in.",
+    "what": "Applies the policy that prevents Windows from retrieving device metadata from the internet.",
+    "benefit": "Fewer vendor promotions and surprise app prompts when connecting hardware.",
+    "risk": "Low. Some devices show a generic icon and name.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata", "name": "PreventDeviceMetadataFromNetwork" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  }
+]

@@ -153,3 +153,56 @@ Exact values below are the intended implementation. Each must be re-verified aga
 - Best effort: Windows 10 22H2.
 - Editions: Home, Pro, Enterprise, Education. Tweaks the edition ignores are hidden or labeled.
 - Architectures: x64 and ARM64.
+
+## 11. Additions from the research pass
+
+Windows features and repair (all use supported cmdlets, each shows what it installs):
+
+| Feature | Detail | Ev | Risk |
+|---|---|---|---|
+| Optional features page | One click enable for Hyper-V, Windows Subsystem for Linux, Windows Sandbox, .NET Framework 3.5, legacy media components, NFS client, OpenSSH server | P | Low |
+| Network reset | Release and renew, flush DNS, reset Winsock and the IP stack, with reboot note | P | Low |
+| Update repair | Reset update services and cache, then run a scan | P | Low |
+| Package manager repair | Reinstall the package manager when it is missing or broken | P | Low |
+| Time source | Switch to a public time pool and resync. UTC hardware clock toggle for dual boot | S | Low |
+| Registry backup task | Daily scheduled export of the registry hives, with retention | P | Safe |
+| Legacy boot menu | Toggle the F8 style boot recovery menu | S | Low |
+| Reserved storage | Show size and allow turning off on small drives, with the update risk stated | S | Medium |
+| Classic panels | Launch buttons for Computer Management, Mouse, Network Connections, Power, Programs, Region, Sound, System, Date and Time, Firewall, Recovery | P | Safe |
+| Graphics driver restart | Same as the Win+Ctrl+Shift+B shortcut, as a button | P | Safe |
+| System information | Build, edition, uptime, drives, memory, startup count | P | Safe |
+
+More tweaks:
+
+| Feature | Detail | Ev | Risk |
+|---|---|---|---|
+| Edge and Chromium browser policies | Per browser policy sets for startup boost, background mode, sidebar, shopping, sign in nags, first run | S | Low |
+| Vendor software auto install | Block peripheral vendor installers that Windows Update keeps pulling in | S | Low |
+| Folder type auto discovery | Stop Explorer from guessing folder types, which slows large folders | S | Safe |
+| Verbose logon and crash screens | Show detail during sign in, shutdown and blue screens | C | Safe |
+| Battery percentage, scrollbars, Num Lock | Small comfort toggles | C | Safe |
+| Window snapping, lock screen blur, Settings home | Toggles | C | Safe |
+| Start menu layout | Choose between the new and previous layout where the build supports it | C | Safe |
+| Services to manual | Curated list only, each with measured memory or boot impact, never a blanket change | S | Low |
+| Hosts file blocklists | Optional named lists for vendor telemetry and update nag hosts, with backup | S | Medium |
+| DNS providers | Cloudflare, Google, Quad9, OpenDNS, AdGuard, automatic, with encrypted DNS where the build supports it | S | Low |
+
+## 12. Presets
+
+Four presets ship in the catalog. They never include High risk or Unproven items, and edition gated tweaks are skipped on editions that ignore them.
+
+| Preset | Intent |
+|---|---|
+| Minimal | Stop promotions and the lowest diagnostic level |
+| Standard | Minimal plus search, activity, update sharing and Explorer basics |
+| Advanced | Standard plus telemetry services and tasks, location, classic menu, OneDrive-free setup items |
+| Gaming | Input tweaks, fewer background jobs, no update sharing |
+
+## 13. Findings that shaped the catalog
+
+- Some policies are only honored on certain editions. The consumer experiences policy works on Enterprise and Education only, so Clarion hides it elsewhere and offers per account values instead.
+- The lowest diagnostic level is honored only on Enterprise and Education. Home and Pro treat it as Required. Clarion says so on the card.
+- Blanket service disabling is where most breakage comes from. Clarion keeps a protected list and refuses those changes.
+- Debloat that cannot be undone erodes trust. Every removal in Clarion records what it removed so it can be restored.
+- Security feature switches (memory integrity, Defender real time protection, BitLocker) are not offered.
+- Network and scheduler tweaks without published measurements are held back as Unproven.

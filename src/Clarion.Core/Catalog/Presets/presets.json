@@ -1,0 +1,51 @@
+{
+  "minimal": [
+    "debloat.consumer-features-policy",
+    "debloat.content-delivery-user",
+    "privacy.advertising-id",
+    "privacy.tailored-experiences",
+    "privacy.diagnostic-data-minimum"
+  ],
+  "standard": [
+    "debloat.consumer-features-policy",
+    "debloat.content-delivery-user",
+    "privacy.advertising-id",
+    "privacy.tailored-experiences",
+    "privacy.diagnostic-data-minimum",
+    "privacy.web-search-start",
+    "privacy.activity-history",
+    "network.delivery-optimization-http",
+    "explorer.show-extensions",
+    "explorer.end-task-menu",
+    "system.long-paths"
+  ],
+  "advanced": [
+    "debloat.consumer-features-policy",
+    "debloat.content-delivery-user",
+    "privacy.advertising-id",
+    "privacy.tailored-experiences",
+    "privacy.diagnostic-data-minimum",
+    "privacy.web-search-start",
+    "privacy.activity-history",
+    "privacy.telemetry-services",
+    "privacy.telemetry-tasks",
+    "privacy.location-off",
+    "privacy.device-metadata-offline",
+    "network.delivery-optimization-http",
+    "explorer.show-extensions",
+    "explorer.end-task-menu",
+    "explorer.open-to-this-pc",
+    "appearance.classic-context-menu",
+    "taskbar.hide-task-view",
+    "system.long-paths",
+    "system.wpbt-off"
+  ],
+  "gaming": [
+    "input.mouse-accel-off",
+    "input.sticky-keys-prompt-off",
+    "input.menu-show-delay-zero",
+    "network.delivery-optimization-http",
+    "privacy.telemetry-tasks",
+    "debloat.content-delivery-user"
+  ]
+}

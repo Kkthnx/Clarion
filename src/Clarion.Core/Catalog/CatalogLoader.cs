@@ -27,7 +27,7 @@ public static class CatalogLoader
     {
         var asm = typeof(CatalogLoader).Assembly;
         var all = new List<Tweak>();
-        foreach (var name in asm.GetManifestResourceNames().Where(n => n.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).Order())
+        foreach (var name in asm.GetManifestResourceNames().Where(n => n.Contains(".Catalog.Data.", StringComparison.Ordinal) && n.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).Order())
         {
             using var stream = asm.GetManifestResourceStream(name)!;
             var items = JsonSerializer.Deserialize<List<Tweak>>(stream, Options)
@@ -35,6 +35,16 @@ public static class CatalogLoader
             all.AddRange(items);
         }
         return all;
+    }
+
+    /// <summary>Named groups of tweak ids, such as minimal or gaming.</summary>
+    public static IReadOnlyDictionary<string, IReadOnlyList<string>> LoadPresets()
+    {
+        var asm = typeof(CatalogLoader).Assembly;
+        var name = asm.GetManifestResourceNames().Single(n => n.EndsWith(".Catalog.Presets.presets.json", StringComparison.Ordinal));
+        using var stream = asm.GetManifestResourceStream(name)!;
+        var raw = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(stream, Options) ?? [];
+        return raw.ToDictionary(kv => kv.Key, kv => (IReadOnlyList<string>)kv.Value, StringComparer.OrdinalIgnoreCase);
     }
 
     public static IReadOnlyList<Tweak> Parse(string json) =>

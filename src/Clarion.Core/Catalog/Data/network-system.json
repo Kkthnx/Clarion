@@ -1,0 +1,201 @@
+[
+  {
+    "id": "network.delivery-optimization-http",
+    "category": "Network",
+    "name": "Stop sharing updates with other PCs",
+    "summary": "Download Windows updates directly, with no peer uploads.",
+    "what": "Sets the Delivery Optimization download mode to HTTP only with no peering.",
+    "benefit": "Your connection is not used to upload update files to other PCs.",
+    "risk": "None. Updates still download from Microsoft. Hidden on Home, which has no policy support. Use the setting in Windows Update advanced options there.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "scope": "Machine",
+    "requires": { "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ] },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization", "name": "DODownloadMode" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deliveryoptimization" ]
+  },
+  {
+    "id": "system.long-paths",
+    "category": "System",
+    "name": "Allow long file paths",
+    "summary": "Let apps use paths longer than 260 characters.",
+    "what": "Turns on the long path setting for the file system. Apps must also declare support.",
+    "benefit": "Fewer path too long errors in developer tools and deep folder trees.",
+    "risk": "None. Apps that do not declare support behave as before.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem", "name": "LongPathsEnabled" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem", "name": "LongPathsEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation" ]
+  },
+  {
+    "id": "system.fast-startup-off",
+    "category": "System",
+    "name": "Turn off Fast Startup",
+    "summary": "Make Shut down a full shutdown.",
+    "what": "Sets the hybrid boot value to 0 so the kernel session is not saved on shutdown.",
+    "benefit": "Clears stale driver and update state, helps dual boot and some device issues.",
+    "risk": "Low. Cold boot can take a few seconds longer, mostly on hard drives.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "scope": "Machine",
+    "needsReboot": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power", "name": "HiberbootEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power", "name": "HiberbootEnabled" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  },
+  {
+    "id": "system.wpbt-off",
+    "category": "System",
+    "name": "Block vendor programs at boot",
+    "summary": "Stop firmware from injecting a program into Windows at startup.",
+    "what": "Sets the setting that blocks execution of the Windows Platform Binary Table, which lets a PC maker run a program during boot.",
+    "benefit": "Removes a path for pre-installed vendor software to reinstall itself on a clean Windows.",
+    "risk": "Low. OEM anti-theft or management tools that rely on it will not run.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "scope": "Machine",
+    "needsReboot": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager", "name": "DisableWpbtExecution" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows-hardware/drivers/bringup/windows-platform-binary-table" ]
+  },
+  {
+    "id": "explorer.end-task-menu",
+    "category": "Explorer",
+    "name": "End task from the taskbar menu",
+    "summary": "Add End task to the right-click menu of taskbar apps.",
+    "what": "Turns on the developer setting that shows End task on taskbar items.",
+    "benefit": "Kill a stuck app in two clicks without opening Task Manager.",
+    "risk": "None. Unsaved work in the app is lost when you use it.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "requires": { "minBuild": 22631 },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings", "name": "TaskbarEndTask" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  },
+  {
+    "id": "explorer.show-hidden-files",
+    "category": "Explorer",
+    "name": "Show hidden files",
+    "summary": "Show files and folders marked hidden.",
+    "what": "Sets the Explorer hidden file view option to show.",
+    "benefit": "See folders like AppData without changing view options each time.",
+    "risk": "None. Be careful deleting files you do not recognize.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Hidden" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Hidden" }, "data": { "kind": "DWord", "value": "2" } }
+    ]
+  },
+  {
+    "id": "explorer.open-to-this-pc",
+    "category": "Explorer",
+    "name": "Open File Explorer to This PC",
+    "summary": "Start in drives and folders instead of Home.",
+    "what": "Sets the Explorer launch target to This PC.",
+    "benefit": "Straight to your drives, no recent files list.",
+    "risk": "None.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "LaunchTo" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "LaunchTo" }, "data": { "kind": "DWord", "value": "2" } }
+    ]
+  },
+  {
+    "id": "taskbar.hide-task-view",
+    "category": "Appearance",
+    "name": "Hide the Task View button",
+    "summary": "Remove the Task View button from the taskbar.",
+    "what": "Turns off the Task View taskbar button for the current user. Win+Tab still works.",
+    "benefit": "More room on the taskbar.",
+    "risk": "None.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "restartsExplorer": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowTaskViewButton" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowTaskViewButton" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  },
+  {
+    "id": "taskbar.hide-search",
+    "category": "Appearance",
+    "name": "Hide the taskbar search box",
+    "summary": "Remove the search box or icon from the taskbar.",
+    "what": "Sets the taskbar search mode to hidden. Search still opens from the Start menu.",
+    "benefit": "More room on the taskbar.",
+    "risk": "None.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "SearchboxTaskbarMode" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "SearchboxTaskbarMode" }, "data": { "kind": "DWord", "value": "2" } }
+    ]
+  },
+  {
+    "id": "input.menu-show-delay-zero",
+    "category": "Input",
+    "name": "Instant menus",
+    "summary": "Open cascading menus without the short delay.",
+    "what": "Sets the menu show delay to 0 milliseconds. The default is 400.",
+    "benefit": "Menus feel snappier.",
+    "risk": "None. Sign out to apply.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "needsSignOut": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Desktop", "name": "MenuShowDelay" }, "data": { "kind": "String", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Desktop", "name": "MenuShowDelay" }, "data": { "kind": "String", "value": "400" } }
+    ]
+  },
+  {
+    "id": "input.sticky-keys-prompt-off",
+    "category": "Input",
+    "name": "Turn off the Sticky Keys shortcut",
+    "summary": "Stop the pop-up when Shift is pressed five times.",
+    "what": "Clears the keyboard shortcut flag that launches the Sticky Keys prompt.",
+    "benefit": "No interruptions in games and fast typing.",
+    "risk": "None. Sticky Keys can still be turned on from Settings.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "User",
+    "needsSignOut": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Accessibility\\StickyKeys", "name": "Flags" }, "data": { "kind": "String", "value": "506" } }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Accessibility\\StickyKeys", "name": "Flags" }, "data": { "kind": "String", "value": "510" } }
+    ]
+  }
+]
