@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0-beta.3
+
+- Fixed the build checks on GitHub. Tests that need a Windows client now skip on server images, and the DNS reader no longer fails on machines without network adapters.
+- New README with logo, badges and screenshots.
+
 ## 0.1.0-beta.2
 
 - Installer: a setup program with Start menu entry, optional desktop shortcut and a clean uninstall.

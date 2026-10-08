@@ -352,7 +352,16 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
             "$s=@((Get-DnsClientServerAddress -InterfaceIndex $_.InterfaceIndex -AddressFamily IPv4).ServerAddresses); " +
             "[pscustomobject]@{IfIndex=[int]$_.InterfaceIndex;Alias=$_.Name;Servers=$s} }); " +
             "ConvertTo-Json -InputObject @{adapters=$a} -Depth 4 -Compress";
-        using var doc = JsonDocument.Parse(PowerShellHost.Run(runner, script, Timeout));
+        JsonDocument doc;
+        try
+        {
+            doc = JsonDocument.Parse(PowerShellHost.Run(runner, script, Timeout));
+        }
+        catch (InvalidOperationException)
+        {
+            return []; // no network cmdlets or no adapters, so there is nothing to change
+        }
+        using var _ = doc;
         return doc.RootElement.GetProperty("adapters").EnumerateArray().Select(e => new AdapterDns(
             e.GetProperty("IfIndex").GetInt32(),
             e.GetProperty("Alias").GetString() ?? "",

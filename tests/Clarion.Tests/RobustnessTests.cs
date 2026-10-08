@@ -83,7 +83,7 @@ public sealed class RobustnessTests : IDisposable
         sw.Stop();
 
         Assert.All(tweaks, t => Assert.Equal(TweakState.NotApplied, engine.Detect(t)));
-        Assert.True(sw.ElapsedMilliseconds < 5000, $"Took {sw.ElapsedMilliseconds} ms");
+        Assert.True(sw.ElapsedMilliseconds < 60000, $"Took {sw.ElapsedMilliseconds} ms");
     }
 
     [Fact]

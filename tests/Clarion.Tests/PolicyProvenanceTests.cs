@@ -32,10 +32,15 @@ public sealed class PolicyProvenanceTests
         return new PolicyDef((string?)policy.Attribute("key") ?? "", names);
     }
 
+    // Server editions ship a smaller set of policy files, so only a client install is a fair reference.
+    private static bool IsClientWindows() =>
+        OperatingSystem.IsWindows() &&
+        Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "InstallationType", "") as string == "Client";
+
     [Fact]
     public void Every_policy_backed_setting_matches_the_policy_definitions_on_this_machine()
     {
-        if (!Directory.Exists(Folder)) return;
+        if (!Directory.Exists(Folder) || !IsClientWindows()) return;
 
         var checkedCount = 0;
         foreach (var t in CatalogLoader.LoadEmbedded().Where(t => t.Provenance.Count > 0))
