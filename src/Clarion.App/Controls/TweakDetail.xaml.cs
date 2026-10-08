@@ -21,6 +21,8 @@ public sealed partial class TweakDetail : UserControl
 
     public string TechnicalTitle { get => (string)GetValue(TechnicalTitleProperty); set => SetValue(TechnicalTitleProperty, value); }
 
+    public bool ProvenanceVisible => Item is { Provenance.Count: > 0 };
+
     public TweakDetail()
     {
         InitializeComponent();

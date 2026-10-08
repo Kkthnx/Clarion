@@ -294,3 +294,70 @@ public sealed class WindowsPowerStore(IProcessRunner runner) : IPowerStore
     private static string Guid(string value) =>
         PowerPlans.IsGuid(value) ? value : throw new ArgumentException($"Not a GUID: {value}");
 }
+
+[SupportedOSPlatform("windows")]
+public sealed class WindowsStreamingRunner : Clarion.Core.Actions.IStreamingRunner
+{
+    static WindowsStreamingRunner()
+    {
+        // Windows tools write in the console code page, which .NET only knows after this is registered.
+        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+    }
+
+    public async Task<int> RunAsync(string systemTool, string args, bool utf16, Action<string> onLine, CancellationToken cancel)
+    {
+        // The tool is always taken from the System32 folder, never from the search path.
+        var path = Path.Combine(Environment.SystemDirectory, systemTool);
+        var psi = new ProcessStartInfo(path, args)
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            StandardOutputEncoding = utf16 ? System.Text.Encoding.Unicode : System.Text.Encoding.GetEncoding(System.Globalization.CultureInfo.CurrentCulture.TextInfo.OEMCodePage),
+            StandardErrorEncoding = utf16 ? System.Text.Encoding.Unicode : System.Text.Encoding.GetEncoding(System.Globalization.CultureInfo.CurrentCulture.TextInfo.OEMCodePage),
+        };
+        using var process = Process.Start(psi) ?? throw new InvalidOperationException($"Could not start {systemTool}");
+        using var registration = cancel.Register(() =>
+        {
+            try { process.Kill(entireProcessTree: true); } catch (InvalidOperationException) { }
+        });
+
+        var readers = new[] { Pump(process.StandardOutput, onLine), Pump(process.StandardError, onLine) };
+        await process.WaitForExitAsync(CancellationToken.None);
+        await Task.WhenAll(readers);
+        cancel.ThrowIfCancellationRequested();
+        return process.ExitCode;
+    }
+
+    /// <summary>Splits on line feeds and carriage returns so progress lines that overwrite themselves still show.</summary>
+    private static async Task Pump(StreamReader reader, Action<string> onLine)
+    {
+        var line = new System.Text.StringBuilder();
+        var buffer = new char[512];
+        int read;
+        while ((read = await reader.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        {
+            for (var i = 0; i < read; i++)
+            {
+                var ch = buffer[i];
+                if (ch is '\n' or '\r')
+                {
+                    Flush(line, onLine);
+                }
+                else if (ch != '\0')
+                {
+                    line.Append(ch);
+                }
+            }
+        }
+        Flush(line, onLine);
+    }
+
+    private static void Flush(System.Text.StringBuilder line, Action<string> onLine)
+    {
+        var text = line.ToString().Trim();
+        line.Clear();
+        if (text.Length > 0) onLine(text);
+    }
+}

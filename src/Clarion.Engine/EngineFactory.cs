@@ -30,8 +30,11 @@ public static class EngineFactory
         var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"));
         var engine = new TweakEngine(handlers, journal);
         var batch = new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);
-        return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect());
+        var restorePoints = new RestorePointService(registry, runner);
+        return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect(), restorePoints, new Core.Actions.ActionRunner(new WindowsStreamingRunner()));
     }
 }
 
-public sealed record ClarionRuntime(BatchRunner Runner, TweakEngine Engine, ChangeJournal Journal, Clarion.Core.Model.MachineProfile Profile);
+public sealed record ClarionRuntime(
+    BatchRunner Runner, TweakEngine Engine, ChangeJournal Journal, Clarion.Core.Model.MachineProfile Profile,
+    IRestorePointService RestorePoints, Core.Actions.ActionRunner Actions);

@@ -72,7 +72,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <TextBlock Text="Microsoft policy definitions" FontSize="12" Margin="0,6,0,0" Foreground="{ThemeResource ClTextMutedBrush}" />
+            <TextBlock Text="Microsoft policy definitions" FontSize="12" Margin="0,6,0,0" Visibility="{x:Bind ProvenanceVisible, Mode=OneWay}" Foreground="{ThemeResource ClTextMutedBrush}" />
             <ItemsControl ItemsSource="{x:Bind Item.Provenance, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="x:String">

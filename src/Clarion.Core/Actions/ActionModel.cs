@@ -53,5 +53,8 @@ public sealed record ActionDef
     public bool NeedsReboot { get; init; }
     public bool RestorePoint { get; init; }
     public required IReadOnlyList<ActionStep> Steps { get; init; }
+
+    /// <summary>Steps that always run afterward, even after a failure or a stop. Used to start services again.</summary>
+    public IReadOnlyList<ActionStep> Always { get; init; } = [];
     public IReadOnlyList<string> Sources { get; init; } = [];
 }

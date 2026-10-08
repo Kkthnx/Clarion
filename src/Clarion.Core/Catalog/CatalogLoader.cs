@@ -118,7 +118,7 @@ public static class CatalogLoader
             if (a.EstimatedMinutes < 1) errors.Add($"{a.Id}: estimated minutes must be at least 1.");
             if (a.Recommendation == Recommendation.Recommended && a.RiskLevel >= RiskLevel.Medium)
                 errors.Add($"{a.Id}: a Medium or High risk item cannot be marked Recommended.");
-            foreach (var step in a.Steps)
+            foreach (var step in a.Steps.Concat(a.Always))
             {
                 switch (step)
                 {

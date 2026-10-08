@@ -20,51 +20,68 @@ public sealed class ActionRunner(IStreamingRunner runner, Func<string, string>? 
     {
         var started = DateTime.UtcNow;
         long freed = 0;
+        ActionResult? outcome = null;
         try
         {
             foreach (var step in action.Steps)
             {
                 cancel.ThrowIfCancellationRequested();
-                log($"> {step.Describe()}");
-                switch (step)
-                {
-                    case RunProcess p:
-                        if (!ActionRules.IsAllowedTool(p.File)) return Fail($"{p.File} is not an allowed tool.", freed, started);
-                        var code = await runner.RunAsync(p.File, p.Args, p.Utf16, log, cancel);
-                        var ok = p.OkExitCodes ?? [0];
-                        if (!ok.Contains(code)) return Fail($"{p.File} finished with exit code {code}.", freed, started);
-                        break;
-                    case CleanFolders c:
-                        foreach (var folder in c.Folders)
-                        {
-                            if (!ActionRules.IsAllowedFolder(folder, _expand)) return Fail($"{folder} is not an allowed folder.", freed, started);
-                            freed += FolderCleaner.Clean(_expand(folder), TimeSpan.FromHours(c.MinAgeHours), log);
-                        }
-                        break;
-                    case RenameFolder r:
-                        if (!ActionRules.IsAllowedFolder(r.Folder, _expand)) return Fail($"{r.Folder} is not an allowed folder.", freed, started);
-                        if (!ActionRules.IsPlainName(r.NewName)) return Fail($"{r.NewName} is not a plain folder name.", freed, started);
-                        FolderCleaner.Rename(_expand(r.Folder), r.NewName, log);
-                        break;
-                    case DeleteFolder d:
-                        if (!ActionRules.IsAllowedFolder(d.Folder, _expand)) return Fail($"{d.Folder} is not an allowed folder.", freed, started);
-                        freed += FolderCleaner.DeleteTree(_expand(d.Folder), log);
-                        break;
-                }
+                var failure = await RunStepAsync(step, log, cancel, v => freed += v);
+                if (failure is not null) { outcome = Fail(failure, freed, started); break; }
             }
-            return new ActionResult(true, null, freed, DateTime.UtcNow - started);
+            outcome ??= new ActionResult(true, null, freed, DateTime.UtcNow - started);
         }
         catch (OperationCanceledException)
         {
             log("Stopped.");
-            return new ActionResult(false, "Stopped by you.", freed, DateTime.UtcNow - started, Cancelled: true);
+            outcome = new ActionResult(false, "Stopped by you.", freed, DateTime.UtcNow - started, Cancelled: true);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
         {
-            return Fail(ex.Message, freed, started);
+            outcome = Fail(ex.Message, freed, started);
         }
+        finally
+        {
+            foreach (var step in action.Always)
+            {
+                try { await RunStepAsync(step, log, CancellationToken.None, v => freed += v); }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException) { log($"Cleanup step failed: {ex.Message}"); }
+            }
+        }
+        return outcome! with { BytesFreed = freed };
     }
 
+    /// <summary>Runs one step and returns a failure message, or null on success.</summary>
+    private async Task<string?> RunStepAsync(ActionStep step, Action<string> log, CancellationToken cancel, Action<long> freed)
+    {
+        log($"> {step.Describe()}");
+        switch (step)
+        {
+            case RunProcess p:
+                if (!ActionRules.IsAllowedTool(p.File)) return $"{p.File} is not an allowed tool.";
+                var code = await runner.RunAsync(p.File, _expand(p.Args), p.Utf16, log, cancel);
+                var ok = p.OkExitCodes ?? [0];
+                return ok.Contains(code) ? null : $"{p.File} finished with exit code {code}. Read the log for details.";
+            case CleanFolders c:
+                foreach (var folder in c.Folders)
+                {
+                    if (!ActionRules.IsAllowedFolder(folder, _expand)) return $"{folder} is not an allowed folder.";
+                    freed(FolderCleaner.Clean(_expand(folder), TimeSpan.FromHours(c.MinAgeHours), log));
+                }
+                return null;
+            case RenameFolder r:
+                if (!ActionRules.IsAllowedFolder(r.Folder, _expand)) return $"{r.Folder} is not an allowed folder.";
+                if (!ActionRules.IsPlainName(r.NewName)) return $"{r.NewName} is not a plain folder name.";
+                FolderCleaner.Rename(_expand(r.Folder), r.NewName, log);
+                return null;
+            case DeleteFolder d:
+                if (!ActionRules.IsAllowedFolder(d.Folder, _expand)) return $"{d.Folder} is not an allowed folder.";
+                freed(FolderCleaner.DeleteTree(_expand(d.Folder), log));
+                return null;
+            default:
+                return "Unknown step.";
+        }
+    }
     private static ActionResult Fail(string error, long freed, DateTime started) =>
         new(false, error, freed, DateTime.UtcNow - started);
 }

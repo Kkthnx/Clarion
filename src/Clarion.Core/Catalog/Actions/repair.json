@@ -1,0 +1,365 @@
+[
+  {
+    "id": "repair.flush-dns",
+    "category": "Network",
+    "name": "Flush the DNS cache",
+    "summary": "Clear the list of website addresses your PC remembers.",
+    "what": "Runs the command that empties the DNS resolver cache.",
+    "benefit": "Fixes sites that will not load after a server move or a DNS change.",
+    "risk": "None. Addresses are looked up again.",
+    "riskLevel": "Safe",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when a website will not open but others do, or after you changed DNS servers.",
+    "facts": [
+      "Takes a second",
+      "Does not touch your browser history or cookies",
+      "Windows rebuilds the cache as you browse"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "run",
+        "file": "ipconfig.exe",
+        "args": "/flushdns"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig"
+    ]
+  },
+  {
+    "id": "repair.reset-network",
+    "category": "Network",
+    "name": "Reset the network stack",
+    "summary": "Put Windows networking back to a clean state.",
+    "what": "Resets Winsock and the IP stack, then flushes the DNS cache. A restart finishes the reset.",
+    "benefit": "Can fix a PC that has no internet, drops connections or has odd network errors after software changes.",
+    "risk": "Medium. Winsock add-ons from VPN and security software are removed and may need to be reinstalled. Static IP settings may be cleared.",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only after simpler fixes failed. Note your static IP and VPN details first.",
+    "facts": [
+      "A restore point is made first",
+      "Restart required",
+      "VPN and some security programs may need repair afterward",
+      "Does not remove Wi-Fi passwords"
+    ],
+    "estimatedMinutes": 2,
+    "needsReboot": true,
+    "restorePoint": true,
+    "steps": [
+      {
+        "type": "run",
+        "file": "netsh.exe",
+        "args": "winsock reset"
+      },
+      {
+        "type": "run",
+        "file": "netsh.exe",
+        "args": "int ip reset"
+      },
+      {
+        "type": "run",
+        "file": "ipconfig.exe",
+        "args": "/flushdns"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh-winsock"
+    ]
+  },
+  {
+    "id": "repair.sfc",
+    "category": "Repair",
+    "name": "Check and repair system files",
+    "summary": "Scan Windows system files and fix damaged ones.",
+    "what": "Runs the System File Checker with the full scan switch. It replaces damaged protected files from a local cache.",
+    "benefit": "Fixes crashes and errors caused by damaged Windows files.",
+    "risk": "None. It only restores files Windows protects.",
+    "riskLevel": "Safe",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when Windows crashes, features fail to open, or updates keep failing. Run the image repair first if this one cannot fix everything.",
+    "facts": [
+      "Takes 10 to 20 minutes",
+      "Safe to stop, but let it finish for a full result",
+      "If it cannot repair a file, run Repair the Windows image and then run this again"
+    ],
+    "estimatedMinutes": 15,
+    "steps": [
+      {
+        "type": "run",
+        "file": "sfc.exe",
+        "args": "/scannow",
+        "utf16": true
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/sfc"
+    ]
+  },
+  {
+    "id": "repair.dism-scan",
+    "category": "Repair",
+    "name": "Scan the Windows image for damage",
+    "summary": "Check whether the Windows component store is damaged.",
+    "what": "Runs the DISM image scan. It only reports and changes nothing.",
+    "benefit": "Tells you whether a repair is needed before you run one.",
+    "risk": "None. Read only.",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested before the image repair. Safe to skip if you already know you need the repair.",
+    "facts": [
+      "Takes 5 to 10 minutes",
+      "Read only, nothing is changed",
+      "Reports whether the image can be repaired"
+    ],
+    "estimatedMinutes": 8,
+    "steps": [
+      {
+        "type": "run",
+        "file": "dism.exe",
+        "args": "/Online /Cleanup-Image /ScanHealth"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/repair-a-windows-image"
+    ]
+  },
+  {
+    "id": "repair.dism-restore",
+    "category": "Repair",
+    "name": "Repair the Windows image",
+    "summary": "Fix the Windows component store that updates and system file repair rely on.",
+    "what": "Runs the DISM restore health command. It downloads clean files from Windows Update when it needs them.",
+    "benefit": "Fixes failed updates and lets system file repair work when it could not.",
+    "risk": "Low. Needs an internet connection and can take a while.",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when system file repair says it could not fix files, or Windows Update keeps failing.",
+    "facts": [
+      "Takes 10 to 30 minutes and may look stuck near 20 percent",
+      "Needs an internet connection",
+      "Run Check and repair system files afterward"
+    ],
+    "estimatedMinutes": 20,
+    "steps": [
+      {
+        "type": "run",
+        "file": "dism.exe",
+        "args": "/Online /Cleanup-Image /RestoreHealth"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/repair-a-windows-image"
+    ]
+  },
+  {
+    "id": "repair.component-cleanup",
+    "category": "Repair",
+    "name": "Clean up old Windows components",
+    "summary": "Remove superseded update files from the component store.",
+    "what": "Runs the DISM component cleanup. It removes older versions of components that updates replaced.",
+    "benefit": "Frees disk space, often a few gigabytes.",
+    "risk": "Low. You can no longer uninstall the oldest installed updates.",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested when disk space is tight. Safe to skip otherwise.",
+    "facts": [
+      "Takes 5 to 15 minutes",
+      "Does not remove installed updates",
+      "Windows also does this on its own on a schedule"
+    ],
+    "estimatedMinutes": 10,
+    "steps": [
+      {
+        "type": "run",
+        "file": "dism.exe",
+        "args": "/Online /Cleanup-Image /StartComponentCleanup"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/clean-up-the-winsxs-folder"
+    ]
+  },
+  {
+    "id": "repair.chkdsk-scan",
+    "category": "Repair",
+    "name": "Scan the system drive for errors",
+    "summary": "Check the drive for file system problems without taking it offline.",
+    "what": "Runs the online scan of the system drive. It reports problems and does not repair them.",
+    "benefit": "Finds file system damage early.",
+    "risk": "None. Read only.",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you see file errors, slowdowns or crashes. Safe to skip on a healthy PC.",
+    "facts": [
+      "Read only, nothing is repaired",
+      "Takes a few minutes",
+      "If it finds problems, repair at the next restart"
+    ],
+    "estimatedMinutes": 5,
+    "steps": [
+      {
+        "type": "run",
+        "file": "chkdsk.exe",
+        "args": "%SystemDrive% /scan"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/chkdsk"
+    ]
+  },
+  {
+    "id": "repair.reset-update",
+    "category": "Updates",
+    "name": "Reset Windows Update",
+    "summary": "Clear the update cache and restart the update services.",
+    "what": "Stops the update services, renames the SoftwareDistribution and catroot2 folders so Windows creates fresh ones, then starts the services again. Old copies are kept with an .old name.",
+    "benefit": "Fixes updates that are stuck, fail to download or keep failing to install.",
+    "risk": "Medium. Update history looks empty until the next scan. The services are always started again, even if a step fails.",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only when updates are stuck or fail repeatedly. A restart afterward helps.",
+    "facts": [
+      "A restore point is made first",
+      "Old folders are kept as .old until the next reset",
+      "Services are started again even if a step fails",
+      "The next update scan takes longer"
+    ],
+    "estimatedMinutes": 3,
+    "needsReboot": true,
+    "restorePoint": true,
+    "steps": [
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "stop wuauserv",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      },
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "stop bits",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      },
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "stop cryptsvc",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      },
+      {
+        "type": "delete-folder",
+        "folder": "%SystemRoot%\\SoftwareDistribution.old"
+      },
+      {
+        "type": "delete-folder",
+        "folder": "%SystemRoot%\\System32\\catroot2.old"
+      },
+      {
+        "type": "rename-folder",
+        "folder": "%SystemRoot%\\SoftwareDistribution",
+        "newName": "SoftwareDistribution.old"
+      },
+      {
+        "type": "rename-folder",
+        "folder": "%SystemRoot%\\System32\\catroot2",
+        "newName": "catroot2.old"
+      }
+    ],
+    "always": [
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "start cryptsvc",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      },
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "start bits",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      },
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "start wuauserv",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/deployment/update/windows-update-resources"
+    ]
+  },
+  {
+    "id": "repair.store-reset",
+    "category": "Repair",
+    "name": "Reset the Microsoft Store cache",
+    "summary": "Clear the Store cache without changing your apps or account.",
+    "what": "Runs the Store reset tool. It clears the Store cache and opens the Store when it finishes.",
+    "benefit": "Fixes a Store that will not load, download or update apps.",
+    "risk": "None. Your apps and account are not changed.",
+    "riskLevel": "Safe",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when the Microsoft Store is blank, slow or stuck.",
+    "facts": [
+      "Takes under a minute",
+      "The Store opens by itself when it is done",
+      "Does not remove apps or sign you out"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "run",
+        "file": "wsreset.exe",
+        "args": ""
+      }
+    ]
+  },
+  {
+    "id": "maintain.optimize-drives",
+    "category": "Repair",
+    "name": "Optimize the system drive",
+    "summary": "Let Windows retrim an SSD or defragment a hard drive.",
+    "what": "Runs the drive optimizer on the system drive. Windows picks retrim for solid state drives and defragmentation for hard drives.",
+    "benefit": "Keeps a hard drive from slowing down and keeps an SSD healthy.",
+    "risk": "None.",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested every month or two. Windows already does this on a schedule, so you can skip it.",
+    "facts": [
+      "SSDs are retrimmed, never defragmented",
+      "Hard drives can take a long time",
+      "Windows runs it weekly by itself"
+    ],
+    "estimatedMinutes": 5,
+    "steps": [
+      {
+        "type": "run",
+        "file": "defrag.exe",
+        "args": "%SystemDrive% /O"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/defrag"
+    ]
+  }
+]

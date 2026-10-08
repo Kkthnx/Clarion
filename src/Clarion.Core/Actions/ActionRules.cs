@@ -5,7 +5,7 @@ public static class ActionRules
 {
     public static readonly IReadOnlySet<string> AllowedTools = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
-        "sfc.exe", "dism.exe", "ipconfig.exe", "netsh.exe", "net.exe", "chkdsk.exe", "wsreset.exe",
+        "sfc.exe", "dism.exe", "ipconfig.exe", "netsh.exe", "net.exe", "chkdsk.exe", "wsreset.exe", "defrag.exe",
     };
 
     /// <summary>Folder paths, with environment variables, that actions may clean, rename or delete.</summary>
