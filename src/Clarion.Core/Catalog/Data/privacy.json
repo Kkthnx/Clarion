@@ -47,7 +47,8 @@
       "Apps use the ID to build an ad profile across apps",
       "Ads do not go away, they just stop being personalized",
       "Per account setting"
-    ]
+    ],
+    "topic": "Suggestions and ads"
   },
   {
     "id": "privacy.tailored-experiences",
@@ -97,7 +98,8 @@
       "Uses your diagnostic data to personalize tips and ads",
       "Does not change how much diagnostic data is sent",
       "Per account setting"
-    ]
+    ],
+    "topic": "Suggestions and ads"
   },
   {
     "id": "privacy.web-search-start",
@@ -133,7 +135,8 @@
       "When on, text typed in Start can be sent to Bing",
       "Start returns local results faster without it",
       "Per account policy"
-    ]
+    ],
+    "topic": "Search"
   },
   {
     "id": "privacy.activity-history",
@@ -193,7 +196,8 @@
       "Turns off three policies: activity feed, publish and upload",
       "Applies to every account on the PC",
       "Revert removes the policy values"
-    ]
+    ],
+    "topic": "Sync and clipboard"
   },
   {
     "id": "privacy.diagnostic-data-minimum",
@@ -230,6 +234,7 @@
       "Enterprise and Education honor the true Security level",
       "The setting is a documented vendor policy",
       "Applies to every account on the PC"
-    ]
+    ],
+    "topic": "Diagnostics"
   }
 ]

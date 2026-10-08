@@ -1,0 +1,1805 @@
+[
+  {
+    "id": "perm.user-camera",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to the camera (this account)",
+    "summary": "Turn off app access to the camera for your account.",
+    "what": "Sets the per account app permission for the camera to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use the camera until you allow it again.",
+    "risk": "Low. Video calls and photo apps from the Microsoft Store stop seeing the camera until you allow it again. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if no Microsoft Store app needs your camera.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-camera",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to the camera (all accounts)",
+    "summary": "Force app access to the camera off for every account.",
+    "what": "Applies the app privacy policy that forces access to the camera to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use the camera, and nobody can change that from Settings.",
+    "risk": "Medium. Video calls and photo apps from the Microsoft Store stop seeing the camera until you allow it again. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessCamera"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessCamera"
+    ]
+  },
+  {
+    "id": "perm.user-microphone",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to the microphone (this account)",
+    "summary": "Turn off app access to the microphone for your account.",
+    "what": "Sets the per account app permission for the microphone to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use the microphone until you allow it again.",
+    "risk": "Low. Voice calls, dictation and recorders from the Microsoft Store stop hearing you until you allow it again. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if no Microsoft Store app needs your microphone.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\microphone",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-microphone",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to the microphone (all accounts)",
+    "summary": "Force app access to the microphone off for every account.",
+    "what": "Applies the app privacy policy that forces access to the microphone to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use the microphone, and nobody can change that from Settings.",
+    "risk": "Medium. Voice calls, dictation and recorders from the Microsoft Store stop hearing you until you allow it again. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessMicrophone"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessMicrophone"
+    ]
+  },
+  {
+    "id": "perm.user-contacts",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your contacts (this account)",
+    "summary": "Turn off app access to your contacts for your account.",
+    "what": "Sets the per account app permission for your contacts to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use your contacts until you allow it again.",
+    "risk": "Low. Mail and chat apps cannot read your contact list. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for almost everyone. Few apps need your contacts.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\contacts",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-contacts",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your contacts (all accounts)",
+    "summary": "Force app access to your contacts off for every account.",
+    "what": "Applies the app privacy policy that forces access to your contacts to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use your contacts, and nobody can change that from Settings.",
+    "risk": "Medium. Mail and chat apps cannot read your contact list. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessContacts"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessContacts"
+    ]
+  },
+  {
+    "id": "perm.user-calendar",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your calendar (this account)",
+    "summary": "Turn off app access to your calendar for your account.",
+    "what": "Sets the per account app permission for your calendar to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use your calendar until you allow it again.",
+    "risk": "Low. Calendar and scheduling apps cannot read or add events. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested unless a Store app needs your calendar.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appointments",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-calendar",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your calendar (all accounts)",
+    "summary": "Force app access to your calendar off for every account.",
+    "what": "Applies the app privacy policy that forces access to your calendar to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use your calendar, and nobody can change that from Settings.",
+    "risk": "Medium. Calendar and scheduling apps cannot read or add events. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessCalendar"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessCalendar"
+    ]
+  },
+  {
+    "id": "perm.user-call-history",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your call history (this account)",
+    "summary": "Turn off app access to your call history for your account.",
+    "what": "Sets the per account app permission for your call history to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use your call history until you allow it again.",
+    "risk": "Low. Apps that show or log phone calls cannot read the history. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for almost everyone.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\phoneCallHistory",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-call-history",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your call history (all accounts)",
+    "summary": "Force app access to your call history off for every account.",
+    "what": "Applies the app privacy policy that forces access to your call history to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use your call history, and nobody can change that from Settings.",
+    "risk": "Medium. Apps that show or log phone calls cannot read the history. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessCallHistory"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessCallHistory"
+    ]
+  },
+  {
+    "id": "perm.user-email",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your email (this account)",
+    "summary": "Turn off app access to your email for your account.",
+    "what": "Sets the per account app permission for your email to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use your email until you allow it again.",
+    "risk": "Low. Apps cannot read mail that Windows stores for you. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested unless a Store app reads your mail.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\email",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-email",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your email (all accounts)",
+    "summary": "Force app access to your email off for every account.",
+    "what": "Applies the app privacy policy that forces access to your email to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use your email, and nobody can change that from Settings.",
+    "risk": "Medium. Apps cannot read mail that Windows stores for you. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessEmail"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessEmail"
+    ]
+  },
+  {
+    "id": "perm.user-messaging",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your text messages (this account)",
+    "summary": "Turn off app access to your text messages for your account.",
+    "what": "Sets the per account app permission for your text messages to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use your text messages until you allow it again.",
+    "risk": "Low. Apps cannot read or send text messages through Windows. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for almost everyone.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\chat",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-messaging",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your text messages (all accounts)",
+    "summary": "Force app access to your text messages off for every account.",
+    "what": "Applies the app privacy policy that forces access to your text messages to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use your text messages, and nobody can change that from Settings.",
+    "risk": "Medium. Apps cannot read or send text messages through Windows. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessMessaging"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessMessaging"
+    ]
+  },
+  {
+    "id": "perm.user-tasks",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your tasks (this account)",
+    "summary": "Turn off app access to your tasks for your account.",
+    "what": "Sets the per account app permission for your tasks to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use your tasks until you allow it again.",
+    "risk": "Low. To do apps cannot read your Windows task list. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested unless a Store app manages your tasks.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\userDataTasks",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-tasks",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your tasks (all accounts)",
+    "summary": "Force app access to your tasks off for every account.",
+    "what": "Applies the app privacy policy that forces access to your tasks to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use your tasks, and nobody can change that from Settings.",
+    "risk": "Medium. To do apps cannot read your Windows task list. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessTasks"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessTasks"
+    ]
+  },
+  {
+    "id": "perm.user-account-info",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your account information (this account)",
+    "summary": "Turn off app access to your account information for your account.",
+    "what": "Sets the per account app permission for your account information to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use your account information until you allow it again.",
+    "risk": "Low. Apps cannot read your name, picture and account details. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for almost everyone.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\userAccountInformation",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-account-info",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your account information (all accounts)",
+    "summary": "Force app access to your account information off for every account.",
+    "what": "Applies the app privacy policy that forces access to your account information to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use your account information, and nobody can change that from Settings.",
+    "risk": "Medium. Apps cannot read your name, picture and account details. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessAccountInfo"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessAccountInfo"
+    ]
+  },
+  {
+    "id": "perm.user-notifications",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your notifications (this account)",
+    "summary": "Turn off app access to your notifications for your account.",
+    "what": "Sets the per account app permission for your notifications to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use your notifications until you allow it again.",
+    "risk": "Low. Apps that mirror or read notifications stop working. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested unless a companion app mirrors your notifications.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\userNotificationListener",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-notifications",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to your notifications (all accounts)",
+    "summary": "Force app access to your notifications off for every account.",
+    "what": "Applies the app privacy policy that forces access to your notifications to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use your notifications, and nobody can change that from Settings.",
+    "risk": "Medium. Apps that mirror or read notifications stop working. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessNotifications"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessNotifications"
+    ]
+  },
+  {
+    "id": "perm.user-app-diagnostics",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to diagnostics about other apps (this account)",
+    "summary": "Turn off app access to diagnostics about other apps for your account.",
+    "what": "Sets the per account app permission for diagnostics about other apps to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use diagnostics about other apps until you allow it again.",
+    "risk": "Low. Task managers from the Store cannot see what other apps are doing. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for almost everyone.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appDiagnostics",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-app-diagnostics",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to diagnostics about other apps (all accounts)",
+    "summary": "Force app access to diagnostics about other apps off for every account.",
+    "what": "Applies the app privacy policy that forces access to diagnostics about other apps to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use diagnostics about other apps, and nobody can change that from Settings.",
+    "risk": "Medium. Task managers from the Store cannot see what other apps are doing. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsGetDiagnosticInfo"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsGetDiagnosticInfo"
+    ]
+  },
+  {
+    "id": "perm.user-radios",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to Bluetooth and other radios (this account)",
+    "summary": "Turn off app access to Bluetooth and other radios for your account.",
+    "what": "Sets the per account app permission for Bluetooth and other radios to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use Bluetooth and other radios until you allow it again.",
+    "risk": "Low. Apps cannot switch Bluetooth or other radios. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested unless an app must turn Bluetooth or Wi-Fi on and off.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\radios",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-radios",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to Bluetooth and other radios (all accounts)",
+    "summary": "Force app access to Bluetooth and other radios off for every account.",
+    "what": "Applies the app privacy policy that forces access to Bluetooth and other radios to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use Bluetooth and other radios, and nobody can change that from Settings.",
+    "risk": "Medium. Apps cannot switch Bluetooth or other radios. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessRadios"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessRadios"
+    ]
+  },
+  {
+    "id": "perm.user-phone-calls",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to phone calls (this account)",
+    "summary": "Turn off app access to phone calls for your account.",
+    "what": "Sets the per account app permission for phone calls to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use phone calls until you allow it again.",
+    "risk": "Low. Apps cannot place phone calls through Windows. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for almost everyone.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\phoneCall",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-phone-calls",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to phone calls (all accounts)",
+    "summary": "Force app access to phone calls off for every account.",
+    "what": "Applies the app privacy policy that forces access to phone calls to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use phone calls, and nobody can change that from Settings.",
+    "risk": "Medium. Apps cannot place phone calls through Windows. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessPhone"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessPhone"
+    ]
+  },
+  {
+    "id": "perm.user-motion",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to motion sensors (this account)",
+    "summary": "Turn off app access to motion sensors for your account.",
+    "what": "Sets the per account app permission for motion sensors to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use motion sensors until you allow it again.",
+    "risk": "Low. Apps cannot read motion and activity data from sensors. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for desktops. Skip it on tablets that use motion.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\activity",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-motion",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to motion sensors (all accounts)",
+    "summary": "Force app access to motion sensors off for every account.",
+    "what": "Applies the app privacy policy that forces access to motion sensors to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use motion sensors, and nobody can change that from Settings.",
+    "risk": "Medium. Apps cannot read motion and activity data from sensors. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessMotion"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessMotion"
+    ]
+  },
+  {
+    "id": "perm.user-eye-tracker",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to an eye tracker (this account)",
+    "summary": "Turn off app access to an eye tracker for your account.",
+    "what": "Sets the per account app permission for an eye tracker to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use an eye tracker until you allow it again.",
+    "risk": "Low. Apps cannot read eye tracking data. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested unless you own an eye tracker.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\gazeInput",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-eye-tracker",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to an eye tracker (all accounts)",
+    "summary": "Force app access to an eye tracker off for every account.",
+    "what": "Applies the app privacy policy that forces access to an eye tracker to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use an eye tracker, and nobody can change that from Settings.",
+    "risk": "Medium. Apps cannot read eye tracking data. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessGazeInput"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessGazeInput"
+    ]
+  },
+  {
+    "id": "perm.user-presence",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to presence sensing (this account)",
+    "summary": "Turn off app access to presence sensing for your account.",
+    "what": "Sets the per account app permission for presence sensing to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use presence sensing until you allow it again.",
+    "risk": "Low. Apps cannot tell whether you are in front of the PC. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for almost everyone.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\humanPresence",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-presence",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to presence sensing (all accounts)",
+    "summary": "Force app access to presence sensing off for every account.",
+    "what": "Applies the app privacy policy that forces access to presence sensing to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use presence sensing, and nobody can change that from Settings.",
+    "risk": "Medium. Apps cannot tell whether you are in front of the PC. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessHumanPresence"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessHumanPresence"
+    ]
+  },
+  {
+    "id": "perm.user-screenshots",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to screenshots of other windows (this account)",
+    "summary": "Turn off app access to screenshots of other windows for your account.",
+    "what": "Sets the per account app permission for screenshots of other windows to Deny. This is the value the Windows Settings privacy page writes.",
+    "benefit": "Apps that ask Windows for access cannot use screenshots of other windows until you allow it again.",
+    "risk": "Low. Store apps cannot capture other windows without you picking them. Allow it again in Settings, Privacy and security.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested unless you use a Store app that records the screen on its own.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "Writes the same value the Windows Settings privacy page does",
+      "You can allow individual apps again in Settings",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\graphicsCaptureProgrammatic",
+          "name": "Value"
+        },
+        "data": {
+          "kind": "String",
+          "value": "Deny"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-screenshots",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block app access to screenshots of other windows (all accounts)",
+    "summary": "Force app access to screenshots of other windows off for every account.",
+    "what": "Applies the app privacy policy that forces access to screenshots of other windows to Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can use screenshots of other windows, and nobody can change that from Settings.",
+    "risk": "Medium. Store apps cannot capture other windows without you picking them. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs. Most people should use the per account switch instead.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessGraphicsCaptureProgrammatic"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessGraphicsCaptureProgrammatic"
+    ]
+  },
+  {
+    "id": "perm.user-background-apps",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Stop apps from running in the background (this account)",
+    "summary": "Turn off the master switch that lets Store apps run when you are not using them.",
+    "what": "Sets the per account value that disables background activity for Microsoft Store apps.",
+    "benefit": "Less background network and battery use, and fewer apps that keep tracking in the background.",
+    "risk": "Low. Store apps may not update tiles or send notifications until you open them.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested on laptops and for anyone who wants fewer background apps. Skip it if you rely on Store app notifications.",
+    "facts": [
+      "Applies to Microsoft Store apps, not classic desktop programs",
+      "Per account setting",
+      "Windows 11 also lets you pick apps one by one in Settings",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications",
+          "name": "GlobalUserDisabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ]
+  },
+  {
+    "id": "perm.all-background-apps",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Stop apps from running in the background (all accounts)",
+    "summary": "Force Windows apps to stay quiet in the background with a policy.",
+    "what": "Applies the app privacy policy that forces background activity to Deny.",
+    "benefit": "No Store app runs in the background for any account.",
+    "risk": "Medium. Notifications and live tiles from Store apps stop until you open them.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for shared PCs. Most people should use the per account switch.",
+    "facts": [
+      "Enforced by a machine policy",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsRunInBackground"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsRunInBackground"
+    ]
+  },
+  {
+    "id": "perm.all-voice",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block apps from listening for a wake word",
+    "summary": "Stop apps from starting by voice.",
+    "what": "Applies the app privacy policy. Forces voice activation for Windows apps to Deny.",
+    "benefit": "No Windows app can use this feature, and nobody can change that from Settings.",
+    "risk": "Medium. Apps that start with a spoken phrase stop responding to it.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if you do not use the feature. Skip it otherwise.",
+    "facts": [
+      "Enforced by a machine policy",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsActivateWithVoice"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsActivateWithVoice"
+    ]
+  },
+  {
+    "id": "perm.all-voice-locked",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block voice activation on the lock screen",
+    "summary": "Stop apps from starting by voice while the PC is locked.",
+    "what": "Applies the app privacy policy. Forces voice activation while the PC is locked to Deny.",
+    "benefit": "No Windows app can use this feature, and nobody can change that from Settings.",
+    "risk": "Medium. Voice start on the lock screen stops working.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if you do not use the feature. Skip it otherwise.",
+    "facts": [
+      "Enforced by a machine policy",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsActivateWithVoiceAboveLock"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsActivateWithVoiceAboveLock"
+    ]
+  },
+  {
+    "id": "perm.all-unpaired",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block apps from talking to unpaired devices",
+    "summary": "Stop apps from connecting to nearby devices you have not paired.",
+    "what": "Applies the app privacy policy. Forces apps communicating with unpaired devices to Deny.",
+    "benefit": "No Windows app can use this feature, and nobody can change that from Settings.",
+    "risk": "Medium. Apps that connect to nearby beacons or gadgets without pairing stop working.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if you do not use the feature. Skip it otherwise.",
+    "facts": [
+      "Enforced by a machine policy",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsSyncWithDevices"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsSyncWithDevices"
+    ]
+  },
+  {
+    "id": "perm.all-trusted",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block apps from trusted devices",
+    "summary": "Stop apps from using trusted devices.",
+    "what": "Applies the app privacy policy. Forces app access to trusted devices to Deny.",
+    "benefit": "No Windows app can use this feature, and nobody can change that from Settings.",
+    "risk": "Medium. Apps that use trusted devices cannot reach them.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if you do not use the feature. Skip it otherwise.",
+    "facts": [
+      "Enforced by a machine policy",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessTrustedDevices"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessTrustedDevices"
+    ]
+  },
+  {
+    "id": "perm.all-text",
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block apps from reading text in other apps",
+    "summary": "Stop apps from reading on screen text of other apps.",
+    "what": "Applies the app privacy policy. Forces access to text content from foreground apps to Deny.",
+    "benefit": "No Windows app can use this feature, and nobody can change that from Settings.",
+    "risk": "Medium. Helper apps that read other windows cannot do it.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if you do not use the feature. Skip it otherwise.",
+    "facts": [
+      "Enforced by a machine policy",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy",
+          "name": "LetAppsAccessForegroundText"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "AppPrivacy.admx LetAppsAccessForegroundText"
+    ]
+  }
+]

@@ -11,11 +11,23 @@
     "riskLevel": "Safe",
     "recommendation": "Optional",
     "advice": "Suggested for most laptops and everyday desktops. Pick it to go back after trying another plan.",
-    "facts": ["Windows ships it as the default plan", "Scales processor speed up and down automatically", "Only one power plan is active at a time"],
+    "facts": [
+      "Windows ships it as the default plan",
+      "Scales processor speed up and down automatically",
+      "Only one power plan is active at a time"
+    ],
     "exclusiveGroup": "power-plan",
     "scope": "Machine",
-    "apply": [ { "type": "power.plan", "plan": "balanced" } ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options" ]
+    "apply": [
+      {
+        "type": "power.plan",
+        "plan": "balanced"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options"
+    ],
+    "topic": "Power"
   },
   {
     "id": "power.plan-high-performance",
@@ -29,11 +41,24 @@
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested for desktops that stay plugged in. Skip it on laptops that run on battery.",
-    "facts": ["Favors speed over saving energy", "Uses more power and can run hotter", "A laptop on battery will drain faster", "Only one power plan is active at a time"],
+    "facts": [
+      "Favors speed over saving energy",
+      "Uses more power and can run hotter",
+      "A laptop on battery will drain faster",
+      "Only one power plan is active at a time"
+    ],
     "exclusiveGroup": "power-plan",
     "scope": "Machine",
-    "apply": [ { "type": "power.plan", "plan": "high-performance" } ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options" ]
+    "apply": [
+      {
+        "type": "power.plan",
+        "plan": "high-performance"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options"
+    ],
+    "topic": "Power"
   },
   {
     "id": "power.plan-ultimate",
@@ -47,11 +72,24 @@
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested for plugged in desktops and workstations. Skip it on laptops and for everyday use.",
-    "facts": ["Made from a built in template and named Ultimate Performance", "Aimed at workstations and high end PCs", "Not meant for running on battery", "Reverting switches back to the plan you had before"],
+    "facts": [
+      "Made from a built in template and named Ultimate Performance",
+      "Aimed at workstations and high end PCs",
+      "Not meant for running on battery",
+      "Reverting switches back to the plan you had before"
+    ],
     "exclusiveGroup": "power-plan",
     "scope": "Machine",
-    "apply": [ { "type": "power.plan", "plan": "ultimate" } ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options" ]
+    "apply": [
+      {
+        "type": "power.plan",
+        "plan": "ultimate"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options"
+    ],
+    "topic": "Power"
   },
   {
     "id": "power.plan-saver",
@@ -65,11 +103,23 @@
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested when battery life matters more than speed.",
-    "facts": ["Lowers processor speed to save energy", "Can make heavy tasks slower", "Only one power plan is active at a time"],
+    "facts": [
+      "Lowers processor speed to save energy",
+      "Can make heavy tasks slower",
+      "Only one power plan is active at a time"
+    ],
     "exclusiveGroup": "power-plan",
     "scope": "Machine",
-    "apply": [ { "type": "power.plan", "plan": "power-saver" } ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options" ]
+    "apply": [
+      {
+        "type": "power.plan",
+        "plan": "power-saver"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options"
+    ],
+    "topic": "Power"
   },
   {
     "id": "power.hibernate-off",
@@ -83,9 +133,22 @@
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested for desktops that never hibernate, or when disk space is tight. Skip it on laptops that hibernate to save battery.",
-    "facts": ["Deletes the hiberfil.sys file", "Sleep still works", "Fast Startup depends on hibernation, so it stops too", "Reverting turns hibernation back on"],
+    "facts": [
+      "Deletes the hiberfil.sys file",
+      "Sleep still works",
+      "Fast Startup depends on hibernation, so it stops too",
+      "Reverting turns hibernation back on"
+    ],
     "scope": "Machine",
-    "apply": [ { "type": "power.hibernation", "enabled": false } ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options" ]
+    "apply": [
+      {
+        "type": "power.hibernation",
+        "enabled": false
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options"
+    ],
+    "topic": "Power"
   }
 ]

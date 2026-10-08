@@ -16,6 +16,8 @@ public sealed partial class TweakListPage : Page
     private PageArgs _args = new("", "", []);
     private string _query = "";
     private string _filter = "all";
+    private string _topic = "";
+    private bool _fillingTopics;
     private bool _building;
     private readonly bool _ready;
 
@@ -55,6 +57,27 @@ public sealed partial class TweakListPage : Page
         Rebuild();
     }
 
+    private void OnTopicChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!_ready || _fillingTopics) return;
+        _topic = TopicBox.SelectedIndex <= 0 ? "" : TopicBox.SelectedItem as string ?? "";
+        Rebuild();
+    }
+
+    private void FillTopics(IEnumerable<TweakItem> scope)
+    {
+        var topics = scope.Select(i => i.Tweak.Topic).Where(t => t.Length > 0).Distinct().Order().ToList();
+        _fillingTopics = true;
+        TopicBox.Items.Clear();
+        TopicBox.Items.Add("All topics");
+        foreach (var t in topics) TopicBox.Items.Add(t);
+        var index = topics.IndexOf(_topic);
+        TopicBox.SelectedIndex = index >= 0 ? index + 1 : 0;
+        if (index < 0) _topic = "";
+        TopicBox.Visibility = topics.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
+        _fillingTopics = false;
+    }
+
     private void OnFilterChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!_ready) return;
@@ -74,7 +97,9 @@ public sealed partial class TweakListPage : Page
                 .Where(i => _app.ExpertMode || (i.Tweak.RiskLevel <= RiskLevel.Low && i.Tweak.Evidence != Evidence.Unproven))
                 .ToList();
 
+            FillTopics(inScope);
             var items = inScope
+                .Where(i => _topic.Length == 0 || i.Tweak.Topic == _topic)
                 .Where(Matches)
                 .Where(PassesFilter)
                 .OrderBy(i => i.IsSupported ? (i.IsUnavailable ? 1 : 0) : 2)

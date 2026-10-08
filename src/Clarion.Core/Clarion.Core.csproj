@@ -5,5 +5,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Catalog\Data\*.json" />
     <EmbeddedResource Include="Catalog\Presets\*.json" />
+    <EmbeddedResource Include="Catalog\Actions\*.json" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,9 @@ public sealed record Tweak
 {
     public required string Id { get; init; }
     public required string Category { get; init; }
+
+    /// <summary>A smaller group inside the category, such as Search or App permissions.</summary>
+    public string Topic { get; init; } = "";
     public required string Name { get; init; }
     public required string Summary { get; init; }
     public required string What { get; init; }
@@ -30,6 +33,9 @@ public sealed record Tweak
     public required IReadOnlyList<Operation> Apply { get; init; }
     public IReadOnlyList<Operation> Undo { get; init; } = [];
     public IReadOnlyList<string> Sources { get; init; } = [];
+
+    /// <summary>The exact Microsoft policy definitions this setting is built from, for people who want to check.</summary>
+    public IReadOnlyList<string> Provenance { get; init; } = [];
 }
 
 public sealed record MachineProfile(int Build, string Edition)

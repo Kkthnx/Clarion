@@ -27,6 +27,7 @@ public sealed partial class TweakItem : ObservableObject
     public IReadOnlyList<SourceLink> SourceLinks => Tweak.Sources
         .Where(s => Uri.TryCreate(s, UriKind.Absolute, out _))
         .Select(s => new SourceLink(new Uri(s).Host + new Uri(s).AbsolutePath, new Uri(s))).ToList();
+    public IReadOnlyList<string> Provenance => Tweak.Provenance;
     public bool HasSources => Tweak.Sources.Count > 0;
     public bool HasLastError => LastError.Length > 0;
 

@@ -24,7 +24,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.bingweather",
@@ -51,7 +52,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.bingsearch",
@@ -78,7 +80,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.gethelp",
@@ -105,7 +108,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.getstarted",
@@ -132,7 +136,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.microsoftofficehub",
@@ -159,7 +164,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.microsoftsolitairecollection",
@@ -186,7 +192,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.windowsfeedbackhub",
@@ -213,7 +220,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.powerautomatedesktop",
@@ -240,7 +248,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.todos",
@@ -267,7 +276,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.quickassist",
@@ -294,7 +304,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.clipchamp.clipchamp",
@@ -321,7 +332,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.yourphone",
@@ -348,7 +360,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.windowsmaps",
@@ -375,7 +388,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.zunevideo",
@@ -402,7 +416,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.people",
@@ -429,7 +444,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.microsoftstickynotes",
@@ -456,7 +472,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.microsoftteams",
@@ -483,7 +500,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.outlookforwindows",
@@ -510,7 +528,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.copilot",
@@ -537,7 +556,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.gamingapp",
@@ -564,7 +584,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.xboxgamingoverlay",
@@ -591,7 +612,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.mixedreality.portal",
@@ -618,7 +640,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.microsoft3dviewer",
@@ -645,7 +668,8 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   },
   {
     "id": "debloat.app.skypeapp",
@@ -672,6 +696,7 @@
         "allUsers": false,
         "deprovision": false
       }
-    ]
+    ],
+    "topic": "Apps"
   }
 ]

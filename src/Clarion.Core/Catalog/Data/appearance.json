@@ -69,7 +69,8 @@
       "Changes the theme for the current account only",
       "Apps that ignore the system theme stay as they are",
       "Takes effect immediately"
-    ]
+    ],
+    "topic": "Look and feel"
   },
   {
     "id": "appearance.classic-context-menu",
@@ -107,7 +108,8 @@
       "Adds one per account shell class entry that nothing else uses",
       "Explorer restarts once to apply",
       "Revert removes the entry completely"
-    ]
+    ],
+    "topic": "Look and feel"
   },
   {
     "id": "appearance.taskbar-left",
@@ -157,7 +159,8 @@
       "Windows 11 only",
       "Per account setting",
       "Takes effect immediately"
-    ]
+    ],
+    "topic": "Look and feel"
   },
   {
     "id": "explorer.show-extensions",
@@ -204,7 +207,8 @@
       "Malware often hides as a name like invoice.pdf.exe",
       "Per account setting",
       "Does not rename or change any file"
-    ]
+    ],
+    "topic": "File Explorer"
   },
   {
     "id": "input.mouse-accel-off",
@@ -262,6 +266,7 @@
       "Windows calls this Enhance pointer precision",
       "Pointer distance then matches hand distance",
       "Sign out to apply"
-    ]
+    ],
+    "topic": "Mouse and keyboard"
   }
 ]

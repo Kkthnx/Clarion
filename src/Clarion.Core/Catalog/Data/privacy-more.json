@@ -43,7 +43,8 @@
       "Applies to every account and cannot be changed in Settings afterward",
       "The policy is documented by the vendor",
       "Not available on Home, which ignores it"
-    ]
+    ],
+    "topic": "App permissions"
   },
   {
     "id": "debloat.consumer-features-policy",
@@ -86,7 +87,8 @@
       "Windows honors this policy on Enterprise and Education only",
       "The setting is documented by the vendor",
       "Also covers accounts created later"
-    ]
+    ],
+    "topic": "Suggestions and ads"
   },
   {
     "id": "debloat.content-delivery-user",
@@ -203,7 +205,8 @@
       "Works on every edition",
       "Not a documented policy, so Windows may reset it after big updates",
       "Clarion detects a reset and offers one click reapply"
-    ]
+    ],
+    "topic": "Suggestions and ads"
   },
   {
     "id": "privacy.onedrive-sync-policy",
@@ -249,7 +252,8 @@
       "Does not uninstall OneDrive",
       "Move Desktop, Documents and Pictures back to local folders first",
       "Available on Pro, Enterprise and Education"
-    ]
+    ],
+    "topic": "Sync and clipboard"
   },
   {
     "id": "privacy.device-metadata-offline",
@@ -282,6 +286,7 @@
       "Windows will not download device names, icons and companion app hints",
       "Devices still work",
       "Applies to every account on the PC"
-    ]
+    ],
+    "topic": "Diagnostics"
   }
 ]

@@ -22,7 +22,8 @@
         <Grid Grid.Row="1" ColumnSpacing="12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="280" />
-                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="190" />
+                <ColumnDefinition Width="230" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <AutoSuggestBox x:Name="SearchBox" PlaceholderText="Search settings" QueryIcon="Find"
@@ -36,7 +37,9 @@
                 <ComboBoxItem Content="Currently off" Tag="off" />
                 <ComboBoxItem Content="Needs attention" Tag="attention" />
             </ComboBox>
-            <TextBlock x:Name="CountText" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"
+            <ComboBox x:Name="TopicBox" Grid.Column="2" HorizontalAlignment="Stretch"
+                      AutomationProperties.Name="Filter by topic" SelectionChanged="OnTopicChanged" />
+            <TextBlock x:Name="CountText" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right"
                        Foreground="{ThemeResource ClTextMutedBrush}" />
         </Grid>
 

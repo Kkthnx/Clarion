@@ -33,6 +33,7 @@
       "Updates still install",
       "Some fixes stay inactive until you restart",
       "Applies only while someone is signed in"
-    ]
+    ],
+    "topic": "Updates"
   }
 ]

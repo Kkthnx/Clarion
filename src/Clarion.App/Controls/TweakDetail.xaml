@@ -72,6 +72,15 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            <TextBlock Text="Microsoft policy definitions" FontSize="12" Margin="0,6,0,0" Foreground="{ThemeResource ClTextMutedBrush}" />
+            <ItemsControl ItemsSource="{x:Bind Item.Provenance, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <TextBlock Text="{x:Bind}" FontFamily="Cascadia Mono" FontSize="12" IsTextSelectionEnabled="True"
+                                   Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <ItemsControl ItemsSource="{x:Bind Item.SourceLinks, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="svc:SourceLink">

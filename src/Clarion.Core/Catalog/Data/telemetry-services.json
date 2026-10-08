@@ -33,7 +33,8 @@
       "dmwappushservice routes push messages used by diagnostics",
       "Clarion never touches the Windows Update services",
       "Windows may turn them back on after a big update and Clarion will flag it"
-    ]
+    ],
+    "topic": "Diagnostics"
   },
   {
     "id": "privacy.telemetry-tasks",
@@ -74,6 +75,7 @@
       "Covers four tasks: Compatibility Appraiser, ProgramDataUpdater, Consolidator and UsbCeip",
       "Tasks missing on your build are skipped",
       "Stops periodic scans that cause short CPU and disk bursts"
-    ]
+    ],
+    "topic": "Diagnostics"
   }
 ]

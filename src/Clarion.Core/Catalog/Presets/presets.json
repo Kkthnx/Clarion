@@ -45,6 +45,36 @@
     "input.menu-show-delay-zero",
     "network.delivery-optimization-http",
     "privacy.telemetry-tasks",
-    "debloat.content-delivery-user"
+    "debloat.content-delivery-user",
+    "gaming.game-mode-on"
+  ],
+  "privacy": [
+    "privacy.feedback-prompts-off",
+    "privacy.device-name-hidden",
+    "privacy.inking-typing-personalization-off",
+    "privacy.improve-typing-off",
+    "privacy.feedback-frequency-never",
+    "search.history-off",
+    "search.location-off",
+    "search.highlights-off",
+    "search.web-results-machine",
+    "ads.windows-tips-off",
+    "ads.spotlight-off",
+    "ads.third-party-suggestions-off",
+    "ads.lockscreen-tips-off",
+    "ads.settings-tips-off",
+    "ads.explorer-promos-off",
+    "ads.start-recommendations-off",
+    "ads.track-launches-off",
+    "sync.clipboard-cloud-off",
+    "lock.app-notifications-off",
+    "ai.recall-snapshots-off",
+    "debloat.consumer-features-policy",
+    "debloat.content-delivery-user",
+    "privacy.advertising-id",
+    "privacy.tailored-experiences",
+    "privacy.web-search-start",
+    "privacy.activity-history",
+    "privacy.diagnostic-data-minimum"
   ]
 }

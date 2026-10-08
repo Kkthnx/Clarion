@@ -43,7 +43,8 @@
       "Mode 0 means HTTP only with no peering",
       "Documented in the vendor policy reference",
       "Not available on Home, which has no policy support"
-    ]
+    ],
+    "topic": "Network"
   },
   {
     "id": "system.long-paths",
@@ -93,7 +94,8 @@
       "Apps must also opt in through their manifest",
       "Apps that do not opt in are unaffected",
       "Documented by the vendor"
-    ]
+    ],
+    "topic": "System"
   },
   {
     "id": "system.fast-startup-off",
@@ -141,7 +143,8 @@
       "Shut down normally saves a kernel session to disk",
       "Restart is already a full restart",
       "Cold boot can take a few seconds longer"
-    ]
+    ],
+    "topic": "System"
   },
   {
     "id": "explorer.end-task-menu",
@@ -177,7 +180,8 @@
       "Windows 11 23H2 and later",
       "It is a developer setting made visible",
       "Unsaved work in that app is lost when you use it"
-    ]
+    ],
+    "topic": "File Explorer"
   },
   {
     "id": "explorer.show-hidden-files",
@@ -224,7 +228,8 @@
       "Per account setting",
       "Hidden system files stay protected and hidden",
       "Take care deleting files you do not know"
-    ]
+    ],
+    "topic": "File Explorer"
   },
   {
     "id": "explorer.open-to-this-pc",
@@ -271,7 +276,8 @@
       "Per account setting",
       "Shows drives and folders instead of recent files",
       "Takes effect the next time Explorer opens"
-    ]
+    ],
+    "topic": "File Explorer"
   },
   {
     "id": "taskbar.hide-task-view",
@@ -319,7 +325,8 @@
       "Win+Tab still opens Task View",
       "Per account setting",
       "Explorer restarts once to apply"
-    ]
+    ],
+    "topic": "Taskbar and widgets"
   },
   {
     "id": "taskbar.hide-search",
@@ -366,7 +373,8 @@
       "Search still opens from Start or Win+S",
       "Per account setting",
       "Takes effect immediately"
-    ]
+    ],
+    "topic": "Taskbar and widgets"
   },
   {
     "id": "input.menu-show-delay-zero",
@@ -414,7 +422,8 @@
       "The Windows default is 400 milliseconds",
       "Per account setting",
       "Sign out to apply"
-    ]
+    ],
+    "topic": "Mouse and keyboard"
   },
   {
     "id": "input.sticky-keys-prompt-off",
@@ -463,6 +472,7 @@
       "Setting 506 clears only the hotkey bit that opens the prompt",
       "Sticky Keys can still be turned on in Settings",
       "Sign out to apply"
-    ]
+    ],
+    "topic": "Mouse and keyboard"
   }
 ]

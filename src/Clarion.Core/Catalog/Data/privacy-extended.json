@@ -1,0 +1,2378 @@
+[
+  {
+    "id": "privacy.feedback-prompts-off",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Stop feedback pop-ups",
+    "summary": "Windows will no longer ask you to rate or comment on it.",
+    "what": "Applies the policy that stops Windows from showing feedback notifications.",
+    "benefit": "No more interruptions asking for feedback.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. You can still send feedback yourself from the Feedback Hub.",
+    "facts": [
+      "Only hides the prompts, it does not change what data is sent",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\DataCollection",
+          "name": "DoNotShowFeedbackNotifications"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience"
+    ],
+    "provenance": [
+      "FeedbackNotifications.admx DoNotShowFeedbackNotifications"
+    ]
+  },
+  {
+    "id": "privacy.device-name-hidden",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Keep your PC name out of diagnostic data",
+    "summary": "Stop Windows from adding the name of this PC to diagnostic data.",
+    "what": "Applies the policy that stops the device name from being included in Windows diagnostic data.",
+    "benefit": "Your PC name is not attached to what is sent to Microsoft.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. It removes one identifying detail at no cost.",
+    "facts": [
+      "Applies to diagnostic data only",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\DataCollection",
+          "name": "AllowDeviceNameInTelemetry"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ],
+    "provenance": [
+      "DataCollection.admx AllowDeviceNameInDiagnosticData"
+    ]
+  },
+  {
+    "id": "privacy.onesettings-off",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Stop the Microsoft configuration download",
+    "summary": "Windows will not fetch configuration and experiment settings from Microsoft.",
+    "what": "Applies the policy that stops Windows from connecting to the OneSettings service.",
+    "benefit": "One less background connection and fewer remote changes to how Windows behaves.",
+    "risk": "Low. Microsoft cannot switch Windows features on or off remotely, and some diagnostic features get less guidance.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you want Windows to stop phoning home for settings. Skip it if you want the newest staged features.",
+    "facts": [
+      "OneSettings is how Microsoft delivers configuration to Windows",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\DataCollection",
+          "name": "DisableOneSettingsDownloads"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ],
+    "provenance": [
+      "DataCollection.admx DisableOneSettingsDownloads"
+    ]
+  },
+  {
+    "id": "privacy.error-reporting-off",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Turn off Windows Error Reporting",
+    "summary": "Stop crash reports from being created and sent.",
+    "what": "Applies the policy that disables Windows Error Reporting.",
+    "benefit": "No crash data about your apps leaves the PC and fewer reporting jobs run after a crash.",
+    "risk": "Low. Microsoft and app makers get no crash reports, and the built in solutions check for known problems stops.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not want crash data sent. Skip it if you rely on Windows to suggest fixes after a crash.",
+    "facts": [
+      "Crash dumps can contain parts of what was in memory",
+      "Does not affect crash dumps you save yourself",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Error Reporting",
+          "name": "Disabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ],
+    "provenance": [
+      "ErrorReporting.admx WerDisable_2"
+    ]
+  },
+  {
+    "id": "privacy.speech-updates-off",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Stop speech model downloads",
+    "summary": "Windows will not download updates to its speech recognition data.",
+    "what": "Applies the policy that stops automatic updates of speech recognition and speech synthesis models.",
+    "benefit": "Saves bandwidth and removes one background download.",
+    "risk": "Low. Speech recognition may be a little less accurate over time.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if you never use speech features. Safe to skip.",
+    "facts": [
+      "Speech models are data files, not programs",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Speech",
+          "name": "AllowSpeechModelUpdate"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ],
+    "provenance": [
+      "Speech.admx AllowSpeechModelUpdate"
+    ]
+  },
+  {
+    "id": "privacy.online-speech-off",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Turn off online speech recognition",
+    "summary": "Keep your voice from being sent to Microsoft for recognition.",
+    "what": "Applies the policy that turns off online speech recognition services and hides the switch in Settings.",
+    "benefit": "Your voice is not sent to cloud speech services.",
+    "risk": "Low. Voice typing and cloud dictation stop working.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not use voice typing. Skip it if you dictate.",
+    "facts": [
+      "Applies to cloud speech services only",
+      "Offline speech features still work",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\InputPersonalization",
+          "name": "AllowInputPersonalization"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "Globalization.admx AllowInputPersonalization"
+    ]
+  },
+  {
+    "id": "privacy.inking-typing-personalization-off",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Stop inking and typing personalization",
+    "summary": "Windows will not learn from what you type and write.",
+    "what": "Turns off implicit ink and text collection and contact harvesting for your account.",
+    "benefit": "Your typing and handwriting are not used to build a personal dictionary.",
+    "risk": "Low. Autocorrect and suggestions learn less about your words.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who wants less data collected about how they type.",
+    "facts": [
+      "Per account setting",
+      "These are the values the Settings privacy page writes",
+      "Revert restores the earlier values"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\InputPersonalization",
+          "name": "RestrictImplicitInkCollection"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\InputPersonalization",
+          "name": "RestrictImplicitTextCollection"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\InputPersonalization\\TrainedDataStore",
+          "name": "HarvestContacts"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Personalization\\Settings",
+          "name": "AcceptedPrivacyPolicy"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "privacy.improve-typing-off",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Stop sending typing data to improve Windows",
+    "summary": "Turn off the inking and typing improvement program.",
+    "what": "Sets the per account value that disables sending inking and typing samples to Microsoft.",
+    "benefit": "Samples of what you type are not sent.",
+    "risk": "None.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone.",
+    "facts": [
+      "Per account setting",
+      "Does not change the local dictionary",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Input\\TIPC",
+          "name": "Enabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "privacy.online-speech-account-off",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Turn off online speech recognition (this account)",
+    "summary": "Keep your voice from being sent for recognition, for your account only.",
+    "what": "Sets the per account value that records that you did not accept the online speech privacy statement.",
+    "benefit": "Your voice is not sent to cloud speech services.",
+    "risk": "Low. Voice typing and cloud dictation stop working.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not use voice typing. Works on every edition.",
+    "facts": [
+      "Per account setting",
+      "The machine wide policy version needs Pro or higher",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Speech_OneCore\\Settings\\OnlineSpeechPrivacy",
+          "name": "HasAccepted"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "privacy.feedback-frequency-never",
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Never ask for feedback",
+    "summary": "Set the feedback frequency to Never for your account.",
+    "what": "Sets the number of feedback requests per period to zero for your account.",
+    "benefit": "Windows does not ask you for feedback.",
+    "risk": "None.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. Works on every edition.",
+    "facts": [
+      "Per account setting",
+      "This is the Never choice in Settings, Privacy and security, Diagnostics and feedback",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Siuf\\Rules",
+          "name": "NumberOfSIUFInPeriod"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "search.history-off",
+    "category": "Privacy",
+    "topic": "Search",
+    "name": "Stop saving search history",
+    "summary": "Windows will not remember what you searched for on this device or in your account.",
+    "what": "Turns off device search history and cloud content search for Microsoft and work or school accounts.",
+    "benefit": "Searches are not stored and cloud files are not searched from Windows search.",
+    "risk": "Low. Search no longer suggests your past searches or finds cloud only files.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who wants a private search box.",
+    "facts": [
+      "Per account setting",
+      "Covers device history and both cloud search switches",
+      "These are the values the Settings search permissions page writes"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+          "name": "IsDeviceSearchHistoryEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+          "name": "IsMSACloudSearchEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+          "name": "IsAADCloudSearchEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "search.cortana-off",
+    "category": "Privacy",
+    "topic": "Search",
+    "name": "Turn off Cortana",
+    "summary": "Block Cortana with a policy.",
+    "what": "Applies the policy that disallows Cortana.",
+    "benefit": "Cortana cannot run or collect searches on builds that still include it.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested for older builds that still ship Cortana. Current Windows 11 builds no longer include the standalone app.",
+    "facts": [
+      "Cortana as a separate app has been retired",
+      "Mainly useful on older Windows builds",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+          "name": "AllowCortana"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search"
+    ],
+    "provenance": [
+      "Search.admx AllowCortana"
+    ]
+  },
+  {
+    "id": "search.cortana-lockscreen-off",
+    "category": "Privacy",
+    "topic": "Search",
+    "name": "Block Cortana on the lock screen",
+    "summary": "Stop Cortana from answering while the PC is locked.",
+    "what": "Applies the policy that disallows Cortana above the lock screen.",
+    "benefit": "Nobody can use Cortana without signing in.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested for older builds that still ship Cortana.",
+    "facts": [
+      "Cortana as a separate app has been retired",
+      "Mainly useful on older Windows builds",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+          "name": "AllowCortanaAboveLock"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search"
+    ],
+    "provenance": [
+      "Search.admx AllowCortanaAboveLock"
+    ]
+  },
+  {
+    "id": "search.location-off",
+    "category": "Privacy",
+    "topic": "Search",
+    "name": "Keep search from using your location",
+    "summary": "Stop Windows search from using where you are.",
+    "what": "Applies the policy that stops search from using location information.",
+    "benefit": "Search results are not tailored to your location.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone.",
+    "facts": [
+      "Does not turn off location for apps",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+          "name": "AllowSearchToUseLocation"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search"
+    ],
+    "provenance": [
+      "Search.admx AllowSearchToUseLocation"
+    ]
+  },
+  {
+    "id": "search.cloud-off",
+    "category": "Privacy",
+    "topic": "Search",
+    "name": "Keep search on this PC",
+    "summary": "Stop Windows search from looking in cloud sources like OneDrive and SharePoint.",
+    "what": "Sets the Windows Search policy that disallows cloud search.",
+    "benefit": "Search only looks at this PC.",
+    "risk": "Low. Files that exist only in the cloud are not found from the search box.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not search cloud files from Windows. Skip it if you do.",
+    "facts": [
+      "Applies to the search box and Start search",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+          "name": "AllowCloudSearch"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search"
+    ]
+  },
+  {
+    "id": "search.highlights-off",
+    "category": "Privacy",
+    "topic": "Search",
+    "name": "Hide search highlights",
+    "summary": "Remove the daily pictures and trending items from the search box.",
+    "what": "Sets the Windows Search policy that turns off search highlights.",
+    "benefit": "A plain search box with no trending content or tracking of what you click.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who finds the highlights distracting.",
+    "facts": [
+      "Applies to the search box and search home",
+      "Needs a Windows build with search highlights",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+          "name": "EnableDynamicContentInWSB"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search"
+    ]
+  },
+  {
+    "id": "search.web-results-machine",
+    "category": "Privacy",
+    "topic": "Search",
+    "name": "No web results in search (all accounts)",
+    "summary": "Stop Windows search from querying the web.",
+    "what": "Sets the Windows Search policy that disables web queries and web results.",
+    "benefit": "Nothing you type in search is sent to the web.",
+    "risk": "Low. Search shows only results from this PC.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested on Enterprise and Education. On Home and Pro use the per account version.",
+    "facts": [
+      "Windows honors this policy on Enterprise and Education only",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+          "name": "ConnectedSearchUseWeb"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search"
+    ]
+  },
+  {
+    "id": "ads.windows-tips-off",
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "Turn off Windows tips",
+    "summary": "Stop Windows from showing tips, tricks and suggestions.",
+    "what": "Applies the policy that turns off Windows tips.",
+    "benefit": "No tip pop-ups or notifications that push features.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested on Enterprise and Education. On Home and Pro use the per account suggestions switch.",
+    "facts": [
+      "Windows honors this policy on Enterprise and Education only",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent",
+          "name": "DisableSoftLanding"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience"
+    ],
+    "provenance": [
+      "CloudContent.admx DisableSoftLanding"
+    ]
+  },
+  {
+    "id": "ads.spotlight-off",
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "Turn off Windows Spotlight everywhere",
+    "summary": "Remove Spotlight pictures, tips and suggestions from the lock screen, desktop and Settings.",
+    "what": "Applies the Spotlight policies for the lock screen, desktop, Settings, notifications and the welcome experience.",
+    "benefit": "No rotating pictures with promotional tips, and no Spotlight content in Settings.",
+    "risk": "Low. The lock screen uses a fixed picture instead of Spotlight.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested on Enterprise and Education. On Home and Pro use the lock screen switch below.",
+    "facts": [
+      "Windows honors these policies on Enterprise and Education only",
+      "Per account policies",
+      "Revert removes the policy values"
+    ],
+    "scope": "User",
+    "requires": {
+      "editions": [
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent",
+          "name": "DisableWindowsSpotlightFeatures"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent",
+          "name": "DisableSpotlightCollectionOnDesktop"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent",
+          "name": "DisableWindowsSpotlightOnSettings"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent",
+          "name": "DisableWindowsSpotlightOnActionCenter"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent",
+          "name": "DisableWindowsSpotlightWindowsWelcomeExperience"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience"
+    ],
+    "provenance": [
+      "CloudContent.admx DisableWindowsSpotlightFeatures",
+      "CloudContent.admx DisableSpotlightCollectionOnDesktop",
+      "CloudContent.admx DisableWindowsSpotlightOnSettings",
+      "CloudContent.admx DisableWindowsSpotlightOnActionCenter",
+      "CloudContent.admx DisableWindowsSpotlightWindowsWelcomeExperience"
+    ]
+  },
+  {
+    "id": "ads.third-party-suggestions-off",
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "No third party suggestions in Spotlight",
+    "summary": "Stop Windows from suggesting other companies content.",
+    "what": "Applies the per account policy that stops third party content suggestions.",
+    "benefit": "No ads for other companies apps and services in Spotlight.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone on Pro and above.",
+    "facts": [
+      "Per account policy",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "User",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent",
+          "name": "DisableThirdPartySuggestions"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience"
+    ],
+    "provenance": [
+      "CloudContent.admx DisableThirdPartySuggestions"
+    ]
+  },
+  {
+    "id": "ads.lockscreen-tips-off",
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "No Spotlight or tips on the lock screen",
+    "summary": "Stop the rotating lock screen pictures and tips for your account.",
+    "what": "Turns off the rotating lock screen and its tips for your account.",
+    "benefit": "The lock screen stays a plain picture with no promotions.",
+    "risk": "None.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. Works on every edition.",
+    "facts": [
+      "Per account setting",
+      "These are the values Settings writes when you leave Spotlight",
+      "Revert restores the earlier values"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "RotatingLockScreenEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "RotatingLockScreenOverlayEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "SubscribedContent-338387Enabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "ads.settings-tips-off",
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "Stop online tips in Settings",
+    "summary": "The Settings app will not fetch tips and help from Microsoft.",
+    "what": "Applies the policy that stops Settings from retrieving online tips and help content.",
+    "benefit": "Settings works offline and does not contact Microsoft for tips.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone.",
+    "facts": [
+      "Settings pages still work as before",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+          "name": "AllowOnlineTips"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-settings"
+    ],
+    "provenance": [
+      "ControlPanel.admx AllowOnlineTips"
+    ]
+  },
+  {
+    "id": "ads.explorer-promos-off",
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "Hide promotions in File Explorer",
+    "summary": "Stop sync provider notices and offers inside File Explorer.",
+    "what": "Turns off sync provider notifications in File Explorer for your account.",
+    "benefit": "No OneDrive and Microsoft 365 offers in the folder view.",
+    "risk": "None.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. Works on every edition.",
+    "facts": [
+      "Per account setting",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "ShowSyncProviderNotifications"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "ads.start-recommendations-off",
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "Hide Start recommendations",
+    "summary": "Remove tips, shortcuts and suggested apps from the Start menu.",
+    "what": "Turns off recommendations and account notices in the Start menu for your account.",
+    "benefit": "A cleaner Start menu without suggested apps and promotions.",
+    "risk": "None.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. Windows 11 only.",
+    "facts": [
+      "Per account setting",
+      "Windows 11 22H2 and later",
+      "Revert restores the earlier values"
+    ],
+    "scope": "User",
+    "requires": {
+      "minBuild": 22621
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "Start_IrisRecommendations"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "Start_AccountNotifications"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "ads.track-launches-off",
+    "category": "Privacy",
+    "topic": "Suggestions and ads",
+    "name": "Stop tracking which apps you launch",
+    "summary": "Windows will not record the apps you open to improve Start.",
+    "what": "Turns off app launch tracking for your account.",
+    "benefit": "Start does not keep a list of the apps you use most.",
+    "risk": "Low. The most used apps list in Start stays empty.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who wants less activity tracking.",
+    "facts": [
+      "Per account setting",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "Start_TrackProgs"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "ads.recent-items-off",
+    "category": "Privacy",
+    "topic": "Suggestions and ads",
+    "name": "Hide recent files and frequent folders",
+    "summary": "Stop showing and tracking recently opened items.",
+    "what": "Turns off recent item tracking in Start, jump lists and File Explorer for your account.",
+    "benefit": "Nobody sees what you opened lately by looking at Start or Quick access.",
+    "risk": "Low. Recent lists and jump lists stay empty.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested on shared PCs and for privacy. Skip it if you use the recent lists a lot.",
+    "facts": [
+      "Per account setting",
+      "Clears nothing that is already saved",
+      "Revert restores the earlier values"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "Start_TrackDocs"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+          "name": "ShowRecent"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+          "name": "ShowFrequent"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "sync.settings-off",
+    "category": "Privacy",
+    "topic": "Sync and clipboard",
+    "name": "Stop syncing settings to the cloud",
+    "summary": "Windows will not sync your settings, themes and passwords between PCs.",
+    "what": "Applies the policy that turns off Sync your settings and locks the switch.",
+    "benefit": "Your preferences and passwords are not uploaded.",
+    "risk": "Low. A new PC does not get your theme and settings automatically.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not want settings stored in your Microsoft account. Skip it if you use several PCs.",
+    "facts": [
+      "Covers themes, passwords, language, accessibility and other Windows settings",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\SettingSync",
+          "name": "DisableSettingSync"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience"
+    ],
+    "provenance": [
+      "SettingSync.admx DisableSettingSync"
+    ]
+  },
+  {
+    "id": "sync.clipboard-cloud-off",
+    "category": "Privacy",
+    "topic": "Sync and clipboard",
+    "name": "Stop syncing the clipboard across devices",
+    "summary": "What you copy stays on this PC.",
+    "what": "Applies the policy that stops clipboard contents from being synced to other devices.",
+    "benefit": "Passwords and text you copy are not sent to the cloud.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. You can still copy and paste on this PC.",
+    "facts": [
+      "Policy changes take effect immediately",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\System",
+          "name": "AllowCrossDeviceClipboard"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience"
+    ],
+    "provenance": [
+      "OSPolicy.admx AllowCrossDeviceClipboard"
+    ]
+  },
+  {
+    "id": "sync.clipboard-history-off",
+    "category": "Privacy",
+    "topic": "Sync and clipboard",
+    "name": "Turn off clipboard history",
+    "summary": "Windows will not keep a list of what you copied.",
+    "what": "Applies the policy that stops the history of clipboard contents from being stored.",
+    "benefit": "Old copied text and images are not kept in memory.",
+    "risk": "Low. The Win+V history list stays empty.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you copy passwords or private text. Skip it if you use Win+V.",
+    "facts": [
+      "Policy changes take effect immediately",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\System",
+          "name": "AllowClipboardHistory"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience"
+    ],
+    "provenance": [
+      "OSPolicy.admx AllowClipboardHistory"
+    ]
+  },
+  {
+    "id": "sync.message-backup-off",
+    "category": "Privacy",
+    "topic": "Sync and clipboard",
+    "name": "Stop cloud backup of text messages",
+    "summary": "Cellular text messages are not backed up to Microsoft.",
+    "what": "Applies the policy that stops message backup and restore through Microsoft cloud services.",
+    "benefit": "Your messages are not stored in the cloud.",
+    "risk": "Low. You cannot restore messages from the cloud.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested for almost everyone. Only matters on PCs with cellular messaging.",
+    "facts": [
+      "Only affects PCs that handle cellular text messages",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\Messaging",
+          "name": "AllowMessageSync"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy"
+    ],
+    "provenance": [
+      "messaging.admx AllowMessageSync"
+    ]
+  },
+  {
+    "id": "sync.find-my-device-off",
+    "category": "Privacy",
+    "topic": "Sync and clipboard",
+    "name": "Turn off Find My Device",
+    "summary": "Stop registering this PC and its location in the cloud.",
+    "what": "Applies the policy that turns Find My Device off.",
+    "benefit": "Your PC location is not stored in your Microsoft account.",
+    "risk": "Low. You cannot locate this PC from account.microsoft.com if it is lost.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested for desktops that stay at home. Skip it on laptops you could lose.",
+    "facts": [
+      "Also removes the last location stored in the cloud for active pens",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\FindMyDevice",
+          "name": "AllowFindMyDevice"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience"
+    ],
+    "provenance": [
+      "FindMy.admx FindMy_AllowFindMyDeviceConfig"
+    ]
+  },
+  {
+    "id": "sync.phone-link-off",
+    "category": "Privacy",
+    "topic": "Sync and clipboard",
+    "name": "Turn off Phone link",
+    "summary": "Stop this PC from linking to a phone.",
+    "what": "Applies the policy that turns off phone and PC linking.",
+    "benefit": "No continuing tasks from a phone and no phone data synced to this PC.",
+    "risk": "Low. Phone Link and Continue on PC stop working.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you never link a phone. Skip it if you do.",
+    "facts": [
+      "Applies to linking a phone with this PC",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\System",
+          "name": "EnableMmx"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ],
+    "provenance": [
+      "GroupPolicy.admx EnableMMX"
+    ]
+  },
+  {
+    "id": "lock.camera-off",
+    "category": "Privacy",
+    "topic": "Lock screen",
+    "name": "Block the lock screen camera",
+    "summary": "The camera cannot be started from the lock screen.",
+    "what": "Applies the policy that prevents enabling the lock screen camera.",
+    "benefit": "Nobody can open the camera without signing in.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested for tablets and shared PCs. Safe to skip on a desktop.",
+    "facts": [
+      "Hides the switch in Settings too",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\Personalization",
+          "name": "NoLockScreenCamera"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-settings"
+    ],
+    "provenance": [
+      "ControlPanelDisplay.admx CPL_Personalization_NoLockScreenCamera"
+    ]
+  },
+  {
+    "id": "lock.app-notifications-off",
+    "category": "Privacy",
+    "topic": "Lock screen",
+    "name": "Hide app notifications on the lock screen",
+    "summary": "Notifications do not show while the PC is locked.",
+    "what": "Applies the policy that turns off app notifications on the lock screen.",
+    "benefit": "Nobody can read your messages without signing in.",
+    "risk": "Low. You will not see notifications until you sign in.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for laptops and shared PCs.",
+    "facts": [
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\System",
+          "name": "DisableLockScreenAppNotifications"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-settings"
+    ],
+    "provenance": [
+      "Logon.admx DisableLockScreenAppNotifications"
+    ]
+  },
+  {
+    "id": "taskbar.widgets-policy-off",
+    "category": "Appearance",
+    "topic": "Taskbar and widgets",
+    "name": "Turn off Widgets",
+    "summary": "Remove the Widgets board and its taskbar button.",
+    "what": "Applies the policy that disallows the widgets feature, including content on the taskbar.",
+    "benefit": "No news feed in the taskbar and one less background process.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who does not read the Widgets board.",
+    "facts": [
+      "Applies to the whole widgets experience",
+      "Windows 11 only",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ],
+      "minBuild": 22000
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Dsh",
+          "name": "AllowNewsAndInterests"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-newsandinterests"
+    ]
+  },
+  {
+    "id": "taskbar.chat-off",
+    "category": "Appearance",
+    "topic": "Taskbar and widgets",
+    "name": "Hide the Chat button",
+    "summary": "Remove the Chat (Teams) button from the taskbar.",
+    "what": "Hides the taskbar Chat button for your account.",
+    "benefit": "More room on the taskbar.",
+    "risk": "None.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use Chat. Newer builds no longer show it.",
+    "facts": [
+      "Per account setting",
+      "Windows 11 only",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "requires": {
+      "minBuild": 22000
+    },
+    "restartsExplorer": true,
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "TaskbarMn"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "taskbar.copilot-button-off",
+    "category": "Appearance",
+    "topic": "Taskbar and widgets",
+    "name": "Hide the Copilot button",
+    "summary": "Remove the Copilot button from the taskbar.",
+    "what": "Hides the taskbar Copilot button for your account.",
+    "benefit": "More room on the taskbar.",
+    "risk": "None.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use Copilot.",
+    "facts": [
+      "Per account setting",
+      "Hides the button only, it does not remove the app",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "requires": {
+      "minBuild": 22621
+    },
+    "restartsExplorer": true,
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "ShowCopilotButton"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "ai.recall-snapshots-off",
+    "category": "Privacy",
+    "topic": "Copilot and Recall",
+    "name": "Turn off Recall snapshots",
+    "summary": "Windows will not save snapshots of your screen for Recall.",
+    "what": "Applies the policy that turns off saving snapshots for use with Recall. Snapshots saved earlier are deleted when it is enabled.",
+    "benefit": "Nothing on your screen is recorded for later search.",
+    "risk": "Low. Recall has nothing to search.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who does not want a searchable record of what was on screen.",
+    "facts": [
+      "Deletes snapshots that were saved earlier",
+      "Needs Windows 11 24H2 with the Recall update",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ],
+      "minBuild": 26100
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsAI",
+          "name": "DisableAIDataAnalysis"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai"
+    ]
+  },
+  {
+    "id": "ai.recall-unavailable",
+    "category": "Privacy",
+    "topic": "Copilot and Recall",
+    "name": "Make Recall unavailable",
+    "summary": "Remove the Recall component so nobody can turn it on.",
+    "what": "Applies the policy that disables the Recall component. Windows removes its files and deletes saved snapshots, and needs a restart.",
+    "benefit": "Recall cannot be enabled by anyone on this PC.",
+    "risk": "Low. Recall is gone until you revert and restart.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you never want Recall on this PC. Skip it if you might try it later.",
+    "facts": [
+      "Deletes saved snapshots",
+      "Restart required",
+      "Needs Windows 11 24H2 with the Recall update",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ],
+      "minBuild": 26100
+    },
+    "needsReboot": true,
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsAI",
+          "name": "AllowRecallEnablement"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai"
+    ]
+  },
+  {
+    "id": "ai.copilot-pane-off",
+    "category": "Privacy",
+    "topic": "Copilot and Recall",
+    "name": "Turn off the Copilot pane",
+    "summary": "Block the older Copilot in Windows pane with a policy.",
+    "what": "Applies the per account policy that turns off Windows Copilot and removes its taskbar icon.",
+    "benefit": "Copilot cannot be opened from the taskbar on builds that include the pane.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use Copilot. The policy is marked deprecated and applies to the older pane only.",
+    "facts": [
+      "Deprecated by Microsoft in favor of removing the app",
+      "Does not affect the newer Copilot app",
+      "Per account policy",
+      "Revert removes the policy value"
+    ],
+    "scope": "User",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsCopilot",
+          "name": "TurnOffWindowsCopilot"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai"
+    ]
+  },
+  {
+    "id": "ai.paint-tools-off",
+    "category": "Privacy",
+    "topic": "Copilot and Recall",
+    "name": "Turn off Paint image creation tools",
+    "summary": "Disable Cocreator, generative fill and Image Creator in Paint.",
+    "what": "Applies the three Paint policies that disable these features.",
+    "benefit": "Paint works as a plain editor and sends nothing to online image services.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use these tools.",
+    "facts": [
+      "Applies to every account",
+      "Needs the updated Paint app",
+      "Revert removes the policy values"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ],
+      "minBuild": 22621
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Paint",
+          "name": "DisableCocreator"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Paint",
+          "name": "DisableGenerativeFill"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Paint",
+          "name": "DisableImageCreator"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai"
+    ]
+  },
+  {
+    "id": "defender.maps-off",
+    "category": "Security",
+    "topic": "Defender sharing",
+    "name": "Stop sharing detections with Microsoft MAPS",
+    "summary": "Keep Microsoft Defender from sending data to the Microsoft cloud protection service.",
+    "what": "Applies the Defender policy that leaves Microsoft MAPS. Real time protection and local scanning stay on.",
+    "benefit": "Less data about files and detections is sent to Microsoft.",
+    "risk": "Medium. Cloud protection reacts more slowly to brand new threats.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if privacy matters more than the fastest protection against new threats. Skip it if Defender is your only antivirus.",
+    "facts": [
+      "Real time protection stays on",
+      "Cloud delivered protection finds new threats faster",
+      "Windows Security may show the setting as managed",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows Defender\\Spynet",
+          "name": "SpynetReporting"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender"
+    ],
+    "provenance": [
+      "WindowsDefender.admx SpynetReporting"
+    ]
+  },
+  {
+    "id": "defender.samples-never",
+    "category": "Security",
+    "topic": "Defender sharing",
+    "name": "Never send file samples to Microsoft",
+    "summary": "Defender will not upload suspicious files for analysis.",
+    "what": "Applies the Defender policy that sends no file samples.",
+    "benefit": "Your files are never uploaded by Defender.",
+    "risk": "Low. Defender cannot ask the cloud to analyze unknown files.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you handle private documents. Skip it if you want the strongest cloud checks.",
+    "facts": [
+      "Real time protection stays on",
+      "Windows Security may show the setting as managed",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows Defender\\Spynet",
+          "name": "SubmitSamplesConsent"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender"
+    ],
+    "provenance": [
+      "WindowsDefender.admx SubmitSamplesConsent"
+    ]
+  },
+  {
+    "id": "gaming.game-recording-off",
+    "category": "Privacy",
+    "topic": "Gaming",
+    "name": "Turn off Game Bar recording",
+    "summary": "Stop background game recording and broadcasting for your account.",
+    "what": "Turns off Game DVR background capture for your account.",
+    "benefit": "No background recording costs performance or disk space.",
+    "risk": "Low. Game Bar clips and the record last 30 seconds feature stop working.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not record gameplay. Skip it if you use Game Bar clips.",
+    "facts": [
+      "Per account setting",
+      "Game Bar can still open with Win+G",
+      "Revert restores the earlier values"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR",
+          "name": "AppCaptureEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "System\\GameConfigStore",
+          "name": "GameDVR_Enabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "gaming.game-mode-on",
+    "category": "System",
+    "topic": "Gaming",
+    "name": "Turn on Game Mode",
+    "summary": "Let Windows favor games when one is running.",
+    "what": "Turns on Game Mode for your account.",
+    "benefit": "Windows reduces background work while a game is in focus, which can steady frame rates on busy PCs.",
+    "risk": "None.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested for gaming PCs. The effect is small on powerful hardware.",
+    "facts": [
+      "Per account setting",
+      "Gains vary by game and PC",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\GameBar",
+          "name": "AutoGameModeEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ]
+  },
+  {
+    "id": "gaming.hags-on",
+    "category": "System",
+    "topic": "Gaming",
+    "name": "Hardware accelerated GPU scheduling",
+    "summary": "Let the graphics card manage its own memory scheduling.",
+    "what": "Turns on hardware accelerated GPU scheduling. It only has an effect on a supported graphics card and driver.",
+    "benefit": "Can lower latency in some games and enable features such as frame generation.",
+    "risk": "Low. A few games or drivers run worse with it on. Needs a restart.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested on current NVIDIA, AMD or Intel cards if a game or feature asks for it. Skip it if your games already run well.",
+    "facts": [
+      "Needs a supported graphics card and driver",
+      "Gains vary by game",
+      "Applies to every account",
+      "Restart required"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 19041
+    },
+    "needsReboot": true,
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers",
+          "name": "HwSchMode"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "2"
+        }
+      }
+    ]
+  },
+  {
+    "id": "security.autoplay-off",
+    "category": "Security",
+    "topic": "Security",
+    "name": "Turn off AutoPlay",
+    "summary": "Stop Windows from acting on drives and discs when you connect them.",
+    "what": "Turns off AutoPlay for all media and devices for your account.",
+    "benefit": "A USB stick cannot start something by itself or pop up choices. It closes a common way to spread malware.",
+    "risk": "None.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone.",
+    "facts": [
+      "Per account setting",
+      "You can still open the drive from File Explorer",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AutoplayHandlers",
+          "name": "DisableAutoplay"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ]
+  },
+  {
+    "id": "security.remote-assistance-off",
+    "category": "Security",
+    "topic": "Security",
+    "name": "Turn off Remote Assistance",
+    "summary": "Block people from being invited to control this PC.",
+    "what": "Applies the policies that turn off solicited and unsolicited Remote Assistance.",
+    "benefit": "Nobody can connect to this PC through Remote Assistance.",
+    "risk": "Low. You cannot invite someone to help you remotely this way.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you use Remote Assistance to get help.",
+    "facts": [
+      "Does not affect Quick Assist or Remote Desktop",
+      "Applies to every account",
+      "Revert removes the policy values"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\policies\\Microsoft\\Windows NT\\Terminal Services",
+          "name": "fAllowToGetHelp"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\policies\\Microsoft\\Windows NT\\Terminal Services",
+          "name": "fAllowUnsolicited"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ],
+    "provenance": [
+      "RemoteAssistance.admx RA_Solicit",
+      "RemoteAssistance.admx RA_Unsolicit"
+    ]
+  }
+]

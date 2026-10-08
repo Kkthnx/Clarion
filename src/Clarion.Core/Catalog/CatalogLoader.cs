@@ -47,6 +47,58 @@ public static class CatalogLoader
         return raw.ToDictionary(kv => kv.Key, kv => (IReadOnlyList<string>)kv.Value, StringComparer.OrdinalIgnoreCase);
     }
 
+    public static IReadOnlyList<Actions.ActionDef> LoadActions()
+    {
+        var asm = typeof(CatalogLoader).Assembly;
+        var all = new List<Actions.ActionDef>();
+        foreach (var name in asm.GetManifestResourceNames().Where(n => n.Contains(".Catalog.Actions.", StringComparison.Ordinal)).Order())
+        {
+            using var stream = asm.GetManifestResourceStream(name)!;
+            all.AddRange(JsonSerializer.Deserialize<List<Actions.ActionDef>>(stream, Options) ?? []);
+        }
+        return all;
+    }
+
+    public static IReadOnlyList<Actions.ActionDef> ParseActions(string json) =>
+        JsonSerializer.Deserialize<List<Actions.ActionDef>>(json, Options) ?? [];
+
+    public static IReadOnlyList<string> ValidateActions(IEnumerable<Actions.ActionDef> actions)
+    {
+        var errors = new List<string>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var a in actions)
+        {
+            if (!seen.Add(a.Id)) errors.Add($"{a.Id}: duplicate id.");
+            if (string.IsNullOrWhiteSpace(a.Advice)) errors.Add($"{a.Id}: advice is empty.");
+            if (a.Facts.Count < 2 || a.Facts.Count > 6) errors.Add($"{a.Id}: needs 2 to 6 facts for the tooltip.");
+            if (a.Steps.Count == 0) errors.Add($"{a.Id}: no steps.");
+            if (a.EstimatedMinutes < 1) errors.Add($"{a.Id}: estimated minutes must be at least 1.");
+            if (a.Recommendation == Recommendation.Recommended && a.RiskLevel >= RiskLevel.Medium)
+                errors.Add($"{a.Id}: a Medium or High risk item cannot be marked Recommended.");
+            foreach (var step in a.Steps)
+            {
+                switch (step)
+                {
+                    case Actions.RunProcess p:
+                        if (!Actions.ActionRules.IsAllowedTool(p.File)) errors.Add($"{a.Id}: {p.File} is not an allowed tool.");
+                        break;
+                    case Actions.CleanFolders c:
+                        foreach (var f in c.Folders)
+                            if (!Actions.ActionRules.IsAllowedFolder(f)) errors.Add($"{a.Id}: {f} is not an allowed folder.");
+                        break;
+                    case Actions.RenameFolder r:
+                        if (!Actions.ActionRules.IsAllowedFolder(r.Folder)) errors.Add($"{a.Id}: {r.Folder} is not an allowed folder.");
+                        if (!Actions.ActionRules.IsPlainName(r.NewName)) errors.Add($"{a.Id}: {r.NewName} is not a plain folder name.");
+                        break;
+                    case Actions.DeleteFolder d:
+                        if (!Actions.ActionRules.IsAllowedFolder(d.Folder)) errors.Add($"{a.Id}: {d.Folder} is not an allowed folder.");
+                        break;
+                }
+            }
+        }
+        return errors;
+    }
+
     public static IReadOnlyList<Tweak> Parse(string json) =>
         JsonSerializer.Deserialize<List<Tweak>>(json, Options) ?? [];
 
@@ -66,6 +118,7 @@ public static class CatalogLoader
                 if (string.IsNullOrWhiteSpace(text)) errors.Add($"{t.Id}: {label} is empty.");
             }
 
+            if (string.IsNullOrWhiteSpace(t.Topic)) errors.Add($"{t.Id}: topic is empty.");
             if (string.IsNullOrWhiteSpace(t.Advice)) errors.Add($"{t.Id}: advice is empty.");
             if (t.Facts.Count < 2 || t.Facts.Count > 6) errors.Add($"{t.Id}: needs 2 to 6 facts for the tooltip.");
             foreach (var fact in t.Facts)
