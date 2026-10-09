@@ -12,21 +12,30 @@ public sealed class FakeDnsStore : IDnsStore
     public List<DohRegistration> Doh { get; } = [];
     public List<string> Calls { get; } = [];
 
+    /// <summary>Adapters that exist but are not connected, such as Wi-Fi switched off. They are not listed as connected.</summary>
+    public List<AdapterDns> Down { get; } = [];
+
     public IReadOnlyList<AdapterDns> GetAdapters() => Adapters.ToList();
+    public AdapterDns? Find(int ifIndex) => Adapters.Concat(Down).FirstOrDefault(a => a.IfIndex == ifIndex);
+
+    private void Update(int ifIndex, IReadOnlyList<string> servers)
+    {
+        var list = Adapters.Any(a => a.IfIndex == ifIndex) ? Adapters : Down.Any(a => a.IfIndex == ifIndex) ? Down : throw new InvalidOperationException($"No adapter {ifIndex}");
+        var i = list.FindIndex(a => a.IfIndex == ifIndex);
+        list[i] = list[i] with { Servers = servers.ToList() };
+    }
     public IReadOnlyList<DohRegistration> GetDohRegistrations() => Doh.ToList();
 
     public void SetServers(int ifIndex, IReadOnlyList<string> servers)
     {
         Calls.Add($"set {ifIndex} {string.Join(",", servers)}");
-        var i = Adapters.FindIndex(a => a.IfIndex == ifIndex);
-        Adapters[i] = Adapters[i] with { Servers = servers.ToList() };
+        Update(ifIndex, servers);
     }
 
     public void ResetServers(int ifIndex)
     {
         Calls.Add($"reset {ifIndex}");
-        var i = Adapters.FindIndex(a => a.IfIndex == ifIndex);
-        Adapters[i] = Adapters[i] with { Servers = [] };
+        Update(ifIndex, []);
     }
 
     public void UpsertDoh(DohRegistration r)
@@ -113,6 +122,66 @@ public sealed class DnsTests : IDisposable
         Assert.Equal(["8.8.8.8", "8.8.4.4"], _store.Adapters[0].Servers);
         _engine.Revert(a, Guid.NewGuid());
         Assert.Equal(["192.168.1.1"], _store.Adapters[0].Servers);
+    }
+
+    [Fact]
+    public void Revert_skips_an_adapter_that_is_gone_and_still_restores_the_others()
+    {
+        var tweak = Make("cloudflare", false);
+        _engine.Apply(tweak, Guid.NewGuid());
+
+        _store.Adapters.RemoveAll(a => a.IfIndex == 12);
+        _engine.Invalidate();
+
+        Assert.True(_engine.Revert(tweak, Guid.NewGuid()).Success);
+        Assert.Equal(["192.168.1.1"], _store.Adapters.Single().Servers);
+        Assert.DoesNotContain("reset 12", _store.Calls);
+    }
+
+    [Fact]
+    public void Revert_restores_an_adapter_that_is_present_but_no_longer_connected()
+    {
+        var tweak = Make("cloudflare", false);
+        _engine.Apply(tweak, Guid.NewGuid());
+
+        var wifi = _store.Adapters.Single(a => a.IfIndex == 12);
+        _store.Adapters.Remove(wifi);
+        _store.Down.Add(wifi);
+        _engine.Invalidate();
+
+        Assert.True(_engine.Revert(tweak, Guid.NewGuid()).Success);
+        Assert.Empty(_store.Down.Single().Servers);
+        Assert.Contains("reset 12", _store.Calls);
+    }
+
+    [Fact]
+    public void Revert_works_when_no_adapter_is_connected_at_all()
+    {
+        var tweak = Make("cloudflare", false);
+        _engine.Apply(tweak, Guid.NewGuid());
+
+        _store.Down.AddRange(_store.Adapters);
+        _store.Adapters.Clear();
+        _engine.Invalidate();
+
+        Assert.True(_engine.Revert(tweak, Guid.NewGuid()).Success);
+        Assert.Equal(["192.168.1.1"], _store.Down.Single(a => a.IfIndex == 8).Servers);
+    }
+
+    [Fact]
+    public void Revert_leaves_alone_a_different_adapter_that_reuses_the_same_index()
+    {
+        var tweak = Make("cloudflare", false);
+        _engine.Apply(tweak, Guid.NewGuid());
+
+        _store.Adapters.RemoveAll(a => a.IfIndex == 12);
+        _store.Adapters.Add(new AdapterDns(12, "Work VPN", ["10.0.0.53"]));
+        _engine.Invalidate();
+
+        Assert.True(_engine.Revert(tweak, Guid.NewGuid()).Success);
+        Assert.Equal(["10.0.0.53"], _store.Adapters.Single(a => a.IfIndex == 12).Servers);
+        Assert.DoesNotContain("reset 12", _store.Calls);
+        Assert.Equal(1, _store.Calls.Count(c => c.StartsWith("set 12 ", StringComparison.Ordinal)));
     }
 
     [Fact]

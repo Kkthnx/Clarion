@@ -14,6 +14,9 @@ public interface IDnsStore
     /// <summary>Physical network adapters that are connected, with their IPv4 DNS servers. An empty list means automatic.</summary>
     IReadOnlyList<AdapterDns> GetAdapters();
 
+    /// <summary>One adapter by its current index, connected or not. Null when no adapter has that index now.</summary>
+    AdapterDns? Find(int ifIndex);
+
     void SetServers(int ifIndex, IReadOnlyList<string> servers);
 
     /// <summary>Goes back to the servers the network hands out.</summary>

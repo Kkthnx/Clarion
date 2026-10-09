@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Setup files from an older or newer Clarion are refused with a message that says which, instead of a generic format error.
+- Reverting a DNS change no longer fails when a network adapter has gone away, is switched off, or when its number now belongs to a different adapter. Gone adapters are skipped and the rest are restored.
 - When a restore point cannot be made, Clarion now offers to turn on System Protection for the system drive and try again, in the apply dialog, on the Repair page and with `--enable-protection` on the command line. Nothing is changed unless you choose it.
 - The progress panel and the summary now say how many settings were made, how many did not finish and how many were left as they were. A failed setting never stops the ones after it.
 - Reworded a privacy fact that said Clarion never touches the Windows Update services. The privacy settings do not turn off Windows Update, and the Repair page has a separate Reset Windows Update job.

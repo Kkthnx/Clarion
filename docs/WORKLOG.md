@@ -179,3 +179,23 @@ Each claim was checked against the code and researched before changing anything.
 - `BatchRunner` has no early exit. A failure at step 12 does not stop 13 to 30. A test now proves it.
 - The real gap was the wording. The panel said "N made, M did not finish" and left out settings that
   were skipped. It now adds "K left as they were". The summary also says the others ran as normal.
+
+### 7. Saved setup files and versions (partly already done)
+- `ProfileFile` already carried a `format` number and refused any other value. Kept.
+- The refusal gave one message for older and newer files. It now says which, and what to do.
+  There is no migration, so the advice for an older file is to choose the settings again.
+- Catalog ids that no longer exist are already reported as unknown when a setup is queued.
+
+### 8. DNS revert and adapters that come and go (confirmed)
+- Restore addressed adapters by index alone. If an adapter had gone, the call failed and revert stopped
+  before the encrypted DNS entries were handled. Verification also failed when no adapter was connected
+  (an offline laptop), because it compared against the list of connected adapters.
+- Research: interface indexes are assigned at runtime, so a stored index can point at nothing, or at
+  a different adapter later. Resetting a missing adapter is a no-op, not an error worth failing for.
+- Only physical adapters are ever changed (`HardwareInterface`), so a VPN adapter is not touched at
+  apply time. The same problem applies to docking station and USB adapters, and to Wi-Fi switched off.
+- Built: `IDnsStore.Find(index)` returns an adapter even when not connected. Restore acts only when the
+  index still has the same name. Gone adapters are skipped. Verification ignores adapters that are gone.
+  Four tests: gone, present but not connected, none connected, index reused by something else.
+- The real PowerShell for `Find` was run against this PC: an existing index returns its record and a
+  missing one returns an empty list.

@@ -40,8 +40,25 @@ public sealed class DnsHandler(IDnsStore store) : IOperationHandler
 
     public bool IsApplicable(Operation op) => Adapters().Count > 0;
 
+    // Adapters come and go: a dock is unplugged, Wi-Fi is off, a number is reused by something new. An adapter is only
+    // put back when the same index still has the same name, and one that is gone is skipped, not treated as a failure.
+    private AdapterDns? Current(AdapterDns before) =>
+        store.Find(before.IfIndex) is { } now && now.Alias.Equals(before.Alias, StringComparison.OrdinalIgnoreCase) ? now : null;
+
+    private bool RestoreHolds(RestoreDns r)
+    {
+        var doh = Doh();
+        foreach (var prev in r.Adapters)
+        {
+            if (Current(prev) is { } now && !DnsProviders.SameServers(now.Servers, prev.Servers)) return false;
+        }
+        return r.RemoveDohFor.All(ip => doh.All(x => x.Address != ip))
+               && r.RestoreDoh.All(prev => doh.Any(x => x.Address == prev.Address && x.AutoUpgrade == prev.AutoUpgrade));
+    }
+
     public bool IsSatisfied(Operation op)
     {
+        if (op is RestoreDns restore) return RestoreHolds(restore);
         var adapters = Adapters();
         if (adapters.Count == 0) return false;
         var doh = Doh();
@@ -52,11 +69,6 @@ public sealed class DnsHandler(IDnsStore store) : IOperationHandler
                 if (provider is null) return false;
                 if (!adapters.All(a => DnsProviders.SameServers(a.Servers, provider.Servers))) return false;
                 return !s.Encrypted || provider.Servers.All(ip => doh.Any(r => r.Address == ip && r.AutoUpgrade));
-            case RestoreDns r:
-                return r.Adapters.All(prev => adapters.FirstOrDefault(a => a.IfIndex == prev.IfIndex) is { } now
-                                              && DnsProviders.SameServers(now.Servers, prev.Servers))
-                       && r.RemoveDohFor.All(ip => doh.All(x => x.Address != ip))
-                       && r.RestoreDoh.All(prev => doh.Any(x => x.Address == prev.Address && x.AutoUpgrade == prev.AutoUpgrade));
             default:
                 return false;
         }
@@ -101,6 +113,7 @@ public sealed class DnsHandler(IDnsStore store) : IOperationHandler
             case RestoreDns r:
                 foreach (var prev in r.Adapters)
                 {
+                    if (Current(prev) is null) continue;
                     if (prev.Servers.Count == 0) store.ResetServers(prev.IfIndex);
                     else store.SetServers(prev.IfIndex, prev.Servers);
                 }

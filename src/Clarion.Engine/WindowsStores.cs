@@ -362,12 +362,33 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
             return []; // no network cmdlets or no adapters, so there is nothing to change
         }
         using var _ = doc;
-        return doc.RootElement.GetProperty("adapters").EnumerateArray().Select(e => new AdapterDns(
+        return ReadAdapters(doc);
+    }
+
+    private static List<AdapterDns> ReadAdapters(JsonDocument doc) =>
+        doc.RootElement.GetProperty("adapters").EnumerateArray().Select(e => new AdapterDns(
             e.GetProperty("IfIndex").GetInt32(),
             e.GetProperty("Alias").GetString() ?? "",
             e.GetProperty("Servers").ValueKind == JsonValueKind.Array
                 ? e.GetProperty("Servers").EnumerateArray().Select(x => x.GetString() ?? "").Where(DnsProviders.IsIpv4).ToList()
                 : [])).ToList();
+
+    public AdapterDns? Find(int ifIndex)
+    {
+        var script =
+            $"$a=@(Get-NetAdapter -InterfaceIndex {ifIndex} -ErrorAction SilentlyContinue | ForEach-Object {{ " +
+            "$s=@((Get-DnsClientServerAddress -InterfaceIndex $_.InterfaceIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue).ServerAddresses); " +
+            "[pscustomobject]@{IfIndex=[int]$_.InterfaceIndex;Alias=$_.Name;Servers=$s} }); " +
+            "ConvertTo-Json -InputObject @{adapters=$a} -Depth 4 -Compress";
+        try
+        {
+            using var doc = JsonDocument.Parse(PowerShellHost.Run(runner, script, Timeout));
+            return ReadAdapters(doc).FirstOrDefault();
+        }
+        catch (InvalidOperationException)
+        {
+            return null; // the adapter is gone, or there are no network cmdlets
+        }
     }
 
     public void SetServers(int ifIndex, IReadOnlyList<string> servers)

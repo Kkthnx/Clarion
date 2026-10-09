@@ -71,6 +71,26 @@ public sealed class ProfileAndCliTests
         Assert.NotNull(o.Error);
     }
 
+    [Theory]
+    [InlineData(0, "older Clarion")]
+    [InlineData(99, "newer Clarion")]
+    public void A_setup_file_from_another_format_fails_loudly_and_says_which_way(int format, string expected)
+    {
+        var json = "{\"format\":" + format + ",\"app\":\"Clarion\",\"version\":\"0.0.1\",\"created\":\"2026-01-01T00:00:00Z\",\"tweaks\":[\"ok.id\"]}";
+
+        var load = ProfileFile.Parse(json);
+
+        Assert.Null(load.Profile);
+        Assert.Contains(expected, load.Error);
+    }
+
+    [Fact]
+    public void A_saved_setup_file_carries_the_current_format()
+    {
+        var load = ProfileFile.Parse(ProfileFile.Serialize(["a.b"], "1.0"));
+        Assert.Equal(SetupProfile.CurrentFormat, load.Profile!.Format);
+    }
+
     [Fact]
     public void The_enable_protection_switch_is_read_and_off_by_default()
     {

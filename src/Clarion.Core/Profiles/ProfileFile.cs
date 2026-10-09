@@ -38,7 +38,10 @@ public static partial class ProfileFile
         {
             var profile = JsonSerializer.Deserialize<SetupProfile>(json, Options);
             if (profile is null || profile.App != "Clarion") return new(null, "That is not a Clarion setup file.");
-            if (profile.Format != SetupProfile.CurrentFormat) return new(null, $"This setup file uses format {profile.Format}, which this version of Clarion cannot read.");
+            if (profile.Format < SetupProfile.CurrentFormat)
+                return new(null, $"This setup file was made with an older Clarion (file format {profile.Format}, this version reads {SetupProfile.CurrentFormat}). It was not applied, because settings may have changed. Choose your settings again here and save a new setup file.");
+            if (profile.Format > SetupProfile.CurrentFormat)
+                return new(null, $"This setup file was made with a newer Clarion (file format {profile.Format}, this version reads {SetupProfile.CurrentFormat}). Update Clarion to use it.");
             if (profile.Tweaks is null) return new(null, "The setup file lists no settings.");
             if (profile.Tweaks.Count > MaxIds) return new(null, "The setup file lists too many settings.");
             if (profile.Tweaks.Any(id => id is null || !IdPattern().IsMatch(id))) return new(null, "The setup file contains an invalid setting name.");
