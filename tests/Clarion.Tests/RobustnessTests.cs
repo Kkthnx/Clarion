@@ -107,25 +107,23 @@ public sealed class RobustnessTests : IDisposable
     [Fact]
     public void Five_thousand_cache_files_scan_and_clean_quickly()
     {
-        var root = Path.Combine(_dir, "cache");
-        Directory.CreateDirectory(root);
+        // The files are made where the cleanup is allowed to work. Making them elsewhere and renaming the folder
+        // failed on a CI machine, where the virus scanner can still be holding a folder with thousands of new files.
+        var platform = new FakeCleanupPlatform(_dir);
+        var inside = Path.Combine(platform.Local, "cache");
+        Directory.CreateDirectory(inside);
         for (var d = 0; d < 50; d++)
         {
-            var sub = Path.Combine(root, $"d{d}");
+            var sub = Path.Combine(inside, $"d{d}");
             Directory.CreateDirectory(sub);
             for (var f = 0; f < 100; f++) File.WriteAllBytes(Path.Combine(sub, $"f{f}.bin"), new byte[64]);
         }
-        var platform = new FakeCleanupPlatform(_dir);
         var engine = new CleanupEngine(platform);
         var target = new CleanTarget
         {
             Id = "big", Group = "g", Name = "n", Summary = "s", Advice = "a", Benefit = "b", Risk = "r", RiskLevel = RiskLevel.Safe,
-            Facts = ["a", "b"], Rules = [new FolderRule("%LOCALAPPDATA%\\..\\cache")],
+            Facts = ["a", "b"], Rules = [new FolderRule("%LOCALAPPDATA%\\cache")],
         };
-        // The rule above is refused by the guard, so use a folder under the allowed base instead.
-        var inside = Path.Combine(platform.Local, "cache");
-        Directory.Move(root, inside);
-        target = target with { Rules = [new FolderRule("%LOCALAPPDATA%\\cache")] };
 
         var sw = Stopwatch.StartNew();
         var scan = engine.Scan(target);

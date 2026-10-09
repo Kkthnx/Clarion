@@ -328,3 +328,12 @@ missing research, visual polish, enhancements, organisation and bugs. This secti
 - `crash.log` has no size limit. The global handler only logs, so the user sees nothing when it fires.
 - Windows features rows show as checking for the first 15 to 30 seconds. A cache of the last result
   would show something sensible at once.
+
+### Release 0.1.0-beta.4: the first run of the release workflow failed
+- The tag run failed at `dotnet test`, before any packaging. Cause: `Five_thousand_cache_files_scan_and_clean_quickly`
+  built its folder in a scratch place and renamed it into the allowed area. On the GitHub runner the rename
+  was refused (access denied), most likely because a scanner was still holding a folder with 5,000 new files.
+  The same commit passed in the normal CI run, so it is a flaky test, not a product bug.
+- Fix: create the files in the final place. No other test renames folders.
+- The tag `v0.1.0-beta.4` was already pushed, so it was not moved. The release files were built on this PC.
+  The workflow itself is untested beyond that failing test step and needs one clean run on the next tag.
