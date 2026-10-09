@@ -26,6 +26,7 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
         var items = new List<DriftItem>();
         var unreadable = new List<string>();
         var read = 0;
+        var holding = new List<string>();
         foreach (var tweak in tracked)
         {
             var recorded = outstanding[tweak.Id];
@@ -38,7 +39,8 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
             }
             if (check.Checked == 0) continue;
             read++;
-            if (check.Broken.Count == 0 || SupersededByGroupMember(tweak, all)) continue;
+            if (check.Broken.Count == 0) { holding.Add(tweak.Id); continue; }
+            if (SupersededByGroupMember(tweak, all)) continue;
 
             var returned = check.Broken.Where(b => b.AppReturned).Select(b => ((RemoveAppxPackage)b.Operation).Name).ToList();
             var tweakState = check.Broken.Count == check.Checked ? TweakState.NotApplied : TweakState.Partial;
@@ -47,7 +49,7 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
 
         var now = _clock.GetUtcNow();
         state?.Save(profile.Build, now);
-        return new DriftReport(now, profile.Build, previous, read, items, unreadable);
+        return new DriftReport(now, profile.Build, previous, read, items, unreadable) { Holding = holding };
     }
 
     // Picking another choice in an exclusive group (a power plan, a DNS provider) replaces this one on purpose.

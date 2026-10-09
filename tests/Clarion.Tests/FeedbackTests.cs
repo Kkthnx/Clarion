@@ -73,6 +73,17 @@ public sealed class FeedbackTests
     }
 
     [Fact]
+    public void Settings_results_are_left_out_unless_the_person_includes_them()
+    {
+        var without = FeedbackReport.Build(Input(), User, Machine);
+        var with = FeedbackReport.Build(Input() with { Outcomes = ["Windows build 26200", "privacy.a: holds"] }, User, Machine);
+
+        Assert.DoesNotContain("holding up", without);
+        Assert.Contains("### How settings are holding up", with);
+        Assert.Contains("- privacy.a: holds", with);
+    }
+
+    [Fact]
     public void Titles_get_a_prefix_and_a_fallback()
     {
         Assert.Equal("Bug: Crash on apply", FeedbackReport.CleanTitle(Input(), User, Machine));

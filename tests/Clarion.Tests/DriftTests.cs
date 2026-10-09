@@ -308,6 +308,37 @@ public sealed class DriftTests : IDisposable
         Assert.Equal("good", Assert.Single(report.Items).Tweak.Id);
     }
 
+    [Fact]
+    public void The_outcome_lines_list_what_holds_what_changed_back_and_what_could_not_be_read()
+    {
+        _apps.Add("Contoso.Widget");
+        var holds = Make("a.holds", Dword("A", "0"));
+        var back = Make("b.back", Dword("B", "0"));
+        var app = Make("c.app", new RemoveAppxPackage("Contoso.Widget"));
+        _engine.Apply(holds, Guid.NewGuid());
+        _engine.Apply(back, Guid.NewGuid());
+        _engine.Apply(app, Guid.NewGuid());
+        WindowsSets("B", "1");
+        _apps.Current.Add("Contoso.Widget");
+
+        var lines = OutcomeReport.Lines(_scanner.Scan([holds, back, app], Pro));
+
+        Assert.Equal(["Windows build 26100", "a.holds: holds", "b.back: changed back", "c.app: app came back"], lines);
+    }
+
+    [Fact]
+    public void Outcome_lines_carry_only_ids_and_a_build_number()
+    {
+        var tweak = Make("a", Dword("A", "0"));
+        _engine.Apply(tweak, Guid.NewGuid());
+
+        var text = string.Join("\n", OutcomeReport.Lines(_scanner.Scan([tweak], Pro)));
+
+        Assert.DoesNotContain(Environment.UserName, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(Environment.MachineName, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\\", text);
+    }
+
     private sealed class ThrowingAppxHandler : IOperationHandler
     {
         public bool Handles(Operation op) => op is RemoveAppxPackage or RestoreAppxPackage;

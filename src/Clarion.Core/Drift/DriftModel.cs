@@ -28,6 +28,9 @@ public sealed record DriftReport(
     IReadOnlyList<DriftItem> Items,
     IReadOnlyList<string> Unreadable)
 {
+    /// <summary>Ids of settings that were checked and still hold.</summary>
+    public IReadOnlyList<string> Holding { get; init; } = [];
+
     public IReadOnlyList<DriftItem> ReturnedApps => Items.Where(i => i.IsReturnedApp).ToList();
     public IReadOnlyList<DriftItem> ChangedBack => Items.Where(i => !i.IsReturnedApp).ToList();
     public bool HasDrift => Items.Count > 0;

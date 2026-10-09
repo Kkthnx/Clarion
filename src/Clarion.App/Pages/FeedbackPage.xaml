@@ -27,6 +27,7 @@
             <StackPanel Spacing="4">
                 <CheckBox x:Name="SystemBox" Content="Include my Windows and hardware details" IsChecked="True" Checked="OnChanged" Unchecked="OnChanged" />
                 <CheckBox x:Name="LogBox" Content="Include the recent activity log" IsChecked="True" Checked="OnChanged" Unchecked="OnChanged" />
+                <CheckBox x:Name="OutcomeBox" Content="Include how my settings are holding up (from the last Verify scan)" IsChecked="False" Checked="OnChanged" Unchecked="OnChanged" />
             </StackPanel>
 
             <StackPanel Spacing="6">

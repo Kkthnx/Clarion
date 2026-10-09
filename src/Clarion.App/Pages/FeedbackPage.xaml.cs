@@ -52,7 +52,8 @@ public sealed partial class FeedbackPage : Page
             Kind, TitleBox.Text, DescriptionBox.Text, AppServices.Version,
             includeSystem, LogBox.IsChecked == true, _app.CachedSystemReport,
             _app.Runtime.Journal.TweakIdsWithOutstanding().ToList(),
-            LogBox.IsChecked == true ? Log.Tail(LogLines) : []);
+            LogBox.IsChecked == true ? Log.Tail(LogLines) : [],
+            OutcomeBox.IsChecked == true && _app.Drift is { } drift ? Clarion.Core.Drift.OutcomeReport.Lines(drift) : null);
 
         var user = Environment.UserName;
         var machine = Environment.MachineName;

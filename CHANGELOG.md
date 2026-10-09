@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Report a problem can now include how each of your settings is holding up, taken from the last Verify scan. It is off by default, shown in full in the preview, and nothing is sent by Clarion. You open it on GitHub yourself, as before.
+- Release workflow that builds the setup program and zip on a version tag, with code signing steps that switch on once SignPath is set up. `build-installer.ps1` can now package an existing folder. Signing plan and blockers are in docs/SIGNING.md.
 - New What broke page. Pick what stopped working, such as search, notifications, the camera or websites, and Clarion lists the changes it made that could explain it, named ones first and newest first, each with a revert button. A test keeps the symptom list in step with the catalog.
 - Expert option for removed apps: also stop Windows installing the app for new accounts. Needs administrator rights, and Revert puts the app back for you only. Verify also notices when such an app is provisioned again.
 - New Verify page. It checks everything Clarion applied against Windows as it is now, lists settings that were changed back and removed apps that came back, and puts them back through the usual review step. "Leave it" accepts a change and stops checking that setting. A badge on the menu and a banner on Home show when something needs a look.

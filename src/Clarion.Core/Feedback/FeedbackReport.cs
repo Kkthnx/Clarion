@@ -15,7 +15,8 @@ public sealed record FeedbackInput(
     bool IncludeLog,
     SystemReport? System,
     IReadOnlyList<string> AppliedSettings,
-    IReadOnlyList<string> LogLines);
+    IReadOnlyList<string> LogLines,
+    IReadOnlyList<string>? Outcomes = null);
 
 /// <summary>Builds the text of a bug report or suggestion and the address that opens it on GitHub.</summary>
 public static class FeedbackReport
@@ -54,6 +55,13 @@ public static class FeedbackReport
             sb.AppendLine();
             sb.AppendLine("### Settings Clarion has applied");
             sb.AppendLine(string.Join(", ", input.AppliedSettings.Order(StringComparer.Ordinal)));
+        }
+
+        if (input.Outcomes is { Count: > 0 })
+        {
+            sb.AppendLine();
+            sb.AppendLine("### How settings are holding up");
+            foreach (var line in input.Outcomes) sb.AppendLine($"- {line}");
         }
 
         if (input.IncludeLog && input.LogLines.Count > 0)

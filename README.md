@@ -18,7 +18,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 </div>
 
-> **Beta.** Clarion is in public beta (0.1.0-beta.3). Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out.
+> **Beta.** Clarion is in public beta (0.1.0-beta.3). Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
 
 ![Clarion home screen](docs/images/home.png)
 
@@ -44,7 +44,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 | **Verify** | Checks everything Clarion applied against Windows now. Lists removed apps that came back and settings that were changed back, usually after a feature update. Put them back in one step, or leave them as they are. |
 | **What broke** | Pick what stopped working and see which of your changes could explain it, newest first, with a revert button on each. |
 | **Live progress** | A panel with a progress bar and one line per setting while changes apply. |
-| **Report a problem** | Builds a bug report or suggestion with your system details and recent activity, with names, addresses and accounts removed. You read it, then open it on GitHub yourself. |
+| **Report a problem** | Builds a bug report or suggestion with your system details and recent activity, with names, addresses and accounts removed. You can also add how your settings are holding up, which helps keep the "last checked" labels honest. You read it, then open it on GitHub yourself. |
 | **Setup files and command line** | Save your choices to a file and apply them on another PC, or run everything from a terminal. |
 
 ![Clean up page](docs/images/cleanup.png)
@@ -57,7 +57,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 2. Run it. Clarion installs to Program Files with a Start menu entry and a clean uninstaller.
 3. Open Clarion. It asks for administrator rights because most settings are machine wide.
 
-The files are not code signed yet, so Windows SmartScreen may warn on first run. Each download has a SHA256 file next to it so you can verify it.
+The files are not code signed yet, so Windows SmartScreen may warn on first run. Signing is planned before 1.0. Each download has a SHA256 file next to it so you can verify it.
 
 Requirements: Windows 10 version 2004 or later, 64-bit.
 

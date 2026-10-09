@@ -112,3 +112,45 @@ since Clarion applied it, with apps that came back called out and a one click fi
 ### Limits
 - Symptoms are curated by hand, not measured. Real reports (#7) are the way to improve the mapping.
 - A setting Windows already changed back is listed but its Revert is disabled, with a reason.
+
+## Signing (#5)
+
+### Research
+- SignPath Foundation signs open source projects for free. Needs an OSI approved license with no
+  commercial dual licensing, no proprietary components, an automated build, a released version, and
+  active maintenance. The publisher shown to users is SignPath Foundation.
+- Azure Artifact Signing is the paid route. Individuals must be in the US or Canada for public trust.
+  Microsoft's own pages disagree on the organization country list.
+- SignPath GitHub action: `signpath/github-action-submit-signing-request@v3` after an
+  `actions/upload-artifact` step, inputs documented at docs.signpath.io.
+
+### Blocker found
+- README says "All rights reserved for now" and there is no LICENSE file. The free route needs an
+  open source license. This is the owner's decision. Not changed.
+
+### Built
+- `scripts/build-installer.ps1 -PublishDir` packages an existing folder.
+- `.github/workflows/release.yml`: build, test, package. Two signing requests (app files, then setup)
+  that run only when `SIGNPATH_ORGANIZATION_ID` is set. Passes `actionlint` (installed with winget).
+  Has not run on GitHub yet.
+- `docs/SIGNING.md` with options, the blocker, setup steps and what is not known.
+- README beta note now ties 1.0 to signing.
+
+## Opt-in results (#7)
+
+### Research
+- Common ground across Homebrew, VS Code, Fedora, Ubuntu and open source discussion: default off,
+  show the exact payload, do not degrade the tool when declined, name every field, scrub paths and
+  free text, one easy way out. Opt-in gives smaller and skewed samples, which is the cost.
+
+### Decision
+- No network telemetry. Clarion promises in its README and Settings page that it has none, and
+  that promise is worth more than the data. Breaking it would also need an endpoint, a privacy
+  policy and retention rules, none of which exist.
+- Instead: an optional "How settings are holding up" section in Report a problem. Setting ids,
+  holds or changed back, and the Windows build. Off by default, shown in the preview, passed through
+  the same sanitizer, and the person opens it on GitHub themselves.
+- Revisit real telemetry only with an explicit decision to change the promise.
+
+### Open
+- Someone has to read the reports and update `lastVerifiedBuild` by hand. No tooling for that yet.

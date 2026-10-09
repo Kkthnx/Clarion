@@ -1,0 +1,91 @@
+# Builds the setup program and portable zip. Signing steps run only when the repository
+# variable SIGNPATH_ORGANIZATION_ID is set, so this works unsigned until signing is set up.
+# See docs/SIGNING.md. This workflow has not been run yet.
+name: release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  package:
+    runs-on: windows-latest
+    env:
+      SIGNING: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - run: dotnet test tests/Clarion.Tests
+
+      - name: Publish app
+        run: dotnet publish src/Clarion.App -c Release -p:Platform=x64 -r win-x64 --self-contained -o artifacts/publish
+
+      - name: Upload app files for signing
+        id: unsigned-app
+        if: env.SIGNING == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-app
+          path: artifacts/publish
+
+      - name: Sign app files
+        if: env.SIGNING == 'true'
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: app
+          github-artifact-id: ${{ steps.unsigned-app.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-app
+
+      - name: Build setup program and zip
+        shell: pwsh
+        run: |
+          if ($env:SIGNING -eq 'true') { ./scripts/build-installer.ps1 -PublishDir signed-app }
+          else { ./scripts/build-installer.ps1 -PublishDir artifacts/publish }
+
+      - name: Upload setup program for signing
+        id: unsigned-setup
+        if: env.SIGNING == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-setup
+          path: artifacts/Clarion-*-setup.exe
+
+      - name: Sign setup program
+        if: env.SIGNING == 'true'
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: setup
+          github-artifact-id: ${{ steps.unsigned-setup.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-setup
+
+      - name: Replace the setup program with the signed one and refresh its checksum
+        if: env.SIGNING == 'true'
+        shell: pwsh
+        run: |
+          $signed = Get-ChildItem signed-setup -Filter 'Clarion-*-setup.exe' -Recurse | Select-Object -First 1
+          if (-not $signed) { throw 'No signed setup program came back.' }
+          Copy-Item $signed.FullName (Join-Path artifacts $signed.Name) -Force
+          $hash = (Get-FileHash $signed.FullName -Algorithm SHA256).Hash.ToLower()
+          Set-Content (Join-Path artifacts "$($signed.Name).sha256") "$hash  $($signed.Name)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-files
+          path: |
+            artifacts/Clarion-*-setup.exe
+            artifacts/Clarion-*-win-x64.zip
+            artifacts/*.sha256
