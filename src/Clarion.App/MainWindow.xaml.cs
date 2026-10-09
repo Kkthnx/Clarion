@@ -155,7 +155,7 @@ public sealed partial class MainWindow : Window
     private void OnHideActivity(object sender, RoutedEventArgs e) => Activity.Close();
 
     private void OnOpenLog(object sender, RoutedEventArgs e) =>
-        Process.Start(new ProcessStartInfo("notepad.exe", $"\"{Log.Path}\"") { UseShellExecute = true });
+        Shell.Open("notepad.exe", $"\"{Log.Path}\"");
 
     private void UpdateBar()
     {

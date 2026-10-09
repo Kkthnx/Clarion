@@ -315,3 +315,16 @@ missing research, visual polish, enhancements, organisation and bugs. This secti
 - `ThemeBrushes.Get` creates an `AccessibilitySettings` object on every call.
 - `WindowsTaskStore` makes a new Task Scheduler COM connection per call and never releases it.
 - Capability state is queried with one PowerShell process per capability.
+
+### Also fixed in the audit
+- Starting a second copy used to exit silently. It now brings the open window to the front.
+- Opening System Restore, the log and the data folder used `Process.Start` with no error handling, and the
+  process handles were never disposed. One helper (`Shell.Open`) now handles both.
+- Sweep for risky patterns found no empty catch blocks and no blocked tasks. The 16 `async void` methods
+  are all event handlers, and the app has a global handler that logs to `crash.log`.
+
+### Still open from the audit
+- Startup reads (see above), capability lookups one process each, Task Scheduler COM connections.
+- `crash.log` has no size limit. The global handler only logs, so the user sees nothing when it fires.
+- Windows features rows show as checking for the first 15 to 30 seconds. A cache of the last result
+  would show something sensible at once.

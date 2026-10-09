@@ -41,6 +41,8 @@ public partial class App : Application
         _instanceLock = new Mutex(true, "Global\\Clarion.SingleInstance", out var first);
         if (!first)
         {
+            // A second launch should show the copy that is already running, not just disappear.
+            Services.Shell.BringExistingToFront("Clarion");
             Exit();
             return;
         }

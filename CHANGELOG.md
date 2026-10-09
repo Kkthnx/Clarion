@@ -1,28 +1,43 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.4
 
-- Fixed: reverting a DNS change on an adapter that gets its DNS automatically used to write the router's servers back as typed in ones, so the adapter stayed fixed. Only servers set by hand are now recorded, and an empty list means automatic.
-- Fixed: the Safety page sorted changes by the text of the date instead of the date, and re-read the whole history file once per setting.
-- Fixed: Home and Clean up kept a handler on app-wide objects for every visit, so they leaked and ran extra refreshes the longer the app stayed open. Status chips now follow the light and dark theme correctly.
-- Polish: a setting, cleanup row or repair job you click now stays highlighted, with a tinted card, accent border and a bar on its left edge, and it also reacts to hover and press. The real Clarion icon and the version now show in the title bar and on Home. The sidebar groups Tweaks, Power, Network, Windows features and Updates under one Windows entry so every page fits on a small screen (Verify and Safety were pushed off the bottom). The window now opens centred in the work area. Closed notices no longer leave a gap at the top of Home and Verify. The settings count is no longer cut off, repair durations are no longer clipped, Verify uses plain wording unless Expert mode is on, and What broke explains itself before you pick something.
-- Clarion now adapts to customized Windows images. When the Store, Edge, the Defender service or the Windows Update service is missing or off, the settings that depend on them carry a note in the detail pane, and Home says how many. Settings whose target is already gone show as having nothing to change.
-- Fixed: a power plan or DNS choice switched outside Clarion was not reported by Verify, because another choice in the same group was now active. Verify now treats a choice as replaced only when Clarion itself applied the later one.
-- Clean up now shows the files waiting for the next restart, and lets you cancel them. Cancel takes only Clarion's own files off the Windows restart list. A preview now lists the files in use that a real clean would queue. The record of queued files used to be overwritten by each clean, so an earlier run was forgotten. It now adds up.
-- Clearing Event Viewer logs is now Expert mode only and marked not suggested. Every log is saved as an .evtx copy first in the Clarion data folder, and a log whose copy cannot be saved is not cleared.
-- Setup files from an older or newer Clarion are refused with a message that says which, instead of a generic format error.
-- Reverting a DNS change no longer fails when a network adapter has gone away, is switched off, or when its number now belongs to a different adapter. Gone adapters are skipped and the rest are restored.
-- When a restore point cannot be made, Clarion now offers to turn on System Protection for the system drive and try again, in the apply dialog, on the Repair page and with `--enable-protection` on the command line. Nothing is changed unless you choose it.
-- The progress panel and the summary now say how many settings were made, how many did not finish and how many were left as they were. A failed setting never stops the ones after it.
-- Reworded a privacy fact that said Clarion never touches the Windows Update services. The privacy settings do not turn off Windows Update, and the Repair page has a separate Reset Windows Update job.
-- Report a problem can now include how each of your settings is holding up, taken from the last Verify scan. It is off by default, shown in full in the preview, and nothing is sent by Clarion. You open it on GitHub yourself, as before.
-- Release workflow that builds the setup program and zip on a version tag, with code signing steps that switch on once SignPath is set up. `build-installer.ps1` can now package an existing folder. Signing plan and blockers are in docs/SIGNING.md.
-- New What broke page. Pick what stopped working, such as search, notifications, the camera or websites, and Clarion lists the changes it made that could explain it, named ones first and newest first, each with a revert button. A test keeps the symptom list in step with the catalog.
+New
+- Verify page. It checks everything Clarion applied against Windows as it is now, lists settings that were changed back and removed apps that came back, and puts them back through the usual review step. "Leave it" accepts a change and stops checking that setting. A badge on the menu and a banner on Home show when something needs a look.
+- What broke page. Pick what stopped working, such as search, notifications, the camera or websites, and Clarion lists the changes it made that could explain it, named ones first and newest first, each with a revert button.
 - Expert option for removed apps: also stop Windows installing the app for new accounts. Needs administrator rights, and Revert puts the app back for you only. Verify also notices when such an app is provisioned again.
-- New Verify page. It checks everything Clarion applied against Windows as it is now, lists settings that were changed back and removed apps that came back, and puts them back through the usual review step. "Leave it" accepts a change and stops checking that setting. A badge on the menu and a banner on Home show when something needs a look.
-- Every setting now records the Windows build it was last checked on, shown in its tooltip. Tests fail when an entry goes stale.
+- Clean up shows the files waiting for the next restart and lets you cancel them. Cancel takes only Clarion's own files off the Windows restart list. A preview now lists the files in use that a real clean would queue.
+- Clarion adapts to customized Windows images. When the Store, Edge, the Defender service or the Windows Update service is missing or off, the settings that depend on them carry a note in the detail pane, and Home says how many.
+- When a restore point cannot be made, Clarion offers to turn on System Protection for the system drive and try again. This works in the apply dialog, on the Repair page and with `--enable-protection` on the command line. Nothing is changed unless you choose it.
+- Report a problem can include how each of your settings is holding up, taken from the last Verify scan. It is off by default, shown in full in the preview, and nothing is sent by Clarion.
+- New setting: stop background gameplay recording. Game Bar and manual recording keep working. It is in the gaming preset.
+- Every setting records the Windows build it was last checked on, shown in its tooltip. Tests fail when an entry goes stale.
+- Starting Clarion a second time brings the window that is already open to the front.
+- Release workflow that builds the setup program and zip on a version tag, with code signing steps that switch on once SignPath is set up. Signing plan and blockers are in docs/SIGNING.md.
+
+Safer
+- Clearing Event Viewer logs is Expert mode only and marked not suggested. Every log is saved as an .evtx copy first, and a log whose copy cannot be saved is not cleared.
 - Service changes are limited to an explicit allowlist, and the protected service list now also covers DPS, DusmSvc and other network and diagnostic services.
-- New setting: stop background gameplay recording. Game Bar and manual recording keep working. Added to the gaming preset.
+- Setup files from an older or newer Clarion are refused with a message that says which.
+- The progress panel and the summary say how many settings were made, how many did not finish and how many were left as they were. A failed setting never stops the ones after it.
+- Reworded a privacy fact that said Clarion never touches the Windows Update services. The privacy settings do not turn off Windows Update, and the Repair page has a separate Reset Windows Update job.
+
+Fixed
+- Reverting a DNS change on an adapter that gets its DNS automatically used to write the router's servers back as typed in ones, so the adapter stayed fixed. Only servers set by hand are recorded now.
+- Reverting a DNS change no longer fails when an adapter has gone away, is switched off, or when its number now belongs to a different adapter.
+- A power plan or DNS choice switched outside Clarion was not reported by Verify, because another choice in the same group was active. Verify now treats a choice as replaced only when Clarion itself applied the later one.
+- Home and Clean up kept a handler on app-wide objects for every visit, so they leaked and ran extra refreshes the longer the app stayed open.
+- The Safety page sorted changes by the text of the date instead of the date, and read the whole history file once per setting.
+- Opening System Restore, the log or the data folder no longer fails with an error if Windows cannot start the program.
+- The apply summary no longer counts a setting twice when it was skipped for needing administrator rights.
+
+Polish
+- A setting, cleanup row or repair job you click stays highlighted, with a tinted card, accent border and a bar on its left edge, and it reacts to hover and press.
+- The real Clarion icon and the version show in the title bar and on Home.
+- The sidebar groups Tweaks, Power, Network, Windows features and Updates under one Windows entry, so every page fits on a small screen. Verify and Safety used to be pushed off the bottom.
+- The window opens centred in the work area, so the bottom bar cannot end up under the taskbar.
+- Status chips follow the light and dark theme. Closed notices no longer leave a gap at the top of Home and Verify. The settings count and repair durations are no longer cut off.
+- Verify uses plain wording unless Expert mode is on. What broke explains itself before you pick something.
 
 ## 0.1.0-beta.3
 

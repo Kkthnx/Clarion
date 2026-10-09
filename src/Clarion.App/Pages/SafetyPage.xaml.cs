@@ -60,12 +60,12 @@ public sealed partial class SafetyPage : Page
     }
 
     private void OnOpenRestore(object sender, RoutedEventArgs e) =>
-        Process.Start(new ProcessStartInfo("rstrui.exe") { UseShellExecute = true });
+        Shell.Open("rstrui.exe");
 
     private void OnOpenData(object sender, RoutedEventArgs e)
     {
         Directory.CreateDirectory(EngineFactory.DefaultDataDirectory);
-        Process.Start(new ProcessStartInfo("explorer.exe", $"\"{EngineFactory.DefaultDataDirectory}\"") { UseShellExecute = true });
+        Shell.Open(EngineFactory.DefaultDataDirectory);
     }
 }
 

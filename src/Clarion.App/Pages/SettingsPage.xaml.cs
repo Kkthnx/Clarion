@@ -36,7 +36,7 @@ public sealed partial class SettingsPage : Page
     private void OnOpenLog(object sender, RoutedEventArgs e)
     {
         if (!File.Exists(Log.Path)) Log.Write("Log opened");
-        Process.Start(new ProcessStartInfo(Log.Path) { UseShellExecute = true });
+        Shell.Open(Log.Path);
     }
 
     private async void OnSaveSetup(object sender, RoutedEventArgs e)
