@@ -53,6 +53,19 @@
             </Border>
             <InfoBar x:Name="ResultBar" IsOpen="False" IsClosable="True" Severity="Success" />
             <InfoBar x:Name="QueueBar" IsOpen="False" IsClosable="False" Severity="Informational" />
+            <Border x:Name="QueueCard" Visibility="Collapsed" Background="{ThemeResource ClSurface1Brush}"
+                    BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12,16,12">
+                <StackPanel Spacing="8">
+                    <TextBlock x:Name="QueueTitle" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock x:Name="QueueNote" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    <ScrollViewer MaxHeight="150" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <TextBlock x:Name="QueueList" FontSize="12" FontFamily="Cascadia Mono" IsTextSelectionEnabled="True"
+                                   TextWrapping="NoWrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    </ScrollViewer>
+                    <Button x:Name="CancelQueueButton" Content="Cancel these deletes" Click="OnCancelQueue" Visibility="Collapsed"
+                            ToolTipService.ToolTip="Takes only these files off the Windows restart list. Other programs' entries are not touched." />
+                </StackPanel>
+            </Border>
             <StackPanel x:Name="RestartRow" Orientation="Horizontal" Spacing="8" Visibility="Collapsed">
                 <Button x:Name="RestartButton" Content="Restart now" Click="OnRestart" />
                 <Button x:Name="CancelRestartButton" Content="Cancel restart" Click="OnCancelRestart" Visibility="Collapsed" />

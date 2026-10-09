@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.Versioning;
 using Clarion.Core.Catalog;
+using Clarion.Core.Cleanup;
 using Clarion.Core.Engine;
 using Clarion.Core.Journal;
 using Clarion.Core.Model;
@@ -209,6 +210,49 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
             Assert.Equal(a.Servers, store.GetAdapters().Single(x => x.IfIndex == a.IfIndex).Servers);
         foreach (var d in dohBefore)
             Assert.Equal(d, store.GetDohRegistrations().Single(x => x.Address == d.Address));
+    }
+
+    [Fact]
+    public void Real_lock_probe_sees_a_file_another_handle_holds_open()
+    {
+        if (!Enabled) return;
+        var file = Path.Combine(_dir, "probe.bin");
+        Directory.CreateDirectory(_dir);
+        File.WriteAllBytes(file, new byte[10]);
+        var platform = new WindowsCleanupPlatform();
+
+        Assert.False(platform.IsLocked(file));
+        using (new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.None))
+            Assert.True(platform.IsLocked(file));
+        Assert.False(platform.IsLocked(Path.Combine(_dir, "missing.bin")));
+    }
+
+    [Fact]
+    public void Real_restart_list_shows_clarions_file_and_cancel_leaves_other_programs_entries_alone()
+    {
+        if (!Enabled) return;
+        var file = Path.Combine(_dir, "queued.bin");
+        Directory.CreateDirectory(_dir);
+        File.WriteAllBytes(file, new byte[10]);
+        var store = new WindowsPendingRenameStore();
+        var before = store.Read().ToList();
+        var queue = new RestartQueue(Path.Combine(_dir, "restart-queue.json"), store);
+        try
+        {
+            Assert.True(new WindowsCleanupPlatform().QueueDeleteAtRestart(file));
+            queue.Record([file]);
+
+            var view = queue.View();
+            Assert.Equal(file, Assert.Single(view.Waiting).Path, ignoreCase: true);
+            Assert.Equal(PendingDeletes.OperationCount(before), view.OtherOperations);
+
+            Assert.Equal(1, queue.Cancel());
+            Assert.Equal(before, store.Read());
+        }
+        finally
+        {
+            if (!store.Read().SequenceEqual(before)) store.Write(before);
+        }
     }
 
     [Fact]

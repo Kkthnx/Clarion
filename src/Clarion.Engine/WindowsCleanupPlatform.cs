@@ -128,24 +128,33 @@ public sealed partial class WindowsCleanupPlatform : ICleanupPlatform
         return names;
     }
 
-    private readonly List<string> _queued = [];
+    public bool QueueDeleteAtRestart(string file) => MoveFileEx(file, null, MoveDelayUntilReboot);
 
-    /// <summary>Files queued for deletion at the next restart since the last call. The list is cleared.</summary>
-    public IReadOnlyList<string> TakeQueued()
+    public string DataFolder => EngineFactory.DefaultDataDirectory;
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern IntPtr CreateFile(string name, uint access, uint share, IntPtr security, uint disposition, uint flags, IntPtr template);
+
+    [DllImport("kernel32.dll")]
+    private static extern bool CloseHandle(IntPtr handle);
+
+    private const uint DeleteAccess = 0x00010000;
+    private const uint ShareAll = 0x7;
+    private const uint OpenExisting = 3;
+    private const int SharingViolation = 32;
+    private const int AccessDenied = 5;
+
+    /// <summary>Asks for delete access while allowing others to read, write and delete. That is refused only when another program holds the file open without allowing delete.</summary>
+    public bool IsLocked(string file)
     {
-        lock (_queued)
+        var handle = CreateFile(file, DeleteAccess, ShareAll, IntPtr.Zero, OpenExisting, 0, IntPtr.Zero);
+        if (handle != new IntPtr(-1))
         {
-            var copy = _queued.ToList();
-            _queued.Clear();
-            return copy;
+            CloseHandle(handle);
+            return false;
         }
-    }
-
-    public bool QueueDeleteAtRestart(string file)
-    {
-        var ok = MoveFileEx(file, null, MoveDelayUntilReboot);
-        if (ok) lock (_queued) _queued.Add(file);
-        return ok;
+        var error = Marshal.GetLastWin32Error();
+        return error is SharingViolation or AccessDenied;
     }
 
     public long RecycleBinBytes()
@@ -168,11 +177,20 @@ public sealed partial class WindowsCleanupPlatform : ICleanupPlatform
         return session.GetLogNames().Where(n => !n.Contains('/')).Order().ToList();
     }
 
-    public void ClearEventLog(string name)
+    public void ClearEventLog(string name, string backupFile)
     {
         if (name.Equals("Security", StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("The Security log is never cleared.");
-        using var session = new EventLogSession();
-        session.ClearLog(name);
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(backupFile)!);
+            using var session = new EventLogSession();
+            // Windows writes the copy first, and does not clear the log if the copy fails.
+            session.ClearLog(name, backupFile);
+        }
+        catch (EventLogException ex)
+        {
+            throw new InvalidOperationException($"{name}: {ex.Message}", ex);
+        }
     }
 
     private static string KnownLocalLow()

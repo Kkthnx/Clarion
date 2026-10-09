@@ -49,6 +49,9 @@ public sealed record CleanTarget
     /// <summary>Cannot be undone, for example emptying the Recycle Bin.</summary>
     public bool Irreversible { get; init; }
 
+    /// <summary>Only shown, and only run from the window, in Expert mode.</summary>
+    public bool ExpertOnly { get; init; }
+
     /// <summary>Process names that keep these files open. The row is skipped while one is running.</summary>
     public IReadOnlyList<string> Processes { get; init; } = [];
 
@@ -76,7 +79,11 @@ public sealed record TargetClean(
     int FilesLocked,
     int QueuedForRestart,
     IReadOnlyList<string> Notes,
-    bool Skipped = false);
+    bool Skipped = false)
+{
+    /// <summary>Files set to be removed at the next restart. In a preview, the files that would be.</summary>
+    public IReadOnlyList<string> QueuedFiles { get; init; } = [];
+}
 
 public interface ICleanupPlatform
 {
@@ -93,8 +100,15 @@ public interface ICleanupPlatform
     IReadOnlyList<string> WowVersionFolders();
     IReadOnlySet<string> RunningProcesses();
     bool QueueDeleteAtRestart(string file);
+
+    /// <summary>True when another program has the file open so that it cannot be deleted right now.</summary>
+    bool IsLocked(string file);
+
+    /// <summary>Clarion's own data folder, where event log copies are kept.</summary>
+    string DataFolder { get; }
     long RecycleBinBytes();
     void EmptyRecycleBin();
     IReadOnlyList<string> EventLogNames();
-    void ClearEventLog(string name);
+    /// <summary>Saves the log to the backup file, then clears it. Must not clear the log if the copy cannot be saved.</summary>
+    void ClearEventLog(string name, string backupFile);
 }

@@ -54,6 +54,8 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
         var locked = 0;
         var queued = 0;
         var notes = new List<string>();
+        var queuedFiles = new List<string>();
+        var backupFolder = Path.Combine(platform.DataFolder, "EventLogBackups", DateTime.Now.ToString("yyyyMMdd-HHmmss"));
 
         foreach (var rule in target.Rules)
         {
@@ -69,7 +71,7 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
                     foreach (var name in platform.EventLogNames().Where(n => !IsSecurityLog(n)))
                     {
                         cancel.ThrowIfCancellationRequested();
-                        try { platform.ClearEventLog(name); deleted++; }
+                        try { platform.ClearEventLog(name, Path.Combine(backupFolder, SafeFileName(name) + ".evtx")); deleted++; }
                         catch (Exception ex) when (ex is InvalidOperationException or IOException or UnauthorizedAccessException) { locked++; }
                     }
                     break;
@@ -89,14 +91,17 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
                         deleted += r.Deleted;
                         locked += r.Locked;
                         queued += r.Queued;
+                        queuedFiles.AddRange(r.QueuedFiles);
                     }
                     break;
             }
         }
 
-        if (locked > 0 && queued == 0) notes.Add($"{locked} files are in use and were left alone.");
-        if (queued > 0) notes.Add($"{queued} files will be removed at the next restart.");
-        return new TargetClean(target.Id, freed, deleted, locked, queued, notes);
+        if (target.Rules.Any(r => r is EventLogsRule) && !preview && deleted > 0) notes.Add($"Copies of the logs are in {backupFolder}.");
+        if (preview && queuedFiles.Count > 0) notes.Add($"{queuedFiles.Count} files are in use. A real clean would set them to be removed at the next restart.");
+        else if (locked > 0 && queued == 0) notes.Add($"{locked} files are in use and were left alone.");
+        if (!preview && queued > 0) notes.Add($"{queued} files will be removed at the next restart.");
+        return new TargetClean(target.Id, freed, deleted, locked, queued, notes) { QueuedFiles = queuedFiles };
     }
 
     private IEnumerable<(string Folder, string Pattern, bool Trusted)> Resolve(CleanRule rule)
@@ -173,13 +178,17 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
         return Directory.EnumerateFiles(folder, pattern, options);
     }
 
-    private (long Freed, int Deleted, int Locked, int Queued) CleanFolder(
+    private static string SafeFileName(string name) =>
+        new(name.Select(c => Path.GetInvalidFileNameChars().Contains(c) ? '_' : c).ToArray());
+
+    private (long Freed, int Deleted, int Locked, int Queued, List<string> QueuedFiles) CleanFolder(
         string folder, string pattern, int minAgeHours, bool queueLocked, bool preview, Action<string>? currentFile, CancellationToken cancel)
     {
         long freed = 0;
         var deleted = 0;
         var locked = 0;
         var queued = 0;
+        var queuedFiles = new List<string>();
         var cutoff = minAgeHours > 0 ? DateTime.UtcNow.AddHours(-minAgeHours) : DateTime.MaxValue;
 
         foreach (var file in Walk(folder, pattern).ToList())
@@ -191,22 +200,24 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
                 if (minAgeHours > 0 && info.LastWriteTimeUtc > cutoff) continue;
                 currentFile?.Invoke(file);
                 var size = info.Length;
-                if (preview) { freed += size; deleted++; continue; }
+                if (preview)
+                {
+                    // The preview cannot delete, so it asks Windows whether the file could be deleted right now.
+                    if (queueLocked && platform.IsLocked(file)) { locked++; queuedFiles.Add(file); continue; }
+                    freed += size;
+                    deleted++;
+                    continue;
+                }
 
                 if ((info.Attributes & FileAttributes.ReadOnly) != 0) info.Attributes &= ~FileAttributes.ReadOnly;
                 info.Delete();
                 freed += size;
                 deleted++;
             }
-            catch (IOException)
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
                 locked++;
-                if (queueLocked && platform.QueueDeleteAtRestart(file)) queued++;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                locked++;
-                if (queueLocked && platform.QueueDeleteAtRestart(file)) queued++;
+                if (queueLocked && platform.QueueDeleteAtRestart(file)) { queued++; queuedFiles.Add(file); }
             }
         }
 
@@ -214,7 +225,7 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
         {
             RemoveLinksAndEmptyFolders(folder);
         }
-        return (freed, deleted, locked, queued);
+        return (freed, deleted, locked, queued, queuedFiles);
     }
 
     /// <summary>Links inside a cache are removed without opening them. Empty folders go, the root stays.</summary>

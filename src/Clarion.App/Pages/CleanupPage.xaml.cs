@@ -21,14 +21,83 @@ public sealed partial class CleanupPage : Page
     public CleanupPage()
     {
         InitializeComponent();
-        Groups.ItemsSource = _svc.Items.GroupBy(i => i.Group).Select(g => new CleanupGroup(g.Key, g.ToList())).ToList();
+        BuildGroups();
+        AppServices.Instance.ExpertModeChangedByUser += (_, _) => DispatcherQueue.TryEnqueue(BuildGroups);
         foreach (var i in _svc.Items) i.CheckedChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateSelected);
         _svc.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(Refresh);
+    }
+
+    /// <summary>Rows marked for Expert mode only are not listed otherwise.</summary>
+    private void BuildGroups()
+    {
+        var expert = AppServices.Instance.ExpertMode;
+        Groups.ItemsSource = _svc.Items.Where(i => expert || !i.Target.ExpertOnly)
+            .GroupBy(i => i.Group).Select(g => new CleanupGroup(g.Key, g.ToList())).ToList();
+    }
+
+    /// <summary>Shows the files set for the next restart, or after a preview the files that would be. Other programs' entries are only counted.</summary>
+    private void ShowQueue()
+    {
+        if (_svc.LastWasPreview && _svc.LastQueuedFiles.Count > 0)
+        {
+            QueueTitle.Text = $"{_svc.LastQueuedFiles.Count:N0} files are in use";
+            QueueNote.Text = "Nothing was changed. A real clean would set these to be removed when Windows restarts.";
+            QueueList.Text = string.Join("\n", _svc.LastQueuedFiles);
+            CancelQueueButton.Visibility = Visibility.Collapsed;
+            QueueCard.Visibility = Visibility.Visible;
+            return;
+        }
+
+        QueueView view;
+        try { view = _svc.Queue.View(); }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or InvalidOperationException or System.Security.SecurityException)
+        {
+            QueueCard.Visibility = Visibility.Collapsed;
+            return;
+        }
+        if (view.Waiting.Count == 0) { QueueCard.Visibility = Visibility.Collapsed; return; }
+
+        QueueTitle.Text = $"{view.Waiting.Count:N0} files will be removed when Windows restarts";
+        QueueNote.Text = view.OtherOperations > 0
+            ? $"Other programs have {view.OtherOperations:N0} more operations waiting for the restart. Clarion never touches those."
+            : "Nothing else is waiting for the restart.";
+        QueueList.Text = string.Join("\n", view.Waiting.Select(w => w.Path));
+        CancelQueueButton.Visibility = Visibility.Visible;
+        QueueCard.Visibility = Visibility.Visible;
+    }
+
+    private async void OnCancelQueue(object sender, RoutedEventArgs e)
+    {
+        var dialog = new ContentDialog
+        {
+            Title = "Cancel these deletes?",
+            Content = "The files stay where they are. Windows will not remove them at the next restart. Entries from other programs are not touched.",
+            PrimaryButtonText = "Cancel the deletes",
+            CloseButtonText = "Keep them queued",
+            XamlRoot = XamlRoot,
+        };
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
+        try
+        {
+            var removed = _svc.Queue.Cancel();
+            ResultBar.Severity = InfoBarSeverity.Success;
+            ResultBar.Title = "Cancelled";
+            ResultBar.Message = $"{removed:N0} files were taken off the restart list.";
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or InvalidOperationException or System.Security.SecurityException)
+        {
+            ResultBar.Severity = InfoBarSeverity.Error;
+            ResultBar.Title = "Could not cancel";
+            ResultBar.Message = ex.Message;
+        }
+        ResultBar.IsOpen = true;
+        ShowQueue();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         Refresh();
+        ShowQueue();
         var note = _svc.CheckQueuedFromLastTime();
         if (note is not null)
         {
@@ -70,7 +139,8 @@ public sealed partial class CleanupPage : Page
 
     private async void OnClean(object sender, RoutedEventArgs e)
     {
-        var chosen = _svc.Items.Where(i => i.IsChecked && i.CanSelect).ToList();
+        var expert = AppServices.Instance.ExpertMode;
+        var chosen = _svc.Items.Where(i => i.IsChecked && i.CanSelect && (expert || !i.Target.ExpertOnly)).ToList();
         if (chosen.Count == 0)
         {
             ResultBar.Severity = InfoBarSeverity.Warning;
@@ -113,6 +183,7 @@ public sealed partial class CleanupPage : Page
         _ = PumpAsync();
         var summary = await _svc.CleanAsync(preview, queueDriverFiles: true);
         ShowSummary(summary, chosen);
+        ShowQueue();
     }
 
     /// <summary>Keeps the live counters moving while a clean runs.</summary>

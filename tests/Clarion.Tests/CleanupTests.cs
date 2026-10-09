@@ -28,6 +28,11 @@ public sealed class FakeCleanupPlatform : ICleanupPlatform
     public List<string> Queued { get; } = [];
     public List<string> EventLogs { get; } = ["Application", "System", "Security"];
     public List<string> ClearedLogs { get; } = [];
+    public Dictionary<string, string> LogBackups { get; } = [];
+    public HashSet<string> LockedFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
+    public HashSet<string> LogsThatCannotBeSaved { get; } = [];
+    public string DataFolder => Path.Combine(Root, "Data");
+    public bool IsLocked(string file) => LockedFiles.Contains(file);
     public bool BinEmptied { get; private set; }
     public bool QueueWorks { get; set; } = true;
 
@@ -45,7 +50,12 @@ public sealed class FakeCleanupPlatform : ICleanupPlatform
     public long RecycleBinBytes() => 1234;
     public void EmptyRecycleBin() => BinEmptied = true;
     public IReadOnlyList<string> EventLogNames() => EventLogs;
-    public void ClearEventLog(string name) => ClearedLogs.Add(name);
+    public void ClearEventLog(string name, string backupFile)
+    {
+        if (LogsThatCannotBeSaved.Contains(name)) throw new IOException("The copy could not be saved.");
+        LogBackups[name] = backupFile;
+        ClearedLogs.Add(name);
+    }
 }
 
 public sealed class CleanupTests : IDisposable
@@ -331,6 +341,89 @@ public sealed class CleanupTests : IDisposable
 
         Assert.Throws<OperationCanceledException>(() => _engine.Clean(t, false, false, _ => { if (++seen == 5) cts.Cancel(); }, cts.Token));
         Assert.InRange(Directory.GetFiles(Path.Combine(_p.Local, "Cache")).Length, 1, 19);
+    }
+
+    [Fact]
+    public void Clearing_event_logs_is_expert_only_and_never_suggested()
+    {
+        var rows = CatalogLoader.LoadCleanup().Where(t => t.Rules.Any(r => r is EventLogsRule)).ToList();
+
+        Assert.NotEmpty(rows);
+        Assert.All(rows, t =>
+        {
+            Assert.True(t.ExpertOnly, t.Id);
+            Assert.Equal(Recommendation.Avoid, t.Recommendation);
+            Assert.False(t.DefaultOn, t.Id);
+        });
+    }
+
+    [Fact]
+    public void Each_event_log_is_saved_as_an_evtx_copy_in_the_clarion_folder_before_it_is_cleared()
+    {
+        var logs = Target("ev", rules: [new EventLogsRule()]);
+
+        var result = _engine.Clean(logs, false, false, null, CancellationToken.None);
+
+        Assert.Equal(["Application", "System"], _p.ClearedLogs);
+        Assert.All(_p.LogBackups.Values, path =>
+        {
+            Assert.StartsWith(Path.Combine(_p.DataFolder, "EventLogBackups"), path);
+            Assert.EndsWith(".evtx", path);
+        });
+        Assert.Equal(2, _p.LogBackups.Values.Distinct().Count());
+        Assert.Contains(result.Notes, n => n.Contains("EventLogBackups"));
+    }
+
+    [Fact]
+    public void A_log_whose_copy_cannot_be_saved_is_not_cleared()
+    {
+        _p.LogsThatCannotBeSaved.Add("System");
+        var logs = Target("ev", rules: [new EventLogsRule()]);
+
+        var result = _engine.Clean(logs, false, false, null, CancellationToken.None);
+
+        Assert.Equal(["Application"], _p.ClearedLogs);
+        Assert.Equal(1, result.FilesLocked);
+    }
+
+    [Fact]
+    public void A_preview_clears_nothing_and_saves_nothing()
+    {
+        var result = _engine.Clean(Target("ev", rules: [new EventLogsRule()]), false, true, null, CancellationToken.None);
+
+        Assert.Empty(_p.ClearedLogs);
+        Assert.Empty(_p.LogBackups);
+        Assert.Equal(0, result.FilesDeleted);
+    }
+
+    [Fact]
+    public void A_preview_lists_the_files_in_use_that_a_real_clean_would_queue_and_does_not_count_them_as_freed()
+    {
+        var free = Make("cache\\free.bin", 100);
+        var held = Make("cache\\held.bin", 300);
+        _p.LockedFiles.Add(held);
+        var target = Target("c", queue: true, rules: new FolderRule("%LOCALAPPDATA%\\cache"));
+
+        var preview = _engine.Clean(target, true, true, null, CancellationToken.None);
+
+        Assert.Equal([held], preview.QueuedFiles);
+        Assert.Equal(100, preview.BytesFreed);
+        Assert.Empty(_p.Queued);
+        Assert.True(File.Exists(held) && File.Exists(free));
+        Assert.Contains(preview.Notes, n => n.Contains("A real clean would"));
+    }
+
+    [Fact]
+    public void A_real_clean_reports_exactly_which_files_were_set_for_restart()
+    {
+        var held = Make("cache\\held.bin");
+        var target = Target("c", queue: true, rules: new FolderRule("%LOCALAPPDATA%\\cache"));
+        using var open = new FileStream(held, FileMode.Open, FileAccess.Read, FileShare.None);
+
+        var result = _engine.Clean(target, true, false, null, CancellationToken.None);
+
+        Assert.Equal([held], result.QueuedFiles);
+        Assert.Equal([held], _p.Queued);
     }
 
     [Fact]

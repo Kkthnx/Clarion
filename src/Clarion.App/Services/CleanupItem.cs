@@ -20,7 +20,10 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
         _isChecked = target.DefaultOn;
         Tooltip = TweakTooltip.BuildItem(
             target.Name, target.Summary, target.Recommendation, target.Advice, target.Facts, target.Benefit, target.Risk,
-            target.RiskLevel, target.Irreversible ? "Cannot be undone" : "Only files that are rebuilt on demand",
+            target.RiskLevel,
+            target.Irreversible ? "Cannot be undone"
+                : target.Rules.Any(r => r is EventLogsRule) ? "A copy is saved first"
+                : "Only files that are rebuilt on demand",
             BuildNotes(target));
     }
 

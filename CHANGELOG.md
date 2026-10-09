@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Clean up now shows the files waiting for the next restart, and lets you cancel them. Cancel takes only Clarion's own files off the Windows restart list. A preview now lists the files in use that a real clean would queue. The record of queued files used to be overwritten by each clean, so an earlier run was forgotten. It now adds up.
+- Clearing Event Viewer logs is now Expert mode only and marked not suggested. Every log is saved as an .evtx copy first in the Clarion data folder, and a log whose copy cannot be saved is not cleared.
 - Setup files from an older or newer Clarion are refused with a message that says which, instead of a generic format error.
 - Reverting a DNS change no longer fails when a network adapter has gone away, is switched off, or when its number now belongs to a different adapter. Gone adapters are skipped and the rest are restored.
 - When a restore point cannot be made, Clarion now offers to turn on System Protection for the system drive and try again, in the apply dialog, on the Repair page and with `--enable-protection` on the command line. Nothing is changed unless you choose it.

@@ -594,19 +594,20 @@
     "id": "windows.event-logs",
     "group": "Windows",
     "name": "Event Viewer logs",
-    "summary": "Clear the Windows event logs, except Security.",
-    "advice": "Suggested only if you do not need the history. The logs help find the cause of problems. This cannot be undone.",
-    "recommendation": "OnlyIf",
+    "summary": "Save a copy of the classic Windows event logs, then clear them. Not the Security log.",
+    "advice": "Not suggested for most people. The logs are capped in size, so this frees little, and the history is what explains crashes and failures. Use it only to start a clean log while you test something.",
+    "recommendation": "Avoid",
+    "expertOnly": true,
     "facts": [
+      "Each log is saved as an .evtx file in the Clarion data folder first. A log that cannot be saved is not cleared",
+      "Open a saved file in Event Viewer to read the old events",
       "The Security log is never cleared",
-      "Covers the classic logs such as Application and System",
-      "Windows starts new logs right away",
-      "Cleared logs cannot be recovered"
+      "Windows records that a log was cleared",
+      "The saved copies take about as much space as the logs, so nothing is freed until you delete them"
     ],
-    "benefit": "Frees a little space and gives you a clean log to watch.",
-    "risk": "Medium. You lose the history that explains past problems.",
+    "benefit": "A clean log to watch while you test something.",
+    "risk": "Medium. The old events leave Event Viewer. They stay readable in the saved copies only.",
     "riskLevel": "Medium",
-    "irreversible": true,
     "rules": [
       {
         "type": "event-logs"

@@ -199,3 +199,32 @@ Each claim was checked against the code and researched before changing anything.
   Four tests: gone, present but not connected, none connected, index reused by something else.
 - The real PowerShell for `Find` was run against this PC: an existing index returns its record and a
   missing one returns an empty list.
+
+### 4. Restart queue for locked files (confirmed, and a bug found)
+- Research: the restart list is a registry value of pairs, a file and an empty entry for delete. Order
+  matters. Other programs write to it. Cancelling should remove only your own entries. Deleting the
+  whole value is what forum advice suggests, and it would break other installers.
+- This PC's list has 5 delete operations from an NSIS installer, written with a `*1` prefix. The parser
+  handles that prefix and never matches those entries.
+- Bug: `RememberQueued` overwrote `pending-delete.json` on every run, so a second cleanup before a
+  restart forgot the first one's files. Replaced by `RestartQueue`, which adds up across runs.
+- Built: `RestartQueue` (record, view, cancel, settle after boot), `PendingDeletes` (pure parsing and
+  removal), `IPendingRenameStore` with a registry implementation. Cleanup page shows a card with the
+  exact files and a cancel button, and counts other programs' operations without listing them.
+- Preview: it never tried to delete, so it could not know which files were locked. It now asks Windows
+  with a delete-access open (`IsLocked`) and lists the files a real clean would queue. Locked files are
+  no longer counted as freed in a preview.
+- Real tests on this PC: the lock probe against a file held open, and queue then list then cancel with
+  the registry value checked before and after (10 entries both times).
+- Limit: only `PendingFileRenameOperations` is handled. The `...2` value was not present here, and
+  one source mentions it, so it is not covered.
+
+### 5. Event log clearing (agreed in part)
+- Research: clearing logs is a documented defense evasion technique (MITRE T1070.001), and Windows
+  records each clear as an event (104 in the System log, 1102 for Security). The .NET call that clears a
+  log can also write a backup first.
+- Tested on a throwaway custom log: a bad backup path throws and leaves the log intact, a good one
+  clears the log and writes a readable .evtx. So "no copy, no clear" holds.
+- Kept the row, but Expert mode only, not suggested, every log copied first. Copy says plainly that the
+  copies take the same space, so nothing is freed until you delete them.
+- Not removed outright. If you would rather drop it, it is one catalog entry.

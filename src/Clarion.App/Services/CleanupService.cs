@@ -26,7 +26,13 @@ public sealed class CleanupService : UiObservableObject
     private long _freedLive;
     private int _filesLive;
 
-    private static string PendingFile => Path.Combine(EngineFactory.DefaultDataDirectory, "pending-delete.json");
+    /// <summary>Files Clarion has asked Windows to delete at the next restart, with the way to see and cancel them.</summary>
+    public RestartQueue Queue { get; } = new(Path.Combine(EngineFactory.DefaultDataDirectory, "restart-queue.json"), new WindowsPendingRenameStore());
+
+    /// <summary>Files the last run set for restart, or in a preview the files that would be.</summary>
+    public IReadOnlyList<string> LastQueuedFiles { get; private set; } = [];
+    public bool LastWasPreview { get; private set; }
+
     private static string ReportFile => Path.Combine(EngineFactory.DefaultDataDirectory, "last-cleanup.txt");
 
     private CleanupService()
@@ -93,7 +99,8 @@ public sealed class CleanupService : UiObservableObject
         FilesLive = 0;
         _cts = new CancellationTokenSource();
         var started = DateTime.UtcNow;
-        var chosen = Items.Where(i => i.IsChecked && i.CanSelect).ToList();
+        var expert = AppServices.Instance.ExpertMode;
+        var chosen = Items.Where(i => i.IsChecked && i.CanSelect && (expert || !i.Target.ExpertOnly)).ToList();
         Status = preview ? "Measuring" : "Cleaning";
         var queuedFiles = new List<string>();
         long freed = 0;
@@ -123,6 +130,7 @@ public sealed class CleanupService : UiObservableObject
                     deleted += result.FilesDeleted;
                     locked += result.FilesLocked;
                     queued += result.QueuedForRestart;
+                    queuedFiles.AddRange(result.QueuedFiles);
                     FreedLive = freed;
                     FilesLive = deleted;
                     Log.Write($"cleanup {item.Id}: {(preview ? "preview " : "")}{ByteSize.Format(result.BytesFreed)}, {result.FilesDeleted} files, {result.FilesLocked} in use, {result.QueuedForRestart} queued{(result.Skipped ? ", skipped" : "")}");
@@ -140,8 +148,9 @@ public sealed class CleanupService : UiObservableObject
             CurrentFile = "";
         }
 
-        var queuedNow = _platform.TakeQueued();
-        if (queuedNow.Count > 0) RememberQueued(queuedNow);
+        if (!preview && queuedFiles.Count > 0) Queue.Record(queuedFiles);
+        LastQueuedFiles = queuedFiles;
+        LastWasPreview = preview;
         var summary = new CleanupSummary(freed, deleted, locked, queued, DateTime.UtcNow - started, preview, cancelled);
         LastSummary = summary;
         Status = cancelled ? "Stopped. What is already gone stays gone."
@@ -180,34 +189,20 @@ public sealed class CleanupService : UiObservableObject
 
     // ---- restart queue ----
 
-    /// <summary>Remembers which files were queued so the next launch can say whether Windows removed them.</summary>
-    public void RememberQueued(IEnumerable<string> files)
-    {
-        try
-        {
-            Directory.CreateDirectory(EngineFactory.DefaultDataDirectory);
-            File.WriteAllText(PendingFile, JsonSerializer.Serialize(new { Time = DateTime.UtcNow, Files = files.ToList(), Boot = BootTime() }));
-        }
-        catch (IOException) { }
-        catch (UnauthorizedAccessException) { }
-    }
-
+    /// <summary>After a restart, says what Windows did with the files that were queued. Before one, says how many are still waiting.</summary>
     public string? CheckQueuedFromLastTime()
     {
         try
         {
-            if (!File.Exists(PendingFile)) return null;
-            using var doc = JsonDocument.Parse(File.ReadAllText(PendingFile));
-            var files = doc.RootElement.GetProperty("Files").EnumerateArray().Select(e => e.GetString() ?? "").ToList();
-            var bootThen = doc.RootElement.GetProperty("Boot").GetDateTime();
-            if (files.Count == 0) return null;
-            if (BootTime() <= bootThen.AddMinutes(1)) return $"{files.Count} files are still waiting for a restart to be removed.";
-
-            var left = files.Count(File.Exists);
-            File.Delete(PendingFile);
-            return left == 0 ? $"After the restart, Windows removed all {files.Count} queued files." : $"After the restart, {files.Count - left} of {files.Count} queued files were removed and {left} are still there.";
+            var (processed, stillThere) = Queue.Settle(BootTime(), File.Exists);
+            if (processed > 0)
+                return stillThere == 0
+                    ? $"After the restart, Windows removed all {processed} queued files."
+                    : $"After the restart, {processed - stillThere} of {processed} queued files were removed and {stillThere} are still there.";
+            var waiting = Queue.View().Waiting.Count;
+            return waiting > 0 ? $"{waiting} files are still waiting for a restart to be removed. You can review or cancel them below." : null;
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException or KeyNotFoundException)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
         {
             return null;
         }
