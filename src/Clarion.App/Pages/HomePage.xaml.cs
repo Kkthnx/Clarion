@@ -48,6 +48,7 @@ public sealed partial class HomePage : Page
         AppliedText.Text = $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
         Busy.IsActive = _app.IsBusy;
         ShowDrift();
+        ShowImage();
     }
 
     private void ShowDrift()
@@ -64,6 +65,21 @@ public sealed partial class HomePage : Page
             ? "This is common after a Windows feature update. You can put them back in one step."
             : "You can put them back in one step, or leave them as they are.";
     }
+
+    private void ShowImage()
+    {
+        var verdict = _app.ImageVerdict;
+        ImageBar.IsOpen = verdict is { Level: not Clarion.Core.SystemInfo.InstallLevel.Standard };
+        if (verdict is not { Level: not Clarion.Core.SystemInfo.InstallLevel.Standard }) return;
+
+        var named = verdict.ImageName is { } name ? $" ({name})" : "";
+        ImageBar.Title = verdict.Headline + named;
+        ImageBar.Message = _app.ImageNoteCount > 0
+            ? $"{_app.ImageNoteCount} settings have a note about this. Settings whose target is already gone show as having nothing to change."
+            : "Settings whose target is already gone show as having nothing to change. Clarion only changes what you choose.";
+    }
+
+    private void OnSeeImage(object sender, RoutedEventArgs e) => _app.RequestNavigate("system");
 
     private void OnReviewDrift(object sender, RoutedEventArgs e) => _app.RequestNavigate("verify");
 

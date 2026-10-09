@@ -20,6 +20,8 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
 
         var all = catalog.ToList();
         var outstanding = journal.OutstandingByTweak();
+        var order = journal.LastApplyOrder();
+        var stillOn = outstanding.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
         var tracked = all.Where(t => outstanding.ContainsKey(t.Id) && profile.Supports(t.Requires)).ToList();
         engine.WarmUp(tracked);
 
@@ -40,7 +42,7 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
             if (check.Checked == 0) continue;
             read++;
             if (check.Broken.Count == 0) { holding.Add(tweak.Id); continue; }
-            if (SupersededByGroupMember(tweak, all)) continue;
+            if (ReplacedInsideClarion(tweak, all, stillOn, order)) continue;
 
             var returned = check.Broken.Where(b => b.AppReturned).Select(b => ((RemoveAppxPackage)b.Operation).Name).ToList();
             var tweakState = check.Broken.Count == check.Checked ? TweakState.NotApplied : TweakState.Partial;
@@ -52,14 +54,11 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
         return new DriftReport(now, profile.Build, previous, read, items, unreadable) { Holding = holding };
     }
 
-    // Picking another choice in an exclusive group (a power plan, a DNS provider) replaces this one on purpose.
-    private bool SupersededByGroupMember(Tweak tweak, IEnumerable<Tweak> catalog) =>
+    // Picking another choice in an exclusive group (a power plan, a DNS provider) inside Clarion replaces this one on
+    // purpose and leaves it recorded as on. The journal tells that: a later choice from the same group that Clarion
+    // applied and nobody reverted. A change made outside Clarion leaves no such record, so it still counts as drift.
+    private static bool ReplacedInsideClarion(Tweak tweak, IEnumerable<Tweak> catalog, IReadOnlySet<string> stillOn, IReadOnlyDictionary<string, int> order) =>
         tweak.ExclusiveGroup is { } group &&
-        catalog.Any(o => o.Id != tweak.Id && o.ExclusiveGroup == group && IsApplied(o));
-
-    private bool IsApplied(Tweak tweak)
-    {
-        try { return engine.Detect(tweak) == TweakState.Applied; }
-        catch (Exception ex) when (ex is not OutOfMemoryException) { return false; }
-    }
+        order.TryGetValue(tweak.Id, out var mine) &&
+        catalog.Any(o => o.Id != tweak.Id && o.ExclusiveGroup == group && stillOn.Contains(o.Id) && order.TryGetValue(o.Id, out var theirs) && theirs > mine);
 }

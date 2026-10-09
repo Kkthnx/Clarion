@@ -228,3 +228,27 @@ Each claim was checked against the code and researched before changing anything.
 - Kept the row, but Expert mode only, not suggested, every log copied first. Copy says plainly that the
   copies take the same space, so nothing is freed until you delete them.
 - Not removed outright. If you would rather drop it, it is one catalog entry.
+
+### 6. Customized Windows images (agreed, built a different way)
+- Research on what Ghost Spectre, ReviOS and Tiny11 remove was thin. Sources for Ghost Spectre were
+  low quality mirror pages. One said Defender and SmartScreen are removed and Windows Update is kept.
+  Tiny11's regular mode keeps servicing and Windows Update, its core mode and Nano11 remove more.
+  Edge and Store defaults for Ghost Spectre were not confirmed anywhere. Per image rules would be guessing.
+- So Clarion adapts to what it can observe on the PC: a missing or disabled service, no Store, no Edge.
+  `InstallVerdict` now keeps those inputs and the image name. `ImageAdvice` turns them into notes:
+  Edge settings when Edge is gone, Defender sharing settings when the service is gone, Updates settings
+  when the update service is missing or off, and app removals when the Store is gone (revert cannot
+  reinstall from it). Notes show in the detail pane and Home counts them.
+- "Skip what is already gone" was already true: an app removal or service change whose target does not
+  exist shows as nothing to change, via the engine's vacuous check.
+- Real check on this PC: hardware checks bypassed, no Store, no Edge. 30 settings got notes.
+- Not done: warning where an image's own tweaks conflict with a Clarion tweak. That needs a reliable
+  list of what each image changes, which the research did not find. Revisit after running Clarion on
+  Ghost Spectre and writing down what actually differs.
+
+### Regression caught while checking on the real PC
+- My earlier fix for exclusive groups ("not drift if another choice in the group is on now") hid a real
+  case: the Ultimate plan was switched to Balanced outside Clarion, and Verify stopped reporting it.
+  Found because Verify said 0 changed back where it had said 1.
+- Replaced with a rule based on the journal: a choice is replaced inside Clarion only when Clarion applied
+  a later choice from the same group that is still on. Three tests, including this exact case.

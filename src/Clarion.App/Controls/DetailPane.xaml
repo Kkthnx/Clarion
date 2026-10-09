@@ -11,6 +11,8 @@
                 <TextBlock x:Name="EmptyText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
                 <StackPanel x:Name="Body" Spacing="16" Visibility="Collapsed">
                     <controls:TweakDetail x:Name="Detail" />
+                    <TextBlock x:Name="ImageNoteText" TextWrapping="Wrap" FontSize="12" Visibility="Collapsed"
+                               Foreground="{ThemeResource ClTextSecondaryBrush}" />
                     <StackPanel x:Name="DeprovisionPanel" Spacing="4" Visibility="Collapsed">
                         <CheckBox x:Name="DeprovisionBox" Content="Also stop Windows installing it for new accounts"
                                   Checked="OnDeprovisionChanged" Unchecked="OnDeprovisionChanged" />

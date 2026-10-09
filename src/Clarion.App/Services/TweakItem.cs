@@ -33,6 +33,17 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     public ChipKind RecommendationKind => DetailHelpers.RecommendationKind(Tweak.Recommendation);
     public ChipKind RiskKind => DetailHelpers.RiskKind(Tweak.RiskLevel);
 
+    private string _imageNote = "";
+
+    /// <summary>A note about this setting on a customized Windows image, or empty.</summary>
+    public string ImageNote
+    {
+        get => _imageNote;
+        set { if (SetProperty(ref _imageNote, value)) OnPropertyChanged(nameof(HasImageNote)); }
+    }
+
+    public bool HasImageNote => ImageNote.Length > 0;
+
     /// <summary>Expert option for app removals: also stop Windows installing the app for accounts created later.</summary>
     public bool CanDeprovision => IsSupported && DeprovisionVariant.CanApply(Tweak);
 

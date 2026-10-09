@@ -13,6 +13,12 @@ public sealed record InstallSignal(string Text, int Weight);
 
 public sealed record InstallVerdict(InstallLevel Level, IReadOnlyList<InstallSignal> Signals)
 {
+    /// <summary>What was observed on this PC, kept so settings can be matched against it.</summary>
+    public InstallInputs? Inputs { get; init; }
+
+    /// <summary>The well known image named in the system information, such as Tiny11, or null.</summary>
+    public string? ImageName { get; init; }
+
     public string Headline => Level switch
     {
         InstallLevel.Likely => "This looks like a customized Windows image",

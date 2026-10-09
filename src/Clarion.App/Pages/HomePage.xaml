@@ -20,6 +20,12 @@
                 </InfoBar.ActionButton>
             </InfoBar>
 
+            <InfoBar x:Name="ImageBar" Severity="Informational" IsOpen="False" IsClosable="False">
+                <InfoBar.ActionButton>
+                    <Button Content="See why" Click="OnSeeImage" />
+                </InfoBar.ActionButton>
+            </InfoBar>
+
             <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="20">
                 <Grid ColumnSpacing="24" RowSpacing="12">

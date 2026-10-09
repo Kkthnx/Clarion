@@ -270,6 +270,30 @@ public sealed partial class AppServices : UiObservableObject
         }
     }
 
+    /// <summary>What the install check found, or null before the system has been read.</summary>
+    public Clarion.Core.SystemInfo.InstallVerdict? ImageVerdict { get; private set; }
+
+    /// <summary>How many settings have a note about this Windows image.</summary>
+    public int ImageNoteCount { get; private set; }
+
+    /// <summary>Reads the system once, then adds a note to each setting that works differently on this image.</summary>
+    public async Task LoadImageNotesAsync()
+    {
+        try
+        {
+            var report = await GetSystemReportAsync();
+            var notes = Clarion.Core.SystemInfo.ImageAdvice.Notes(Items.Select(i => i.Tweak).ToList(), report.Install);
+            foreach (var item in Items) item.ImageNote = notes.TryGetValue(item.Id, out var note) ? note : "";
+            ImageVerdict = report.Install;
+            ImageNoteCount = notes.Count;
+            OnPropertyChanged(nameof(ImageVerdict));
+        }
+        catch (Exception ex)
+        {
+            Log.Write($"Could not read the image details: {ex.Message}");
+        }
+    }
+
     public void RefreshPending()
     {
         Pending.Clear();

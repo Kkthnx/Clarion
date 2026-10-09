@@ -40,7 +40,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 | **Repair** | System file check, component repair, network and update resets. Output streams live and any job can be stopped. |
 | **Presets** | Minimal, Standard, Advanced, Gaming and Privacy. Queue one, review it, apply it. |
 | **DNS** | Pick a public provider from a dropdown, with optional encrypted lookups. Revert restores exactly what you had. |
-| **System** | Windows edition, build, hardware and security state, plus a check for customized Windows images that explains every sign it finds. |
+| **System** | Windows edition, build, hardware and security state, plus a check for customized Windows images that explains every sign it finds. Settings that depend on something the image removed carry a note. |
 | **Verify** | Checks everything Clarion applied against Windows now. Lists removed apps that came back and settings that were changed back, usually after a feature update. Put them back in one step, or leave them as they are. |
 | **What broke** | Pick what stopped working and see which of your changes could explain it, newest first, with a revert button on each. |
 | **Live progress** | A panel with a progress bar and one line per setting while changes apply. |

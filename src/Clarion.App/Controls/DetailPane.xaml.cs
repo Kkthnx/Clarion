@@ -26,6 +26,9 @@ public sealed partial class DetailPane : UserControl
         Detail.ShowTechnical = technical;
         Body.Visibility = item is null ? Visibility.Collapsed : Visibility.Visible;
         ShowDeprovision(technical);
+        var note = _shown?.ImageNote ?? "";
+        ImageNoteText.Text = note;
+        ImageNoteText.Visibility = note.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         EmptyText.Visibility = item is null ? Visibility.Visible : Visibility.Collapsed;
     }
 

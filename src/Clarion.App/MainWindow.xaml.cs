@@ -41,6 +41,7 @@ public sealed partial class MainWindow : Window
         Nav.SelectedItem = Nav.MenuItems[0];
         UpdateBar();
         _ = _app.RefreshStatesAsync();
+        _ = _app.LoadImageNotesAsync();
     }
 
     private async void OnClosing(AppWindow sender, AppWindowClosingEventArgs args)

@@ -25,7 +25,12 @@ public static class InstallCheck
     public static readonly IReadOnlyList<string> CoreServices =
         ["DiagTrack", "WerSvc", "wscsvc", "SecurityHealthService", "UsoSvc", "BITS", "SysMain", "WSearch"];
 
-    private static readonly string[] KnownImageNames = ["ghost spectre", "tiny11", "tiny10", "atlasos", "revios"];
+    private static readonly Dictionary<string, string> KnownImages = new()
+    {
+        ["ghost spectre"] = "Ghost Spectre", ["tiny11"] = "Tiny11", ["tiny10"] = "Tiny10", ["atlasos"] = "AtlasOS", ["revios"] = "ReviOS",
+    };
+
+    private static readonly string[] KnownImageNames = [.. KnownImages.Keys];
 
     private const int LikelyAt = 5;
     private const int PossibleAt = 2;
@@ -57,6 +62,6 @@ public static class InstallCheck
 
         var score = signals.Sum(s => s.Weight);
         var level = score >= LikelyAt ? InstallLevel.Likely : score >= PossibleAt ? InstallLevel.Possible : InstallLevel.Standard;
-        return new InstallVerdict(level, signals);
+        return new InstallVerdict(level, signals) { Inputs = i, ImageName = named is null ? null : KnownImages.First(k => named.Contains(k.Key, StringComparison.OrdinalIgnoreCase)).Value };
     }
 }

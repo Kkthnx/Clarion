@@ -248,6 +248,48 @@ public sealed class DriftTests : IDisposable
     }
 
     [Fact]
+    public void A_choice_switched_to_another_one_outside_clarion_is_still_drift()
+    {
+        var first = Make("plan.one", Dword("Plan", "1")) with { ExclusiveGroup = "plan" };
+        var second = Make("plan.two", Dword("Plan", "2")) with { ExclusiveGroup = "plan" };
+        _engine.Apply(first, Guid.NewGuid());
+
+        // Windows or the person switches to the second choice. Clarion never applied it, so it is not on record.
+        WindowsSets("Plan", "2");
+
+        var item = Assert.Single(_scanner.Scan([first, second], Pro).Items);
+        Assert.Equal("plan.one", item.Tweak.Id);
+    }
+
+    [Fact]
+    public void After_clarion_replaces_a_choice_a_later_outside_change_is_reported_for_the_new_one_only()
+    {
+        var first = Make("plan.one", Dword("Plan", "1")) with { ExclusiveGroup = "plan" };
+        var second = Make("plan.two", Dword("Plan", "2")) with { ExclusiveGroup = "plan" };
+        _engine.Apply(first, Guid.NewGuid());
+        _engine.Apply(second, Guid.NewGuid());
+        WindowsSets("Plan", "9");
+
+        var item = Assert.Single(_scanner.Scan([first, second], Pro).Items);
+
+        Assert.Equal("plan.two", item.Tweak.Id);
+    }
+
+    [Fact]
+    public void Apply_order_in_the_journal_tells_which_of_two_choices_came_later()
+    {
+        var a = Make("a", Dword("A", "0"));
+        var b = Make("b", Dword("B", "0"));
+        _engine.Apply(a, Guid.NewGuid());
+        _engine.Apply(b, Guid.NewGuid());
+        _engine.Apply(a with { Apply = [Dword("A", "5")] }, Guid.NewGuid());
+
+        var order = _journal.LastApplyOrder();
+
+        Assert.True(order["a"] > order["b"]);
+    }
+
+    [Fact]
     public void A_choice_in_an_exclusive_group_is_drift_when_nothing_replaced_it()
     {
         var first = Make("plan.one", Dword("Plan", "1")) with { ExclusiveGroup = "plan" };

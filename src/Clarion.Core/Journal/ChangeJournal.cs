@@ -85,6 +85,16 @@ public sealed class ChangeJournal
         }
     }
 
+    /// <summary>Where the latest apply of each tweak sits in the journal, so which of two was applied later can be told exactly.</summary>
+    public IReadOnlyDictionary<string, int> LastApplyOrder()
+    {
+        var order = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var all = ReadAll();
+        for (var i = 0; i < all.Count; i++)
+            if (all[i].Action == JournalAction.Apply) order[all[i].TweakId] = i;
+        return order;
+    }
+
     /// <summary>The recorded steps of every tweak that is still on, keyed by tweak id. Reads the file once.</summary>
     public IReadOnlyDictionary<string, IReadOnlyList<JournalEntry>> OutstandingByTweak()
     {
