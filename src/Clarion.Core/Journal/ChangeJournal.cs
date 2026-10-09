@@ -85,6 +85,21 @@ public sealed class ChangeJournal
         }
     }
 
+    /// <summary>The recorded steps of every tweak that is still on, keyed by tweak id. Reads the file once.</summary>
+    public IReadOnlyDictionary<string, IReadOnlyList<JournalEntry>> OutstandingByTweak()
+    {
+        var result = new Dictionary<string, IReadOnlyList<JournalEntry>>(StringComparer.OrdinalIgnoreCase);
+        foreach (var group in ReadAll().GroupBy(e => e.TweakId))
+        {
+            var list = group.ToList();
+            var lastApply = list.FindLastIndex(e => e.Action == JournalAction.Apply);
+            if (lastApply < 0 || list.Skip(lastApply + 1).Any(e => e.Action != JournalAction.Apply)) continue;
+            var batch = list[lastApply].BatchId;
+            result[group.Key] = list.Where(e => e.Action == JournalAction.Apply && e.BatchId == batch).ToList();
+        }
+        return result;
+    }
+
     /// <summary>Ids of every tweak that has applied changes not yet reverted. Reads the file once.</summary>
     public IReadOnlySet<string> TweakIdsWithOutstanding()
     {

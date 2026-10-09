@@ -9,7 +9,14 @@
         <ScrollViewer Padding="20,20,26,20">
             <Grid>
                 <TextBlock x:Name="EmptyText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
-                <controls:TweakDetail x:Name="Detail" Visibility="Collapsed" />
+                <StackPanel x:Name="Body" Spacing="16" Visibility="Collapsed">
+                    <controls:TweakDetail x:Name="Detail" />
+                    <StackPanel x:Name="DeprovisionPanel" Spacing="4" Visibility="Collapsed">
+                        <CheckBox x:Name="DeprovisionBox" Content="Also stop Windows installing it for new accounts"
+                                  Checked="OnDeprovisionChanged" Unchecked="OnDeprovisionChanged" />
+                        <TextBlock x:Name="DeprovisionNote" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    </StackPanel>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </Border>

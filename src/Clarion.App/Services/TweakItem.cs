@@ -1,4 +1,5 @@
 using Clarion.App.Controls;
+using Clarion.Core.Appx;
 using Clarion.Core.Model;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -23,7 +24,7 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Tweak.RiskLevel);
     public string EvidenceText => Tooltip.EvidenceLabel;
-    public IReadOnlyList<string> ExactChanges => Tweak.Apply.Select(o => o.Describe()).ToList();
+    public IReadOnlyList<string> ExactChanges => EffectiveTweak.Apply.Select(o => o.Describe()).ToList();
     public IReadOnlyList<SourceLink> SourceLinks => DetailHelpers.Links(Tweak.Sources);
     public IReadOnlyList<string> Provenance => Tweak.Provenance;
     public bool HasSources => Tweak.Sources.Count > 0;
@@ -31,6 +32,26 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
 
     public ChipKind RecommendationKind => DetailHelpers.RecommendationKind(Tweak.Recommendation);
     public ChipKind RiskKind => DetailHelpers.RiskKind(Tweak.RiskLevel);
+
+    /// <summary>Expert option for app removals: also stop Windows installing the app for accounts created later.</summary>
+    public bool CanDeprovision => IsSupported && DeprovisionVariant.CanApply(Tweak);
+
+    public bool DeprovisionToo { get; private set; }
+
+    /// <summary>True once the journal shows this was applied with the option, which Revert cannot undo.</summary>
+    public bool DeprovisionLocked { get; private set; }
+
+    /// <summary>What actually runs: the catalog entry, or its variant when the option is on.</summary>
+    internal Tweak EffectiveTweak => DeprovisionToo ? DeprovisionVariant.Of(Tweak) : Tweak;
+
+    public void SetDeprovision(bool on, bool locked)
+    {
+        DeprovisionToo = on;
+        DeprovisionLocked = locked;
+        OnPropertyChanged(nameof(DeprovisionToo));
+        OnPropertyChanged(nameof(DeprovisionLocked));
+        OnPropertyChanged(nameof(ExactChanges));
+    }
 
     public string Id => Tweak.Id;
     public string Name => Tweak.Name;

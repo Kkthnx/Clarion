@@ -1,4 +1,5 @@
 using Clarion.Core.Abstractions;
+using Clarion.Core.Appx;
 using Clarion.Core.Drift;
 using Clarion.Core.Engine;
 using Clarion.Core.Journal;
@@ -112,6 +113,64 @@ public sealed class DriftTests : IDisposable
 
         Assert.False(_scanner.Scan([tweak], Pro).HasDrift);
         Assert.DoesNotContain("Contoso.Widget", _apps.Current);
+    }
+
+    [Fact]
+    public void The_deprovision_variant_stops_new_accounts_and_needs_machine_scope()
+    {
+        var plain = Make("app.widget", new RemoveAppxPackage("Contoso.Widget"));
+        Assert.True(DeprovisionVariant.CanApply(plain));
+
+        var variant = DeprovisionVariant.Of(plain);
+
+        Assert.Equal(TweakScope.Machine, variant.Scope);
+        Assert.True(Assert.IsType<RemoveAppxPackage>(Assert.Single(variant.Apply)).Deprovision);
+        Assert.False(DeprovisionVariant.CanApply(variant));
+        Assert.False(DeprovisionVariant.CanApply(Make("a", Dword("A", "0"))));
+        Assert.False(Assert.IsType<RemoveAppxPackage>(Assert.Single(plain.Apply)).Deprovision);
+    }
+
+    [Fact]
+    public void An_app_that_is_provisioned_again_is_drift_even_though_it_is_not_installed()
+    {
+        _apps.Add("Contoso.Widget");
+        var plain = Make("app.widget", new RemoveAppxPackage("Contoso.Widget"));
+        Assert.True(_engine.Apply(DeprovisionVariant.Of(plain), Guid.NewGuid()).Success);
+        Assert.False(_scanner.Scan([plain], Pro).HasDrift);
+        Assert.True(DeprovisionVariant.WasRecorded(_journal.OutstandingFor("app.widget")));
+
+        _apps.Provisioned.Add("Contoso.Widget");
+
+        var report = _scanner.Scan([plain], Pro);
+        var item = Assert.Single(report.Items);
+        Assert.False(item.IsReturnedApp);
+        Assert.Contains("new accounts", Assert.Single(item.Changed));
+    }
+
+    [Fact]
+    public void A_plain_removal_does_not_care_about_provisioning()
+    {
+        _apps.Add("Contoso.Widget");
+        var plain = Make("app.widget", new RemoveAppxPackage("Contoso.Widget"));
+        _engine.Apply(plain, Guid.NewGuid());
+
+        _apps.Provisioned.Add("Contoso.Widget");
+
+        Assert.False(_scanner.Scan([plain], Pro).HasDrift);
+        Assert.False(DeprovisionVariant.WasRecorded(_journal.OutstandingFor("app.widget")));
+    }
+
+    [Fact]
+    public void An_app_installed_again_is_described_in_plain_words()
+    {
+        _apps.Add("Contoso.Widget");
+        var plain = Make("app.widget", new RemoveAppxPackage("Contoso.Widget"));
+        _engine.Apply(plain, Guid.NewGuid());
+        _apps.Current.Add("Contoso.Widget");
+
+        var item = Assert.Single(_scanner.Scan([plain], Pro).Items);
+
+        Assert.Equal("Contoso.Widget is installed again", Assert.Single(item.Changed));
     }
 
     [Fact]

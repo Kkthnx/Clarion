@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Clarion.Core.Appx;
 using Clarion.Core.Catalog;
 using Clarion.Core.Drift;
 using Clarion.Core.Engine;
@@ -98,6 +99,7 @@ public sealed partial class AppServices : UiObservableObject
     public async Task RefreshStatesAsync(bool fresh = false)
     {
         if (fresh) Runtime.Engine.Invalidate();
+        SyncDeprovisionFlags();
         IsBusy = true;
         Status = "Reading your system";
         var started = Stopwatch.StartNew();
@@ -146,7 +148,7 @@ public sealed partial class AppServices : UiObservableObject
         var map = new Dictionary<string, TweakState>();
         foreach (var item in items)
         {
-            try { map[item.Id] = Runtime.Engine.Detect(item.Tweak); }
+            try { map[item.Id] = Runtime.Engine.Detect(item.EffectiveTweak); }
             catch (Exception ex)
             {
                 Log.Write($"Could not read {item.Id}: {ex.Message}");
@@ -228,6 +230,30 @@ public sealed partial class AppServices : UiObservableObject
         await RefreshStatesAsync();
     }
 
+    /// <summary>Applies the Expert option to an app removal and rereads its state. Ticking it on a removed app queues the extra step.</summary>
+    public void SetDeprovision(TweakItem item, bool on)
+    {
+        if (!item.CanDeprovision || item.DeprovisionLocked) return;
+        var wasOn = item.IsOn;
+        item.SetDeprovision(on, locked: false);
+        TweakState state;
+        try { state = Runtime.Engine.Detect(item.EffectiveTweak); }
+        catch (Exception ex) { Log.Write($"Could not read {item.Id}: {ex.Message}"); return; }
+        item.SyncToState(state);
+        if (on && wasOn && state == TweakState.NotApplied && item.CanToggle) item.IsOn = true;
+        RefreshPending();
+    }
+
+    private void SyncDeprovisionFlags()
+    {
+        var recorded = Runtime.Journal.OutstandingByTweak();
+        foreach (var item in Items.Where(i => i.CanDeprovision))
+        {
+            var done = recorded.TryGetValue(item.Id, out var entries) && DeprovisionVariant.WasRecorded(entries);
+            if (done || item.DeprovisionLocked) item.SetDeprovision(done, done);
+        }
+    }
+
     public void RefreshPending()
     {
         Pending.Clear();
@@ -264,7 +290,7 @@ public sealed partial class AppServices : UiObservableObject
     public async Task<BatchResult> ApplyPendingAsync(bool restorePoint, Action<string> log, Action<BatchStep>? step = null)
     {
         IsBusy = true;
-        var toApply = Pending.Where(p => p.IsOn).Select(p => p.Tweak).ToList();
+        var toApply = Pending.Where(p => p.IsOn).Select(p => p.EffectiveTweak).ToList();
         // The new choice replaces the old one in an exclusive group, so the old one must not be reverted afterward.
         var replacedGroups = toApply.Select(t => t.ExclusiveGroup).Where(g => g is not null).ToHashSet();
         var toRevert = Pending.Where(p => !p.IsOn && !(p.Tweak.ExclusiveGroup is not null && replacedGroups.Contains(p.Tweak.ExclusiveGroup)))

@@ -71,11 +71,9 @@ public sealed partial class VerifyPage : Page
 
     private static DriftRow Row(DriftItem item)
     {
-        var detail = item.IsReturnedApp
-            ? string.Join("\n", item.ReturnedApps.Select(n => $"{n} is installed again"))
-            : string.Join("\n", item.Changed);
+        var detail = string.Join("\n", item.Changed);
         var when = item.AppliedAt == DateTimeOffset.MinValue ? "" : $"Applied {item.AppliedAt.LocalDateTime:g}";
-        return new DriftRow(item.Tweak.Id, item.Tweak.Name, when, detail, item.IsReturnedApp ? "Remove again" : "Put back");
+        return new DriftRow(item.Tweak.Id, item.Tweak.Name, when, detail, item.Tweak.Apply.Any(o => o is Clarion.Core.Model.RemoveAppxPackage) ? "Remove again" : "Put back");
     }
 
     private void OnFixOne(object sender, RoutedEventArgs e)

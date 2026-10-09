@@ -19,8 +19,8 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
         if (fresh) engine.Invalidate();
 
         var all = catalog.ToList();
-        var outstanding = journal.TweakIdsWithOutstanding();
-        var tracked = all.Where(t => outstanding.Contains(t.Id) && profile.Supports(t.Requires)).ToList();
+        var outstanding = journal.OutstandingByTweak();
+        var tracked = all.Where(t => outstanding.ContainsKey(t.Id) && profile.Supports(t.Requires)).ToList();
         engine.WarmUp(tracked);
 
         var items = new List<DriftItem>();
@@ -28,21 +28,21 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
         var read = 0;
         foreach (var tweak in tracked)
         {
-            TweakState current;
-            try { current = engine.Detect(tweak); }
+            var recorded = outstanding[tweak.Id];
+            DriftCheck check;
+            try { check = engine.CheckRecorded(tweak, recorded); }
             catch (Exception ex) when (ex is not OutOfMemoryException)
             {
                 unreadable.Add(tweak.Id);
                 continue;
             }
+            if (check.Checked == 0) continue;
             read++;
-            if (current is not (TweakState.NotApplied or TweakState.Partial)) continue;
-            if (SupersededByGroupMember(tweak, all)) continue;
+            if (check.Broken.Count == 0 || SupersededByGroupMember(tweak, all)) continue;
 
-            var broken = engine.FindDrifted(tweak);
-            var returned = broken.OfType<RemoveAppxPackage>().Select(a => a.Name).ToList();
-            var applied = journal.OutstandingFor(tweak.Id).FirstOrDefault()?.Time ?? DateTimeOffset.MinValue;
-            items.Add(new DriftItem(tweak, current, applied, broken.Select(o => o.Describe()).ToList(), returned));
+            var returned = check.Broken.Where(b => b.AppReturned).Select(b => ((RemoveAppxPackage)b.Operation).Name).ToList();
+            var tweakState = check.Broken.Count == check.Checked ? TweakState.NotApplied : TweakState.Partial;
+            items.Add(new DriftItem(tweak, tweakState, recorded[0].Time, check.Broken.Select(b => b.Reason).ToList(), returned));
         }
 
         var now = _clock.GetUtcNow();

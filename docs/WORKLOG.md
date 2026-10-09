@@ -59,9 +59,34 @@ since Clarion applied it, with apps that came back called out and a one click fi
   menu item with SelectionItemPattern, read element names.
 
 ### Still open
-- Deprovision option for removed apps (so new accounts and feature updates do not bring them back).
-  Needs an Expert toggle and a note that revert then needs the Store.
 - Verify only checks the current account for app removal unless the tweak removes for all accounts.
 - No scheduled or background scan. It runs when the app opens and after each change.
 - No screenshot check of the new page layout yet, only a structure check through UI Automation.
 - Troubleshooter (#3) can reuse the scan: same journal, same `FindDrifted` step names.
+
+## Deprovision option (#1, second half)
+
+### Research
+- Microsoft documents `Remove-AppxProvisionedPackage` as: the app will not be installed for new
+  accounts, and it is not removed from existing accounts. So it is a different effect from removing
+  the app for the current account, and Clarion needs both.
+- Whether feature updates re-provision removed inbox apps is documented for Windows 10 (the 1607
+  guidance was to clean up after the upgrade). Nothing found for current Windows 11 builds. That is
+  why Verify checks for it instead of Clarion claiming it prevents it.
+- Windows 11 25H2 added a "Remove Default Microsoft Store Packages" policy. Two sources disagree on
+  whether it also removes the apps for existing users. Not used. Revisit when Microsoft documents it.
+
+### Decisions
+- The option is a variant of the catalog entry (`Appx/DeprovisionVariant`), not 25 more catalog
+  entries. Expert mode only, needs administrator rights, shown in the detail pane.
+- It is locked once the journal shows it was applied, because Revert cannot undo it.
+- Drift now checks the steps the journal recorded, not the catalog steps. Otherwise an app that is
+  gone but provisioned again looks fine, since the catalog entry says deprovision false.
+- Handlers can explain a broken step (`WhyBroken`) so the page says "installed again" only when the
+  app really is installed, and "will be installed for new accounts again" when only the package returned.
+
+### Check done
+- UI Automation smoke test: Expert mode on, Debloat, select an app, checkbox and note present, app stays up.
+  Did not click it, since that would queue a real change on this PC.
+- Side finding: Settings says "Clarion has no telemetry and sends nothing anywhere." Any telemetry
+  work (#7) has to change that promise on purpose.

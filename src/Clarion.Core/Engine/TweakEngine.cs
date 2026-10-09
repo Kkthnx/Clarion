@@ -4,6 +4,11 @@ using Clarion.Core.Model;
 
 namespace Clarion.Core.Engine;
 
+/// <summary>How many steps of a setting could be checked, and which of them no longer hold.</summary>
+public sealed record BrokenStep(Operation Operation, string Reason, bool AppReturned);
+
+public sealed record DriftCheck(int Checked, IReadOnlyList<BrokenStep> Broken);
+
 public sealed record TweakResult(bool Success, string? Error = null)
 {
     public static TweakResult Ok() => new(true);
@@ -87,9 +92,21 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
         return TweakResult.Ok();
     }
 
-    /// <summary>Steps of a tweak that no longer hold, such as a value Windows set back or an app that returned.</summary>
-    public IReadOnlyList<Operation> FindDrifted(Tweak tweak) =>
-        tweak.Apply.Where(o => _handlers.Any(h => h.Handles(o)) && HandlerFor(o).IsApplicable(o) && !HandlerFor(o).IsSatisfied(o)).ToList();
+    /// <summary>
+    /// Checks the steps Clarion recorded running for a tweak against Windows now. The recorded steps are the truth
+    /// about what was done, for example an app removal that also stopped new accounts getting it. When nothing is
+    /// recorded the catalog steps are used.
+    /// </summary>
+    public DriftCheck CheckRecorded(Tweak tweak, IReadOnlyList<JournalEntry>? recorded = null)
+    {
+        var ops = (recorded ?? journal.OutstandingFor(tweak.Id)).Select(e => e.Operation).ToList();
+        if (ops.Count == 0) ops = tweak.Apply.ToList();
+        var applicable = ops.Where(o => _handlers.Any(h => h.Handles(o)) && HandlerFor(o).IsApplicable(o)).ToList();
+        var broken = applicable.Where(o => !HandlerFor(o).IsSatisfied(o))
+            .Select(o => new BrokenStep(o, HandlerFor(o).WhyBroken(o) ?? o.Describe(), HandlerFor(o).IsReturnedApp(o)))
+            .ToList();
+        return new DriftCheck(applicable.Count, broken);
+    }
 
     /// <summary>Stops tracking a tweak without touching Windows. Its recorded changes are kept for the history.</summary>
     public void Release(Tweak tweak, Guid batchId)

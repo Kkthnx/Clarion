@@ -35,6 +35,20 @@ public sealed class AppxHandler(IAppxStore store) : IOperationHandler
 
     public bool IsVacuous(Operation op) => op is RemoveAppxPackage r && IsSatisfied(op) && !store.GetSnapshot().IsInstalledForAnyone(r.Name);
 
+    public string? WhyBroken(Operation op)
+    {
+        if (op is not RemoveAppxPackage r) return null;
+        if (IsReturnedApp(op)) return $"{r.Name} is installed again";
+        return r.Deprovision ? $"{r.Name} will be installed for new accounts again" : null;
+    }
+
+    public bool IsReturnedApp(Operation op)
+    {
+        if (op is not RemoveAppxPackage r) return false;
+        var snap = store.GetSnapshot();
+        return r.AllUsers ? snap.IsInstalledForAnyone(r.Name) : snap.IsInstalledForCurrentUser(r.Name);
+    }
+
     public Operation CaptureUndo(Operation op) => op switch
     {
         RemoveAppxPackage r => new RestoreAppxPackage(r.Name, store.GetSnapshot().Find(r.Name)?.FamilyName),

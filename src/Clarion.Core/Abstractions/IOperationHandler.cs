@@ -18,6 +18,12 @@ public interface IOperationHandler
     /// </summary>
     bool IsVacuous(Operation op) => false;
 
+    /// <summary>Plain words for why a step no longer holds, or null to fall back to describing the step.</summary>
+    string? WhyBroken(Operation op) => null;
+
+    /// <summary>True when the step no longer holds because a removed app is installed again.</summary>
+    bool IsReturnedApp(Operation op) => false;
+
     /// <summary>Loads anything slow up front for these operations, so reading state afterward is quick.</summary>
     void Warm(IReadOnlyList<Operation> operations) { }
 
