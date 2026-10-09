@@ -1,6 +1,7 @@
 [
   {
     "id": "privacy.telemetry-services",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Stop the diagnostic tracking services",
     "summary": "Turn off the services that collect and forward diagnostic data.",
@@ -38,6 +39,7 @@
   },
   {
     "id": "privacy.telemetry-tasks",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Turn off diagnostic scheduled tasks",
     "summary": "Disable the scheduled jobs that gather app and usage data.",

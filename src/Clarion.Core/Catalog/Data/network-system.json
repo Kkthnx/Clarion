@@ -1,6 +1,7 @@
 [
   {
     "id": "network.delivery-optimization-http",
+    "lastVerifiedBuild": 26200,
     "category": "Network",
     "name": "Stop sharing updates with other PCs",
     "summary": "Download Windows updates directly, with no peer uploads.",
@@ -48,6 +49,7 @@
   },
   {
     "id": "system.long-paths",
+    "lastVerifiedBuild": 26200,
     "category": "System",
     "name": "Allow long file paths",
     "summary": "Let apps use paths longer than 260 characters.",
@@ -99,6 +101,7 @@
   },
   {
     "id": "system.fast-startup-off",
+    "lastVerifiedBuild": 26200,
     "category": "System",
     "name": "Turn off Fast Startup",
     "summary": "Make Shut down a full shutdown.",
@@ -148,6 +151,7 @@
   },
   {
     "id": "explorer.end-task-menu",
+    "lastVerifiedBuild": 26200,
     "category": "Explorer",
     "name": "End task from the taskbar menu",
     "summary": "Add End task to the right-click menu of taskbar apps.",
@@ -185,6 +189,7 @@
   },
   {
     "id": "explorer.show-hidden-files",
+    "lastVerifiedBuild": 26200,
     "category": "Explorer",
     "name": "Show hidden files",
     "summary": "Show files and folders marked hidden.",
@@ -233,6 +238,7 @@
   },
   {
     "id": "explorer.open-to-this-pc",
+    "lastVerifiedBuild": 26200,
     "category": "Explorer",
     "name": "Open File Explorer to This PC",
     "summary": "Start in drives and folders instead of Home.",
@@ -281,6 +287,7 @@
   },
   {
     "id": "taskbar.hide-task-view",
+    "lastVerifiedBuild": 26200,
     "category": "Appearance",
     "name": "Hide the Task View button",
     "summary": "Remove the Task View button from the taskbar.",
@@ -330,6 +337,7 @@
   },
   {
     "id": "taskbar.hide-search",
+    "lastVerifiedBuild": 26200,
     "category": "Appearance",
     "name": "Hide the taskbar search box",
     "summary": "Remove the search box or icon from the taskbar.",
@@ -378,6 +386,7 @@
   },
   {
     "id": "input.menu-show-delay-zero",
+    "lastVerifiedBuild": 26200,
     "category": "Input",
     "name": "Instant menus",
     "summary": "Open cascading menus without the short delay.",
@@ -427,6 +436,7 @@
   },
   {
     "id": "input.sticky-keys-prompt-off",
+    "lastVerifiedBuild": 26200,
     "category": "Input",
     "name": "Turn off the Sticky Keys shortcut",
     "summary": "Stop the pop-up when Shift is pressed five times.",

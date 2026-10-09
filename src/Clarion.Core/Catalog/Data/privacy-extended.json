@@ -1,6 +1,7 @@
 [
   {
     "id": "privacy.feedback-prompts-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Stop feedback pop-ups",
@@ -52,6 +53,7 @@
   },
   {
     "id": "privacy.device-name-hidden",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Keep your PC name out of diagnostic data",
@@ -103,6 +105,7 @@
   },
   {
     "id": "privacy.onesettings-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Stop the Microsoft configuration download",
@@ -154,6 +157,7 @@
   },
   {
     "id": "privacy.error-reporting-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Turn off Windows Error Reporting",
@@ -206,6 +210,7 @@
   },
   {
     "id": "privacy.speech-updates-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Stop speech model downloads",
@@ -257,6 +262,7 @@
   },
   {
     "id": "privacy.online-speech-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Turn off online speech recognition",
@@ -309,6 +315,7 @@
   },
   {
     "id": "privacy.inking-typing-personalization-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Stop inking and typing personalization",
@@ -379,6 +386,7 @@
   },
   {
     "id": "privacy.improve-typing-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Stop sending typing data to improve Windows",
@@ -413,6 +421,7 @@
   },
   {
     "id": "privacy.online-speech-account-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Turn off online speech recognition (this account)",
@@ -447,6 +456,7 @@
   },
   {
     "id": "privacy.feedback-frequency-never",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Diagnostics",
     "name": "Never ask for feedback",
@@ -481,6 +491,7 @@
   },
   {
     "id": "search.history-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Search",
     "name": "Stop saving search history",
@@ -539,6 +550,7 @@
   },
   {
     "id": "search.cortana-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Search",
     "name": "Turn off Cortana",
@@ -591,6 +603,7 @@
   },
   {
     "id": "search.cortana-lockscreen-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Search",
     "name": "Block Cortana on the lock screen",
@@ -643,6 +656,7 @@
   },
   {
     "id": "search.location-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Search",
     "name": "Keep search from using your location",
@@ -694,6 +708,7 @@
   },
   {
     "id": "search.cloud-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Search",
     "name": "Keep search on this PC",
@@ -742,6 +757,7 @@
   },
   {
     "id": "search.highlights-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Search",
     "name": "Hide search highlights",
@@ -791,6 +807,7 @@
   },
   {
     "id": "search.web-results-machine",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Search",
     "name": "No web results in search (all accounts)",
@@ -835,6 +852,7 @@
   },
   {
     "id": "ads.windows-tips-off",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Suggestions and ads",
     "name": "Turn off Windows tips",
@@ -881,6 +899,7 @@
   },
   {
     "id": "ads.spotlight-off",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Suggestions and ads",
     "name": "Turn off Windows Spotlight everywhere",
@@ -980,6 +999,7 @@
   },
   {
     "id": "ads.third-party-suggestions-off",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Suggestions and ads",
     "name": "No third party suggestions in Spotlight",
@@ -1030,6 +1050,7 @@
   },
   {
     "id": "ads.lockscreen-tips-off",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Suggestions and ads",
     "name": "No Spotlight or tips on the lock screen",
@@ -1088,6 +1109,7 @@
   },
   {
     "id": "ads.settings-tips-off",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Suggestions and ads",
     "name": "Stop online tips in Settings",
@@ -1139,6 +1161,7 @@
   },
   {
     "id": "ads.explorer-promos-off",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Suggestions and ads",
     "name": "Hide promotions in File Explorer",
@@ -1172,6 +1195,7 @@
   },
   {
     "id": "ads.start-recommendations-off",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Suggestions and ads",
     "name": "Hide Start recommendations",
@@ -1221,6 +1245,7 @@
   },
   {
     "id": "ads.track-launches-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Suggestions and ads",
     "name": "Stop tracking which apps you launch",
@@ -1254,6 +1279,7 @@
   },
   {
     "id": "ads.recent-items-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Suggestions and ads",
     "name": "Hide recent files and frequent folders",
@@ -1312,6 +1338,7 @@
   },
   {
     "id": "sync.settings-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Sync and clipboard",
     "name": "Stop syncing settings to the cloud",
@@ -1363,6 +1390,7 @@
   },
   {
     "id": "sync.clipboard-cloud-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Sync and clipboard",
     "name": "Stop syncing the clipboard across devices",
@@ -1414,6 +1442,7 @@
   },
   {
     "id": "sync.clipboard-history-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Sync and clipboard",
     "name": "Turn off clipboard history",
@@ -1465,6 +1494,7 @@
   },
   {
     "id": "sync.message-backup-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Sync and clipboard",
     "name": "Stop cloud backup of text messages",
@@ -1516,6 +1546,7 @@
   },
   {
     "id": "sync.find-my-device-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Sync and clipboard",
     "name": "Turn off Find My Device",
@@ -1567,6 +1598,7 @@
   },
   {
     "id": "sync.phone-link-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Sync and clipboard",
     "name": "Turn off Phone link",
@@ -1618,6 +1650,7 @@
   },
   {
     "id": "lock.camera-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Lock screen",
     "name": "Block the lock screen camera",
@@ -1668,6 +1701,7 @@
   },
   {
     "id": "lock.app-notifications-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Lock screen",
     "name": "Hide app notifications on the lock screen",
@@ -1717,6 +1751,7 @@
   },
   {
     "id": "taskbar.widgets-policy-off",
+    "lastVerifiedBuild": 26200,
     "category": "Appearance",
     "topic": "Taskbar and widgets",
     "name": "Turn off Widgets",
@@ -1765,6 +1800,7 @@
   },
   {
     "id": "taskbar.chat-off",
+    "lastVerifiedBuild": 26200,
     "category": "Appearance",
     "topic": "Taskbar and widgets",
     "name": "Hide the Chat button",
@@ -1803,6 +1839,7 @@
   },
   {
     "id": "taskbar.copilot-button-off",
+    "lastVerifiedBuild": 26200,
     "category": "Appearance",
     "topic": "Taskbar and widgets",
     "name": "Hide the Copilot button",
@@ -1841,6 +1878,7 @@
   },
   {
     "id": "ai.recall-snapshots-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Copilot and Recall",
     "name": "Turn off Recall snapshots",
@@ -1890,6 +1928,7 @@
   },
   {
     "id": "ai.recall-unavailable",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Copilot and Recall",
     "name": "Make Recall unavailable",
@@ -1940,6 +1979,7 @@
   },
   {
     "id": "ai.copilot-pane-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Copilot and Recall",
     "name": "Turn off the Copilot pane",
@@ -1988,6 +2028,7 @@
   },
   {
     "id": "ai.paint-tools-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Copilot and Recall",
     "name": "Turn off Paint image creation tools",
@@ -2060,6 +2101,7 @@
   },
   {
     "id": "defender.maps-off",
+    "lastVerifiedBuild": 26200,
     "category": "Security",
     "topic": "Defender sharing",
     "name": "Stop sharing detections with Microsoft MAPS",
@@ -2111,6 +2153,7 @@
   },
   {
     "id": "defender.samples-never",
+    "lastVerifiedBuild": 26200,
     "category": "Security",
     "topic": "Defender sharing",
     "name": "Never send file samples to Microsoft",
@@ -2161,6 +2204,7 @@
   },
   {
     "id": "gaming.game-recording-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "Gaming",
     "name": "Turn off Game Bar recording",
@@ -2207,6 +2251,7 @@
   },
   {
     "id": "gaming.game-mode-on",
+    "lastVerifiedBuild": 26200,
     "category": "System",
     "topic": "Gaming",
     "name": "Turn on Game Mode",
@@ -2241,6 +2286,7 @@
   },
   {
     "id": "gaming.hags-on",
+    "lastVerifiedBuild": 26200,
     "category": "System",
     "topic": "Gaming",
     "name": "Hardware accelerated GPU scheduling",
@@ -2280,6 +2326,7 @@
   },
   {
     "id": "security.autoplay-off",
+    "lastVerifiedBuild": 26200,
     "category": "Security",
     "topic": "Security",
     "name": "Turn off AutoPlay",
@@ -2314,6 +2361,7 @@
   },
   {
     "id": "security.remote-assistance-off",
+    "lastVerifiedBuild": 26200,
     "category": "Security",
     "topic": "Security",
     "name": "Turn off Remote Assistance",

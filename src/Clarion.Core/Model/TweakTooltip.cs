@@ -73,6 +73,7 @@ public static class TweakTooltip
         if (t.NeedsReboot) notes.Add("Restart needed to finish.");
         if (t.NeedsSignOut) notes.Add("Sign out and back in to finish.");
         if (t.RestartsExplorer) notes.Add("Explorer restarts once, so the taskbar flickers.");
+        if (t.LastVerifiedBuild > 0) notes.Add($"Last checked on Windows build {t.LastVerifiedBuild}.");
         notes.Add("Revert restores exactly what was there before.");
 
         return new TooltipContent(

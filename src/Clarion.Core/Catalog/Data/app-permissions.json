@@ -1,6 +1,7 @@
 [
   {
     "id": "perm.user-camera",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to the camera (this account)",
@@ -36,6 +37,7 @@
   },
   {
     "id": "perm.all-camera",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to the camera (all accounts)",
@@ -87,6 +89,7 @@
   },
   {
     "id": "perm.user-microphone",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to the microphone (this account)",
@@ -122,6 +125,7 @@
   },
   {
     "id": "perm.all-microphone",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to the microphone (all accounts)",
@@ -173,6 +177,7 @@
   },
   {
     "id": "perm.user-contacts",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your contacts (this account)",
@@ -208,6 +213,7 @@
   },
   {
     "id": "perm.all-contacts",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your contacts (all accounts)",
@@ -259,6 +265,7 @@
   },
   {
     "id": "perm.user-calendar",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your calendar (this account)",
@@ -294,6 +301,7 @@
   },
   {
     "id": "perm.all-calendar",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your calendar (all accounts)",
@@ -345,6 +353,7 @@
   },
   {
     "id": "perm.user-call-history",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your call history (this account)",
@@ -380,6 +389,7 @@
   },
   {
     "id": "perm.all-call-history",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your call history (all accounts)",
@@ -431,6 +441,7 @@
   },
   {
     "id": "perm.user-email",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your email (this account)",
@@ -466,6 +477,7 @@
   },
   {
     "id": "perm.all-email",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your email (all accounts)",
@@ -517,6 +529,7 @@
   },
   {
     "id": "perm.user-messaging",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your text messages (this account)",
@@ -552,6 +565,7 @@
   },
   {
     "id": "perm.all-messaging",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your text messages (all accounts)",
@@ -603,6 +617,7 @@
   },
   {
     "id": "perm.user-tasks",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your tasks (this account)",
@@ -638,6 +653,7 @@
   },
   {
     "id": "perm.all-tasks",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your tasks (all accounts)",
@@ -689,6 +705,7 @@
   },
   {
     "id": "perm.user-account-info",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your account information (this account)",
@@ -724,6 +741,7 @@
   },
   {
     "id": "perm.all-account-info",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your account information (all accounts)",
@@ -775,6 +793,7 @@
   },
   {
     "id": "perm.user-notifications",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your notifications (this account)",
@@ -810,6 +829,7 @@
   },
   {
     "id": "perm.all-notifications",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to your notifications (all accounts)",
@@ -861,6 +881,7 @@
   },
   {
     "id": "perm.user-app-diagnostics",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to diagnostics about other apps (this account)",
@@ -896,6 +917,7 @@
   },
   {
     "id": "perm.all-app-diagnostics",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to diagnostics about other apps (all accounts)",
@@ -947,6 +969,7 @@
   },
   {
     "id": "perm.user-radios",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to Bluetooth and other radios (this account)",
@@ -982,6 +1005,7 @@
   },
   {
     "id": "perm.all-radios",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to Bluetooth and other radios (all accounts)",
@@ -1033,6 +1057,7 @@
   },
   {
     "id": "perm.user-phone-calls",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to phone calls (this account)",
@@ -1068,6 +1093,7 @@
   },
   {
     "id": "perm.all-phone-calls",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to phone calls (all accounts)",
@@ -1119,6 +1145,7 @@
   },
   {
     "id": "perm.user-motion",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to motion sensors (this account)",
@@ -1154,6 +1181,7 @@
   },
   {
     "id": "perm.all-motion",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to motion sensors (all accounts)",
@@ -1205,6 +1233,7 @@
   },
   {
     "id": "perm.user-eye-tracker",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to an eye tracker (this account)",
@@ -1240,6 +1269,7 @@
   },
   {
     "id": "perm.all-eye-tracker",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to an eye tracker (all accounts)",
@@ -1291,6 +1321,7 @@
   },
   {
     "id": "perm.user-presence",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to presence sensing (this account)",
@@ -1326,6 +1357,7 @@
   },
   {
     "id": "perm.all-presence",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to presence sensing (all accounts)",
@@ -1377,6 +1409,7 @@
   },
   {
     "id": "perm.user-screenshots",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to screenshots of other windows (this account)",
@@ -1412,6 +1445,7 @@
   },
   {
     "id": "perm.all-screenshots",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block app access to screenshots of other windows (all accounts)",
@@ -1463,6 +1497,7 @@
   },
   {
     "id": "perm.user-background-apps",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Stop apps from running in the background (this account)",
@@ -1498,6 +1533,7 @@
   },
   {
     "id": "perm.all-background-apps",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Stop apps from running in the background (all accounts)",
@@ -1549,6 +1585,7 @@
   },
   {
     "id": "perm.all-voice",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block apps from listening for a wake word",
@@ -1600,6 +1637,7 @@
   },
   {
     "id": "perm.all-voice-locked",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block voice activation on the lock screen",
@@ -1651,6 +1689,7 @@
   },
   {
     "id": "perm.all-unpaired",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block apps from talking to unpaired devices",
@@ -1702,6 +1741,7 @@
   },
   {
     "id": "perm.all-trusted",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block apps from trusted devices",
@@ -1753,6 +1793,7 @@
   },
   {
     "id": "perm.all-text",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "topic": "App permissions",
     "name": "Block apps from reading text in other apps",

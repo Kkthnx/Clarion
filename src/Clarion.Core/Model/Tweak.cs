@@ -27,6 +27,8 @@ public sealed record Tweak
     public IReadOnlyList<string> Facts { get; init; } = [];
     public TweakScope Scope { get; init; } = TweakScope.User;
     public Requirements Requires { get; init; } = new();
+    /// <summary>The Windows build this setting was last checked on. 0 means never checked.</summary>
+    public int LastVerifiedBuild { get; init; }
     public bool NeedsReboot { get; init; }
     public bool NeedsSignOut { get; init; }
     public bool RestartsExplorer { get; init; }

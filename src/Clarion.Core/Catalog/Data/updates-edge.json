@@ -1,6 +1,7 @@
 [
   {
     "id": "updates.defer-feature-30",
+    "lastVerifiedBuild": 26200,
     "category": "Updates",
     "topic": "Updates",
     "name": "Delay feature updates by 30 days",
@@ -65,6 +66,7 @@
   },
   {
     "id": "updates.defer-feature-90",
+    "lastVerifiedBuild": 26200,
     "category": "Updates",
     "topic": "Updates",
     "name": "Delay feature updates by 90 days",
@@ -129,6 +131,7 @@
   },
   {
     "id": "updates.defer-feature-180",
+    "lastVerifiedBuild": 26200,
     "category": "Updates",
     "topic": "Updates",
     "name": "Delay feature updates by 180 days",
@@ -193,6 +196,7 @@
   },
   {
     "id": "updates.exclude-drivers",
+    "lastVerifiedBuild": 26200,
     "category": "Updates",
     "topic": "Updates",
     "name": "Keep drivers out of Windows Update",
@@ -244,6 +248,7 @@
   },
   {
     "id": "updates.no-wake-for-updates",
+    "lastVerifiedBuild": 26200,
     "category": "Updates",
     "topic": "Updates",
     "name": "Do not wake the PC for updates",
@@ -294,6 +299,7 @@
   },
   {
     "id": "edge.personalization",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Microsoft Edge",
     "name": "Stop Edge from personalizing ads with your browsing",
@@ -331,6 +337,7 @@
   },
   {
     "id": "edge.sidebar",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Microsoft Edge",
     "name": "Hide the Edge sidebar",
@@ -368,6 +375,7 @@
   },
   {
     "id": "edge.startup-boost",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Microsoft Edge",
     "name": "Stop Edge from starting with Windows",
@@ -405,6 +413,7 @@
   },
   {
     "id": "edge.background",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Microsoft Edge",
     "name": "Stop Edge running after you close it",
@@ -442,6 +451,7 @@
   },
   {
     "id": "edge.shopping",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "topic": "Microsoft Edge",
     "name": "Turn off Edge shopping features",

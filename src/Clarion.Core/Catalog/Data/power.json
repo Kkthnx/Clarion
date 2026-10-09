@@ -1,6 +1,7 @@
 [
   {
     "id": "power.plan-balanced",
+    "lastVerifiedBuild": 26200,
     "category": "Power",
     "name": "Balanced power plan",
     "summary": "The Windows default. Speed follows what you are doing.",
@@ -31,6 +32,7 @@
   },
   {
     "id": "power.plan-high-performance",
+    "lastVerifiedBuild": 26200,
     "category": "Power",
     "name": "High performance power plan",
     "summary": "Favor speed over saving energy.",
@@ -62,6 +64,7 @@
   },
   {
     "id": "power.plan-ultimate",
+    "lastVerifiedBuild": 26200,
     "category": "Power",
     "name": "Ultimate Performance power plan",
     "summary": "A workstation plan that cuts small power saving delays.",
@@ -93,6 +96,7 @@
   },
   {
     "id": "power.plan-saver",
+    "lastVerifiedBuild": 26200,
     "category": "Power",
     "name": "Power saver plan",
     "summary": "Save energy by running slower.",
@@ -123,6 +127,7 @@
   },
   {
     "id": "power.hibernate-off",
+    "lastVerifiedBuild": 26200,
     "category": "Power",
     "name": "Turn off hibernation",
     "summary": "Free disk space by removing the hibernation file.",

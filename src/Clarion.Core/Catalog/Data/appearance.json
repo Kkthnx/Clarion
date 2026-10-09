@@ -1,6 +1,7 @@
 [
   {
     "id": "appearance.dark-mode",
+    "lastVerifiedBuild": 26200,
     "category": "Appearance",
     "name": "Dark mode",
     "summary": "Use the dark theme for Windows and apps.",
@@ -74,6 +75,7 @@
   },
   {
     "id": "appearance.classic-context-menu",
+    "lastVerifiedBuild": 26200,
     "category": "Appearance",
     "name": "Classic right-click menu",
     "summary": "Show the full right-click menu without the extra Show more options step.",
@@ -113,6 +115,7 @@
   },
   {
     "id": "appearance.taskbar-left",
+    "lastVerifiedBuild": 26200,
     "category": "Appearance",
     "name": "Left-aligned taskbar",
     "summary": "Move the Start button and icons to the left edge.",
@@ -164,6 +167,7 @@
   },
   {
     "id": "explorer.show-extensions",
+    "lastVerifiedBuild": 26200,
     "category": "Explorer",
     "name": "Show file extensions",
     "summary": "Always show the end of file names, like .exe or .pdf.",
@@ -212,6 +216,7 @@
   },
   {
     "id": "input.mouse-accel-off",
+    "lastVerifiedBuild": 26200,
     "category": "Input",
     "name": "Turn off mouse acceleration",
     "summary": "Make pointer distance match hand distance.",

@@ -1,6 +1,7 @@
 [
   {
     "id": "privacy.location-off",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Turn off location for the whole PC",
     "summary": "Force the location service off for every app and account.",
@@ -48,6 +49,7 @@
   },
   {
     "id": "debloat.consumer-features-policy",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Stop promoted app installs and Start suggestions",
     "summary": "Turn off Microsoft consumer experiences through policy.",
@@ -92,6 +94,7 @@
   },
   {
     "id": "debloat.content-delivery-user",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Stop suggestions and silent app installs (this account)",
     "summary": "Turn off tips, suggested apps and silent installs for the current user.",
@@ -210,6 +213,7 @@
   },
   {
     "id": "privacy.onedrive-sync-policy",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Block OneDrive file sync",
     "summary": "Stop OneDrive from syncing files without uninstalling it.",
@@ -257,6 +261,7 @@
   },
   {
     "id": "privacy.device-metadata-offline",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Stop device companion app downloads",
     "summary": "Do not fetch extra vendor software and icons when a device is plugged in.",

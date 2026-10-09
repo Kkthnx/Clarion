@@ -1,6 +1,7 @@
 [
   {
     "id": "debloat.app.bingnews",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove News",
     "summary": "Uninstall News for your account.",
@@ -29,6 +30,7 @@
   },
   {
     "id": "debloat.app.bingweather",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Weather",
     "summary": "Uninstall Weather for your account.",
@@ -57,6 +59,7 @@
   },
   {
     "id": "debloat.app.bingsearch",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Bing Search",
     "summary": "Uninstall Bing Search for your account.",
@@ -85,6 +88,7 @@
   },
   {
     "id": "debloat.app.gethelp",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Get Help",
     "summary": "Uninstall Get Help for your account.",
@@ -113,6 +117,7 @@
   },
   {
     "id": "debloat.app.getstarted",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Tips",
     "summary": "Uninstall Tips for your account.",
@@ -141,6 +146,7 @@
   },
   {
     "id": "debloat.app.microsoftofficehub",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Microsoft 365 app",
     "summary": "Uninstall Microsoft 365 app for your account.",
@@ -169,6 +175,7 @@
   },
   {
     "id": "debloat.app.microsoftsolitairecollection",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Solitaire Collection",
     "summary": "Uninstall Solitaire Collection for your account.",
@@ -197,6 +204,7 @@
   },
   {
     "id": "debloat.app.windowsfeedbackhub",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Feedback Hub",
     "summary": "Uninstall Feedback Hub for your account.",
@@ -225,6 +233,7 @@
   },
   {
     "id": "debloat.app.powerautomatedesktop",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Power Automate",
     "summary": "Uninstall Power Automate for your account.",
@@ -253,6 +262,7 @@
   },
   {
     "id": "debloat.app.todos",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Microsoft To Do",
     "summary": "Uninstall Microsoft To Do for your account.",
@@ -281,6 +291,7 @@
   },
   {
     "id": "debloat.app.quickassist",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Quick Assist",
     "summary": "Uninstall Quick Assist for your account.",
@@ -309,6 +320,7 @@
   },
   {
     "id": "debloat.app.clipchamp.clipchamp",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Clipchamp",
     "summary": "Uninstall Clipchamp for your account.",
@@ -337,6 +349,7 @@
   },
   {
     "id": "debloat.app.yourphone",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Phone Link",
     "summary": "Uninstall Phone Link for your account.",
@@ -365,6 +378,7 @@
   },
   {
     "id": "debloat.app.windowsmaps",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Maps",
     "summary": "Uninstall Maps for your account.",
@@ -393,6 +407,7 @@
   },
   {
     "id": "debloat.app.zunevideo",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Movies and TV",
     "summary": "Uninstall Movies and TV for your account.",
@@ -421,6 +436,7 @@
   },
   {
     "id": "debloat.app.people",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove People",
     "summary": "Uninstall People for your account.",
@@ -449,6 +465,7 @@
   },
   {
     "id": "debloat.app.microsoftstickynotes",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Sticky Notes",
     "summary": "Uninstall Sticky Notes for your account.",
@@ -477,6 +494,7 @@
   },
   {
     "id": "debloat.app.microsoftteams",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Chat (Microsoft Teams, personal)",
     "summary": "Uninstall Chat (Microsoft Teams, personal) for your account.",
@@ -505,6 +523,7 @@
   },
   {
     "id": "debloat.app.outlookforwindows",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Outlook (new)",
     "summary": "Uninstall Outlook (new) for your account.",
@@ -533,6 +552,7 @@
   },
   {
     "id": "debloat.app.copilot",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Copilot app",
     "summary": "Uninstall Copilot app for your account.",
@@ -561,6 +581,7 @@
   },
   {
     "id": "debloat.app.gamingapp",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Xbox app",
     "summary": "Uninstall Xbox app for your account.",
@@ -589,6 +610,7 @@
   },
   {
     "id": "debloat.app.xboxgamingoverlay",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Xbox Game Bar",
     "summary": "Uninstall Xbox Game Bar for your account.",
@@ -617,6 +639,7 @@
   },
   {
     "id": "debloat.app.mixedreality.portal",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Mixed Reality Portal",
     "summary": "Uninstall Mixed Reality Portal for your account.",
@@ -645,6 +668,7 @@
   },
   {
     "id": "debloat.app.microsoft3dviewer",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove 3D Viewer",
     "summary": "Uninstall 3D Viewer for your account.",
@@ -673,6 +697,7 @@
   },
   {
     "id": "debloat.app.skypeapp",
+    "lastVerifiedBuild": 26200,
     "category": "Debloat",
     "name": "Remove Skype",
     "summary": "Uninstall Skype for your account.",

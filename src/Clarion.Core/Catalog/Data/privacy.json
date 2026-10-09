@@ -1,6 +1,7 @@
 [
   {
     "id": "privacy.advertising-id",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Turn off advertising ID",
     "summary": "Stop apps from using a per-user ID to profile you for ads.",
@@ -52,6 +53,7 @@
   },
   {
     "id": "privacy.tailored-experiences",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Turn off tailored experiences",
     "summary": "Stop Windows from using diagnostic data to suggest tips and ads.",
@@ -103,6 +105,7 @@
   },
   {
     "id": "privacy.web-search-start",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Keep web results out of Start search",
     "summary": "Search your PC only when typing in Start.",
@@ -140,6 +143,7 @@
   },
   {
     "id": "privacy.activity-history",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Turn off activity history",
     "summary": "Stop Windows from recording and uploading what you do.",
@@ -201,6 +205,7 @@
   },
   {
     "id": "privacy.diagnostic-data-minimum",
+    "lastVerifiedBuild": 26200,
     "category": "Privacy",
     "name": "Lowest diagnostic data level",
     "summary": "Send only the minimum data Windows allows.",

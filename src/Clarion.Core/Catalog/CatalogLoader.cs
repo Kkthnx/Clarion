@@ -13,6 +13,9 @@ public static class CatalogLoader
         "wuauserv", "UsoSvc", "WaaSMedicSvc", "BITS", "TrustedInstaller", "EventLog", "RpcSs",
         "RpcEptMapper", "DcomLaunch", "LSM", "SamSs", "CryptSvc", "Dhcp", "Dnscache", "nsi",
         "ProfSvc", "UserManager", "Winmgmt", "Schedule", "gpsvc", "StateRepository", "TimeBrokerSvc",
+        "DPS", "WdiServiceHost", "WdiSystemHost", "DusmSvc", "NcbService", "netprofm", "NlaSvc", "LanmanWorkstation",
+        "LanmanServer", "PlugPlay", "Power", "AudioSrv", "AudioEndpointBuilder", "DoSvc", "ShellHWDetection",
+        "SENS", "Themes", "CoreMessagingRegistrar", "SystemEventsBroker", "BrokerInfrastructure", "KeyIso", "vds", "VSS",
     };
 
     public static readonly JsonSerializerOptions Options = new()

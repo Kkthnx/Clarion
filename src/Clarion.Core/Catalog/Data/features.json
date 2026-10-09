@@ -1,6 +1,7 @@
 [
   {
     "id": "features.wsl",
+    "lastVerifiedBuild": 26200,
     "category": "Features",
     "name": "Windows Subsystem for Linux",
     "summary": "Run Linux command line tools inside Windows.",
@@ -38,6 +39,7 @@
   },
   {
     "id": "features.hyper-v",
+    "lastVerifiedBuild": 26200,
     "category": "Features",
     "name": "Hyper-V virtual machines",
     "summary": "Run virtual machines with the built in hypervisor.",
@@ -76,6 +78,7 @@
   },
   {
     "id": "features.sandbox",
+    "lastVerifiedBuild": 26200,
     "category": "Features",
     "name": "Windows Sandbox",
     "summary": "A throwaway Windows desktop for testing unknown files.",
@@ -115,6 +118,7 @@
   },
   {
     "id": "features.dotnet35",
+    "lastVerifiedBuild": 26200,
     "category": "Features",
     "name": ".NET Framework 3.5",
     "summary": "Support for older programs built on .NET 2.0 to 3.5.",
@@ -142,6 +146,7 @@
   },
   {
     "id": "features.legacy-games",
+    "lastVerifiedBuild": 26200,
     "category": "Features",
     "name": "Legacy game components",
     "summary": "Support for very old games that use DirectPlay.",
@@ -174,6 +179,7 @@
   },
   {
     "id": "features.nfs-client",
+    "lastVerifiedBuild": 26200,
     "category": "Features",
     "name": "NFS client",
     "summary": "Connect to Network File System shares from Linux and NAS devices.",
@@ -210,6 +216,7 @@
   },
   {
     "id": "features.openssh-server",
+    "lastVerifiedBuild": 26200,
     "category": "Features",
     "name": "OpenSSH server",
     "summary": "Let other computers sign in to this PC over SSH.",
@@ -237,6 +244,7 @@
   },
   {
     "id": "security.smb1-off",
+    "lastVerifiedBuild": 26200,
     "category": "Security",
     "name": "Turn off SMB 1.0",
     "summary": "Disable the old, insecure file sharing protocol.",

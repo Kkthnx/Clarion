@@ -1,6 +1,7 @@
 [
   {
     "id": "updates.no-auto-restart",
+    "lastVerifiedBuild": 26200,
     "category": "Updates",
     "name": "No forced restart while signed in",
     "summary": "Windows will not restart on its own while someone is signed in.",
