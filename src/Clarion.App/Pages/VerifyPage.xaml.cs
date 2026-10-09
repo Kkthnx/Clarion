@@ -28,9 +28,12 @@ public sealed partial class VerifyPage : Page
         ScanButton.IsEnabled = false;
         Busy.IsActive = true;
         SummaryText.Text = "Checking";
+        // Each setting is read on its own, some by starting PowerShell, so a long list can take a while. Say where it is.
+        var progress = new Progress<(int Done, int Total)>(p =>
+            SummaryText.Text = p.Total == 0 ? "Checking" : $"Checking {Math.Min(p.Done + 1, p.Total)} of {p.Total}");
         try
         {
-            Show(await _app.VerifyAsync(fresh));
+            Show(await _app.VerifyAsync(fresh, progress));
         }
         catch (Exception ex)
         {
@@ -58,10 +61,20 @@ public sealed partial class VerifyPage : Page
             ? "Clarion has not applied anything yet, so there is nothing to check."
             : $"Checked {report.Checked} setting{(report.Checked == 1 ? "" : "s")} at {report.ScannedAt.LocalDateTime:t}.";
 
+        var pending = _app.PendingRestartNow;
+        RestartBar.IsOpen = pending is { IsPending: true };
+        RestartBar.Visibility = RestartBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        if (pending is { IsPending: true })
+            RestartBar.Message = $"{string.Join(". ", pending.Reasons)}. After it restarts, Clarion will check the {report.Checked} setting{(report.Checked == 1 ? "" : "s")} it applied again, because updates are when changes are most likely to be undone. Scan again then.";
+
+        var stopped = _app.StoppedChecking().Select(x => new StoppedRow(x.Item.Id, x.Item.Name, $"Applied {x.Applied.LocalDateTime:g}")).ToList();
+        StoppedRows.ItemsSource = stopped;
+        StoppedSection.Visibility = stopped.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
         UpdateBar.IsOpen = report.FeatureUpdateSinceLastScan;
         UpdateBar.Visibility = UpdateBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (report.FeatureUpdateSinceLastScan)
-            UpdateBar.Message = $"Windows went from build {report.PreviousBuild} to {report.Build} since the last check. Feature updates are when removed apps most often return and settings get reset.";
+            UpdateBar.Message = $"Windows went from build {report.PreviousBuild} to {report.Build} since the last check. Updates are when changes are most likely to be undone, so look at the list below.";
 
         UnreadableBar.IsOpen = report.Unreadable.Count > 0;
         UnreadableBar.Visibility = UnreadableBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
@@ -93,6 +106,13 @@ public sealed partial class VerifyPage : Page
     private void OnFixSettings(object sender, RoutedEventArgs e) =>
         _app.QueueFix(_app.Drift?.ChangedBack.Select(i => i.Tweak.Id) ?? []);
 
+    private async void OnWatchAgain(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: string id }) return;
+        await _app.WatchAgainAsync(id);
+        await ScanAsync(fresh: false);
+    }
+
     private async void OnLeaveOne(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { Tag: string id }) return;
@@ -102,3 +122,5 @@ public sealed partial class VerifyPage : Page
 }
 
 public sealed record DriftRow(string TweakId, string Name, string When, string Detail, string FixLabel);
+
+public sealed record StoppedRow(string TweakId, string Name, string When);

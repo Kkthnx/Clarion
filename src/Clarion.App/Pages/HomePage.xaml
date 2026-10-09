@@ -30,6 +30,13 @@
                 </InfoBar.ActionButton>
             </InfoBar>
 
+            <InfoBar x:Name="RestartBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False"
+                     Title="Windows is waiting for a restart">
+                <InfoBar.ActionButton>
+                    <Button Content="See what will be checked" Click="OnReviewDrift" />
+                </InfoBar.ActionButton>
+            </InfoBar>
+
             <InfoBar x:Name="ImageBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False">
                 <InfoBar.ActionButton>
                     <Button Content="See why" Click="OnSeeImage" />

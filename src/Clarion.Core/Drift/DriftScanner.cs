@@ -13,7 +13,8 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
 
     /// <param name="fresh">Drop cached reads first. Leave on for a real scan, since a stale read hides what came back.</param>
-    public DriftReport Scan(IEnumerable<Tweak> catalog, MachineProfile profile, bool fresh = true)
+    /// <param name="progress">Told after each setting is checked, with how many are done and how many there are.</param>
+    public DriftReport Scan(IEnumerable<Tweak> catalog, MachineProfile profile, bool fresh = true, IProgress<(int Done, int Total)>? progress = null)
     {
         var previous = state?.Load().LastBuild;
         if (fresh) engine.Invalidate();
@@ -29,8 +30,10 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
         var unreadable = new List<string>();
         var read = 0;
         var holding = new List<string>();
+        var done = 0;
         foreach (var tweak in tracked)
         {
+            progress?.Report((done++, tracked.Count));
             var recorded = outstanding[tweak.Id];
             DriftCheck check;
             try { check = engine.CheckRecorded(tweak, recorded); }
@@ -49,6 +52,7 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
             items.Add(new DriftItem(tweak, tweakState, recorded[0].Time, check.Broken.Select(b => b.Reason).ToList(), returned));
         }
 
+        progress?.Report((tracked.Count, tracked.Count));
         var now = _clock.GetUtcNow();
         state?.Save(profile.Build, now);
         return new DriftReport(now, profile.Build, previous, read, items, unreadable) { Holding = holding };

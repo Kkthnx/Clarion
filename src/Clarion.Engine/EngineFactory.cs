@@ -28,7 +28,7 @@ public static class EngineFactory
             new PowerHandler(new WindowsPowerStore(runner)),
             new DnsHandler(new WindowsDnsStore(runner)),
         };
-        var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"));
+        var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"), System.Security.Principal.WindowsIdentity.GetCurrent().User?.Value);
         var engine = new TweakEngine(handlers, journal);
         var drift = new Core.Drift.DriftScanner(engine, journal, new Core.Drift.DriftState(Path.Combine(dir, "drift.json")));
         var batch = new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);

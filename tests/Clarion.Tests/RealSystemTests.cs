@@ -234,6 +234,15 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
     }
 
     [Fact]
+    public void Real_restart_markers_can_be_read_without_errors()
+    {
+        if (!Enabled) return;
+        var info = Clarion.Core.SystemInfo.PendingRestart.Check(new WindowsPendingRestartProbe());
+        output.WriteLine(info.IsPending ? "pending: " + string.Join("; ", info.Reasons) : "no restart is waiting");
+        Assert.NotNull(info.Reasons);
+    }
+
+    [Fact]
     public void Real_lock_probe_sees_a_file_another_handle_holds_open()
     {
         if (!Enabled) return;

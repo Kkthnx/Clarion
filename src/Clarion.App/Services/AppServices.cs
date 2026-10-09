@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Clarion.Core.Appx;
 using Clarion.Core.Catalog;
 using Clarion.Core.Drift;
+using Clarion.Core.SystemInfo;
 using Clarion.Core.Troubleshoot;
 using Clarion.Core.Engine;
 using Clarion.Core.Model;
@@ -193,8 +194,30 @@ public sealed partial class AppServices : UiObservableObject
     private Troubleshooter? _troubleshooter;
 
     /// <summary>Settings Clarion changed that could explain a symptom, named ones first, newest first.</summary>
-    public IReadOnlyList<Suspect> SuspectsFor(Symptom symptom) =>
-        (_troubleshooter ??= new Troubleshooter(Runtime.Journal)).Suspects(symptom, Items.Select(i => i.Tweak).ToList());
+    public IReadOnlyList<Suspect> SuspectsFor(Symptom symptom, DateTimeOffset? since = null) =>
+        (_troubleshooter ??= new Troubleshooter(Runtime.Journal)).Suspects(symptom, Items.Select(i => i.Tweak).ToList(), since);
+
+    /// <summary>Settings the person told Clarion to stop checking, with when they were applied.</summary>
+    public IReadOnlyList<(TweakItem Item, DateTimeOffset Applied)> StoppedChecking() =>
+        Runtime.Journal.ReleasedByTweak()
+            .Select(kv => (Item: Items.FirstOrDefault(i => i.Id.Equals(kv.Key, StringComparison.OrdinalIgnoreCase)), Applied: kv.Value[0].Time))
+            .Where(x => x.Item is not null)
+            .Select(x => (x.Item!, x.Applied))
+            .OrderByDescending(x => x.Applied)
+            .ToList();
+
+    /// <summary>Starts checking a setting again. Windows is not changed.</summary>
+    public async Task WatchAgainAsync(string id)
+    {
+        var item = Items.FirstOrDefault(i => i.Id == id);
+        if (item is null) return;
+        await Task.Run(() => Runtime.Engine.Resume(item.Tweak, Guid.NewGuid()));
+        Log.Write($"{id}: checking again");
+        await RefreshStatesAsync();
+    }
+
+    /// <summary>Whether Windows has an update waiting for a restart, as of the last check.</summary>
+    public PendingRestartInfo? PendingRestartNow { get; private set; }
 
     private DriftReport? _drift;
 
@@ -221,11 +244,12 @@ public sealed partial class AppServices : UiObservableObject
     public void RequestNavigate(string tag) => NavigateRequested?.Invoke(this, tag);
 
     /// <summary>Compares every setting Clarion applied with what Windows looks like now.</summary>
-    public async Task<DriftReport> VerifyAsync(bool fresh)
+    public async Task<DriftReport> VerifyAsync(bool fresh, IProgress<(int Done, int Total)>? progress = null)
     {
         var previous = Drift;
         var tweaks = Items.Select(i => i.Tweak).ToList();
-        var report = await Task.Run(() => Runtime.Drift.Scan(tweaks, Profile, fresh));
+        var report = await Task.Run(() => Runtime.Drift.Scan(tweaks, Profile, fresh, progress));
+        PendingRestartNow = Clarion.Core.SystemInfo.PendingRestart.Check(new WindowsPendingRestartProbe());
         // A scan saves the build it saw, so the next one would forget a feature update that already happened this session.
         if (previous is { FeatureUpdateSinceLastScan: true } && !report.FeatureUpdateSinceLastScan)
             report = report with { PreviousBuild = previous.PreviousBuild };

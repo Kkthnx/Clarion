@@ -337,3 +337,55 @@ missing research, visual polish, enhancements, organisation and bugs. This secti
 - Fix: create the files in the final place. No other test renames folders.
 - The tag `v0.1.0-beta.4` was already pushed, so it was not moved. The release files were built on this PC.
   The workflow itself is untested beyond that failing test step and needs one clean run on the next tag.
+
+## Third review pass (lifecycle)
+
+Each item was checked against the code and researched before building.
+
+### 1. "That was me" (premise only partly true)
+- "Leave it" already ended tracking for good, because it writes a journal entry. A test covers it, so it did not nag.
+  What was missing: the label did not say so, and there was no way back.
+- Renamed to "That was me" with a plain tooltip. Added a "Stopped checking" list on Verify with "Watch again"
+  (`TweakEngine.Resume`), which records the earlier steps as current again without changing Windows.
+
+### 2. What broke empty state
+- Names the usual other causes and, when the install check found something, says so, with the image name when known.
+  The wording follows the check's strength: "looks like" for likely, "may be" for possible.
+- Links to Verify and System.
+
+### 3. Deprovision without a Store
+- Research: restoring a missing Store depends on whether its package files are still on disk. Sources disagree on a method,
+  and one gave a package id that was not verified. So the warning does not recommend a method. It says Clarion cannot restore it.
+- Only whether the Store is installed is checked. Whether it works is not.
+
+### 4. Command line parity
+- `--verify`, `--what-broke`, `--since`, `--list-symptoms`, `--history`. Read only, no administrator rights needed.
+  Text comes from `CliReports` in Core, so it is unit tested. Run against this PC: the same four changed-back settings the window shows.
+
+### 5. "It worked until roughly"
+- Changes older than the date are left out, since something that worked afterwards cannot have been broken by them.
+  The empty state says how many older changes were hidden.
+- Found by a test: the date in the report text was converted to local time and could print the day before.
+
+### 6. Which account
+- Confirmed gap: a second account would read the first one's HKCU settings as changed back, and a revert would touch the wrong
+  account. The journal now stamps per account steps (current user registry values, per account app removals) with the SID and shows
+  each account its own entries plus machine wide ones. Entries with no owner stay visible to everyone, so existing journals work.
+- The deprovision variant is machine scope but removes the app for the current account only, so ownership is decided per step, not per tweak.
+
+### 7. Monthly source check
+- The script scanned 27 of 37 links and failed on any refusal. It now scans all of them, retries with GET when HEAD is refused,
+  fails only for 404 and 410, and lists the rest as unsure. Tested for a real 404, an unknown host and a good page on Windows
+  PowerShell 5.1. The workflow uses 5.1 explicitly, because PowerShell 7 was not available to test.
+- One link is unsure on every run (403 from a forum that blocks automated requests).
+
+### 8. Pending update notice
+- Research: nothing reliable shows a staged feature update without asking Microsoft's servers, which Clarion does not do.
+  The restart markers (`RebootRequired`, servicing `RebootPending`, `UpdateExeVolatile`) show that an update is waiting for a
+  restart, not which kind. So the notice says exactly that.
+- The list of files waiting for restart is left out on purpose. Other programs set it all the time, and Clarion's own cleanup does too.
+
+### Verified rather than built
+- Missing .NET runtime: the packaged app is self contained (runtime and Windows App Runtime are in the folder), so there is nothing
+  to be missing. The installer already refuses Windows older than 10 version 2004. README now says nothing else needs installing.
+- Verify progress: was a spinner only. Now a count.

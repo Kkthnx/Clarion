@@ -18,7 +18,8 @@ public sealed record Suspect(Tweak Tweak, DateTimeOffset AppliedAt, bool Direct)
 /// </summary>
 public sealed class Troubleshooter(ChangeJournal journal)
 {
-    public IReadOnlyList<Suspect> Suspects(Symptom symptom, IEnumerable<Tweak> catalog)
+    /// <param name="since">When it last worked. A change made before then cannot be what broke it, so older ones are left out.</param>
+    public IReadOnlyList<Suspect> Suspects(Symptom symptom, IEnumerable<Tweak> catalog, DateTimeOffset? since = null)
     {
         var outstanding = journal.OutstandingByTweak();
         var named = symptom.TweakIds.ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -29,6 +30,7 @@ public sealed class Troubleshooter(ChangeJournal journal)
             .Select(t => (Tweak: t, Direct: named.Contains(t.Id), ByTopic: topics.Contains(t.Topic)))
             .Where(x => x.Direct || x.ByTopic)
             .Select(x => new Suspect(x.Tweak, outstanding[x.Tweak.Id][0].Time, x.Direct))
+            .Where(s => since is null || s.AppliedAt >= since)
             .OrderByDescending(s => s.Direct)
             .ThenByDescending(s => s.AppliedAt)
             .ToList();

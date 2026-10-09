@@ -59,7 +59,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 The files are not code signed yet, so Windows SmartScreen may warn on first run. Signing is planned before 1.0. Each download has a SHA256 file next to it so you can verify it.
 
-Requirements: Windows 10 version 2004 or later, 64-bit.
+Requirements: Windows 10 version 2004 or later, 64-bit. Nothing else needs installing, because the .NET runtime is included.
 
 ## Command line
 

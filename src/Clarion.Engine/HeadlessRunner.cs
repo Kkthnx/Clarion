@@ -48,6 +48,11 @@ public static class HeadlessRunner
             case CliMode.ListPresets:
                 foreach (var (name, ids) in CatalogLoader.LoadPresets()) Say($"{name} ({ids.Count} settings)");
                 return 0;
+            case CliMode.ListSymptoms:
+                Say(Core.Reports.CliReports.Symptoms(CatalogLoader.LoadSymptoms()));
+                return 0;
+            case CliMode.Verify or CliMode.WhatBroke or CliMode.History:
+                return RunReadOnly(o, Say);
         }
 
         if (!WindowsMachine.IsElevated())
@@ -57,6 +62,32 @@ public static class HeadlessRunner
         }
 
         return o.Mode == CliMode.Apply ? RunApply(o, Say) : RunClean(o, Say);
+    }
+
+    /// <summary>The commands that only look. They change nothing in Windows, so they do not ask for administrator rights.</summary>
+    private static int RunReadOnly(CliOptions o, Action<string> say)
+    {
+        var runtime = EngineFactory.Create();
+        var catalog = CatalogLoader.LoadEmbedded();
+
+        switch (o.Mode)
+        {
+            case CliMode.Verify:
+                var report = runtime.Drift.Scan(catalog, runtime.Profile);
+                say(Core.Reports.CliReports.Verify(report, Core.SystemInfo.PendingRestart.Check(new WindowsPendingRestartProbe())));
+                return Core.Reports.CliReports.VerifyExitCode(report);
+
+            case CliMode.WhatBroke:
+                var symptom = CatalogLoader.LoadSymptoms().FirstOrDefault(s => s.Id.Equals(o.Symptom, StringComparison.OrdinalIgnoreCase));
+                if (symptom is null) { say($"There is no symptom called {o.Symptom}. Use --list-symptoms."); return 2; }
+                var suspects = new Core.Troubleshoot.Troubleshooter(runtime.Journal).Suspects(symptom, catalog, o.Since);
+                say(Core.Reports.CliReports.WhatBroke(symptom, suspects, o.Since));
+                return 0;
+
+            default:
+                say(Core.Reports.CliReports.History(runtime.Journal.OutstandingByTweak(), catalog));
+                return 0;
+        }
     }
 
     private static int RunApply(CliOptions o, Action<string> say)

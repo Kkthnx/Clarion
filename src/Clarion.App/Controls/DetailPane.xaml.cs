@@ -43,11 +43,20 @@ public sealed partial class DetailPane : UserControl
         DeprovisionBox.IsChecked = item.DeprovisionToo;
         DeprovisionBox.IsEnabled = elevated && !item.DeprovisionLocked;
         _loading = false;
-        DeprovisionNote.Text = item.DeprovisionLocked
-            ? "Done. Revert puts the app back for you only. New accounts get it from the Microsoft Store."
-            : elevated
-                ? "Expert option. Needs administrator rights. Revert puts the app back for you only, new accounts would need the Microsoft Store."
-                : "Needs Clarion to run as administrator.";
+        // A customized image often has no Store at all. Then the way back is not "get it from the Store" but "restore the Store first".
+        var storeMissing = AppServices.Instance.ImageVerdict?.Inputs?.StoreMissing == true;
+        DeprovisionNote.Text = storeMissing
+            ? (item.DeprovisionLocked ? "Done. " : "Think before you tick this. ") +
+              "The Microsoft Store is not installed on this PC. Revert puts the app back for you only, and only if Windows still has its files. " +
+              "For new accounts there is no way back until the Store itself is restored, and Clarion cannot do that for you."
+            : item.DeprovisionLocked
+                ? "Done. Revert puts the app back for you only. New accounts get it from the Microsoft Store."
+                : elevated
+                    ? "Expert option. Needs administrator rights. Revert puts the app back for you only, new accounts would need the Microsoft Store."
+                    : "Needs Clarion to run as administrator.";
+        DeprovisionNote.Foreground = storeMissing
+            ? ThemeBrushes.Get("ClWarn", ActualTheme)
+            : ThemeBrushes.Get("ClTextSecondary", ActualTheme);
     }
 
     private void OnDeprovisionChanged(object sender, RoutedEventArgs e)

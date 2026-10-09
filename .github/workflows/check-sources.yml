@@ -1,0 +1,31 @@
+# Checks the source links in the catalog once a month, so dead pages are found while they are cheap to fix and not the night before
+# a release. A run fails only when a link is dead (404 or 410). Flaky answers are listed in the summary and do not fail it.
+name: check-sources
+on:
+  schedule:
+    - cron: '17 6 1 * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  links:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the source links
+        shell: powershell
+        run: ./scripts/check-sources.ps1 -ReportPath source-report.md
+
+      - name: Put the report in the run summary
+        if: always()
+        shell: powershell
+        run: |
+          if (Test-Path source-report.md) { Get-Content source-report.md | Add-Content $env:GITHUB_STEP_SUMMARY }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-report
+          path: source-report.md
+          if-no-files-found: ignore

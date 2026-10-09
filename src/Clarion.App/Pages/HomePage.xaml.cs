@@ -53,6 +53,7 @@ public sealed partial class HomePage : Page
         AppliedText.Text = $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
         Busy.IsActive = _app.IsBusy;
         ShowDrift();
+        ShowRestart();
         ShowImage();
     }
 
@@ -70,6 +71,20 @@ public sealed partial class HomePage : Page
         DriftBar.Message = report.FeatureUpdateSinceLastScan
             ? "This is common after a Windows feature update. You can put them back in one step."
             : "You can put them back in one step, or leave them as they are.";
+    }
+
+    private void ShowRestart()
+    {
+        var pending = _app.PendingRestartNow;
+        RestartBar.IsOpen = pending is { IsPending: true };
+        RestartBar.Visibility = RestartBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        if (pending is not { IsPending: true }) return;
+
+        var checkedCount = _app.Drift?.Checked ?? 0;
+        RestartBar.Message = $"{string.Join(". ", pending.Reasons)}. " +
+            (checkedCount > 0
+                ? $"After it restarts, Clarion will check the {checkedCount} setting{(checkedCount == 1 ? "" : "s")} it applied again, because updates are when changes are most likely to be undone."
+                : "Once you have applied settings, Clarion checks them again after a restart like this.");
     }
 
     private void ShowImage()

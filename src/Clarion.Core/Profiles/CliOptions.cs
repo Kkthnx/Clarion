@@ -1,6 +1,6 @@
 namespace Clarion.Core.Profiles;
 
-public enum CliMode { None, Help, Version, Apply, Clean, ListPresets }
+public enum CliMode { None, Help, Version, Apply, Clean, ListPresets, Verify, WhatBroke, ListSymptoms, History }
 
 public sealed record CliOptions(
     CliMode Mode,
@@ -11,6 +11,8 @@ public sealed record CliOptions(
     bool Preview = false,
     bool NoRestorePoint = false,
     bool EnableProtection = false,
+    string? Symptom = null,
+    DateTimeOffset? Since = null,
     string? Error = null)
 {
     public bool IsCli => Mode != CliMode.None;
@@ -23,6 +25,8 @@ public sealed record CliOptions(
         var only = new List<string>();
         var include = new List<string>();
         bool preview = false, noRp = false, enableProtection = false;
+        string? symptom = null;
+        DateTimeOffset? since = null;
 
         for (var i = 0; i < args.Count; i++)
         {
@@ -50,11 +54,25 @@ public sealed record CliOptions(
                 case "--preview": preview = true; break;
                 case "--no-restore-point": noRp = true; break;
                 case "--enable-protection": enableProtection = true; break;
+                case "--verify": mode = CliMode.Verify; break;
+                case "--history": mode = CliMode.History; break;
+                case "--list-symptoms": mode = CliMode.ListSymptoms; break;
+                case "--what-broke":
+                    mode = CliMode.WhatBroke;
+                    symptom = Next();
+                    if (symptom is null || symptom.StartsWith("--", StringComparison.Ordinal)) return Fail("--what-broke needs a symptom name. Use --list-symptoms.");
+                    break;
+                case "--since":
+                    var when = Next();
+                    if (!DateTimeOffset.TryParse(when, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeLocal, out var parsed))
+                        return Fail("--since needs a date such as 2026-09-01.");
+                    since = parsed;
+                    break;
                 default:
                     return a.StartsWith('-') || a.StartsWith('/') ? Fail($"Unknown option {a}. Use --help.") : new CliOptions(CliMode.None);
             }
         }
-        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection);
+        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection, symptom, since);
     }
 
     private static IEnumerable<string> Split(string? value) =>
@@ -68,6 +86,10 @@ public sealed record CliOptions(
           Clarion.exe --apply setup.json [--preview] [--no-restore-point] [--enable-protection]
           Clarion.exe --apply-preset minimal|standard|advanced|gaming|privacy [--preview]
           Clarion.exe --clean [--only a,b] [--include c,d] [--preview]
+          Clarion.exe --verify
+          Clarion.exe --what-broke symptom [--since 2026-09-01]
+          Clarion.exe --list-symptoms
+          Clarion.exe --history
           Clarion.exe --list-presets
           Clarion.exe --version
 
@@ -76,6 +98,12 @@ public sealed record CliOptions(
         --enable-protection turn on System Protection if it is off, so the restore point can be made
         --only / --include  cleanup row names, such as shaders.nvidia,windows.temp
 
-        Exit codes: 0 done, 1 some items did not finish, 2 bad input, 3 needs administrator rights.
+        --verify            read only: check what Clarion applied against Windows now. Exit code 1 when something changed back
+        --what-broke        read only: list the changes that could explain a symptom, newest first
+        --since             with --what-broke, only changes made on or after this date
+        --history           read only: list what Clarion changed that is still on
+
+        The read only commands need no administrator rights, though some checks cannot be read without them.
+        Exit codes: 0 done, 1 some items did not finish or something changed back, 2 bad input, 3 needs administrator rights.
         """;
 }

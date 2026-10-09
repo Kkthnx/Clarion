@@ -14,13 +14,25 @@
 
             <ComboBox x:Name="SymptomBox" Width="640" PlaceholderText="What is not working?" SelectionChanged="OnSymptomChanged" />
 
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <CalendarDatePicker x:Name="WorkedUntil" PlaceholderText="It worked until roughly (optional)" DateChanged="OnDateChanged"
+                                    AutomationProperties.Name="The date it last worked" />
+                <Button x:Name="ClearDate" Content="Clear date" Click="OnClearDate" Visibility="Collapsed" />
+            </StackPanel>
+
             <TextBlock x:Name="HintText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}"
                        Text="Not sure? Start with the problem you noticed. Clarion only lists changes it made itself, so anything it did not touch will not appear here. The Safety page shows everything Clarion has changed." />
 
             <TextBlock x:Name="TipText" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ClTextSecondaryBrush}" />
 
-            <TextBlock x:Name="NoneText" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ClTextPrimaryBrush}"
-                       Text="Clarion has not changed anything that matches this, so the cause is most likely something else. Settings Clarion applied are listed on the Safety page." />
+            <StackPanel x:Name="NonePanel" Spacing="8" Visibility="Collapsed">
+                <TextBlock x:Name="NoneTitle" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock x:Name="NoneText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <HyperlinkButton Content="Check whether Windows undid anything" Click="OnOpenVerify" Padding="0,4,12,4" />
+                    <HyperlinkButton Content="See how this Windows install differs" Click="OnOpenSystem" Padding="0,4,12,4" />
+                </StackPanel>
+            </StackPanel>
 
             <ItemsControl x:Name="Rows">
                 <ItemsControl.ItemTemplate>

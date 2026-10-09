@@ -21,8 +21,8 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                         <Button Content="{x:Bind FixLabel}" Click="OnFixOne" Tag="{x:Bind TweakId}" />
-                        <Button Content="Leave it" Click="OnLeaveOne" Tag="{x:Bind TweakId}"
-                                ToolTipService.ToolTip="Keep it as it is now. Clarion stops checking this setting and changes nothing in Windows." />
+                        <Button Content="That was me" Click="OnLeaveOne" Tag="{x:Bind TweakId}"
+                                ToolTipService.ToolTip="You changed it on purpose, for example by reinstalling an app or turning something back on. Clarion stops checking it and changes nothing in Windows. You can start checking it again from the list at the bottom." />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -43,6 +43,7 @@
                 <TextBlock x:Name="SummaryText" VerticalAlignment="Center" Foreground="{ThemeResource ClTextSecondaryBrush}" />
             </StackPanel>
 
+            <InfoBar x:Name="RestartBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False" Title="Windows is waiting for a restart" />
             <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False" Title="Windows was updated" />
             <InfoBar x:Name="UnreadableBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False" Title="Some settings could not be read" />
 
@@ -65,6 +66,32 @@
                     <Button Content="Put them all back" Click="OnFixSettings" />
                 </StackPanel>
                 <ItemsControl x:Name="SettingRows" ItemTemplate="{StaticResource DriftRowTemplate}" />
+            </StackPanel>
+
+            <StackPanel x:Name="StoppedSection" Spacing="10" Visibility="Collapsed">
+                <TextBlock Text="Stopped checking" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           Text="You told Clarion these were your own changes. It does not check them. Watch again if you want it to." />
+                <ItemsControl x:Name="StoppedRows">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="svc:StoppedRow">
+                            <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+                                    BorderThickness="1" CornerRadius="8" Padding="16,10,16,10" Margin="0,0,0,8">
+                                <Grid ColumnSpacing="16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{x:Bind Name}" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                        <TextBlock Text="{x:Bind When}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="Watch again" Click="OnWatchAgain" Tag="{x:Bind TweakId}" VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

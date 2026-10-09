@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+New
+- Command line commands that only look, and need no administrator rights: `--verify` (exit code 1 when something changed back), `--what-broke <symptom>` with `--since <date>`, `--list-symptoms` and `--history`.
+- What broke can be limited to changes made after a date ("it worked until roughly"), and when nothing explains the problem it names the usual other causes, including a customized Windows image on this PC.
+- Verify shows how far a scan is ("Checking 12 of 50"), and notes when Windows is waiting for a restart to finish an update.
+- Verify has "That was me" for changes you made on purpose, and a "Stopped checking" list with "Watch again" so that choice can be undone.
+- Home says when Windows is waiting for a restart, and that Clarion will check the settings it applied afterwards.
+- A monthly check of the catalog's source links, which fails only for dead pages (404 or 410).
+
+Safer
+- The history now records which Windows account a per-account change belongs to. A second account no longer sees the first one's settings as changed back, and a revert cannot touch the wrong account. Older entries without an owner behave as before.
+- The Expert option to stop new accounts getting a removed app warns more strongly when the Microsoft Store is not installed, because then there is no way back for new accounts until the Store itself is restored.
+
+Fixed
+- The date in the What broke command line text could show the day before the one you typed, depending on your time zone.
+- The source link check scanned only part of the catalog and treated a refused request as a failure.
+- A large test no longer fails on slow build machines.
+
 ## 0.1.0-beta.4
 
 New

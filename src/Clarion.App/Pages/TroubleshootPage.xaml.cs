@@ -26,10 +26,11 @@ public sealed partial class TroubleshootPage : Page
     {
         var index = SymptomBox.SelectedIndex;
         HintText.Visibility = index < 0 ? Visibility.Visible : Visibility.Collapsed;
+        ClearDate.Visibility = WorkedUntil.Date is null ? Visibility.Collapsed : Visibility.Visible;
         if (index < 0)
         {
             TipText.Visibility = Visibility.Collapsed;
-            NoneText.Visibility = Visibility.Collapsed;
+            NonePanel.Visibility = Visibility.Collapsed;
             Rows.ItemsSource = null;
             return;
         }
@@ -38,10 +39,55 @@ public sealed partial class TroubleshootPage : Page
         TipText.Text = symptom.Tip;
         TipText.Visibility = Visibility.Visible;
 
-        var rows = _app.SuspectsFor(symptom).Select(s => Row(s)).ToList();
+        // Something that worked until a date cannot have been broken by a change made before that date.
+        var since = WorkedUntil.Date;
+        var all = _app.SuspectsFor(symptom);
+        var shown = since is null ? all : _app.SuspectsFor(symptom, since);
+        var rows = shown.Select(s => Row(s)).ToList();
         Rows.ItemsSource = rows;
-        NoneText.Visibility = rows.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        NonePanel.Visibility = rows.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        if (rows.Count == 0) ExplainNothingFound(all.Count - shown.Count, since);
     }
+
+    /// <summary>
+    /// "It was not me" is where most people end up, so it names the usual other causes, and says so when it is a date that hid the
+    /// changes. A customized Windows image is called out by name when this PC has one.
+    /// </summary>
+    private void ExplainNothingFound(int hiddenByDate, DateTimeOffset? since)
+    {
+        NoneTitle.Text = hiddenByDate > 0
+            ? $"Nothing Clarion changed since {since!.Value:MMM d, yyyy} explains this"
+            : "Clarion did not change anything that explains this";
+
+        var lines = new List<string>();
+        if (hiddenByDate > 0)
+            lines.Add($"{hiddenByDate} older change{(hiddenByDate == 1 ? " was" : "s were")} left out because of the date. Try an earlier date, or clear it, if you are not sure when it last worked.");
+        lines.Add("What else usually causes this:");
+
+        var image = _app.ImageVerdict;
+        // The wording follows how sure the install check is. "May be" is not "looks like".
+        var imageName = image?.ImageName is { } n ? $" ({n})" : "";
+        lines.Add(image?.Level switch
+        {
+            Clarion.Core.SystemInfo.InstallLevel.Likely =>
+                $"• This PC looks like a customized Windows image{imageName}. Those images remove or change parts of Windows before you ever install, and that can cause this on its own.",
+            Clarion.Core.SystemInfo.InstallLevel.Possible =>
+                $"• This PC may be running a customized Windows image{imageName}. Those images remove or change parts of Windows before you ever install, and that can cause this on its own.",
+            _ => "• A customized Windows image, if you installed one. They remove or change parts of Windows before you install.",
+        });
+        lines.Add("• Another cleanup or privacy tool that ran before or after Clarion.");
+        lines.Add("• A driver or Windows update. Windows Update history shows what was installed and when.");
+        NoneText.Text = string.Join("\n", lines);
+    }
+
+    private void OnDateChanged(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args) => Show();
+
+    private void OnClearDate(object sender, RoutedEventArgs e) => WorkedUntil.Date = null;
+
+    private void OnOpenVerify(object sender, RoutedEventArgs e) => _app.RequestNavigate("verify");
+
+    private void OnOpenSystem(object sender, RoutedEventArgs e) => _app.RequestNavigate("system");
 
     private SuspectRow Row(Suspect s)
     {

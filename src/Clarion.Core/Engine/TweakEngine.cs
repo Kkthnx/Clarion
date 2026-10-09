@@ -108,6 +108,18 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
         return new DriftCheck(applicable.Count, broken);
     }
 
+    /// <summary>
+    /// Starts checking a setting again that the person had told Clarion to stop checking. Windows is not changed. The earlier
+    /// recorded steps are recorded again as the current ones, so Verify compares against what Clarion originally applied.
+    /// </summary>
+    public int Resume(Tweak tweak, Guid batchId)
+    {
+        if (!journal.ReleasedByTweak().TryGetValue(tweak.Id, out var steps)) return 0;
+        foreach (var step in steps)
+            journal.Append(new JournalEntry(batchId, tweak.Id, JournalAction.Apply, _clock.GetUtcNow(), step.Operation, step.Undo));
+        return steps.Count;
+    }
+
     /// <summary>Stops tracking a tweak without touching Windows. Its recorded changes are kept for the history.</summary>
     public void Release(Tweak tweak, Guid batchId)
     {
