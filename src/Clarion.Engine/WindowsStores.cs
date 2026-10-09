@@ -345,11 +345,17 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(60);
 
+    // Only the servers set by hand count. Get-DnsClientServerAddress also lists the ones the router hands out, and writing
+    // those back as typed in servers would turn an automatic adapter into a fixed one. Empty means automatic.
+    private const string StaticServersScript =
+        "$ns=(Get-ItemProperty ('HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\\' + $_.InterfaceGuid) -ErrorAction SilentlyContinue).NameServer; " +
+        "$s=@(); if ($ns) { $s=@($ns -split '[,\\s]+' | Where-Object { $_ }) }; ";
+
     public IReadOnlyList<AdapterDns> GetAdapters()
     {
         const string script =
             "$a=@(Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.HardwareInterface } | ForEach-Object { " +
-            "$s=@((Get-DnsClientServerAddress -InterfaceIndex $_.InterfaceIndex -AddressFamily IPv4).ServerAddresses); " +
+            StaticServersScript +
             "[pscustomobject]@{IfIndex=[int]$_.InterfaceIndex;Alias=$_.Name;Servers=$s} }); " +
             "ConvertTo-Json -InputObject @{adapters=$a} -Depth 4 -Compress";
         JsonDocument doc;
@@ -377,7 +383,7 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
     {
         var script =
             $"$a=@(Get-NetAdapter -InterfaceIndex {ifIndex} -ErrorAction SilentlyContinue | ForEach-Object {{ " +
-            "$s=@((Get-DnsClientServerAddress -InterfaceIndex $_.InterfaceIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue).ServerAddresses); " +
+            StaticServersScript +
             "[pscustomobject]@{IfIndex=[int]$_.InterfaceIndex;Alias=$_.Name;Servers=$s} }); " +
             "ConvertTo-Json -InputObject @{adapters=$a} -Depth 4 -Compress";
         try

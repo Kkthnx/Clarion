@@ -22,10 +22,21 @@ public sealed partial class CleanupPage : Page
     {
         InitializeComponent();
         BuildGroups();
-        AppServices.Instance.ExpertModeChangedByUser += (_, _) => DispatcherQueue.TryEnqueue(BuildGroups);
-        foreach (var i in _svc.Items) i.CheckedChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateSelected);
-        _svc.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(Refresh);
+        AppServices.Instance.ExpertModeChangedByUser += OnExpertChanged;
+        foreach (var i in _svc.Items) i.CheckedChanged += OnCheckedChanged;
+        _svc.PropertyChanged += OnServiceChanged;
+        // The service and the rows outlive this page, which is made again on every visit.
+        Unloaded += (_, _) =>
+        {
+            AppServices.Instance.ExpertModeChangedByUser -= OnExpertChanged;
+            foreach (var i in _svc.Items) i.CheckedChanged -= OnCheckedChanged;
+            _svc.PropertyChanged -= OnServiceChanged;
+        };
     }
+
+    private void OnExpertChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(BuildGroups);
+    private void OnCheckedChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(UpdateSelected);
+    private void OnServiceChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(Refresh);
 
     /// <summary>Rows marked for Expert mode only are not listed otherwise.</summary>
     private void BuildGroups()

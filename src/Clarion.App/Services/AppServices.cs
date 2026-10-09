@@ -99,6 +99,8 @@ public sealed partial class AppServices : UiObservableObject
     /// </summary>
     public async Task RefreshStatesAsync(bool fresh = false)
     {
+        // A slow features read from the last refresh may still be running. Let it finish before the caches are cleared.
+        if (_featureRead is { IsCompleted: false } pending) await pending;
         if (fresh) Runtime.Engine.Invalidate();
         SyncDeprovisionFlags();
         IsBusy = true;
@@ -114,21 +116,40 @@ public sealed partial class AppServices : UiObservableObject
         Apply(fast, fastStates);
         AppliedCount = Items.Count(i => i.IsApplied);
 
+        _featureRead = Task.CompletedTask;
         if (slow.Count > 0)
         {
-            // Windows features go through DISM, which is much slower than apps, services and tasks.
-            // Each group fills in as soon as it is ready instead of waiting for the slowest one.
+            // Windows features go through DISM, which takes about 15 seconds and nothing else depends on it, so it
+            // does not hold up the rest. Those rows stay on "Checking" and cannot be toggled until DISM answers.
             var features = slow.Where(i => i.Tweak.Apply.Any(o => o is SetWindowsFeature or SetWindowsCapability)).ToList();
             var others = slow.Except(features).ToList();
-            await Task.WhenAll(ReadGroupAsync(features), ReadGroupAsync(others));
+            _featureRead = ReadGroupAsync(features);
+            await ReadGroupAsync(others);
         }
 
         AppliedCount = Items.Count(i => i.IsApplied);
         RefreshPending();
         await VerifyQuietlyAsync();
-        Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings");
-        Status = IsElevated ? "Ready" : "Not running as administrator. Machine wide changes are locked.";
+        var waitingOnFeatures = !_featureRead.IsCompleted;
+        Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings{(waitingOnFeatures ? ", Windows features still reading" : "")}");
+        Status = !IsElevated ? "Not running as administrator. Machine wide changes are locked."
+            : waitingOnFeatures ? "Ready. Windows features are still being read." : "Ready";
         IsBusy = false;
+        StatesRefreshed?.Invoke(this, EventArgs.Empty);
+        if (waitingOnFeatures) _ = FinishFeaturesAsync(_featureRead);
+    }
+
+    private Task _featureRead = Task.CompletedTask;
+
+    /// <summary>When the slow features read ends, brings the counts and the status up to date.</summary>
+    private async Task FinishFeaturesAsync(Task read)
+    {
+        try { await read; }
+        catch (Exception ex) { Log.Write($"Windows features could not be read: {ex.Message}"); }
+        if (!ReferenceEquals(read, _featureRead) || IsBusy) return;
+        AppliedCount = Items.Count(i => i.IsApplied);
+        RefreshPending();
+        if (IsElevated) Status = "Ready";
         StatesRefreshed?.Invoke(this, EventArgs.Empty);
     }
 

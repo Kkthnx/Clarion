@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fixed: reverting a DNS change on an adapter that gets its DNS automatically used to write the router's servers back as typed in ones, so the adapter stayed fixed. Only servers set by hand are now recorded, and an empty list means automatic.
+- Fixed: the Safety page sorted changes by the text of the date instead of the date, and re-read the whole history file once per setting.
+- Fixed: Home and Clean up kept a handler on app-wide objects for every visit, so they leaked and ran extra refreshes the longer the app stayed open. Status chips now follow the light and dark theme correctly.
 - Polish: a setting, cleanup row or repair job you click now stays highlighted, with a tinted card, accent border and a bar on its left edge, and it also reacts to hover and press. The real Clarion icon and the version now show in the title bar and on Home. The sidebar groups Tweaks, Power, Network, Windows features and Updates under one Windows entry so every page fits on a small screen (Verify and Safety were pushed off the bottom). The window now opens centred in the work area. Closed notices no longer leave a gap at the top of Home and Verify. The settings count is no longer cut off, repair durations are no longer clipped, Verify uses plain wording unless Expert mode is on, and What broke explains itself before you pick something.
 - Clarion now adapts to customized Windows images. When the Store, Edge, the Defender service or the Windows Update service is missing or off, the settings that depend on them carry a note in the detail pane, and Home says how many. Settings whose target is already gone show as having nothing to change.
 - Fixed: a power plan or DNS choice switched outside Clarion was not reported by Verify, because another choice in the same group was now active. Verify now treats a choice as replaced only when Clarion itself applied the later one.

@@ -21,22 +21,21 @@ public sealed partial class SafetyPage : Page
 
     private void Rebuild()
     {
-        var all = _app.Runtime.Journal.ReadAll();
+        // One read of the journal for every row. Looking each setting up on its own read the whole file once per setting.
         var rows = new List<HistoryRow>();
-        foreach (var group in all.GroupBy(x => x.TweakId))
+        foreach (var (id, outstanding) in _app.Runtime.Journal.OutstandingByTweak())
         {
-            var item = _app.Items.FirstOrDefault(i => i.Id == group.Key);
-            var outstanding = _app.Runtime.Journal.OutstandingFor(group.Key);
-            if (outstanding.Count == 0) continue;
+            var item = _app.Items.FirstOrDefault(i => i.Id == id);
             var first = outstanding[0];
             rows.Add(new HistoryRow(
-                group.Key,
-                item?.Name ?? group.Key,
+                id,
+                item?.Name ?? id,
                 $"Applied {first.Time.LocalDateTime:g}",
                 string.Join("\n", outstanding.Select(o => o.Operation.Describe())),
-                item is { IsApplied: true }));
+                item is { IsApplied: true }) { AppliedAt = first.Time });
         }
-        History.ItemsSource = rows.OrderByDescending(r => r.When).ToList();
+        // Newest first by the real time. Sorting the text "Applied 10/9/2026" is alphabetical, not chronological.
+        History.ItemsSource = rows.OrderByDescending(r => r.AppliedAt).ToList();
         EmptyText.Visibility = rows.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         RevertAll.IsEnabled = rows.Any(r => r.CanRevert);
     }
@@ -49,7 +48,8 @@ public sealed partial class SafetyPage : Page
 
     private void OnRevertAll(object sender, RoutedEventArgs e)
     {
-        foreach (var id in _app.Items.Where(i => i.IsApplied && _app.Runtime.Journal.OutstandingFor(i.Id).Count > 0).Select(i => i.Id).ToList())
+        var tracked = _app.Runtime.Journal.OutstandingByTweak();
+        foreach (var id in _app.Items.Where(i => i.IsApplied && tracked.ContainsKey(i.Id)).Select(i => i.Id).ToList())
             QueueRevert(id);
     }
 
@@ -69,4 +69,7 @@ public sealed partial class SafetyPage : Page
     }
 }
 
-public sealed record HistoryRow(string TweakId, string Name, string When, string Detail, bool CanRevert);
+public sealed record HistoryRow(string TweakId, string Name, string When, string Detail, bool CanRevert)
+{
+    public DateTimeOffset AppliedAt { get; init; }
+}

@@ -213,6 +213,27 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
     }
 
     [Fact]
+    public void Real_dns_adapter_list_holds_only_the_servers_set_by_hand_not_the_ones_dhcp_hands_out()
+    {
+        if (!Enabled) return;
+        var store = new WindowsDnsStore(new WindowsProcessRunner());
+        var adapters = store.GetAdapters();
+        output.WriteLine($"{adapters.Count} connected adapters");
+
+        foreach (var a in adapters)
+        {
+            var guid = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()
+                .First(n => n.GetIPProperties().GetIPv4Properties()?.Index == a.IfIndex).Id;
+            using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey($"SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\\{guid}");
+            var staticServers = ((key?.GetValue("NameServer") as string) ?? "").Split([',', ' '], StringSplitOptions.RemoveEmptyEntries).ToList();
+            output.WriteLine($"{a.Alias}: listed [{string.Join(",", a.Servers)}] static [{string.Join(",", staticServers)}]");
+
+            Assert.Equal(staticServers, a.Servers);
+            Assert.Equal(a.Servers, store.Find(a.IfIndex)!.Servers);
+        }
+    }
+
+    [Fact]
     public void Real_lock_probe_sees_a_file_another_handle_holds_open()
     {
         if (!Enabled) return;

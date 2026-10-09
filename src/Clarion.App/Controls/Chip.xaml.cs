@@ -18,7 +18,6 @@ public sealed partial class Chip : UserControl
     public Chip()
     {
         InitializeComponent();
-        ActualThemeChanged += (_, _) => Refresh();
         Loaded += (_, _) => Refresh();
     }
 
@@ -28,18 +27,7 @@ public sealed partial class Chip : UserControl
     private void Refresh()
     {
         Label.Text = Text;
-        var (fg, bg) = Kind switch
-        {
-            ChipKind.Accent => ("ClAccent", "ClAccentTint"),
-            ChipKind.Cyan => ("ClCyan", "ClCyanTint"),
-            ChipKind.Ok => ("ClOk", "ClOkTint"),
-            ChipKind.Warn => ("ClWarn", "ClWarnTint"),
-            ChipKind.Danger => ("ClDanger", "ClDangerTint"),
-            _ => ("ClTextSecondary", "ClSurface3"),
-        };
-        Label.Foreground = ThemeBrushes.Get(fg, ActualTheme);
-        Root.Background = ThemeBrushes.Get(bg, ActualTheme);
-        Root.BorderBrush = ThemeBrushes.Get(fg, ActualTheme);
+        VisualStateManager.GoToState(this, Kind.ToString(), false);
     }
 }
 

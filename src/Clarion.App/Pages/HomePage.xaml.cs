@@ -36,8 +36,12 @@ public sealed partial class HomePage : Page
                 AccountBar.Visibility = AccountBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
             }
         };
-        _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(Refresh);
+        _app.PropertyChanged += OnAppChanged;
+        // A new page is made on every visit, so the handler on the app-wide object must go when the page does.
+        Unloaded += (_, _) => _app.PropertyChanged -= OnAppChanged;
     }
+
+    private void OnAppChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(Refresh);
 
     protected override void OnNavigatedTo(NavigationEventArgs e) => Refresh();
 

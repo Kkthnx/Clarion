@@ -38,6 +38,8 @@ public sealed partial class MainWindow : Window
         var refresh = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.F5 };
         refresh.Invoked += (_, a) => { OnRefresh(this, new RoutedEventArgs()); a.Handled = true; };
         Root.KeyboardAccelerators.Add(refresh);
+        // There is no back button, so keep the frame from collecting a history entry for every page opened.
+        ContentFrame.Navigated += (_, _) => ContentFrame.BackStack.Clear();
         Nav.SelectedItem = Nav.MenuItems[0];
         UpdateBar();
         _ = _app.RefreshStatesAsync();
@@ -113,6 +115,7 @@ public sealed partial class MainWindow : Window
 
     private void OnNavSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
+
         if (args.IsSettingsSelected)
         {
             ContentFrame.Navigate(typeof(SettingsPage));
@@ -171,6 +174,7 @@ public sealed partial class MainWindow : Window
         VerifyBadge.Value = _app.DriftCount;
         VerifyBadge.Visibility = _app.DriftCount > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
+
 
     private void GoTo(string tag)
     {

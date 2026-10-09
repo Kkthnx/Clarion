@@ -284,3 +284,34 @@ That picture was deleted unused, and the script was changed.
 - Verify listed three permission settings (app diagnostics, phone calls, eye tracker) as changed back
   that it had not listed an hour earlier. Registry check: the values are `Allow` again. Windows rewrites
   these when apps use the capability. This is the drift scan doing its job on real data.
+
+## Audit: performance, leaks, bad code (ongoing)
+
+Standing brief from the owner: keep looking for performance problems, leaks, overlooked bad code,
+missing research, visual polish, enhancements, organisation and bugs. This section is the running list.
+
+### Fixed so far
+- Leak: `HomePage` and `CleanupPage` subscribed lambdas to singletons (`AppServices`, `CleanupService`,
+  and one per cleanup row) in their constructors. Pages are made again on every visit, so each visit left a
+  dead page attached and every status change ran a refresh on all of them. Now named handlers removed
+  on `Unloaded`, as `TweakListPage` and `DnsChooser` already did. The frame back stack is also cleared, as
+  there is no back button.
+- Journal reads: the Safety page read the whole file once per tracked setting. Now one read.
+- Sort bug: Safety sorted rows by the displayed date text. Now by the real time.
+- Light theme: chips looked up their brushes in code and could lock in the dark palette. They now use
+  visual states with `ThemeResource`, which follow the theme.
+- Correctness: the DNS adapter lookup recorded effective servers, which for an adapter on DHCP are the
+  router's. Revert wrote them back as static. Now reads only the servers set by hand from the interface
+  registry key (`NameServer`). Checked on this PC. Its Wi-Fi has a static override, so the DHCP only
+  case is covered by reasoning and the registry layout, not by a live test.
+- Startup: the features read (DISM, 17 seconds alone) no longer holds up the Ready status. Measured:
+  no gain in time to first Ready (about 17 s either way), because the app and DNS lookups dominate.
+  Each PowerShell start costs about 3 s on this PC.
+
+### Measured, not yet fixed
+- Startup is about 17 s to Ready on this PC. Each PowerShell lookup is 3 to 9 s here (apps 5 s, DNS 9 s,
+  encrypted DNS 5 s, features 17 s, one capability 10 s). A real fix is to read these without
+  PowerShell (registry or .NET calls) or keep a persistent session. Bigger change, own task.
+- `ThemeBrushes.Get` creates an `AccessibilitySettings` object on every call.
+- `WindowsTaskStore` makes a new Task Scheduler COM connection per call and never releases it.
+- Capability state is queried with one PowerShell process per capability.
