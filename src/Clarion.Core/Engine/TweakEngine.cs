@@ -87,6 +87,17 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
         return TweakResult.Ok();
     }
 
+    /// <summary>Steps of a tweak that no longer hold, such as a value Windows set back or an app that returned.</summary>
+    public IReadOnlyList<Operation> FindDrifted(Tweak tweak) =>
+        tweak.Apply.Where(o => _handlers.Any(h => h.Handles(o)) && HandlerFor(o).IsApplicable(o) && !HandlerFor(o).IsSatisfied(o)).ToList();
+
+    /// <summary>Stops tracking a tweak without touching Windows. Its recorded changes are kept for the history.</summary>
+    public void Release(Tweak tweak, Guid batchId)
+    {
+        foreach (var entry in journal.OutstandingFor(tweak.Id))
+            journal.Append(new JournalEntry(batchId, tweak.Id, JournalAction.Release, _clock.GetUtcNow(), entry.Operation, entry.Undo));
+    }
+
     public TweakResult Revert(Tweak tweak, Guid batchId)
     {
         var outstanding = journal.OutstandingFor(tweak.Id);

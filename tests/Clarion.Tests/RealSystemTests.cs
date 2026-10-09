@@ -210,4 +210,33 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
         foreach (var d in dohBefore)
             Assert.Equal(d, store.GetDohRegistrations().Single(x => x.Address == d.Address));
     }
+
+    [Fact]
+    public void Real_registry_value_set_back_is_found_by_the_verify_scan()
+    {
+        if (!Enabled) return;
+        const string path = "Software\\ClarionVerifyTest";
+        var target = new RegistryTarget(RegistryHive.CurrentUser, path, "Probe");
+        var tweak = Make(new SetRegistryValue(target, new RegistryData(RegistryKind.DWord, "0"))) with { Scope = TweakScope.User };
+        try
+        {
+            var runtime = EngineFactory.Create(_dir);
+            Assert.True(runtime.Engine.Apply(tweak, Guid.NewGuid()).Success);
+            Assert.False(runtime.Drift.Scan([tweak], runtime.Profile).HasDrift);
+
+            using (var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(path, writable: true))
+                key!.SetValue("Probe", 1, Microsoft.Win32.RegistryValueKind.DWord);
+
+            var report = runtime.Drift.Scan([tweak], runtime.Profile);
+            Assert.Equal(tweak.Id, Assert.Single(report.Items).Tweak.Id);
+            Assert.Equal(runtime.Profile.Build, report.PreviousBuild);
+
+            Assert.True(runtime.Engine.Apply(tweak, Guid.NewGuid()).Success);
+            Assert.False(runtime.Drift.Scan([tweak], runtime.Profile).HasDrift);
+        }
+        finally
+        {
+            Microsoft.Win32.Registry.CurrentUser.DeleteSubKeyTree(path, throwOnMissingSubKey: false);
+        }
+    }
 }

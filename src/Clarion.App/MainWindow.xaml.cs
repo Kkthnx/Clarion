@@ -31,6 +31,9 @@ public sealed partial class MainWindow : Window
 
         _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
         _app.Pending.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
+        _app.PropertyChanged += (_, a) => { if (a.PropertyName == nameof(AppServices.DriftCount)) DispatcherQueue.TryEnqueue(UpdateVerifyBadge); };
+        _app.NavigateRequested += (_, tag) => DispatcherQueue.TryEnqueue(() => GoTo(tag));
+        _app.ReviewRequested += (_, _) => DispatcherQueue.TryEnqueue(() => OnReview(this, new RoutedEventArgs()));
 
         var refresh = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.F5 };
         refresh.Invoked += (_, a) => { OnRefresh(this, new RoutedEventArgs()); a.Handled = true; };
@@ -118,6 +121,7 @@ public sealed partial class MainWindow : Window
             case "home": ContentFrame.Navigate(typeof(HomePage)); break;
             case "feedback": ContentFrame.Navigate(typeof(FeedbackPage)); break;
             case "system": ContentFrame.Navigate(typeof(SystemPage)); break;
+            case "verify": ContentFrame.Navigate(typeof(VerifyPage)); break;
             case "safety": ContentFrame.Navigate(typeof(SafetyPage)); break;
             case "cleanup": ContentFrame.Navigate(typeof(CleanupPage)); break;
             case "repair": ContentFrame.Navigate(typeof(RepairPage)); break;
@@ -155,6 +159,18 @@ public sealed partial class MainWindow : Window
         ReviewButton.IsEnabled = count > 0 && !_app.IsBusy;
         ClearButton.IsEnabled = count > 0 && !_app.IsBusy;
         RefreshButton.IsEnabled = !_app.IsBusy;
+    }
+
+    private void UpdateVerifyBadge()
+    {
+        VerifyBadge.Value = _app.DriftCount;
+        VerifyBadge.Visibility = _app.DriftCount > 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void GoTo(string tag)
+    {
+        var target = Nav.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(i => i.Tag as string == tag);
+        if (target is not null) Nav.SelectedItem = target;
     }
 
     private void OnClear(object sender, RoutedEventArgs e) => _app.ClearPending();

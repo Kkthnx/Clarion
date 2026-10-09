@@ -14,6 +14,12 @@
             <InfoBar x:Name="AccountBar" Severity="Warning" IsOpen="False" IsClosable="False"
                      Title="Clarion is running as a different account" />
 
+            <InfoBar x:Name="DriftBar" Severity="Warning" IsOpen="False" IsClosable="False">
+                <InfoBar.ActionButton>
+                    <Button Content="Review" Click="OnReviewDrift" />
+                </InfoBar.ActionButton>
+            </InfoBar>
+
             <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="20">
                 <Grid ColumnSpacing="24" RowSpacing="12">

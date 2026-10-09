@@ -47,7 +47,25 @@ public sealed partial class HomePage : Page
         AdminText.Text = _app.IsElevated ? "Yes" : "No";
         AppliedText.Text = $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
         Busy.IsActive = _app.IsBusy;
+        ShowDrift();
     }
+
+    private void ShowDrift()
+    {
+        var report = _app.Drift;
+        DriftBar.IsOpen = report is { HasDrift: true };
+        if (report is not { HasDrift: true }) return;
+        var apps = report.ReturnedApps.Count;
+        var rest = report.ChangedBack.Count;
+        DriftBar.Title = apps > 0 && rest > 0 ? "Apps came back and settings were changed back"
+            : apps > 0 ? (apps == 1 ? "A removed app came back" : "Removed apps came back")
+            : (rest == 1 ? "A setting was changed back" : "Settings were changed back");
+        DriftBar.Message = report.FeatureUpdateSinceLastScan
+            ? "This is common after a Windows feature update. You can put them back in one step."
+            : "You can put them back in one step, or leave them as they are.";
+    }
+
+    private void OnReviewDrift(object sender, RoutedEventArgs e) => _app.RequestNavigate("verify");
 
     private void BuildPresets()
     {

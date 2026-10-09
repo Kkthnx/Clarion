@@ -133,7 +133,7 @@ Exact values below are the intended implementation. Each must be re-verified aga
 |---|---|
 | Restore point per batch | See Design section 5 |
 | Change history | Browsable journal, per entry Revert |
-| Drift check | Highlights settings Windows has reset |
+| Drift check | Verify page scans everything Clarion applied, lists what Windows changed back and which removed apps returned, and puts them back in one step or leaves them as they are |
 | Profiles | Recommended, Gaming, Privacy Max, Minimal, Custom. Exportable. |
 | Dry run | Shows exact operations |
 | Logs | Local, exportable, no upload |

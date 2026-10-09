@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.VerifyPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:svc="using:Clarion.App.Pages">
+
+    <Page.Resources>
+        <DataTemplate x:Key="DriftRowTemplate" x:DataType="svc:DriftRow">
+            <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="16,12,16,12" Margin="0,0,0,8">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                        <TextBlock Text="{x:Bind When}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                        <TextBlock Text="{x:Bind Detail}" FontSize="12" TextWrapping="Wrap" FontFamily="Cascadia Mono"
+                                   Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <Button Content="{x:Bind FixLabel}" Click="OnFixOne" Tag="{x:Bind TweakId}" />
+                        <Button Content="Leave it" Click="OnLeaveOne" Tag="{x:Bind TweakId}"
+                                ToolTipService.ToolTip="Keep it as it is now. Clarion stops checking this setting and changes nothing in Windows." />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Padding="32,24,32,24" Spacing="20" MaxWidth="1000" HorizontalAlignment="Left">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Verify" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           Text="Checks everything Clarion applied against Windows as it is now. Windows updates, and sometimes you, can undo a change or bring a removed app back." />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button x:Name="ScanButton" Content="Scan now" Click="OnScan" Style="{StaticResource AccentButtonStyle}" />
+                <ProgressRing x:Name="Busy" Width="20" Height="20" IsActive="False" />
+                <TextBlock x:Name="SummaryText" VerticalAlignment="Center" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+            </StackPanel>
+
+            <InfoBar x:Name="UpdateBar" Severity="Informational" IsOpen="False" IsClosable="False" Title="Windows was updated" />
+            <InfoBar x:Name="UnreadableBar" Severity="Warning" IsOpen="False" IsClosable="False" Title="Some settings could not be read" />
+
+            <TextBlock x:Name="AllGoodText" Visibility="Collapsed" Foreground="{ThemeResource ClTextPrimaryBrush}"
+                       Text="Everything Clarion applied is still in place." />
+
+            <StackPanel x:Name="AppsSection" Spacing="10" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="Apps that came back" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"
+                               Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <Button Content="Remove them all again" Click="OnFixApps" />
+                </StackPanel>
+                <ItemsControl x:Name="AppRows" ItemTemplate="{StaticResource DriftRowTemplate}" />
+            </StackPanel>
+
+            <StackPanel x:Name="SettingsSection" Spacing="10" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="Settings changed back" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"
+                               Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <Button Content="Put them all back" Click="OnFixSettings" />
+                </StackPanel>
+                <ItemsControl x:Name="SettingRows" ItemTemplate="{StaticResource DriftRowTemplate}" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

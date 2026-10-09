@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Clarion.Core.Catalog;
+using Clarion.Core.Drift;
 using Clarion.Core.Engine;
 using Clarion.Core.Model;
 using Clarion.Engine;
@@ -121,6 +122,7 @@ public sealed partial class AppServices : UiObservableObject
 
         AppliedCount = Items.Count(i => i.IsApplied);
         RefreshPending();
+        await VerifyQuietlyAsync();
         Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings");
         Status = IsElevated ? "Ready" : "Not running as administrator. Machine wide changes are locked.";
         IsBusy = false;
@@ -164,6 +166,68 @@ public sealed partial class AppServices : UiObservableObject
             item.SyncToState(state, drifted);
         }
     }
+    private DriftReport? _drift;
+
+    /// <summary>The latest verify scan, or null before the first one finishes.</summary>
+    public DriftReport? Drift
+    {
+        get => _drift;
+        private set
+        {
+            _drift = value;
+            OnPropertyChanged(nameof(Drift));
+            OnPropertyChanged(nameof(DriftCount));
+        }
+    }
+
+    public int DriftCount => Drift?.Items.Count ?? 0;
+
+    /// <summary>Asks the main window to open the page with this navigation tag.</summary>
+    public event EventHandler<string>? NavigateRequested;
+
+    /// <summary>Asks the main window to show the review dialog for the queued changes.</summary>
+    public event EventHandler? ReviewRequested;
+
+    public void RequestNavigate(string tag) => NavigateRequested?.Invoke(this, tag);
+
+    /// <summary>Compares every setting Clarion applied with what Windows looks like now.</summary>
+    public async Task<DriftReport> VerifyAsync(bool fresh)
+    {
+        var previous = Drift;
+        var tweaks = Items.Select(i => i.Tweak).ToList();
+        var report = await Task.Run(() => Runtime.Drift.Scan(tweaks, Profile, fresh));
+        // A scan saves the build it saw, so the next one would forget a feature update that already happened this session.
+        if (previous is { FeatureUpdateSinceLastScan: true } && !report.FeatureUpdateSinceLastScan)
+            report = report with { PreviousBuild = previous.PreviousBuild };
+        Drift = report;
+        Log.Write($"Verify: {report.Checked} checked, {report.ChangedBack.Count} changed back, {report.ReturnedApps.Count} apps returned, {report.Unreadable.Count} unreadable");
+        return report;
+    }
+
+    private async Task VerifyQuietlyAsync()
+    {
+        try { await VerifyAsync(fresh: false); }
+        catch (Exception ex) { Log.Write($"Verify failed: {ex.Message}"); }
+    }
+
+    /// <summary>Queues the given settings to be put back, then opens the review dialog.</summary>
+    public void QueueFix(IEnumerable<string> ids)
+    {
+        var wanted = ids.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var item in Items.Where(i => wanted.Contains(i.Id) && i.CanToggle && !i.IsApplied)) item.IsOn = true;
+        if (PendingCount > 0) ReviewRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>Accepts a change made outside Clarion. Windows is left as it is and the setting is no longer checked.</summary>
+    public async Task StopTrackingAsync(string id)
+    {
+        var item = Items.FirstOrDefault(i => i.Id == id);
+        if (item is null) return;
+        await Task.Run(() => Runtime.Engine.Release(item.Tweak, Guid.NewGuid()));
+        Log.Write($"{id}: stopped tracking");
+        await RefreshStatesAsync();
+    }
+
     public void RefreshPending()
     {
         Pending.Clear();

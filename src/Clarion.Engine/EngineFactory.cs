@@ -30,13 +30,14 @@ public static class EngineFactory
         };
         var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"));
         var engine = new TweakEngine(handlers, journal);
+        var drift = new Core.Drift.DriftScanner(engine, journal, new Core.Drift.DriftState(Path.Combine(dir, "drift.json")));
         var batch = new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);
         var restorePoints = new RestorePointService(registry, runner);
         return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect(), restorePoints, new Core.Actions.ActionRunner(new WindowsStreamingRunner()),
-            new Core.SystemInfo.SystemProbe(registry, new WindowsServiceStore(runner), runner));
+            new Core.SystemInfo.SystemProbe(registry, new WindowsServiceStore(runner), runner), drift);
     }
 }
 
 public sealed record ClarionRuntime(
     BatchRunner Runner, TweakEngine Engine, ChangeJournal Journal, Clarion.Core.Model.MachineProfile Profile,
-    IRestorePointService RestorePoints, Core.Actions.ActionRunner Actions, Core.SystemInfo.SystemProbe System);
+    IRestorePointService RestorePoints, Core.Actions.ActionRunner Actions, Core.SystemInfo.SystemProbe System, Core.Drift.DriftScanner Drift);

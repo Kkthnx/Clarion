@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- New Verify page. It checks everything Clarion applied against Windows as it is now, lists settings that were changed back and removed apps that came back, and puts them back through the usual review step. "Leave it" accepts a change and stops checking that setting. A badge on the menu and a banner on Home show when something needs a look.
 - Every setting now records the Windows build it was last checked on, shown in its tooltip. Tests fail when an entry goes stale.
 - Service changes are limited to an explicit allowlist, and the protected service list now also covers DPS, DusmSvc and other network and diagnostic services.
 - New setting: stop background gameplay recording. Game Bar and manual recording keep working. Added to the gaming preset.

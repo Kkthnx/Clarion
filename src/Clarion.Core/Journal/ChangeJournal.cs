@@ -4,7 +4,8 @@ using Clarion.Core.Model;
 
 namespace Clarion.Core.Journal;
 
-public enum JournalAction { Apply, Revert }
+/// <summary>Release ends tracking of a tweak without changing Windows, for when the user accepts a change that was made outside Clarion.</summary>
+public enum JournalAction { Apply, Revert, Release }
 
 /// <summary>One executed step. Undo is the operation that puts the prior state back.</summary>
 public sealed record JournalEntry(
@@ -92,7 +93,7 @@ public sealed class ChangeJournal
         {
             var list = group.ToList();
             var lastApply = list.FindLastIndex(e => e.Action == JournalAction.Apply);
-            if (lastApply >= 0 && !list.Skip(lastApply + 1).Any(e => e.Action == JournalAction.Revert)) result.Add(group.Key);
+            if (lastApply >= 0 && !list.Skip(lastApply + 1).Any(e => e.Action != JournalAction.Apply)) result.Add(group.Key);
         }
         return result;
     }
@@ -107,7 +108,7 @@ public sealed class ChangeJournal
         var lastApplyIndex = mine.FindLastIndex(e => e.Action == JournalAction.Apply);
         if (lastApplyIndex < 0) return [];
         var batch = mine[lastApplyIndex].BatchId;
-        var revertedAfter = mine.Skip(lastApplyIndex + 1).Any(e => e.Action == JournalAction.Revert);
+        var revertedAfter = mine.Skip(lastApplyIndex + 1).Any(e => e.Action != JournalAction.Apply);
         if (revertedAfter) return [];
         return mine.Where(e => e.Action == JournalAction.Apply && e.BatchId == batch).ToList();
     }
