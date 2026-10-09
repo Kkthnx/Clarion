@@ -23,6 +23,7 @@ public partial class App : Application
     public void SetTheme(ElementTheme theme)
     {
         Theme = theme;
+        Services.AppServices.Instance.UpdateSettings(s => s with { Theme = theme == ElementTheme.Light ? "Light" : theme == ElementTheme.Dark ? "Dark" : "System" });
         _window?.ApplyTheme(theme);
     }
 
@@ -46,6 +47,8 @@ public partial class App : Application
             Exit();
             return;
         }
+        // The theme and Expert mode were chosen last time. Without this they went back to the defaults on every start.
+        Theme = Services.AppServices.Instance.Settings.Theme switch { "Light" => ElementTheme.Light, "Dark" => ElementTheme.Dark, _ => ElementTheme.Default };
         _window = new MainWindow();
         _window.Activate();
     }

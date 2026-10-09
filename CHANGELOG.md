@@ -3,11 +3,14 @@
 ## Unreleased
 
 New
-- Command line commands that only look, and need no administrator rights: `--verify` (exit code 1 when something changed back), `--what-broke <symptom>` with `--since <date>`, `--list-symptoms` and `--history`.
+- A welcome the first time Clarion opens on a PC where nothing has been applied: pick a starting point, see the list of what it would change, then apply it. Someone who already has settings applied is not welcomed.
+- Optional monthly check. A Windows scheduled task runs the read only check on the second Wednesday of each month, the day after Windows' monthly updates, and runs at the next start if the PC was off. The next time you open Clarion, Home says what had changed back. It changes nothing and sends nothing. Turn it on or off in Settings.
+- Update check. "Check for updates now" in Settings asks GitHub whether a newer version exists and links to its page. An automatic check at start up is available but off unless you turn it on. Clarion never downloads or installs anything itself.
+- Command line commands that only look, and need no administrator rights: `--verify`, `--what-broke <symptom>` with `--since <date>`, `--list-symptoms` and `--history`. `--save` with `--verify` keeps the result for the next time Clarion is opened and exits with 0, since finding changes is not a failure.
 - What broke can be limited to changes made after a date ("it worked until roughly"), and when nothing explains the problem it names the usual other causes, including a customized Windows image on this PC.
-- Verify shows how far a scan is ("Checking 12 of 50"), and notes when Windows is waiting for a restart to finish an update.
+- Verify shows a progress bar and "Checking 12 of 50" while it works, and notes when Windows is waiting for a restart to finish an update. Home shows the same notice.
 - Verify has "That was me" for changes you made on purpose, and a "Stopped checking" list with "Watch again" so that choice can be undone.
-- Home says when Windows is waiting for a restart, and that Clarion will check the settings it applied afterwards.
+- The window has a minimum size, so the layout cannot be squeezed until it breaks.
 - A monthly check of the catalog's source links, which fails only for dead pages (404 or 410).
 
 Safer
@@ -15,6 +18,7 @@ Safer
 - The Expert option to stop new accounts getting a removed app warns more strongly when the Microsoft Store is not installed, because then there is no way back for new accounts until the Store itself is restored.
 
 Fixed
+- The theme and Expert mode were forgotten every time Clarion was closed. They are now remembered.
 - The date in the What broke command line text could show the day before the one you typed, depending on your time zone.
 - The source link check scanned only part of the catalog and treated a refused request as a failure.
 - A large test no longer fails on slow build machines.

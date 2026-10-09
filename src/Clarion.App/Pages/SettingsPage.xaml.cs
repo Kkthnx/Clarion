@@ -28,10 +28,68 @@ public sealed partial class SettingsPage : Page
             _ => 0,
         };
         VersionText.Text = $"Clarion {Version}";
+        AutoUpdateSwitch.IsOn = _app.Settings.CheckForUpdates;
         _loading = false;
+        _ = ShowMonthlyStateAsync();
     }
 
     private static string Version => AppServices.Version;
+
+    /// <summary>The switch shows whether the task really exists, not just what was saved, since it can be deleted in Task Scheduler.</summary>
+    private async Task ShowMonthlyStateAsync()
+    {
+        bool on;
+        try { on = await Task.Run(_app.MonthlySchedule.IsEnabled); }
+        catch (Exception ex) when (ex is InvalidOperationException or IOException) { return; }
+        _loading = true;
+        MonthlySwitch.IsOn = on;
+        _loading = false;
+        if (on != _app.Settings.MonthlyVerify) _app.UpdateSettings(s => s with { MonthlyVerify = on });
+    }
+
+    private async void OnMonthlyToggled(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        var wantOn = MonthlySwitch.IsOn;
+        MonthlySwitch.IsEnabled = false;
+        try
+        {
+            var exe = Environment.ProcessPath ?? throw new InvalidOperationException("Clarion could not find its own program file.");
+            var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            await Task.Run(() => { if (wantOn) _app.MonthlySchedule.Enable(exe, user, DateTime.Today); else _app.MonthlySchedule.Disable(); });
+            _app.UpdateSettings(s => s with { MonthlyVerify = wantOn });
+            MonthlyStatus.Text = wantOn
+                ? "On. The first check is the next second Wednesday of the month. It only looks and changes nothing."
+                : "Off. The scheduled task was removed.";
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or IOException)
+        {
+            Log.Write($"Monthly check: {ex.Message}");
+            _loading = true;
+            MonthlySwitch.IsOn = !wantOn;
+            _loading = false;
+            MonthlyStatus.Text = $"Could not change the monthly check. {ex.Message}";
+        }
+        finally
+        {
+            MonthlySwitch.IsEnabled = true;
+        }
+    }
+
+    private async void OnCheckUpdate(object sender, RoutedEventArgs e)
+    {
+        CheckUpdateButton.IsEnabled = false;
+        UpdateBusy.IsActive = true;
+        UpdateStatus.Text = "Asking GitHub";
+        UpdateStatus.Text = await _app.CheckForUpdateAsync(manual: true);
+        UpdateBusy.IsActive = false;
+        CheckUpdateButton.IsEnabled = true;
+    }
+
+    private void OnAutoUpdateToggled(object sender, RoutedEventArgs e)
+    {
+        if (!_loading) _app.UpdateSettings(s => s with { CheckForUpdates = AutoUpdateSwitch.IsOn });
+    }
 
     private void OnOpenLog(object sender, RoutedEventArgs e)
     {

@@ -8,8 +8,14 @@ namespace Clarion.Engine;
 [SupportedOSPlatform("windows")]
 public static class EngineFactory
 {
+    /// <summary>
+    /// Where the history, settings and log are kept: the Clarion folder under ProgramData, unless CLARION_DATA_DIR names another folder.
+    /// The override is for trying Clarion with a clean slate, and for a portable copy. It is not a setting people need.
+    /// </summary>
     public static string DefaultDataDirectory { get; } =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Clarion");
+        Environment.GetEnvironmentVariable("CLARION_DATA_DIR") is { Length: > 0 } custom
+            ? Path.GetFullPath(custom)
+            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Clarion");
 
     public static BatchRunner CreateBatchRunner(string? dataDirectory = null) => Create(dataDirectory).Runner;
 

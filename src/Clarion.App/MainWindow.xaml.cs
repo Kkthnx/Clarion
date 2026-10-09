@@ -17,6 +17,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        Root.RequestedTheme = ((App)Application.Current).Theme;
         Title = "Clarion";
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
@@ -42,8 +43,9 @@ public sealed partial class MainWindow : Window
         ContentFrame.Navigated += (_, _) => ContentFrame.BackStack.Clear();
         Nav.SelectedItem = Nav.MenuItems[0];
         UpdateBar();
-        _ = _app.RefreshStatesAsync();
+        _ = StartupAsync();
         _ = _app.LoadImageNotesAsync();
+        _ = _app.StartupUpdateCheckAsync();
     }
 
     private async void OnClosing(AppWindow sender, AppWindowClosingEventArgs args)
@@ -89,6 +91,9 @@ public sealed partial class MainWindow : Window
         bar.ButtonInactiveForegroundColor = Windows.UI.Color.FromArgb(255, 122, 135, 153);
     }
 
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern uint GetDpiForWindow(IntPtr hwnd);
+
     private void ResizeToFit()
     {
         var hwnd = WindowNative.GetWindowHandle(this);
@@ -100,6 +105,15 @@ public sealed partial class MainWindow : Window
         var x = area.X + (area.Width - width) / 2;
         var y = area.Y + (area.Height - height) / 2;
         appWindow.MoveAndResize(new Windows.Graphics.RectInt32(x, y, width, height));
+
+        // The pages are laid out for a window about this big. Smaller than this and cards and the detail pane start to crowd.
+        // The limit is in real pixels, not scaled ones (measured: asking for 980 gave 980 at 125% scaling), so it follows the screen's scale.
+        if (appWindow.Presenter is OverlappedPresenter presenter)
+        {
+            var scale = GetDpiForWindow(hwnd) / 96.0;
+            presenter.PreferredMinimumWidth = (int)(860 * scale);
+            presenter.PreferredMinimumHeight = (int)(580 * scale);
+        }
     }
 
     private static readonly Dictionary<string, PageArgs> Sections = new()
@@ -156,6 +170,62 @@ public sealed partial class MainWindow : Window
 
     private void OnOpenLog(object sender, RoutedEventArgs e) =>
         Shell.Open("notepad.exe", $"\"{Log.Path}\"");
+
+    /// <summary>Reads the system, then welcomes someone who has never applied anything.</summary>
+    private async Task StartupAsync()
+    {
+        await _app.RefreshStatesAsync();
+        try { await ShowWelcomeAsync(); }
+        catch (Exception ex) { Log.Write($"Welcome could not be shown: {ex.Message}"); }
+    }
+
+    /// <summary>
+    /// Once, for a new person: pick a starting point, see what it would change, then apply it. Someone who already has settings applied is not
+    /// welcomed again, and an old install that never saved this choice is treated the same way.
+    /// </summary>
+    private async Task ShowWelcomeAsync()
+    {
+        if (_app.Settings.FirstRunDone) return;
+        if (!_app.Settings.NeedsWelcome(_app.Runtime.Journal.TweakIdsWithOutstanding().Count))
+        {
+            _app.UpdateSettings(s => s with { FirstRunDone = true });
+            return;
+        }
+
+        var choices = new RadioButtons { SelectedIndex = 1 };
+        foreach (var (_, title, text) in PresetInfo.All)
+        {
+            var row = new StackPanel { Spacing = 2, Margin = new Thickness(0, 2, 0, 6) };
+            row.Children.Add(new TextBlock { Text = title + (title == "Standard" ? "  (suggested)" : ""), FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+            row.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Opacity = 0.8, FontSize = 12, MaxWidth = 460 });
+            choices.Items.Add(row);
+        }
+
+        var body = new StackPanel { Spacing = 12 };
+        body.Children.Add(new TextBlock
+        {
+            Text = "Clarion explains every change before it makes it, takes a restore point first, and can undo anything it did. Pick a starting point. Nothing changes until you have seen the list and pressed Apply.",
+            TextWrapping = TextWrapping.Wrap,
+            MaxWidth = 480,
+        });
+        body.Children.Add(choices);
+
+        var dialog = new ContentDialog
+        {
+            Title = "Welcome to Clarion",
+            Content = new ScrollViewer { Content = body, MaxHeight = 460 },
+            PrimaryButtonText = "Queue this and show me",
+            SecondaryButtonText = "I will look around myself",
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = Content.XamlRoot,
+        };
+        var result = await dialog.ShowAsync();
+        _app.UpdateSettings(s => s with { FirstRunDone = true });
+
+        if (result != ContentDialogResult.Primary) return;
+        var key = PresetInfo.All[Math.Max(0, choices.SelectedIndex)].Key;
+        if (_app.QueuePreset(key) > 0) _app.RequestReview();
+    }
 
     private void UpdateBar()
     {

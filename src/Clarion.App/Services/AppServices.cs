@@ -3,6 +3,9 @@ using System.Diagnostics;
 using Clarion.Core.Appx;
 using Clarion.Core.Catalog;
 using Clarion.Core.Drift;
+using Clarion.Core.Settings;
+using Clarion.Core.Scheduling;
+using Clarion.Core.Updates;
 using Clarion.Core.SystemInfo;
 using Clarion.Core.Troubleshoot;
 using Clarion.Core.Engine;
@@ -17,8 +20,77 @@ public sealed partial class AppServices : UiObservableObject
 {
     public static AppServices Instance { get; } = new();
 
+    private readonly UserSettingsStore _settingsStore = new(Path.Combine(EngineFactory.DefaultDataDirectory, "settings.json"));
+
+    public MonthlyVerifySchedule MonthlySchedule { get; } = new(new WindowsScheduledTaskStore(new WindowsProcessRunner()));
+
+    private readonly ScheduledVerifyStore _scheduledResult = new(Path.Combine(EngineFactory.DefaultDataDirectory, "scheduled-verify.json"));
+
+    /// <summary>What the last scheduled check found, as long as the person has not looked at it yet.</summary>
+    public ScheduledVerifyResult? UnseenScheduledResult()
+    {
+        var r = _scheduledResult.Load();
+        return r is { Seen: false, Attention: > 0 } ? r : null;
+    }
+
+    public ScheduledVerifyResult? LastScheduledResult() => _scheduledResult.Load();
+
+    public void MarkScheduledSeen() => _scheduledResult.MarkSeen();
+
+    /// <summary>A newer version that is on offer, or null. Clarion only points to the page. It never downloads or installs.</summary>
+    public UpdateOffer? UpdateAvailable { get; private set; }
+
+    /// <summary>
+    /// Asks GitHub for the list of releases. Called when the person presses the button, or at start up if they turned that on.
+    /// Returns one plain sentence for the person to read.
+    /// </summary>
+    public async Task<string> CheckForUpdateAsync(bool manual)
+    {
+        try
+        {
+            var offer = await UpdateCheck.RunAsync(new GitHubReleaseSource(Version), Version);
+            UpdateSettings(s => s with { LastUpdateCheck = DateTimeOffset.UtcNow });
+            // A version the person hid stays hidden for the automatic check. Pressing the button asks again on purpose.
+            UpdateAvailable = offer is not null && (manual || UpdateCheck.ShouldShow(offer, Settings.DismissedUpdate)) ? offer : null;
+            OnPropertyChanged(nameof(UpdateAvailable));
+            return offer is null ? $"You have the newest version ({Version})." : $"{offer.Name} is available.";
+        }
+        catch (UpdateCheckException ex)
+        {
+            Log.Write($"Update check: {ex.Message}");
+            return ex.Message;
+        }
+    }
+
+    /// <summary>The automatic check, at most about once a day, and only when the person turned it on.</summary>
+    public async Task StartupUpdateCheckAsync()
+    {
+        var last = Settings.LastUpdateCheck;
+        if (!Settings.CheckForUpdates || (last is { } l && DateTimeOffset.UtcNow - l < TimeSpan.FromHours(20))) return;
+        await CheckForUpdateAsync(manual: false);
+    }
+
+    public void HideUpdate()
+    {
+        if (UpdateAvailable is not { } offer) return;
+        UpdateSettings(s => s with { DismissedUpdate = offer.Tag });
+        UpdateAvailable = null;
+        OnPropertyChanged(nameof(UpdateAvailable));
+    }
+
+    /// <summary>What Clarion remembers between runs. Change it with <see cref="UpdateSettings"/> so it is saved.</summary>
+    public UserSettings Settings { get; private set; }
+
+    public void UpdateSettings(Func<UserSettings, UserSettings> change)
+    {
+        Settings = change(Settings);
+        if (!_settingsStore.Save(Settings)) Log.Write("Settings could not be saved");
+    }
+
     private AppServices()
     {
+        Settings = _settingsStore.Load();
+        _expertMode = Settings.ExpertMode;
         Runtime = EngineFactory.Create();
         Profile = Runtime.Profile;
         var tweaks = CatalogLoader.LoadEmbedded();
@@ -61,6 +133,7 @@ public sealed partial class AppServices : UiObservableObject
         {
             if (SetProperty(ref _expertMode, value))
             {
+                UpdateSettings(s => s with { ExpertMode = value });
                 OnPropertyChanged(nameof(SimpleMode));
                 ExpertModeChangedByUser?.Invoke(this, EventArgs.Empty);
             }
@@ -242,6 +315,12 @@ public sealed partial class AppServices : UiObservableObject
     public event EventHandler? ReviewRequested;
 
     public void RequestNavigate(string tag) => NavigateRequested?.Invoke(this, tag);
+
+    /// <summary>Shows the review dialog for whatever is queued.</summary>
+    public void RequestReview()
+    {
+        if (PendingCount > 0) ReviewRequested?.Invoke(this, EventArgs.Empty);
+    }
 
     /// <summary>Compares every setting Clarion applied with what Windows looks like now.</summary>
     public async Task<DriftReport> VerifyAsync(bool fresh, IProgress<(int Done, int Total)>? progress = null)

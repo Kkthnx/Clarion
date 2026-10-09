@@ -389,3 +389,55 @@ Each item was checked against the code and researched before building.
 - Missing .NET runtime: the packaged app is self contained (runtime and Windows App Runtime are in the folder), so there is nothing
   to be missing. The installer already refuses Windows older than 10 version 2004. README now says nothing else needs installing.
 - Verify progress: was a spinner only. Now a count.
+
+## Fourth review pass (last mile)
+
+Claims were checked against the code and measured before building.
+
+### Claims that did not hold
+- "Startup blocks the window." Measured with a polling loop from process start: window exists in about 0.5 s (1.7 s on the first,
+  cold launch) and the sidebar is painted in 0.7 to 1.9 s. The long wait is the 17 s state read, which is already asynchronous.
+  Restructuring startup would add risk for no measurable gain, so it was not done.
+- "Restart as administrator." The manifest says `requireAdministrator`, so Windows asks for elevation at launch and the app cannot normally
+  run unelevated. The "not running as administrator" line only shows in unusual launches such as a debugger. No button added.
+- "MainWindow sets no window size." `ResizeToFit` already sets 1360 x 900 and, since the polish pass, centres it. The part that was
+  missing was a minimum size. Added.
+- Opt-in telemetry: not built, for the reason in the second review. Clarion promises none, and the optional results section in
+  Report a problem already moves the data without the app sending anything.
+
+### A real bug found while checking: settings were never saved
+- Theme and Expert mode lived only in memory and reset on every launch. Added `UserSettings` and `UserSettingsStore`
+  (`settings.json` in the data folder, written through a temporary file, a missing or damaged file means defaults).
+
+### Update check
+- Research: GitHub allows 60 anonymous requests an hour per IP and returns 403 without a User-Agent. Both confirmed live (403 without,
+  200 with). `/releases/latest` returns 404 for this repository because every release is a pre-release, so the first idea would never
+  have worked. The list endpoint is used, with semantic version ordering (beta.10 above beta.9, a final release above its betas).
+- It contacts github.com, so it sits against "sends nothing anywhere". Decision: manual button, automatic check off by default, wording says
+  exactly what is contacted, and the README and Settings text were reworded to stay true. The link from the network is only opened when it
+  points at this project's releases. Nothing is downloaded or installed.
+- Live check against the real list: offers beta 4 to beta 3, nothing to beta 4.
+
+### First run
+- A welcome with the five presets, Standard pre selected, then the existing review dialog. Shown once. Not shown when settings are
+  already applied. Tested with a clean data folder (`CLARION_DATA_DIR`, added for this) so the real history was never touched.
+
+### Monthly check
+- Research: a monthly day of week trigger is `ScheduleByMonthDayOfWeek` with `Week 2` and `Wednesday`. `StartWhenAvailable` runs a missed
+  check at the next start. Microsoft's own example has typos, so the structure was copied and not the text.
+- Proven on this PC: Task Scheduler accepted the XML and reported Next Run Time 10/14/2026 9:00 AM (the second Wednesday). Then the whole chain
+  through the real window: switch on, task created, Windows ran it, `scheduled-verify.json` saved with the four changed back settings,
+  Home showed the notice, it went away after Verify was opened, switch off removed the task.
+- Found along the way: the task showed "Last Result 1" because `--verify` exits 1 when it finds changes. Task Scheduler shows that as a
+  failure. With `--save` the exit code is now 0.
+- The task runs as the person who turned it on (interactive, highest available), so their own settings are checked. If Clarion is moved
+  to another folder the task still points at the old path. Turning it off and on fixes it.
+
+### Window
+- `PreferredMinimumWidth` exists. Measured: it is in real pixels. Asking for 980 gave 980 wide at 125% scaling, so the limit follows the
+  screen's scale (860 x 580 scaled). Shrinking to 400 x 300 now stops at 1075 x 725 here.
+
+### Still open
+- Opt-in telemetry stays declined.
+- Scheduled check has no notification of its own. It is shown when Clarion is next opened.
+- Source link check and release workflow still need their first clean run on GitHub.

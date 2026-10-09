@@ -40,6 +40,7 @@
             <StackPanel Orientation="Horizontal" Spacing="12">
                 <Button x:Name="ScanButton" Content="Scan now" Click="OnScan" Style="{StaticResource AccentButtonStyle}" />
                 <ProgressRing x:Name="Busy" Width="20" Height="20" IsActive="False" />
+                <ProgressBar x:Name="ScanBar" Width="220" VerticalAlignment="Center" Minimum="0" Maximum="1" Value="0" Visibility="Collapsed" />
                 <TextBlock x:Name="SummaryText" VerticalAlignment="Center" Foreground="{ThemeResource ClTextSecondaryBrush}" />
             </StackPanel>
 

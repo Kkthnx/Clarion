@@ -17,6 +17,7 @@ public sealed partial class VerifyPage : Page
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
+        _app.MarkScheduledSeen();
         if (_app.Drift is null) await ScanAsync(fresh: true);
         else Show(_app.Drift);
     }
@@ -30,7 +31,13 @@ public sealed partial class VerifyPage : Page
         SummaryText.Text = "Checking";
         // Each setting is read on its own, some by starting PowerShell, so a long list can take a while. Say where it is.
         var progress = new Progress<(int Done, int Total)>(p =>
-            SummaryText.Text = p.Total == 0 ? "Checking" : $"Checking {Math.Min(p.Done + 1, p.Total)} of {p.Total}");
+        {
+            SummaryText.Text = p.Total == 0 ? "Checking" : $"Checking {Math.Min(p.Done + 1, p.Total)} of {p.Total}";
+            if (p.Total == 0) return;
+            ScanBar.Maximum = p.Total;
+            ScanBar.Value = p.Done;
+            ScanBar.Visibility = Visibility.Visible;
+        });
         try
         {
             Show(await _app.VerifyAsync(fresh, progress));
@@ -43,6 +50,7 @@ public sealed partial class VerifyPage : Page
         finally
         {
             Busy.IsActive = false;
+            ScanBar.Visibility = Visibility.Collapsed;
             ScanButton.IsEnabled = true;
         }
     }

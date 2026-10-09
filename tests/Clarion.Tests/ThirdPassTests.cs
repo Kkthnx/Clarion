@@ -261,6 +261,27 @@ public sealed class ThirdPassTests : IDisposable
     }
 
     [Fact]
+    public void A_saved_check_exits_with_zero_even_when_it_found_changes_so_the_scheduler_does_not_call_it_a_failure()
+    {
+        var tweak = Make("a");
+        _engine.Apply(tweak, Guid.NewGuid());
+        WindowsSets("a");
+        var report = _scanner.Scan([tweak], Pro);
+
+        Assert.True(report.HasDrift);
+        Assert.Equal(1, CliReports.VerifyExitCode(report));
+        Assert.Equal(0, CliReports.VerifyExitCode(report, resultSaved: true));
+    }
+
+    [Fact]
+    public void The_save_switch_is_read_and_off_by_default()
+    {
+        Assert.True(CliOptions.Parse(["--verify", "--save"]).SaveReport);
+        Assert.False(CliOptions.Parse(["--verify"]).SaveReport);
+        Assert.Contains("--save", CliOptions.HelpText);
+    }
+
+    [Fact]
     public void An_unreadable_setting_is_not_reported_as_all_clear()
     {
         var report = new DriftReport(DateTimeOffset.UtcNow, 26100, null, 1, [], ["x"]);

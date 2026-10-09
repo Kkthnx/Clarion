@@ -10,8 +10,12 @@ namespace Clarion.Core.Reports;
 /// <summary>The plain text the command line prints for the read-only commands, kept here so it can be tested.</summary>
 public static class CliReports
 {
-    /// <summary>Exit code for --verify: 0 when everything holds, 1 when something needs a look.</summary>
-    public static int VerifyExitCode(DriftReport report) => report.HasDrift || report.Unreadable.Count > 0 ? 1 : 0;
+    /// <summary>
+    /// Exit code for --verify: 0 when everything holds, 1 when something needs a look. When the result is being saved (the monthly check),
+    /// finding changes is the job and not a failure, so it is 0. Task Scheduler would otherwise list every useful run as an error.
+    /// </summary>
+    public static int VerifyExitCode(DriftReport report, bool resultSaved = false) =>
+        resultSaved ? 0 : report.HasDrift || report.Unreadable.Count > 0 ? 1 : 0;
 
     public static string Verify(DriftReport report, PendingRestartInfo? pending = null)
     {

@@ -74,8 +74,11 @@ public static class HeadlessRunner
         {
             case CliMode.Verify:
                 var report = runtime.Drift.Scan(catalog, runtime.Profile);
+                if (o.SaveReport)
+                    new Core.Scheduling.ScheduledVerifyStore(Path.Combine(EngineFactory.DefaultDataDirectory, "scheduled-verify.json"))
+                        .Save(Core.Scheduling.ScheduledVerifyResult.From(report, DateTimeOffset.Now));
                 say(Core.Reports.CliReports.Verify(report, Core.SystemInfo.PendingRestart.Check(new WindowsPendingRestartProbe())));
-                return Core.Reports.CliReports.VerifyExitCode(report);
+                return Core.Reports.CliReports.VerifyExitCode(report, o.SaveReport);
 
             case CliMode.WhatBroke:
                 var symptom = CatalogLoader.LoadSymptoms().FirstOrDefault(s => s.Id.Equals(o.Symptom, StringComparison.OrdinalIgnoreCase));

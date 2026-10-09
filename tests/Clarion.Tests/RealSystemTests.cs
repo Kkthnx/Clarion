@@ -234,6 +234,53 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
     }
 
     [Fact]
+    public async Task Real_github_release_list_offers_beta_4_to_beta_3_and_nothing_to_beta_4()
+    {
+        if (!Enabled) return;
+        var source = new GitHubReleaseSource("0.1.0-beta.4");
+
+        var forBeta3 = await Clarion.Core.Updates.UpdateCheck.RunAsync(source, "0.1.0-beta.3");
+        var forBeta4 = await Clarion.Core.Updates.UpdateCheck.RunAsync(source, "0.1.0-beta.4");
+
+        output.WriteLine($"beta.3 is offered: {forBeta3?.Tag} {forBeta3?.Url}");
+        output.WriteLine($"beta.4 is offered: {(forBeta4 is null ? "nothing" : forBeta4.Tag)}");
+        Assert.NotNull(forBeta3);
+        Assert.True(Clarion.Core.Updates.UpdateCheck.IsTrustedReleaseUrl(forBeta3!.Url));
+        Assert.True(forBeta4 is null || forBeta4.Tag != "v0.1.0-beta.4");
+    }
+
+    [Fact]
+    public void Real_task_scheduler_accepts_the_monthly_task_reports_its_next_run_and_removes_it()
+    {
+        if (!Enabled) return;
+        const string name = "\\Clarion\\TEST monthly check";
+        var runner = new WindowsProcessRunner();
+        var store = new WindowsScheduledTaskStore(runner);
+        var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+        try
+        {
+            store.Create(name, Clarion.Core.Scheduling.MonthlyVerifySchedule.BuildXml(@"C:\Windows\System32\cmd.exe", user, DateTime.Today));
+            Assert.True(store.Exists(name));
+
+            var xml = runner.Run("schtasks.exe", $"/Query /TN \"{name}\" /XML", TimeSpan.FromSeconds(30)).Output;
+            Assert.Contains("<Week>2</Week>", xml);
+            Assert.Contains("<Wednesday", xml);
+            Assert.Contains("<StartWhenAvailable>true</StartWhenAvailable>", xml);
+            Assert.Contains("<RunLevel>HighestAvailable</RunLevel>", xml);
+            Assert.Contains("--verify --save", xml);
+
+            var verbose = runner.Run("schtasks.exe", $"/Query /TN \"{name}\" /V /FO LIST", TimeSpan.FromSeconds(30)).Output;
+            var next = verbose.Split('\n').FirstOrDefault(l => l.StartsWith("Next Run Time", StringComparison.OrdinalIgnoreCase)) ?? "(no next run line)";
+            output.WriteLine(next.Trim());
+        }
+        finally
+        {
+            if (store.Exists(name)) store.Delete(name);
+        }
+        Assert.False(store.Exists(name));
+    }
+
+    [Fact]
     public void Real_restart_markers_can_be_read_without_errors()
     {
         if (!Enabled) return;

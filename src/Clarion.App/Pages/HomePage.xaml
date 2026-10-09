@@ -24,6 +24,20 @@
             <InfoBar x:Name="AccountBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
                      Title="Clarion is running as a different account" />
 
+            <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="False">
+                <InfoBar.ActionButton>
+                    <Button Content="Open the release page" Click="OnOpenUpdate" />
+                </InfoBar.ActionButton>
+                <HyperlinkButton Content="Hide this version" Click="OnHideUpdate" Padding="0,4,0,4" />
+            </InfoBar>
+
+            <InfoBar x:Name="ScheduledBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
+                     Title="The monthly check found changes">
+                <InfoBar.ActionButton>
+                    <Button Content="Review" Click="OnReviewScheduled" />
+                </InfoBar.ActionButton>
+            </InfoBar>
+
             <InfoBar x:Name="DriftBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False">
                 <InfoBar.ActionButton>
                     <Button Content="Review" Click="OnReviewDrift" />

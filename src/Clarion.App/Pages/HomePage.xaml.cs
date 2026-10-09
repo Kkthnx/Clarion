@@ -11,15 +11,6 @@ public sealed partial class HomePage : Page
 {
     private readonly AppServices _app = AppServices.Instance;
 
-    private static readonly (string Key, string Title, string Text)[] PresetInfo =
-    [
-        ("minimal", "Minimal", "Stop promotions and drop diagnostic data to the lowest level your edition allows. The gentlest choice."),
-        ("standard", "Standard", "Minimal plus private search, no activity history, no update sharing and a few Explorer basics. Best for most people."),
-        ("advanced", "Advanced", "Standard plus telemetry services and tasks, location off, classic right-click menu and tidier taskbar."),
-        ("privacy", "Privacy max", "Every privacy and promotion setting we suggest for everyone. Only low risk items, no app permission lockdowns."),
-        ("gaming", "Gaming", "Pointer, key and menu tweaks, fewer background jobs and no update sharing."),
-    ];
-
     public HomePage()
     {
         InitializeComponent();
@@ -52,6 +43,8 @@ public sealed partial class HomePage : Page
         AdminText.Text = _app.IsElevated ? "Yes" : "No";
         AppliedText.Text = $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
         Busy.IsActive = _app.IsBusy;
+        ShowUpdate();
+        ShowScheduled();
         ShowDrift();
         ShowRestart();
         ShowImage();
@@ -72,6 +65,41 @@ public sealed partial class HomePage : Page
             ? "This is common after a Windows feature update. You can put them back in one step."
             : "You can put them back in one step, or leave them as they are.";
     }
+
+    private void ShowScheduled()
+    {
+        var result = _app.UnseenScheduledResult();
+        ScheduledBar.IsOpen = result is not null;
+        ScheduledBar.Visibility = ScheduledBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        if (result is null) return;
+        ScheduledBar.Message = $"On {result.At.LocalDateTime:MMM d}, {result.Attention} of the {result.Checked} settings Clarion applied " +
+            $"had been changed back. Review shows which and lets you put them back.";
+    }
+
+    private void OnReviewScheduled(object sender, RoutedEventArgs e)
+    {
+        _app.MarkScheduledSeen();
+        _app.RequestNavigate("verify");
+        ShowScheduled();
+    }
+
+    private void ShowUpdate()
+    {
+        var offer = _app.UpdateAvailable;
+        UpdateBar.IsOpen = offer is not null;
+        UpdateBar.Visibility = UpdateBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        if (offer is null) return;
+        UpdateBar.Title = $"{offer.Name} is available";
+        UpdateBar.Message = $"You have {AppServices.Version}. The button opens the release page in your browser. Clarion does not download or install anything itself.";
+    }
+
+    private void OnOpenUpdate(object sender, RoutedEventArgs e)
+    {
+        // The address came from the network, so it is only opened when it points at this project's releases.
+        if (_app.UpdateAvailable is { } offer && Clarion.Core.Updates.UpdateCheck.IsTrustedReleaseUrl(offer.Url)) Shell.Open(offer.Url);
+    }
+
+    private void OnHideUpdate(object sender, RoutedEventArgs e) => _app.HideUpdate();
 
     private void ShowRestart()
     {
@@ -107,7 +135,7 @@ public sealed partial class HomePage : Page
 
     private void BuildPresets()
     {
-        foreach (var (key, title, text) in PresetInfo)
+        foreach (var (key, title, text) in Services.PresetInfo.All)
         {
             var queue = new Button { Content = "Queue this preset", Style = (Style)Application.Current.Resources["AccentButtonStyle"] };
             queue.Click += (_, _) =>

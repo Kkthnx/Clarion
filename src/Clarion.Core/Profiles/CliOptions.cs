@@ -13,6 +13,7 @@ public sealed record CliOptions(
     bool EnableProtection = false,
     string? Symptom = null,
     DateTimeOffset? Since = null,
+    bool SaveReport = false,
     string? Error = null)
 {
     public bool IsCli => Mode != CliMode.None;
@@ -27,6 +28,7 @@ public sealed record CliOptions(
         bool preview = false, noRp = false, enableProtection = false;
         string? symptom = null;
         DateTimeOffset? since = null;
+        var saveReport = false;
 
         for (var i = 0; i < args.Count; i++)
         {
@@ -55,6 +57,7 @@ public sealed record CliOptions(
                 case "--no-restore-point": noRp = true; break;
                 case "--enable-protection": enableProtection = true; break;
                 case "--verify": mode = CliMode.Verify; break;
+                case "--save": saveReport = true; break;
                 case "--history": mode = CliMode.History; break;
                 case "--list-symptoms": mode = CliMode.ListSymptoms; break;
                 case "--what-broke":
@@ -72,7 +75,7 @@ public sealed record CliOptions(
                     return a.StartsWith('-') || a.StartsWith('/') ? Fail($"Unknown option {a}. Use --help.") : new CliOptions(CliMode.None);
             }
         }
-        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection, symptom, since);
+        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection, symptom, since, saveReport);
     }
 
     private static IEnumerable<string> Split(string? value) =>
@@ -86,7 +89,7 @@ public sealed record CliOptions(
           Clarion.exe --apply setup.json [--preview] [--no-restore-point] [--enable-protection]
           Clarion.exe --apply-preset minimal|standard|advanced|gaming|privacy [--preview]
           Clarion.exe --clean [--only a,b] [--include c,d] [--preview]
-          Clarion.exe --verify
+          Clarion.exe --verify [--save]
           Clarion.exe --what-broke symptom [--since 2026-09-01]
           Clarion.exe --list-symptoms
           Clarion.exe --history
@@ -99,6 +102,7 @@ public sealed record CliOptions(
         --only / --include  cleanup row names, such as shaders.nvidia,windows.temp
 
         --verify            read only: check what Clarion applied against Windows now. Exit code 1 when something changed back
+        --save              with --verify, keep the result so Clarion can show it next time it is opened. The exit code is then 0, since finding changes is not a failure (the monthly check uses this)
         --what-broke        read only: list the changes that could explain a symptom, newest first
         --since             with --what-broke, only changes made on or after this date
         --history           read only: list what Clarion changed that is still on

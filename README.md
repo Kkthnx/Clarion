@@ -27,7 +27,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 - **Every setting explained.** Hover any setting for what it does, what you gain, what could go wrong and whether it is suggested. No research needed.
 - **Evidence graded.** Each setting says how well it is backed, and privacy settings carry the Windows policy they come from, checked against the policy files on your PC.
 - **Safe by design.** A restore point before every batch, a journal that records the real previous value, and one click revert.
-- **Honest.** No telemetry in the app, no account, nothing is sent anywhere. Weak or unproven tweaks are hidden unless you turn on Expert mode.
+- **Honest.** No telemetry in the app and no account. The only request Clarion can make is an update check, and that is off unless you ask for it. Weak or unproven tweaks are hidden unless you turn on Expert mode.
 
 ![Privacy settings with a tooltip](docs/images/privacy.png)
 
@@ -42,6 +42,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 | **DNS** | Pick a public provider from a dropdown, with optional encrypted lookups. Revert restores exactly what you had. |
 | **System** | Windows edition, build, hardware and security state, plus a check for customized Windows images that explains every sign it finds. Settings that depend on something the image removed carry a note. |
 | **Verify** | Checks everything Clarion applied against Windows now. Lists removed apps that came back and settings that were changed back, usually after a feature update. Put them back in one step, or leave them as they are. |
+| **Monthly check** | Optional. A scheduled task checks the settings Clarion applied on the second Wednesday of each month, the day after Windows' monthly updates, and tells you the next time you open Clarion what changed back. |
 | **What broke** | Pick what stopped working and see which of your changes could explain it, newest first, with a revert button on each. |
 | **Live progress** | A panel with a progress bar and one line per setting while changes apply. |
 | **Report a problem** | Builds a bug report or suggestion with your system details and recent activity, with names, addresses and accounts removed. You can also add how your settings are holding up, which helps keep the "last checked" labels honest. You read it, then open it on GitHub yourself. |
