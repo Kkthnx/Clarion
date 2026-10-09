@@ -45,6 +45,8 @@ public static class CatalogLoader
 
     public static IReadOnlyList<Cleanup.CleanTarget> LoadCleanup() => LoadEmbeddedFiles<Cleanup.CleanTarget>(".Catalog.Cleanup.");
 
+    public static IReadOnlyList<Troubleshoot.Symptom> LoadSymptoms() => LoadEmbeddedFiles<Troubleshoot.Symptom>(".Catalog.Symptoms.");
+
     /// <summary>Named groups of tweak ids, such as minimal or gaming.</summary>
     public static IReadOnlyDictionary<string, IReadOnlyList<string>> LoadPresets()
     {

@@ -85,6 +85,9 @@
                 <NavigationViewItem Content="Report a problem" Tag="feedback">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE8BD;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="What broke" Tag="troubleshoot">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE9CE;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem x:Name="VerifyItem" Content="Verify" Tag="verify">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE73E;" /></NavigationViewItem.Icon>
                     <NavigationViewItem.InfoBadge><InfoBadge x:Name="VerifyBadge" Visibility="Collapsed" /></NavigationViewItem.InfoBadge>

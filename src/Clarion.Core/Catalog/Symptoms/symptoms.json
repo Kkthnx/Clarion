@@ -1,0 +1,163 @@
+[
+  {
+    "id": "search-broken",
+    "title": "Search in Start or the taskbar finds nothing or shows no web results",
+    "tip": "Search settings and the Bing Search app control what the search box can show. Reverting the newest one first is the quickest test.",
+    "topics": ["Search"],
+    "tweakIds": ["taskbar.hide-search", "debloat.app.bingsearch"]
+  },
+  {
+    "id": "notifications-missing",
+    "title": "Notifications stopped showing, or apps do not run in the background",
+    "tip": "Notification and background app permissions are machine wide or per account. An app that cannot run in the background cannot notify you either.",
+    "topics": [],
+    "tweakIds": ["perm.user-notifications", "perm.all-notifications", "perm.user-background-apps", "perm.all-background-apps", "lock.app-notifications-off"]
+  },
+  {
+    "id": "camera-mic",
+    "title": "The camera or microphone does not work in an app",
+    "tip": "Camera and microphone permissions are checked before the app sees the device. Also look at Windows privacy settings for the app itself.",
+    "topics": [],
+    "tweakIds": ["perm.user-camera", "perm.all-camera", "perm.user-microphone", "perm.all-microphone", "perm.all-voice", "perm.all-voice-locked"]
+  },
+  {
+    "id": "wireless-devices",
+    "title": "Bluetooth or Wi-Fi devices will not connect or pair",
+    "tip": "Radio and device permissions decide which apps can control Bluetooth and Wi-Fi. A driver problem looks the same, so check Device Manager too.",
+    "topics": [],
+    "tweakIds": ["perm.user-radios", "perm.all-radios", "perm.all-unpaired", "perm.all-trusted"]
+  },
+  {
+    "id": "websites-wont-load",
+    "title": "Websites will not load or show DNS errors",
+    "tip": "A DNS provider that is blocked on your network, or encrypted DNS that a router or filter does not allow, breaks lookups. Reverting restores the servers you had before.",
+    "topics": ["DNS"],
+    "tweakIds": []
+  },
+  {
+    "id": "gaming-capture",
+    "title": "Game Bar, game clips or Xbox features stopped working",
+    "tip": "Game recording settings and the Xbox apps are separate. Reverting the recording settings brings clips back, and removed apps come back from Revert or the Microsoft Store.",
+    "topics": ["Gaming"],
+    "tweakIds": ["debloat.app.gamingapp", "debloat.app.xboxgamingoverlay", "perm.user-screenshots", "perm.all-screenshots"]
+  },
+  {
+    "id": "app-missing",
+    "title": "An app I used is gone",
+    "tip": "Revert restores it if Windows still has the files, otherwise reinstall it from the Microsoft Store.",
+    "topics": ["Apps"],
+    "tweakIds": []
+  },
+  {
+    "id": "sync-clipboard",
+    "title": "Clipboard history, sync between PCs or Find my device stopped working",
+    "tip": "Sync and clipboard settings switch these features off for the account or the whole PC. Sign-in information permissions can also affect them.",
+    "topics": ["Sync and clipboard"],
+    "tweakIds": ["perm.user-account-info", "perm.all-account-info"]
+  },
+  {
+    "id": "power-sleep",
+    "title": "The PC sleeps, wakes or starts up differently, or battery life changed",
+    "tip": "Power plans, hibernation and fast startup change how the PC sleeps and boots. Reverting the newest one shows whether it is the cause.",
+    "topics": ["Power"],
+    "tweakIds": ["system.fast-startup-off", "updates.no-wake-for-updates"]
+  },
+  {
+    "id": "updates-behave",
+    "title": "Windows Update waits, skips drivers or does not restart when I expect",
+    "tip": "Clarion never turns Windows Update off. These settings only delay feature updates, skip driver updates or stop automatic restarts.",
+    "topics": ["Updates"],
+    "tweakIds": ["network.delivery-optimization-http"]
+  },
+  {
+    "id": "explorer-taskbar-look",
+    "title": "The right click menu, taskbar or File Explorer looks or behaves differently",
+    "tip": "These only change how Windows looks and where things are. They are safe to revert one at a time.",
+    "topics": ["Look and feel", "File Explorer", "Taskbar and widgets"],
+    "tweakIds": []
+  },
+  {
+    "id": "mouse-keyboard",
+    "title": "The mouse or keyboard feels different",
+    "tip": "Pointer acceleration, menu delay and sticky keys settings change how input feels. Revert to get the Windows defaults back.",
+    "topics": ["Mouse and keyboard"],
+    "tweakIds": []
+  },
+  {
+    "id": "speech-typing",
+    "title": "Voice typing, speech recognition or typing suggestions stopped working",
+    "tip": "Online speech and typing personalization settings turn off cloud features. Voice typing and dictation need online speech to be allowed.",
+    "topics": [],
+    "tweakIds": ["privacy.speech-updates-off", "privacy.online-speech-off", "privacy.online-speech-account-off", "privacy.inking-typing-personalization-off", "privacy.improve-typing-off", "perm.all-voice", "perm.all-voice-locked", "perm.all-text"]
+  },
+  {
+    "id": "edge-different",
+    "title": "Edge starts slower or has lost its sidebar, shopping or personalization",
+    "tip": "Edge policies change what Edge does at startup and in the browser. Reverting removes the policy value.",
+    "topics": ["Microsoft Edge"],
+    "tweakIds": []
+  },
+  {
+    "id": "location-features",
+    "title": "Weather, maps, time zone or other location features stopped working",
+    "tip": "Turning location off for apps stops anything that needs to know where the PC is.",
+    "topics": [],
+    "tweakIds": ["privacy.location-off", "search.location-off", "sync.find-my-device-off", "debloat.app.bingweather", "debloat.app.windowsmaps"]
+  },
+  {
+    "id": "optional-feature",
+    "title": "An optional Windows feature is missing (WSL, Hyper-V, Sandbox, older games or .NET)",
+    "tip": "Windows features can be turned on and off here. Reverting puts the feature back, and Windows may need a restart to finish.",
+    "topics": ["Windows features"],
+    "tweakIds": []
+  },
+  {
+    "id": "network-share",
+    "title": "I cannot reach an old network drive, NAS or remote help session",
+    "tip": "Turning off the old SMB1 protocol blocks very old devices on purpose. Remote assistance and network file sharing features are separate switches.",
+    "topics": [],
+    "tweakIds": ["security.smb1-off", "security.remote-assistance-off", "features.nfs-client", "features.openssh-server"]
+  },
+  {
+    "id": "autoplay",
+    "title": "Inserting a USB drive or disc does nothing",
+    "tip": "Autoplay is off, so Windows no longer opens a prompt. The drive still shows up in File Explorer.",
+    "topics": [],
+    "tweakIds": ["security.autoplay-off"]
+  },
+  {
+    "id": "ai-features",
+    "title": "Copilot, Recall or Paint AI tools are missing",
+    "tip": "These settings hide or turn off the AI features on purpose. Reverting brings them back where your Windows edition has them.",
+    "topics": ["Copilot and Recall"],
+    "tweakIds": ["taskbar.copilot-button-off", "debloat.app.copilot"]
+  },
+  {
+    "id": "personal-data-access",
+    "title": "An app says it cannot read my contacts, calendar, email, messages or call history",
+    "tip": "These permissions decide whether apps can read that information. Turning them off blocks the app, not just tracking.",
+    "topics": [],
+    "tweakIds": ["perm.user-contacts", "perm.all-contacts", "perm.user-calendar", "perm.all-calendar", "perm.user-call-history", "perm.all-call-history", "perm.user-email", "perm.all-email", "perm.user-messaging", "perm.all-messaging", "perm.user-tasks", "perm.all-tasks", "perm.user-phone-calls", "perm.all-phone-calls", "perm.user-app-diagnostics", "perm.all-app-diagnostics"]
+  },
+  {
+    "id": "sensors",
+    "title": "A fitness, motion, eye tracking or presence feature stopped working",
+    "tip": "Motion, eye tracker and presence permissions block apps from reading those sensors. Devices that dim or lock when you leave use presence.",
+    "topics": [],
+    "tweakIds": ["perm.user-motion", "perm.all-motion", "perm.user-eye-tracker", "perm.all-eye-tracker", "perm.user-presence", "perm.all-presence"]
+  },
+  {
+    "id": "lock-screen",
+    "title": "The lock screen shows less than it did",
+    "tip": "Lock screen settings control the camera shortcut, app notifications and tips. Reverting restores them.",
+    "topics": ["Lock screen"],
+    "tweakIds": []
+  },
+  {
+    "id": "recent-items",
+    "title": "Start, jump lists or Quick access no longer show recent files, folders or most used apps",
+    "tip": "Recent item and app launch tracking are off, so those lists stay empty or short. Reverting lets Windows build them up again.",
+    "topics": [],
+    "tweakIds": ["ads.recent-items-off", "ads.track-launches-off"]
+  }
+]

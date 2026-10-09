@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.TroubleshootPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:svc="using:Clarion.App.Pages">
+
+    <ScrollViewer>
+        <StackPanel Padding="32,24,32,24" Spacing="20" MaxWidth="1000" HorizontalAlignment="Left">
+            <StackPanel Spacing="4">
+                <TextBlock Text="What broke" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           Text="Pick what stopped working. Clarion lists the changes it made that could explain it, newest first, so you can undo them one at a time." />
+            </StackPanel>
+
+            <ComboBox x:Name="SymptomBox" Width="640" PlaceholderText="What is not working?" SelectionChanged="OnSymptomChanged" />
+
+            <TextBlock x:Name="TipText" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+
+            <TextBlock x:Name="NoneText" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ClTextPrimaryBrush}"
+                       Text="Clarion has not changed anything that matches this, so the cause is most likely something else. Settings Clarion applied are listed on the Safety page." />
+
+            <ItemsControl x:Name="Rows">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="svc:SuspectRow">
+                        <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+                                BorderThickness="1" CornerRadius="8" Padding="16,12,16,12" Margin="0,0,0,8">
+                            <Grid ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                    <TextBlock Text="{x:Bind Summary}" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                                    <TextBlock Text="{x:Bind Meta}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                                </StackPanel>
+                                <Button Grid.Column="1" Content="Revert" VerticalAlignment="Center"
+                                        Click="OnRevert" Tag="{x:Bind TweakId}" IsEnabled="{x:Bind CanRevert}"
+                                        ToolTipService.ToolTip="{x:Bind RevertHint}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

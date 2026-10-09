@@ -7,5 +7,6 @@
     <EmbeddedResource Include="Catalog\Presets\*.json" />
     <EmbeddedResource Include="Catalog\Actions\*.json" />
     <EmbeddedResource Include="Catalog\Cleanup\*.json" />
+    <EmbeddedResource Include="Catalog\Symptoms\*.json" />
   </ItemGroup>
 </Project>

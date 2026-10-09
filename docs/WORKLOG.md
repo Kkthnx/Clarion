@@ -90,3 +90,25 @@ since Clarion applied it, with apps that came back called out and a one click fi
   Did not click it, since that would queue a real change on this PC.
 - Side finding: Settings says "Clarion has no telemetry and sends nothing anywhere." Any telemetry
   work (#7) has to change that promise on purpose.
+
+## Troubleshooter (#3)
+
+### Design
+- `Catalog/Symptoms/symptoms.json`: 22 symptoms in a person's words. Each names catalog topics and/or
+  specific setting ids, plus a tip that only claims what those settings do.
+- `Troubleshoot/Troubleshooter` filters to settings the journal says are still on, puts named ones
+  before same-topic ones, then newest first. Newest first because a change made just before the
+  problem is the most likely cause.
+- Reverts go through the normal review dialog (`AppServices.QueueRevert`).
+
+### Guard tests (so the list cannot rot)
+- Every topic and setting id in the symptom file must exist in the catalog.
+- Every setting must be reachable from some symptom, except silent topics (Diagnostics, Suggestions
+  and ads, Defender sharing) and `system.long-paths`. Adding a catalog entry with no symptom now
+  fails the build, which is the point.
+- First run of the coverage test found 4 gaps (permissions, sensors, lock screen, recent items) and a
+  typo'd id (`perm.user-text`). Fixed.
+
+### Limits
+- Symptoms are curated by hand, not measured. Real reports (#7) are the way to improve the mapping.
+- A setting Windows already changed back is listed but its Revert is disabled, with a reason.

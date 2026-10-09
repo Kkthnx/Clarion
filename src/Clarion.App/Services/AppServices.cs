@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Clarion.Core.Appx;
 using Clarion.Core.Catalog;
 using Clarion.Core.Drift;
+using Clarion.Core.Troubleshoot;
 using Clarion.Core.Engine;
 using Clarion.Core.Model;
 using Clarion.Engine;
@@ -168,6 +169,12 @@ public sealed partial class AppServices : UiObservableObject
             item.SyncToState(state, drifted);
         }
     }
+    private Troubleshooter? _troubleshooter;
+
+    /// <summary>Settings Clarion changed that could explain a symptom, named ones first, newest first.</summary>
+    public IReadOnlyList<Suspect> SuspectsFor(Symptom symptom) =>
+        (_troubleshooter ??= new Troubleshooter(Runtime.Journal)).Suspects(symptom, Items.Select(i => i.Tweak).ToList());
+
     private DriftReport? _drift;
 
     /// <summary>The latest verify scan, or null before the first one finishes.</summary>
@@ -218,6 +225,15 @@ public sealed partial class AppServices : UiObservableObject
         var wanted = ids.ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach (var item in Items.Where(i => wanted.Contains(i.Id) && i.CanToggle && !i.IsApplied)) item.IsOn = true;
         if (PendingCount > 0) ReviewRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>Queues the revert of one applied setting, then opens the review dialog.</summary>
+    public void QueueRevert(string id)
+    {
+        var item = Items.FirstOrDefault(i => i.Id == id);
+        if (item is not { CanToggle: true, IsApplied: true }) return;
+        item.IsOn = false;
+        ReviewRequested?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>Accepts a change made outside Clarion. Windows is left as it is and the setting is no longer checked.</summary>
