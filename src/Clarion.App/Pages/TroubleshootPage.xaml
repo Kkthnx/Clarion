@@ -14,6 +14,9 @@
 
             <ComboBox x:Name="SymptomBox" Width="640" PlaceholderText="What is not working?" SelectionChanged="OnSymptomChanged" />
 
+            <TextBlock x:Name="HintText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}"
+                       Text="Not sure? Start with the problem you noticed. Clarion only lists changes it made itself, so anything it did not touch will not appear here. The Safety page shows everything Clarion has changed." />
+
             <TextBlock x:Name="TipText" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ClTextSecondaryBrush}" />
 
             <TextBlock x:Name="NoneText" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ClTextPrimaryBrush}"

@@ -11,6 +11,75 @@
     <Color x:Key="SystemAccentColorDark2">#4673B3</Color>
     <Color x:Key="SystemAccentColorDark3">#4673B3</Color>
 
+
+    <!-- A card row that shows when it is hovered, pressed and selected. -->
+    <Style x:Key="CardListViewItemStyle" TargetType="ListViewItem">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="UseSystemFocusVisuals" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Grid x:Name="Root">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="Card.Background" Value="{ThemeResource ClSurface2Brush}" />
+                                        <Setter Target="Card.BorderBrush" Value="{ThemeResource ClAccentBrush}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="Card.Background" Value="{ThemeResource ClSurface3Brush}" />
+                                        <Setter Target="Card.BorderBrush" Value="{ThemeResource ClAccentBrush}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter Target="Card.Background" Value="{ThemeResource ClAccentTintBrush}" />
+                                        <Setter Target="Card.BorderBrush" Value="{ThemeResource ClAccentBrush}" />
+                                        <Setter Target="SelectionBar.Opacity" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="PointerOverSelected">
+                                    <VisualState.Setters>
+                                        <Setter Target="Card.Background" Value="{ThemeResource ClAccentTintBrush}" />
+                                        <Setter Target="Card.BorderBrush" Value="{ThemeResource ClAccentBrush}" />
+                                        <Setter Target="SelectionBar.Opacity" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="PressedSelected">
+                                    <VisualState.Setters>
+                                        <Setter Target="Card.Background" Value="{ThemeResource ClAccentTintBrush}" />
+                                        <Setter Target="Card.BorderBrush" Value="{ThemeResource ClAccentBrush}" />
+                                        <Setter Target="SelectionBar.Opacity" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border x:Name="Card" Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+                                BorderThickness="1" CornerRadius="8">
+                            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              ContentTransitions="{TemplateBinding ContentTransitions}"
+                                              Padding="{TemplateBinding Padding}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                        <Border x:Name="SelectionBar" Width="4" HorizontalAlignment="Left" Margin="0,12,0,12"
+                                CornerRadius="2" Background="{ThemeResource ClAccentBrush}" Opacity="0" IsHitTestVisible="False" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
             <SolidColorBrush x:Key="ScrollBarThumbFill" Color="#3A4A60" />
@@ -161,4 +230,5 @@
             <SolidColorBrush x:Key="ClDividerBrush" Color="{StaticResource ClDividerColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
+
 </ResourceDictionary>

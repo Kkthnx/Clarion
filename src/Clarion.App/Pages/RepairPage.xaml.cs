@@ -177,10 +177,19 @@ public sealed partial class RepairPage : Page
         _running = false;
     }
 
-    private void OnCardTapped(object sender, TappedRoutedEventArgs e)
+    private ListView? _selectedList;
+
+    /// <summary>Each group is its own list, so picking a job in one clears the highlight in the others.</summary>
+    private void OnRowSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (e.OriginalSource is FrameworkElement { Tag: ActionItem }) return;
-        if ((sender as FrameworkElement)?.Tag is not ActionItem item) return;
+        if (sender is not ListView list || list.SelectedItem is not ActionItem item) return;
+        if (_selectedList is not null && !ReferenceEquals(_selectedList, list))
+        {
+            var previous = _selectedList;
+            _selectedList = list;
+            previous.SelectedItem = null;
+        }
+        _selectedList = list;
         Pane.Show(item, technical: true);
     }
 

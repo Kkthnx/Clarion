@@ -30,11 +30,13 @@
                         <DataTemplate x:DataType="pages:RepairGroup">
                             <StackPanel Spacing="8" Margin="0,0,0,18">
                                 <TextBlock Text="{x:Bind Name}" FontSize="16" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                                <ItemsControl ItemsSource="{x:Bind Items}">
-                                    <ItemsControl.ItemTemplate>
+                                <ListView ItemsSource="{x:Bind Items}" SelectionMode="Single" SelectionChanged="OnRowSelected"
+                                          IsItemClickEnabled="False" ScrollViewer.VerticalScrollMode="Disabled"
+                                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                          ItemContainerStyle="{StaticResource CardListViewItemStyle}">
+                                    <ListView.ItemTemplate>
                                         <DataTemplate x:DataType="svc:ActionItem">
-                                            <Border Tag="{x:Bind}" Tapped="OnCardTapped" Margin="0,0,0,8" CornerRadius="8" Padding="16,12,16,12"
-                                                    Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1">
+                                            <Border Padding="18,12,16,12">
                                                 <ToolTipService.ToolTip>
                                                     <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
                                                              Background="{ThemeResource ClSurface2Brush}" BorderBrush="{ThemeResource ClBorderBrush}">
@@ -52,16 +54,16 @@
                                                         <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
                                                             <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}" />
                                                             <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" />
-                                                            <controls:Chip Text="{x:Bind DurationText}" Kind="Neutral" />
                                                         </StackPanel>
+                                                        <TextBlock Text="{x:Bind DurationText}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
                                                     </StackPanel>
                                                     <Button Grid.Column="1" Content="Run" VerticalAlignment="Center" Tag="{x:Bind}" Click="OnRun"
                                                             AutomationProperties.Name="{x:Bind Name}" MinWidth="72" />
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                    </ListView.ItemTemplate>
+                                </ListView>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

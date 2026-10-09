@@ -22,10 +22,10 @@
 
         <Grid Grid.Row="1" ColumnSpacing="12">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="280" />
-                <ColumnDefinition Width="190" />
-                <ColumnDefinition Width="230" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" MinWidth="200" MaxWidth="300" />
+                <ColumnDefinition Width="170" />
+                <ColumnDefinition Width="210" />
+                <ColumnDefinition Width="Auto" MinWidth="110" />
             </Grid.ColumnDefinitions>
             <AutoSuggestBox x:Name="SearchBox" PlaceholderText="Search settings" QueryIcon="Find"
                             AutomationProperties.Name="Search settings on this page"
@@ -40,7 +40,7 @@
             </ComboBox>
             <ComboBox x:Name="TopicBox" Grid.Column="2" HorizontalAlignment="Stretch"
                       AutomationProperties.Name="Filter by topic" SelectionChanged="OnTopicChanged" />
-            <TextBlock x:Name="CountText" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right"
+            <TextBlock x:Name="CountText" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" TextWrapping="NoWrap"
                        Foreground="{ThemeResource ClTextMutedBrush}" />
         </Grid>
 
@@ -53,20 +53,11 @@
             </Grid.ColumnDefinitions>
 
             <ListView x:Name="List" Padding="0,0,14,0" SelectionMode="Single" SelectionChanged="OnSelectionChanged"
-                      IsItemClickEnabled="False" ItemsSource="{x:Bind Visible}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="Padding" Value="0" />
-                        <Setter Property="Margin" Value="0,0,0,8" />
-                        <Setter Property="MinHeight" Value="0" />
-                    </Style>
-                </ListView.ItemContainerStyle>
+                      IsItemClickEnabled="False" ItemsSource="{x:Bind Visible}"
+                      ItemContainerStyle="{StaticResource CardListViewItemStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="svc:TweakItem">
-                        <Border Background="{ThemeResource ClSurface1Brush}"
-                                BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1"
-                                CornerRadius="8" Padding="16,14,16,14">
+                        <Border Padding="18,14,16,14">
                             <ToolTipService.ToolTip>
                                 <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
                                          Background="{ThemeResource ClSurface2Brush}"

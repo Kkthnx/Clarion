@@ -59,10 +59,12 @@ public sealed partial class VerifyPage : Page
             : $"Checked {report.Checked} setting{(report.Checked == 1 ? "" : "s")} at {report.ScannedAt.LocalDateTime:t}.";
 
         UpdateBar.IsOpen = report.FeatureUpdateSinceLastScan;
+        UpdateBar.Visibility = UpdateBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (report.FeatureUpdateSinceLastScan)
             UpdateBar.Message = $"Windows went from build {report.PreviousBuild} to {report.Build} since the last check. Feature updates are when removed apps most often return and settings get reset.";
 
         UnreadableBar.IsOpen = report.Unreadable.Count > 0;
+        UnreadableBar.Visibility = UnreadableBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (report.Unreadable.Count > 0)
             UnreadableBar.Message = $"{string.Join(", ", report.Unreadable.Select(NameOf))} could not be checked this time. Scan again in a moment.";
     }
@@ -71,7 +73,11 @@ public sealed partial class VerifyPage : Page
 
     private static DriftRow Row(DriftItem item)
     {
-        var detail = string.Join("\n", item.Changed);
+        // The exact registry and service steps are for Expert mode. Everyone else gets one plain sentence.
+        var steps = string.Join("\n", item.Changed);
+        var detail = item.IsReturnedApp || item.Changed.Any(c => c.Contains("installed", StringComparison.OrdinalIgnoreCase)) ? steps
+            : AppServices.Instance.ExpertMode ? "No longer in effect. Windows or another program put it back.\n" + steps
+            : "No longer in effect. Windows or another program put it back.";
         var when = item.AppliedAt == DateTimeOffset.MinValue ? "" : $"Applied {item.AppliedAt.LocalDateTime:g}";
         return new DriftRow(item.Tweak.Id, item.Tweak.Name, when, detail, item.Tweak.Apply.Any(o => o is Clarion.Core.Model.RemoveAppxPackage) ? "Remove again" : "Put back");
     }

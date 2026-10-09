@@ -43,8 +43,8 @@
                 <TextBlock x:Name="SummaryText" VerticalAlignment="Center" Foreground="{ThemeResource ClTextSecondaryBrush}" />
             </StackPanel>
 
-            <InfoBar x:Name="UpdateBar" Severity="Informational" IsOpen="False" IsClosable="False" Title="Windows was updated" />
-            <InfoBar x:Name="UnreadableBar" Severity="Warning" IsOpen="False" IsClosable="False" Title="Some settings could not be read" />
+            <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False" Title="Windows was updated" />
+            <InfoBar x:Name="UnreadableBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False" Title="Some settings could not be read" />
 
             <TextBlock x:Name="AllGoodText" Visibility="Collapsed" Foreground="{ThemeResource ClTextPrimaryBrush}"
                        Text="Everything Clarion applied is still in place." />

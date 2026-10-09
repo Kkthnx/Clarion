@@ -94,7 +94,10 @@ public sealed partial class MainWindow : Window
         var area = DisplayArea.GetFromWindowId(appWindow.Id, DisplayAreaFallback.Primary).WorkArea;
         var width = Math.Min(1360, area.Width - 80);
         var height = Math.Min(900, area.Height - 80);
-        appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
+        // Size alone leaves the position to Windows, which can start the window low enough to push the bottom bar off the screen.
+        var x = area.X + (area.Width - width) / 2;
+        var y = area.Y + (area.Height - height) / 2;
+        appWindow.MoveAndResize(new Windows.Graphics.RectInt32(x, y, width, height));
     }
 
     private static readonly Dictionary<string, PageArgs> Sections = new()
@@ -171,8 +174,12 @@ public sealed partial class MainWindow : Window
 
     private void GoTo(string tag)
     {
-        var target = Nav.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(i => i.Tag as string == tag);
-        if (target is not null) Nav.SelectedItem = target;
+        var target = Nav.MenuItems.OfType<NavigationViewItem>()
+            .SelectMany(i => new[] { i }.Concat(i.MenuItems.OfType<NavigationViewItem>()))
+            .FirstOrDefault(i => i.Tag as string == tag);
+        if (target is null) return;
+        if (WindowsGroup.MenuItems.Contains(target)) WindowsGroup.IsExpanded = true;
+        Nav.SelectedItem = target;
     }
 
     private void OnClear(object sender, RoutedEventArgs e) => _app.ClearPending();

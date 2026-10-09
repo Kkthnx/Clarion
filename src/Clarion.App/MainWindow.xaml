@@ -20,8 +20,9 @@
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Spacing="10" Padding="16,0,0,0" VerticalAlignment="Center">
-                <Rectangle Width="10" Height="10" RadiusX="2" RadiusY="2" Fill="{ThemeResource ClAccentBrush}" />
-                <TextBlock Text="Clarion" FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <Image Source="ms-appx:///Assets/Clarion.png" Width="22" Height="22" VerticalAlignment="Center" />
+                <TextBlock Text="Clarion" FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" VerticalAlignment="Center" />
+                <TextBlock Text="{x:Bind svc:AppServices.Version}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" VerticalAlignment="Center" />
             </StackPanel>
             <AutoSuggestBox x:Name="GlobalSearch" Grid.Column="2" Width="340" Height="32" Margin="0,4,0,4"
                             PlaceholderText="Search every setting" QueryIcon="Find"
@@ -34,6 +35,8 @@
                         SelectionChanged="OnNavSelectionChanged" Background="Transparent">
             <NavigationView.Resources>
                 <ResourceDictionary>
+                    <!-- Shorter menu rows, so every page fits in the sidebar even on a small screen. -->
+                    <x:Double x:Key="NavigationViewItemOnLeftMinHeight">34</x:Double>
                     <ResourceDictionary.ThemeDictionaries>
                         <ResourceDictionary x:Key="Default">
                             <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="#121820" />
@@ -55,7 +58,7 @@
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE72E;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="Debloat" Tag="debloat">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE738;" /></NavigationViewItem.Icon>
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE7B8;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="Clean up" Tag="cleanup">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE74D;" /></NavigationViewItem.Icon>
@@ -63,39 +66,45 @@
                 <NavigationViewItem Content="Repair" Tag="repair">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE90F;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Tweaks" Tag="tweaks">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE713;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Power" Tag="power">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE945;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Network" Tag="network">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE774;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Windows features" Tag="features">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE9D9;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Updates" Tag="updates">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE895;" /></NavigationViewItem.Icon>
+                <NavigationViewItem x:Name="WindowsGroup" Content="Windows" SelectsOnInvoked="False">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE71D;" /></NavigationViewItem.Icon>
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem Content="Tweaks" Tag="tweaks">
+                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE713;" /></NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem Content="Power" Tag="power">
+                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE945;" /></NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem Content="Network" Tag="network">
+                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE774;" /></NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem Content="Windows features" Tag="features">
+                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE9D9;" /></NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem Content="Updates" Tag="updates">
+                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE895;" /></NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
                 <NavigationViewItemSeparator />
+                <NavigationViewItem x:Name="VerifyItem" Content="Verify" Tag="verify">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE73E;" /></NavigationViewItem.Icon>
+                    <NavigationViewItem.InfoBadge><InfoBadge x:Name="VerifyBadge" Visibility="Collapsed" /></NavigationViewItem.InfoBadge>
+                </NavigationViewItem>
+                <NavigationViewItem Content="What broke" Tag="troubleshoot">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE9CE;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Safety" Tag="safety">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE7EF;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="System" Tag="system">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE770;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="Report a problem" Tag="feedback">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE8BD;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="What broke" Tag="troubleshoot">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE9CE;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem x:Name="VerifyItem" Content="Verify" Tag="verify">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE73E;" /></NavigationViewItem.Icon>
-                    <NavigationViewItem.InfoBadge><InfoBadge x:Name="VerifyBadge" Visibility="Collapsed" /></NavigationViewItem.InfoBadge>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Safety" Tag="safety">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE7EF;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
             </NavigationView.MenuItems>
+
 
             <Frame x:Name="ContentFrame" />
         </NavigationView>

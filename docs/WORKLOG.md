@@ -252,3 +252,35 @@ Each claim was checked against the code and researched before changing anything.
   Found because Verify said 0 changed back where it had said 1.
 - Replaced with a rule based on the journal: a choice is replaced inside Clarion only when Clarion applied
   a later choice from the same group that is still on. Three tests, including this exact case.
+
+## Visual polish pass
+
+Method: a small script launches the real app, opens each page and saves a picture of the window
+only (`PrintWindow`, so no other window can end up in the picture). Every fix below was checked in a new picture.
+The first version of the script used a screen grab and caught part of the browser behind the app.
+That picture was deleted unused, and the script was changed.
+
+### Found and fixed
+- Nothing showed which setting was selected. Cause: each card painted its own border over the list
+  item's selection chrome. Fix: one shared card style (`CardListViewItemStyle`) with hover, pressed and
+  selected states. Used by the settings lists, Clean up and Repair. The latter two were border taps
+  with no selection at all, and are now real lists.
+- The title bar showed a blue square and no version. Now the real icon and `0.1.0-beta.3`. Home has
+  the logo and a version badge too.
+- Sidebar overflow: 14 entries plus Settings did not fit, so Verify and Safety were not visible at all
+  and What broke was cut in half. The framework template ignored the item height override placed in the
+  app resources. Real fix was structural: the five Windows pages sit under one expandable entry.
+- The window set a size but not a position, so Windows could start it low enough to push the bottom bar off
+  screen. It is now centred in the work area.
+- Closed notices (account, changed back, image, update) still took layout space, leaving a gap at
+  the top of Home and Verify. They are collapsed when closed.
+- The "N settings" label was clipped to "settings" because its column was 65 pixels wide.
+- Repair job duration chips were clipped. Duration is now its own line.
+- Verify showed raw registry paths. Plain wording by default, exact steps in Expert mode.
+- What broke was an empty page until a symptom was picked. It now explains itself.
+- Debloat's icon was a minus sign. Now a package icon.
+
+### Real finding from the pictures, not a bug
+- Verify listed three permission settings (app diagnostics, phone calls, eye tracker) as changed back
+  that it had not listed an hour earlier. Registry check: the values are `Allow` again. Windows rewrites
+  these when apps use the capability. This is the drift scan doing its job on real data.

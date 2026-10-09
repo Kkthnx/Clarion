@@ -33,6 +33,7 @@ public sealed partial class HomePage : Page
                 AccountBar.Message = $"You are signed in as {account.SignedInAs}, but Clarion was started with {account.ElevatedAs}. " +
                     "Settings that apply to one account will change that other account. Close Clarion and start it again from your own account.";
                 AccountBar.IsOpen = true;
+                AccountBar.Visibility = AccountBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
             }
         };
         _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(Refresh);
@@ -55,6 +56,7 @@ public sealed partial class HomePage : Page
     {
         var report = _app.Drift;
         DriftBar.IsOpen = report is { HasDrift: true };
+        DriftBar.Visibility = DriftBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (report is not { HasDrift: true }) return;
         var apps = report.ReturnedApps.Count;
         var rest = report.ChangedBack.Count;
@@ -70,6 +72,7 @@ public sealed partial class HomePage : Page
     {
         var verdict = _app.ImageVerdict;
         ImageBar.IsOpen = verdict is { Level: not Clarion.Core.SystemInfo.InstallLevel.Standard };
+        ImageBar.Visibility = ImageBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (verdict is not { Level: not Clarion.Core.SystemInfo.InstallLevel.Standard }) return;
 
         var named = verdict.ImageName is { } name ? $" ({name})" : "";

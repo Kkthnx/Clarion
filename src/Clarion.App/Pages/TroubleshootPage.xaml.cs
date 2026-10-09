@@ -25,6 +25,7 @@ public sealed partial class TroubleshootPage : Page
     private void Show()
     {
         var index = SymptomBox.SelectedIndex;
+        HintText.Visibility = index < 0 ? Visibility.Visible : Visibility.Collapsed;
         if (index < 0)
         {
             TipText.Visibility = Visibility.Collapsed;

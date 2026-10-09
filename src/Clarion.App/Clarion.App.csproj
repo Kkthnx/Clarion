@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Clarion.ico" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Clarion.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Clarion.Core\Clarion.Core.csproj" />

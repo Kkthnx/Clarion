@@ -85,11 +85,13 @@
                         <DataTemplate x:DataType="pages:CleanupGroup">
                             <StackPanel Spacing="8" Margin="0,0,0,18">
                                 <TextBlock Text="{x:Bind Name}" FontSize="16" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                                <ItemsControl ItemsSource="{x:Bind Items}">
-                                    <ItemsControl.ItemTemplate>
+                                <ListView ItemsSource="{x:Bind Items}" SelectionMode="Single" SelectionChanged="OnRowSelected"
+                                          IsItemClickEnabled="False" ScrollViewer.VerticalScrollMode="Disabled"
+                                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                          ItemContainerStyle="{StaticResource CardListViewItemStyle}">
+                                    <ListView.ItemTemplate>
                                         <DataTemplate x:DataType="svc:CleanupItem">
-                                            <Border Tag="{x:Bind}" Tapped="OnCardTapped" Margin="0,0,0,8" CornerRadius="8" Padding="14,10,14,10"
-                                                    Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1">
+                                            <Border Padding="16,10,14,10">
                                                 <ToolTipService.ToolTip>
                                                     <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
                                                              Background="{ThemeResource ClSurface2Brush}" BorderBrush="{ThemeResource ClBorderBrush}">
@@ -118,8 +120,8 @@
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                    </ListView.ItemTemplate>
+                                </ListView>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

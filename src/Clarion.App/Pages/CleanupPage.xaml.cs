@@ -255,10 +255,19 @@ public sealed partial class CleanupPage : Page
         Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(package);
     }
 
-    private void OnCardTapped(object sender, TappedRoutedEventArgs e)
+    private ListView? _selectedList;
+
+    /// <summary>Each group is its own list, so picking a row in one clears the highlight in the others.</summary>
+    private void OnRowSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (e.OriginalSource is Microsoft.UI.Xaml.Controls.Primitives.ToggleButton) return;
-        if ((sender as FrameworkElement)?.Tag is not CleanupItem item) return;
+        if (sender is not ListView list || list.SelectedItem is not CleanupItem item) return;
+        if (_selectedList is not null && !ReferenceEquals(_selectedList, list))
+        {
+            var previous = _selectedList;
+            _selectedList = list;
+            previous.SelectedItem = null;
+        }
+        _selectedList = list;
         Pane.Show(item, technical: true);
     }
 
