@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.5
 
 New
 - A welcome the first time Clarion opens on a PC where nothing has been applied: pick a starting point, see the list of what it would change, then apply it. Someone who already has settings applied is not welcomed.
