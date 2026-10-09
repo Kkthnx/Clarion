@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Every setting now records the Windows build it was last checked on, shown in its tooltip. Tests fail when an entry goes stale.
+- Service changes are limited to an explicit allowlist, and the protected service list now also covers DPS, DusmSvc and other network and diagnostic services.
+- New setting: stop background gameplay recording. Game Bar and manual recording keep working. Added to the gaming preset.
+
 ## 0.1.0-beta.3
 
 - Fixed the build checks on GitHub. Tests that need a Windows client now skip on server images, and the DNS reader no longer fails on machines without network adapters.

@@ -2250,6 +2250,46 @@
     ]
   },
   {
+    "id": "gaming.background-recording-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Gaming",
+    "name": "Stop background gameplay recording",
+    "summary": "Keep Game Bar, but stop it recording in the background while you play.",
+    "what": "Turns off the Record what happened setting for your account. Game Bar still opens and you can still start a recording yourself.",
+    "benefit": "No background capture running during games, so no extra disk writes or GPU encoding.",
+    "risk": "Low. Game Bar can no longer save the last moments of play after the fact. Manual recording is not affected.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Worth setting if Record what happened was ever turned on. It is off by default, so on most PCs this changes nothing.",
+    "facts": [
+      "Game Bar and Win+G keep working",
+      "Manual recording and screenshots keep working",
+      "Windows leaves this off by default",
+      "Per account setting",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR",
+          "name": "HistoricalCaptureEnabled"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://www.elevenforum.com/t/enable-or-disable-record-what-happened-for-gaming-captures-in-windows-11.17900"
+    ]
+  },
+  {
     "id": "gaming.game-mode-on",
     "lastVerifiedBuild": 26200,
     "category": "System",

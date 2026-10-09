@@ -46,6 +46,7 @@
     "network.delivery-optimization-http",
     "privacy.telemetry-tasks",
     "debloat.content-delivery-user",
+    "gaming.background-recording-off",
     "gaming.game-mode-on"
   ],
   "privacy": [
