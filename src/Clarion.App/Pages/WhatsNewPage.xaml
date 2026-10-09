@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.WhatsNewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Clarion.App.Controls"
+    xmlns:pages="using:Clarion.App.Pages">
+
+    <ScrollViewer>
+        <StackPanel Padding="32,24,32,24" Spacing="20" MaxWidth="900" HorizontalAlignment="Left">
+            <StackPanel Spacing="4">
+                <TextBlock Text="What's new" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           Text="What changed in each version of Clarion, written the same way as the release notes." />
+            </StackPanel>
+
+            <!-- An update is available -->
+            <Border x:Name="UpdateCard" Visibility="Collapsed" Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClAccentBrush}"
+                    BorderThickness="1" CornerRadius="10" Padding="0">
+                <StackPanel>
+                    <Border Background="{ThemeResource ClAccentTintBrush}" CornerRadius="10,10,0,0" Padding="20,16,20,16">
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <Image Source="ms-appx:///Assets/Clarion.png" Width="48" Height="48" VerticalAlignment="Center" />
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="An update is available" FontSize="22" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                <TextBlock x:Name="UpdateSubtitle" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Padding="20,16,20,18" Spacing="14">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <controls:Chip x:Name="FromChip" Kind="Neutral" VerticalAlignment="Center" />
+                            <FontIcon Glyph="&#xE72A;" FontSize="14" Foreground="{ThemeResource ClTextMutedBrush}" VerticalAlignment="Center" />
+                            <controls:Chip x:Name="ToChip" Kind="Accent" VerticalAlignment="Center" />
+                            <TextBlock x:Name="ReleaseCount" VerticalAlignment="Center" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                        </StackPanel>
+                        <ItemsControl x:Name="Pills">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="8" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="pages:PillVm">
+                                    <controls:Chip Text="{x:Bind Text}" Kind="{x:Bind Kind}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Content="Open the release page" Style="{StaticResource AccentButtonStyle}" Click="OnOpenLatest" />
+                            <Button Content="Hide this version" Click="OnHide" />
+                        </StackPanel>
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}"
+                                   Text="The button opens the page in your browser. Clarion does not download or install anything itself." />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Nothing newer -->
+            <StackPanel x:Name="UpToDate" Spacing="10" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button x:Name="CheckButton" Content="Check for updates" Click="OnCheck" />
+                    <ProgressRing x:Name="Busy" Width="18" Height="18" IsActive="False" />
+                    <TextBlock x:Name="StatusText" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="NewerSection" Spacing="10" Visibility="Collapsed">
+                <TextBlock x:Name="NewerTitle" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <controls:ReleaseTimeline x:Name="NewerTimeline" />
+            </StackPanel>
+
+            <StackPanel Spacing="10">
+                <TextBlock x:Name="HistoryTitle" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <controls:ReleaseTimeline x:Name="HistoryTimeline" />
+                <Button x:Name="ShowOlder" Content="Show older releases" Click="OnShowOlder" Visibility="Collapsed" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

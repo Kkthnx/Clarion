@@ -24,11 +24,18 @@
             <InfoBar x:Name="AccountBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
                      Title="Clarion is running as a different account" />
 
-            <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="False">
+            <InfoBar x:Name="UpdatedBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="True" Closed="OnUpdatedClosed">
                 <InfoBar.ActionButton>
-                    <Button Content="Open the release page" Click="OnOpenUpdate" />
+                    <Button Content="See what's new" Click="OnSeeWhatsNew" />
                 </InfoBar.ActionButton>
-                <HyperlinkButton Content="Hide this version" Click="OnHideUpdate" Padding="0,4,0,4" />
+            </InfoBar>
+
+            <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="False">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button Content="See what changed" Click="OnSeeWhatsNew" />
+                    <HyperlinkButton Content="Open the release page" Click="OnOpenUpdate" />
+                    <HyperlinkButton Content="Hide this version" Click="OnHideUpdate" />
+                </StackPanel>
             </InfoBar>
 
             <InfoBar x:Name="ScheduledBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"

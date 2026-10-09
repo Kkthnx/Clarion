@@ -21,6 +21,9 @@ public sealed record UserSettings
     /// <summary>A newer version the person chose to hide, so it is not offered again until there is an even newer one.</summary>
     public string? DismissedUpdate { get; init; }
 
+    /// <summary>The version that was running the last time the person saw the "what changed" notice. A newer one running now means Clarion was updated.</summary>
+    public string? LastSeenVersion { get; init; }
+
     /// <summary>A scheduled task runs a read only check after Windows Update's monthly patch day.</summary>
     public bool MonthlyVerify { get; init; }
 

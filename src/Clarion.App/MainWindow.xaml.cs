@@ -33,6 +33,11 @@ public sealed partial class MainWindow : Window
         _app.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
         _app.Pending.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateBar);
         _app.PropertyChanged += (_, a) => { if (a.PropertyName == nameof(AppServices.DriftCount)) DispatcherQueue.TryEnqueue(UpdateVerifyBadge); };
+        _app.PropertyChanged += (_, a) =>
+        {
+            if (a.PropertyName is nameof(AppServices.NewerReleases) or nameof(AppServices.UpdatedFromVersion)) DispatcherQueue.TryEnqueue(UpdateWhatsNewBadge);
+        };
+        UpdateWhatsNewBadge();
         _app.NavigateRequested += (_, tag) => DispatcherQueue.TryEnqueue(() => GoTo(tag));
         _app.ReviewRequested += (_, _) => DispatcherQueue.TryEnqueue(() => OnReview(this, new RoutedEventArgs()));
 
@@ -144,6 +149,7 @@ public sealed partial class MainWindow : Window
             case "system": ContentFrame.Navigate(typeof(SystemPage)); break;
             case "troubleshoot": ContentFrame.Navigate(typeof(TroubleshootPage)); break;
             case "verify": ContentFrame.Navigate(typeof(VerifyPage)); break;
+            case "whatsnew": ContentFrame.Navigate(typeof(WhatsNewPage)); break;
             case "safety": ContentFrame.Navigate(typeof(SafetyPage)); break;
             case "cleanup": ContentFrame.Navigate(typeof(CleanupPage)); break;
             case "repair": ContentFrame.Navigate(typeof(RepairPage)); break;
@@ -239,6 +245,12 @@ public sealed partial class MainWindow : Window
         RefreshButton.IsEnabled = !_app.IsBusy;
     }
 
+    /// <summary>A dot on "What's new" while there is something to read: a newer version, or an update the person has not looked at yet.</summary>
+    private void UpdateWhatsNewBadge()
+    {
+        WhatsNewBadge.Visibility = _app.NewerReleases.Count > 0 || _app.UpdatedFromVersion is not null ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     private void UpdateVerifyBadge()
     {
         VerifyBadge.Value = _app.DriftCount;
@@ -248,7 +260,7 @@ public sealed partial class MainWindow : Window
 
     private void GoTo(string tag)
     {
-        var target = Nav.MenuItems.OfType<NavigationViewItem>()
+        var target = Nav.MenuItems.Concat(Nav.FooterMenuItems).OfType<NavigationViewItem>()
             .SelectMany(i => new[] { i }.Concat(i.MenuItems.OfType<NavigationViewItem>()))
             .FirstOrDefault(i => i.Tag as string == tag);
         if (target is null) return;

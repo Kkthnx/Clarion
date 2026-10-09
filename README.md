@@ -42,6 +42,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 | **DNS** | Pick a public provider from a dropdown, with optional encrypted lookups. Revert restores exactly what you had. |
 | **System** | Windows edition, build, hardware and security state, plus a check for customized Windows images that explains every sign it finds. Settings that depend on something the image removed carry a note. |
 | **Verify** | Checks everything Clarion applied against Windows now. Lists removed apps that came back and settings that were changed back, usually after a feature update. Put them back in one step, or leave them as they are. |
+| **What's new** | What changed in each version, grouped as New, Safer, Fixed and Polish. When a newer version exists it lists everything you missed and links to the release page. Clarion never downloads or installs the update itself. |
 | **Monthly check** | Optional. A scheduled task checks the settings Clarion applied on the second Wednesday of each month, the day after Windows' monthly updates, and tells you the next time you open Clarion what changed back. |
 | **What broke** | Pick what stopped working and see which of your changes could explain it, newest first, with a revert button on each. |
 | **Live progress** | A panel with a progress bar and one line per setting while changes apply. |

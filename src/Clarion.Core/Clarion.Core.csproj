@@ -8,5 +8,7 @@
     <EmbeddedResource Include="Catalog\Actions\*.json" />
     <EmbeddedResource Include="Catalog\Cleanup\*.json" />
     <EmbeddedResource Include="Catalog\Symptoms\*.json" />
+    <!-- The same file people read on GitHub is the history shown in the app, so there is one place to write it. -->
+    <EmbeddedResource Include="..\..\CHANGELOG.md" LogicalName="Clarion.Changelog.md" />
   </ItemGroup>
 </Project>

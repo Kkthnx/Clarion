@@ -56,7 +56,7 @@ public sealed record ReleaseVersion(int Major, int Minor, int Patch, IReadOnlyLi
     public static bool operator <=(ReleaseVersion a, ReleaseVersion b) => a.CompareTo(b) <= 0;
 }
 
-public sealed record ReleaseInfo(string Tag, string Name, string Url, bool PreRelease, bool Draft, DateTimeOffset? Published);
+public sealed record ReleaseInfo(string Tag, string Name, string Url, bool PreRelease, bool Draft, DateTimeOffset? Published, string Body = "");
 
 /// <summary>A newer version that is on offer. Clarion only points to the page. It never downloads or installs anything.</summary>
 public sealed record UpdateOffer(string Tag, string Name, string Url, bool PreRelease);
@@ -95,7 +95,8 @@ public static class UpdateCheck
                 list.Add(new ReleaseInfo(
                     tag, Text(e, "name"), Text(e, "html_url"),
                     Flag(e, "prerelease"), Flag(e, "draft"),
-                    DateTimeOffset.TryParse(Text(e, "published_at"), out var when) ? when : null));
+                    DateTimeOffset.TryParse(Text(e, "published_at"), out var when) ? when : null,
+                    Text(e, "body")));
             }
             return list;
         }
@@ -114,8 +115,18 @@ public static class UpdateCheck
     /// </summary>
     public static UpdateOffer? Newest(string currentVersion, IEnumerable<ReleaseInfo> releases)
     {
+        var newest = NewerThan(currentVersion, releases).FirstOrDefault();
+        return newest is null ? null : new UpdateOffer(newest.Tag, string.IsNullOrWhiteSpace(newest.Name) ? newest.Tag : newest.Name, newest.Url, newest.PreRelease);
+    }
+
+    /// <summary>
+    /// Every release newer than the one running, newest first, by the same rules as <see cref="Newest"/>. Someone who skipped a version
+    /// sees what they missed as well as what is latest.
+    /// </summary>
+    public static IReadOnlyList<ReleaseInfo> NewerThan(string currentVersion, IEnumerable<ReleaseInfo> releases)
+    {
         var current = ReleaseVersion.Parse(currentVersion);
-        if (current is null) return null;
+        if (current is null) return [];
 
         return releases
             .Where(r => !r.Draft && IsTrustedReleaseUrl(r.Url))
@@ -123,8 +134,8 @@ public static class UpdateCheck
             .Where(x => x.Version is not null && (current.IsPreRelease || !x.Version.IsPreRelease))
             .Where(x => x.Version! > current)
             .OrderByDescending(x => x.Version, Comparer<ReleaseVersion?>.Create((a, b) => a!.CompareTo(b)))
-            .Select(x => new UpdateOffer(x.Release.Tag, string.IsNullOrWhiteSpace(x.Release.Name) ? x.Release.Tag : x.Release.Name, x.Release.Url, x.Version!.IsPreRelease))
-            .FirstOrDefault();
+            .Select(x => x.Release)
+            .ToList();
     }
 
     /// <summary>A version the person hid is not offered again. A newer one than that is.</summary>

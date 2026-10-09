@@ -441,3 +441,27 @@ Claims were checked against the code and measured before building.
 - Opt-in telemetry stays declined.
 - Scheduled check has no notification of its own. It is shown when Clarion is next opened.
 - Source link check and release workflow still need their first clean run on GitHub.
+
+## What's new page (visual changelog)
+
+Idea taken from the way phone apps show an update: a clear "an update is available" card, then notes grouped by kind.
+
+### What was built
+- Three places: a notice on Home that links into the page, a What's new page in the menu (pinned above Settings, with a dot while there is
+  something to read), and a one time "Clarion was updated to X" notice on Home after an upgrade.
+- The page shows the installed release and the four before it, with "Show N older releases". When a newer version exists it shows a card
+  (from and to versions, count pills) and then every release newer than the installed one, newest open.
+- No Download button. Clarion does not download or install anything, so the card has "Open the release page" and "Hide this version".
+- The notes come from `CHANGELOG.md`, embedded into the app at build time, so the page and the file cannot disagree. Newer releases use
+  the body of the GitHub release, which `release.yml` already fills from the same file. A test fails if the building version has no entry
+  or an entry has no changes, or a heading is not one of New, Safer, Fixed, Polish.
+- Chip colours by kind: New is blue, Safer green, Fixed amber, Polish cyan.
+
+### Bug found while checking it
+- The "updated" notice never fired. `AppServices.Instance` was declared above `Version`, so static initializers ran the constructor while
+  `Version` was still null, and the stored last seen version was overwritten with nothing on every start. Found because the settings file
+  came back with the value blanked. `Version` is now declared first, with a comment saying why.
+
+### How it was tried
+- `CLARION_RELEASES_JSON` points the update check at a local file instead of GitHub, so the update screens can be seen without publishing a
+  release. A data folder with an older `LastSeenVersion` gives the "updated" notice. Checked in dark and light themes.

@@ -43,6 +43,7 @@ public sealed partial class HomePage : Page
         AdminText.Text = _app.IsElevated ? "Yes" : "No";
         AppliedText.Text = $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
         Busy.IsActive = _app.IsBusy;
+        ShowUpdated();
         ShowUpdate();
         ShowScheduled();
         ShowDrift();
@@ -83,6 +84,20 @@ public sealed partial class HomePage : Page
         ShowScheduled();
     }
 
+    private void ShowUpdated()
+    {
+        var from = _app.UpdatedFromVersion;
+        UpdatedBar.IsOpen = from is not null;
+        UpdatedBar.Visibility = UpdatedBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        if (from is null) return;
+        UpdatedBar.Title = $"Clarion was updated to {AppServices.Version}";
+        UpdatedBar.Message = $"You were on {from}.";
+    }
+
+    private void OnUpdatedClosed(InfoBar sender, InfoBarClosedEventArgs args) => _app.AcknowledgeUpdated();
+
+    private void OnSeeWhatsNew(object sender, RoutedEventArgs e) => _app.RequestNavigate("whatsnew");
+
     private void ShowUpdate()
     {
         var offer = _app.UpdateAvailable;
@@ -90,7 +105,10 @@ public sealed partial class HomePage : Page
         UpdateBar.Visibility = UpdateBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (offer is null) return;
         UpdateBar.Title = $"{offer.Name} is available";
-        UpdateBar.Message = $"You have {AppServices.Version}. The button opens the release page in your browser. Clarion does not download or install anything itself.";
+        var count = _app.NewerReleases.Count;
+        UpdateBar.Message = count > 1
+            ? $"You have {AppServices.Version}, which is {count} releases behind. Clarion does not download or install anything itself."
+            : $"You have {AppServices.Version}. Clarion does not download or install anything itself.";
     }
 
     private void OnOpenUpdate(object sender, RoutedEventArgs e)

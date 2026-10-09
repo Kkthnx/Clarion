@@ -6,6 +6,8 @@ New
 - A welcome the first time Clarion opens on a PC where nothing has been applied: pick a starting point, see the list of what it would change, then apply it. Someone who already has settings applied is not welcomed.
 - Optional monthly check. A Windows scheduled task runs the read only check on the second Wednesday of each month, the day after Windows' monthly updates, and runs at the next start if the PC was off. The next time you open Clarion, Home says what had changed back. It changes nothing and sends nothing. Turn it on or off in Settings.
 - Update check. "Check for updates now" in Settings asks GitHub whether a newer version exists and links to its page. An automatic check at start up is available but off unless you turn it on. Clarion never downloads or installs anything itself.
+- A What's new page. Each release is a card on a timeline that opens to show what changed, grouped as New, Safer, Fixed and Polish with a colour for each. When a newer version exists the page says so at the top, shows the versions you would go from and to, and lists every release you missed. The release notes are read from the same file as this one, so the page and the notes cannot drift apart.
+- After Clarion is updated, Home says "Clarion was updated to" the new version once and links to What's new. A dot on the What's new menu item shows while there is something to read.
 - Command line commands that only look, and need no administrator rights: `--verify`, `--what-broke <symptom>` with `--since <date>`, `--list-symptoms` and `--history`. `--save` with `--verify` keeps the result for the next time Clarion is opened and exits with 0, since finding changes is not a failure.
 - What broke can be limited to changes made after a date ("it worked until roughly"), and when nothing explains the problem it names the usual other causes, including a customized Windows image on this PC.
 - Verify shows a progress bar and "Checking 12 of 50" while it works, and notes when Windows is waiting for a restart to finish an update. Home shows the same notice.
@@ -19,6 +21,7 @@ Safer
 
 Fixed
 - The theme and Expert mode were forgotten every time Clarion was closed. They are now remembered.
+- The notice that Clarion was updated could not fire, because the version number was not yet known when the saved settings were first read.
 - The date in the What broke command line text could show the day before the one you typed, depending on your time zone.
 - The source link check scanned only part of the catalog and treated a refused request as a failure.
 - A large test no longer fails on slow build machines.

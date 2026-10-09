@@ -18,6 +18,10 @@ namespace Clarion.App.Services;
 /// <summary>Holds the catalog, the engine and the queue of pending changes for the whole app.</summary>
 public sealed partial class AppServices : UiObservableObject
 {
+    // Declared before Instance on purpose. Static initializers run in order, and the constructor reads Version.
+    public static string Version { get; } =
+        (System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(System.Reflection.Assembly.GetEntryAssembly()!)?.InformationalVersion ?? "0.1.0").Split('+')[0];
+
     public static AppServices Instance { get; } = new();
 
     private readonly UserSettingsStore _settingsStore = new(Path.Combine(EngineFactory.DefaultDataDirectory, "settings.json"));
@@ -48,7 +52,17 @@ public sealed partial class AppServices : UiObservableObject
     {
         try
         {
-            var offer = await UpdateCheck.RunAsync(new GitHubReleaseSource(Version), Version);
+            // CLARION_RELEASES_JSON names a file to read the release list from instead of GitHub. It is for trying the update screens without
+            // publishing anything, and is not something people need.
+            var testFile = Environment.GetEnvironmentVariable("CLARION_RELEASES_JSON");
+            var json = testFile is { Length: > 0 } && File.Exists(testFile)
+                ? await File.ReadAllTextAsync(testFile)
+                : await new GitHubReleaseSource(Version).GetReleasesJsonAsync(default);
+            var releases = UpdateCheck.ParseReleases(json);
+            var offer = UpdateCheck.Newest(Version, releases);
+            // Every newer release, not only the latest, so someone who skipped a version can see what they missed.
+            NewerReleases = WhatsNew.FromReleases(UpdateCheck.NewerThan(Version, releases));
+            OnPropertyChanged(nameof(NewerReleases));
             UpdateSettings(s => s with { LastUpdateCheck = DateTimeOffset.UtcNow });
             // A version the person hid stays hidden for the automatic check. Pressing the button asks again on purpose.
             UpdateAvailable = offer is not null && (manual || UpdateCheck.ShouldShow(offer, Settings.DismissedUpdate)) ? offer : null;
@@ -75,7 +89,42 @@ public sealed partial class AppServices : UiObservableObject
         if (UpdateAvailable is not { } offer) return;
         UpdateSettings(s => s with { DismissedUpdate = offer.Tag });
         UpdateAvailable = null;
+        NewerReleases = [];
         OnPropertyChanged(nameof(UpdateAvailable));
+        OnPropertyChanged(nameof(NewerReleases));
+    }
+
+    /// <summary>The releases newer than this one found by the last check, newest first, with what changed in each.</summary>
+    public IReadOnlyList<ReleaseNotes> NewerReleases { get; private set; } = [];
+
+    /// <summary>The version this one replaced, when Clarion was updated since the person last looked. Otherwise null.</summary>
+    public string? UpdatedFromVersion { get; private set; }
+
+    /// <summary>
+    /// Compares the version running now with the one last seen. The first run on a PC just records it, so nobody is told they updated when
+    /// they only installed. A copy that was moved back to an older version is recorded quietly too.
+    /// </summary>
+    private void DetectUpdatedVersion()
+    {
+        var seen = Settings.LastSeenVersion;
+        var now = ReleaseVersion.Parse(Version);
+        var before = ReleaseVersion.Parse(seen);
+
+        if (before is null || now is null || now <= before)
+        {
+            if (seen != Version) UpdateSettings(s => s with { LastSeenVersion = Version });
+            return;
+        }
+        UpdatedFromVersion = seen;
+    }
+
+    /// <summary>Records that the person has seen what changed, so the "you updated" notice goes away.</summary>
+    public void AcknowledgeUpdated()
+    {
+        if (UpdatedFromVersion is null) return;
+        UpdatedFromVersion = null;
+        UpdateSettings(s => s with { LastSeenVersion = Version });
+        OnPropertyChanged(nameof(UpdatedFromVersion));
     }
 
     /// <summary>What Clarion remembers between runs. Change it with <see cref="UpdateSettings"/> so it is saved.</summary>
@@ -91,6 +140,7 @@ public sealed partial class AppServices : UiObservableObject
     {
         Settings = _settingsStore.Load();
         _expertMode = Settings.ExpertMode;
+        DetectUpdatedVersion();
         Runtime = EngineFactory.Create();
         Profile = Runtime.Profile;
         var tweaks = CatalogLoader.LoadEmbedded();
@@ -142,9 +192,6 @@ public sealed partial class AppServices : UiObservableObject
 
     public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
     public ActivityLog Activity { get; } = new();
-
-    public static string Version { get; } =
-        (System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(System.Reflection.Assembly.GetEntryAssembly()!)?.InformationalVersion ?? "0.1.0").Split('+')[0];
 
     private Clarion.Core.SystemInfo.SystemReport? _systemReport;
 
