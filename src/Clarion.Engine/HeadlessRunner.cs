@@ -87,8 +87,13 @@ public static class HeadlessRunner
         if (o.Preview || plan.ToApply.Count == 0) return 0;
 
         var result = runtime.Runner.Apply(plan.ToApply, runtime.Profile,
-            new BatchOptions { CreateRestorePoint = !o.NoRestorePoint, ContinueWithoutRestorePoint = o.NoRestorePoint }, say);
-        if (result.Blocked is not null) { say(result.Blocked); return 1; }
+            new BatchOptions { CreateRestorePoint = !o.NoRestorePoint, ContinueWithoutRestorePoint = o.NoRestorePoint, TurnOnSystemProtection = o.EnableProtection }, say);
+        if (result.Blocked is not null)
+        {
+            say(result.Blocked);
+            if (!o.EnableProtection) say("If System Protection is off, add --enable-protection to turn it on. Or add --no-restore-point to continue without one.");
+            return 1;
+        }
         foreach (var item in result.Items.Where(i => !i.Result.Success)) say($"  failed: {item.TweakId}: {item.Result.Error}");
         say(result.AllSucceeded ? "Done." : "Some settings did not finish.");
         return result.AllSucceeded ? 0 : 1;

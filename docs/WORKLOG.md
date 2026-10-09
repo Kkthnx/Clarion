@@ -154,3 +154,28 @@ since Clarion applied it, with apps that came back called out and a one click fi
 
 ### Open
 - Someone has to read the reports and update `lastVerifiedBuild` by hand. No tooling for that yet.
+
+## Second review: engine and safety layers
+
+Each claim was checked against the code and researched before changing anything.
+
+### 1. Restore point when System Protection is off (confirmed)
+- `EnableProtection` was only declared and implemented, never called. Confirmed by search.
+- Research: `Enable-ComputerRestore` is the documented fix for protection being off on the system
+  drive. A group policy (`DisableSR`, `DisableConfig`) can also block it, so a failed enable must
+  show its error. Sources did not give a reliable default storage size, so no figure is stated.
+- Built: `RestorePointExtensions.CreateEnsuring` (create, and if allowed enable protection and retry
+  once, reporting both errors if both fail). `BatchOptions.TurnOnSystemProtection`. Apply dialog
+  and Repair page ask: turn on and retry, continue without one, or cancel. CLI: `--enable-protection`.
+- The Repair page used to log "Restore point failed. Continuing." and carry on. It now asks first.
+- Nothing is turned on without the person choosing it.
+
+### 2. Update services wording (confirmed)
+- The telemetry entry said Clarion never touches the update services, but Reset Windows Update stops
+  and restarts them. Reworded to "None of the privacy settings turn off Windows Update".
+  DESIGN.md says update patches are never turned off, which is still true, so it was left.
+
+### 3. Partial batch failures (claim was wrong)
+- `BatchRunner` has no early exit. A failure at step 12 does not stop 13 to 30. A test now proves it.
+- The real gap was the wording. The panel said "N made, M did not finish" and left out settings that
+  were skipped. It now adds "K left as they were". The summary also says the others ran as normal.

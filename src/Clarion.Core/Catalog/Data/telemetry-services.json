@@ -32,7 +32,7 @@
     "facts": [
       "DiagTrack is the Connected User Experiences and Telemetry service",
       "dmwappushservice routes push messages used by diagnostics",
-      "Clarion never touches the Windows Update services",
+      "None of the privacy settings turn off Windows Update",
       "Windows may turn them back on after a big update and Clarion will flag it"
     ],
     "topic": "Diagnostics"

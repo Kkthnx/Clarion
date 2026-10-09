@@ -303,7 +303,7 @@ public sealed partial class AppServices : UiObservableObject
 
     public IReadOnlyList<string> AppliedIds() => Items.Where(i => i.IsApplied && i.IsSupported).Select(i => i.Id).ToList();
 
-    public async Task<BatchResult> ApplyPendingAsync(bool restorePoint, Action<string> log, Action<BatchStep>? step = null)
+    public async Task<BatchResult> ApplyPendingAsync(bool restorePoint, Action<string> log, Action<BatchStep>? step = null, bool turnOnProtection = false)
     {
         IsBusy = true;
         var toApply = Pending.Where(p => p.IsOn).Select(p => p.EffectiveTweak).ToList();
@@ -311,7 +311,7 @@ public sealed partial class AppServices : UiObservableObject
         var replacedGroups = toApply.Select(t => t.ExclusiveGroup).Where(g => g is not null).ToHashSet();
         var toRevert = Pending.Where(p => !p.IsOn && !(p.Tweak.ExclusiveGroup is not null && replacedGroups.Contains(p.Tweak.ExclusiveGroup)))
             .Select(p => p.Tweak).ToList();
-        var options = new BatchOptions { CreateRestorePoint = restorePoint, ContinueWithoutRestorePoint = !restorePoint, Step = step };
+        var options = new BatchOptions { CreateRestorePoint = restorePoint, ContinueWithoutRestorePoint = !restorePoint, Step = step, TurnOnSystemProtection = turnOnProtection };
 
         Action<string> both = msg => { Log.Write(msg); log(msg); };
         Log.Write($"Run started: {toApply.Count} to apply, {toRevert.Count} to revert, restore point {(restorePoint ? "on" : "off")}");

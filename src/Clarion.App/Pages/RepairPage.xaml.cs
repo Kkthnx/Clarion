@@ -1,3 +1,4 @@
+using Clarion.Core.Engine;
 using Clarion.Core.Model;
 using System.Text;
 using Clarion.App.Controls;
@@ -57,7 +58,36 @@ public sealed partial class RepairPage : Page
         };
         if (await confirm.ShowAsync() != ContentDialogResult.Primary) return;
 
+        if (item.Def.RestorePoint && !await MakeRestorePointAsync(item)) return;
         await RunWithLogAsync(item);
+    }
+
+    /// <summary>Makes the restore point before the job. If it fails the person decides: turn on System Protection and retry, go on without one, or stop.</summary>
+    private async Task<bool> MakeRestorePointAsync(ActionItem item)
+    {
+        var turnOn = false;
+        while (true)
+        {
+            _app.Status = "Creating a restore point";
+            var rp = await Task.Run(() => _app.Runtime.RestorePoints.CreateEnsuring($"Clarion {item.Name}", turnOn, Log.Write));
+            if (rp.Success) return true;
+
+            var dialog = new ContentDialog
+            {
+                Title = "No restore point",
+                Content = rp.Error + (turnOn
+                    ? "\n\nSystem Protection could not be turned on, or the restore point still failed. A policy on this PC can block it."
+                    : "\n\nSystem Protection is often off on a new Windows install. Clarion can turn it on for your system drive and try again. Restore points keep some disk space."),
+                PrimaryButtonText = turnOn ? "" : "Turn on System Protection and retry",
+                SecondaryButtonText = "Run without one",
+                CloseButtonText = "Cancel",
+                DefaultButton = turnOn ? ContentDialogButton.Close : ContentDialogButton.Primary,
+                XamlRoot = XamlRoot,
+            };
+            var choice = await dialog.ShowAsync();
+            if (choice == ContentDialogResult.Primary) { turnOn = true; continue; }
+            return choice == ContentDialogResult.Secondary;
+        }
     }
 
     private async Task RunWithLogAsync(ActionItem item)
@@ -123,12 +153,6 @@ public sealed partial class RepairPage : Page
         Clarion.Core.Actions.ActionResult result;
         try
         {
-            if (item.Def.RestorePoint)
-            {
-                status.Text = "Creating a restore point";
-                var rp = await Task.Run(() => _app.Runtime.RestorePoints.Create($"Clarion {item.Name}"));
-                Append(rp.Success ? "Restore point created." : $"Restore point failed: {rp.Error}. Continuing.");
-            }
             status.Text = "Running";
             result = await _app.Runtime.Actions.RunAsync(item.Def, Append, cts.Token);
         }

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- When a restore point cannot be made, Clarion now offers to turn on System Protection for the system drive and try again, in the apply dialog, on the Repair page and with `--enable-protection` on the command line. Nothing is changed unless you choose it.
+- The progress panel and the summary now say how many settings were made, how many did not finish and how many were left as they were. A failed setting never stops the ones after it.
+- Reworded a privacy fact that said Clarion never touches the Windows Update services. The privacy settings do not turn off Windows Update, and the Repair page has a separate Reset Windows Update job.
 - Report a problem can now include how each of your settings is holding up, taken from the last Verify scan. It is off by default, shown in full in the preview, and nothing is sent by Clarion. You open it on GitHub yourself, as before.
 - Release workflow that builds the setup program and zip on a version tag, with code signing steps that switch on once SignPath is set up. `build-installer.ps1` can now package an existing folder. Signing plan and blockers are in docs/SIGNING.md.
 - New What broke page. Pick what stopped working, such as search, notifications, the camera or websites, and Clarion lists the changes it made that could explain it, named ones first and newest first, each with a revert button. A test keeps the symptom list in step with the catalog.

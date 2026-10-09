@@ -9,6 +9,9 @@ public sealed record BatchOptions
     /// <summary>When creating the restore point fails, continue only if the user accepted the risk.</summary>
     public bool ContinueWithoutRestorePoint { get; init; }
 
+    /// <summary>When the restore point cannot be made, turn on System Protection for the system drive and try again.</summary>
+    public bool TurnOnSystemProtection { get; init; }
+
     /// <summary>Called as each setting starts and finishes, so a window or console can show live progress.</summary>
     public Action<BatchStep>? Step { get; init; }
 }
@@ -89,7 +92,7 @@ public sealed class BatchRunner(TweakEngine engine, IRestorePointService restore
         if (options.CreateRestorePoint)
         {
             log?.Invoke("Creating restore point");
-            var rp = restorePoints.Create($"Clarion {DateTime.Now:yyyy-MM-dd HH:mm}");
+            var rp = restorePoints.CreateEnsuring($"Clarion {DateTime.Now:yyyy-MM-dd HH:mm}", options.TurnOnSystemProtection, log);
             if (!rp.Success && !options.ContinueWithoutRestorePoint)
                 return new BatchResult(batch, items, $"No restore point, nothing was changed. {rp.Error}");
             if (!rp.Success) log?.Invoke($"Restore point failed, continuing by request: {rp.Error}");

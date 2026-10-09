@@ -54,3 +54,25 @@ public sealed class RestorePointService(IRegistryStore registry, IProcessRunner 
     private static string Sanitize(string text) =>
         new(text.Where(c => char.IsLetterOrDigit(c) || c is ' ' or ':' or '\\' or '-' or '_' or '.').ToArray());
 }
+
+public static class RestorePointExtensions
+{
+    /// <summary>The drive Windows is installed on, such as C:\, which is the one System Protection must cover.</summary>
+    public static string SystemDrive => (Environment.GetEnvironmentVariable("SystemDrive") ?? "C:").TrimEnd('\\') + "\\";
+
+    /// <summary>
+    /// Makes a restore point. When that fails and the person allowed it, turns on System Protection for the
+    /// system drive and tries once more. Windows often ships with protection off, and a policy can also block it,
+    /// so a failure to turn it on is reported together with the first error.
+    /// </summary>
+    public static TweakResult CreateEnsuring(this IRestorePointService service, string description, bool turnOnProtection, Action<string>? log = null)
+    {
+        var first = service.Create(description);
+        if (first.Success || !turnOnProtection) return first;
+
+        log?.Invoke($"Restore point failed: {first.Error}. Turning on System Protection for {SystemDrive}");
+        var on = service.EnableProtection(SystemDrive);
+        if (!on.Success) return TweakResult.Fail($"{first.Error} Turning on System Protection did not work either: {on.Error}");
+        return service.Create(description);
+    }
+}

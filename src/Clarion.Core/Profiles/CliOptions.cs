@@ -10,6 +10,7 @@ public sealed record CliOptions(
     IReadOnlyList<string>? Include = null,
     bool Preview = false,
     bool NoRestorePoint = false,
+    bool EnableProtection = false,
     string? Error = null)
 {
     public bool IsCli => Mode != CliMode.None;
@@ -21,7 +22,7 @@ public sealed record CliOptions(
         string? file = null, preset = null;
         var only = new List<string>();
         var include = new List<string>();
-        bool preview = false, noRp = false;
+        bool preview = false, noRp = false, enableProtection = false;
 
         for (var i = 0; i < args.Count; i++)
         {
@@ -48,11 +49,12 @@ public sealed record CliOptions(
                 case "--include": include.AddRange(Split(Next())); break;
                 case "--preview": preview = true; break;
                 case "--no-restore-point": noRp = true; break;
+                case "--enable-protection": enableProtection = true; break;
                 default:
                     return a.StartsWith('-') || a.StartsWith('/') ? Fail($"Unknown option {a}. Use --help.") : new CliOptions(CliMode.None);
             }
         }
-        return new CliOptions(mode, file, preset, only, include, preview, noRp);
+        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection);
     }
 
     private static IEnumerable<string> Split(string? value) =>
@@ -63,7 +65,7 @@ public sealed record CliOptions(
     public const string HelpText = """
         Clarion command line
 
-          Clarion.exe --apply setup.json [--preview] [--no-restore-point]
+          Clarion.exe --apply setup.json [--preview] [--no-restore-point] [--enable-protection]
           Clarion.exe --apply-preset minimal|standard|advanced|gaming|privacy [--preview]
           Clarion.exe --clean [--only a,b] [--include c,d] [--preview]
           Clarion.exe --list-presets
@@ -71,6 +73,7 @@ public sealed record CliOptions(
 
         --preview           show what would change and change nothing
         --no-restore-point  skip the System Restore point
+        --enable-protection turn on System Protection if it is off, so the restore point can be made
         --only / --include  cleanup row names, such as shaders.nvidia,windows.temp
 
         Exit codes: 0 done, 1 some items did not finish, 2 bad input, 3 needs administrator rights.

@@ -226,7 +226,7 @@ public sealed partial class MainWindow : Window
         await RunAsync(restore.IsChecked == true);
     }
 
-    private async Task RunAsync(bool restorePoint)
+    private async Task RunAsync(bool restorePoint, bool turnOnProtection = false)
     {
         var restartsExplorer = _app.Pending.Any(p => p.Tweak.RestartsExplorer);
         var needsReboot = _app.Pending.Any(p => p.Tweak.NeedsReboot);
@@ -235,21 +235,28 @@ public sealed partial class MainWindow : Window
         Activity.Start(restorePoint ? "Applying changes, making a restore point first" : "Applying changes");
         var result = await _app.ApplyPendingAsync(restorePoint,
             msg => DispatcherQueue.TryEnqueue(() => { _app.Status = msg; Activity.Info(msg); }),
-            step => DispatcherQueue.TryEnqueue(() => Activity.Step(step)));
+            step => DispatcherQueue.TryEnqueue(() => Activity.Step(step)),
+            turnOnProtection);
         if (result.Blocked is not null) Activity.Close();
-        else Activity.Finish(result.Items.Count(i => i.Result.Success && !i.Skipped), result.Items.Count(i => !i.Result.Success));
+        else Activity.Finish(result.Items.Count(i => i.Result.Success && !i.Skipped), result.Items.Count(i => !i.Result.Success), result.Items.Count(i => i.Skipped && i.Result.Success));
 
         if (result.Blocked is not null)
         {
             var retry = new ContentDialog
             {
                 Title = "No restore point, nothing was changed",
-                Content = result.Blocked + "\n\nYou can turn on System Protection for your system drive and try again, or continue without a restore point.",
-                PrimaryButtonText = "Continue without one",
+                Content = result.Blocked + (turnOnProtection
+                    ? "\n\nSystem Protection could not be turned on, or the restore point still failed. A policy on this PC can block it."
+                    : "\n\nSystem Protection is often off on a new Windows install. Clarion can turn it on for your system drive and try again. Restore points keep some disk space."),
+                PrimaryButtonText = turnOnProtection ? "" : "Turn on System Protection and retry",
+                SecondaryButtonText = "Continue without one",
                 CloseButtonText = "Cancel",
+                DefaultButton = turnOnProtection ? ContentDialogButton.Close : ContentDialogButton.Primary,
                 XamlRoot = Content.XamlRoot,
             };
-            if (await retry.ShowAsync() == ContentDialogResult.Primary) await RunAsync(restorePoint: false);
+            var choice = await retry.ShowAsync();
+            if (choice == ContentDialogResult.Primary) await RunAsync(restorePoint: true, turnOnProtection: true);
+            else if (choice == ContentDialogResult.Secondary) await RunAsync(restorePoint: false);
             return;
         }
 
@@ -264,7 +271,9 @@ public sealed partial class MainWindow : Window
         var failed = result.Items.Where(i => !i.Result.Success).ToList();
 
         var body = new StackPanel { Spacing = 10 };
-        body.Children.Add(new TextBlock { Text = failed.Count == 0 ? $"{done} change{(done == 1 ? "" : "s")} done." : $"{done} done, {failed.Count} did not finish.", TextWrapping = TextWrapping.Wrap });
+        var untouched = result.Items.Count(i => i.Skipped && i.Result.Success);
+        var rest = untouched > 0 ? $" {untouched} {(untouched == 1 ? "was" : "were")} left as {(untouched == 1 ? "it was" : "they were")} (already on)." : "";
+        body.Children.Add(new TextBlock { Text = (failed.Count == 0 ? $"{done} change{(done == 1 ? "" : "s")} done." : $"{done} done, {failed.Count} did not finish. The others ran as normal.") + rest, TextWrapping = TextWrapping.Wrap });
         foreach (var f in failed)
         {
             var name = _app.Items.FirstOrDefault(i => i.Id == f.TweakId)?.Name ?? f.TweakId;

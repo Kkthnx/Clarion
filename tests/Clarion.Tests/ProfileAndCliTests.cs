@@ -72,6 +72,14 @@ public sealed class ProfileAndCliTests
     }
 
     [Fact]
+    public void The_enable_protection_switch_is_read_and_off_by_default()
+    {
+        Assert.True(CliOptions.Parse(["--apply", "s.json", "--enable-protection"]).EnableProtection);
+        Assert.False(CliOptions.Parse(["--apply", "s.json"]).EnableProtection);
+        Assert.Contains("--enable-protection", CliOptions.HelpText);
+    }
+
+    [Fact]
     public void Switches_and_lists_are_read()
     {
         var o = CliOptions.Parse(["--clean", "--only", "a, b", "--include", "c", "--preview", "--no-restore-point"]);

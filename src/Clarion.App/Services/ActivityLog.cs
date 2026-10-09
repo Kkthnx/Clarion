@@ -139,13 +139,14 @@ public sealed class ActivityLog : UiObservableObject
         Value = step.Index;
     }
 
-    public void Finish(int done, int failed)
+    public void Finish(int done, int failed, int untouched = 0)
     {
         foreach (var l in Lines.Where(l => l.State == LineState.Running)) l.State = LineState.Done;
         IsRunning = false;
         Value = Total;
         OnPropertyChanged(nameof(Indeterminate));
         Title = failed == 0 ? "All done" : "Finished with problems";
-        ProgressText = failed == 0 ? $"{done} change{(done == 1 ? "" : "s")} made" : $"{done} made, {failed} did not finish";
+        var rest = untouched > 0 ? $", {untouched} left as they were" : "";
+        ProgressText = failed == 0 ? $"{done} change{(done == 1 ? "" : "s")} made{rest}" : $"{done} made, {failed} did not finish{rest}";
     }
 }

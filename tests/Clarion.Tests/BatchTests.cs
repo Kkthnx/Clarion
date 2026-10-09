@@ -60,6 +60,83 @@ public sealed class BatchTests : IDisposable
         Assert.False(_reg.Read(Freq).Exists);
     }
 
+    private bool _protectionOn;
+
+    private void ProtectionStartsOff()
+    {
+        _protectionOn = false;
+        _proc.Respond = args =>
+        {
+            var script = PowerShellHost.Decode(args);
+            if (script.Contains("Enable-ComputerRestore")) { _protectionOn = true; return new ProcessResult(0, "", ""); }
+            return _protectionOn ? new ProcessResult(0, "", "") : new ProcessResult(1, "", "System Restore is turned off");
+        };
+    }
+
+    private int CallsTo(string cmdlet) => _proc.Calls.Count(c => PowerShellHost.Decode(c.Split(' ', 2)[1]).Contains(cmdlet));
+
+    [Fact]
+    public void System_protection_is_turned_on_and_the_restore_point_retried_when_allowed()
+    {
+        ProtectionStartsOff();
+        var tweak = UserTweak();
+
+        var result = Runner().Apply([tweak], Win11, new BatchOptions { TurnOnSystemProtection = true });
+
+        Assert.True(result.AllSucceeded);
+        Assert.Null(result.Blocked);
+        Assert.Equal(1, CallsTo("Enable-ComputerRestore"));
+        Assert.Equal(2, CallsTo("Checkpoint-Computer"));
+    }
+
+    [Fact]
+    public void System_protection_is_left_alone_unless_the_person_allowed_it()
+    {
+        ProtectionStartsOff();
+
+        var result = Runner().Apply([UserTweak()], Win11, new BatchOptions());
+
+        Assert.NotNull(result.Blocked);
+        Assert.Equal(0, CallsTo("Enable-ComputerRestore"));
+    }
+
+    [Fact]
+    public void Nothing_is_changed_and_both_errors_are_shown_when_protection_cannot_be_turned_on()
+    {
+        _proc.Respond = args => PowerShellHost.Decode(args).Contains("Enable-ComputerRestore")
+            ? new ProcessResult(1, "", "Blocked by group policy")
+            : new ProcessResult(1, "", "System Restore is turned off");
+
+        var result = Runner().Apply([UserTweak()], Win11, new BatchOptions { TurnOnSystemProtection = true });
+
+        Assert.Contains("turned off", result.Blocked);
+        Assert.Contains("Blocked by group policy", result.Blocked);
+        Assert.False(_reg.Read(new RegistryTarget(RegistryHive.CurrentUser, "Software\\T", "u.one")).Exists);
+    }
+
+    [Fact]
+    public void Protection_is_not_touched_when_the_restore_point_works_the_first_time()
+    {
+        var result = Runner().Apply([UserTweak()], Win11, new BatchOptions { TurnOnSystemProtection = true });
+
+        Assert.True(result.AllSucceeded);
+        Assert.Equal(0, CallsTo("Enable-ComputerRestore"));
+    }
+
+    [Fact]
+    public void A_failed_setting_does_not_stop_the_ones_after_it_and_is_reported_on_its_own()
+    {
+        _reg.FailWrite = t => t.Name == "u.two";
+
+        var result = Runner().Apply([UserTweak("u.one"), UserTweak("u.two"), UserTweak("u.three")], Win11, new BatchOptions { CreateRestorePoint = false });
+
+        Assert.False(result.AllSucceeded);
+        Assert.Equal(3, result.Items.Count);
+        Assert.Equal([true, false, true], result.Items.Select(i => i.Result.Success));
+        Assert.True(_reg.Read(new RegistryTarget(RegistryHive.CurrentUser, "Software\\T", "u.three")).Exists);
+        Assert.False(_reg.Read(new RegistryTarget(RegistryHive.CurrentUser, "Software\\T", "u.two")).Exists);
+    }
+
     [Fact]
     public void Failed_restore_point_blocks_the_batch_unless_user_accepts_risk()
     {
