@@ -225,6 +225,22 @@ public sealed class ThirdPassTests : IDisposable
     }
 
     [Fact]
+    public void The_list_commands_print_every_setting_and_cleanup_row_by_the_name_the_commands_take()
+    {
+        Assert.Equal(CliMode.ListSettings, CliOptions.Parse(["--list-settings"]).Mode);
+        Assert.Equal(CliMode.ListCleanups, CliOptions.Parse(["--list-cleanups"]).Mode);
+
+        var settings = CliReports.Settings(CatalogLoader.LoadEmbedded());
+        foreach (var t in CatalogLoader.LoadEmbedded()) Assert.Contains(t.Id, settings);
+        var cleanups = CliReports.Cleanups(CatalogLoader.LoadCleanup());
+        foreach (var c in CatalogLoader.LoadCleanup()) Assert.Contains(c.Id, cleanups);
+
+        // The examples in the help text must be real names, or the first thing a person copies would fail.
+        foreach (var example in new[] { "shaders.nvidia", "windows.temp" })
+            Assert.Contains(CatalogLoader.LoadCleanup(), c => c.Id == example);
+    }
+
+    [Fact]
     public void The_help_text_lists_the_read_only_commands()
     {
         foreach (var word in new[] { "--verify", "--what-broke", "--since", "--list-symptoms", "--history" })

@@ -35,6 +35,11 @@ public sealed class RestorePointService(IRegistryStore registry, IProcessRunner 
                 ? TweakResult.Ok()
                 : TweakResult.Fail(PowerShellHost.FirstLine(result.Error, result.Output, "Restore point failed."));
         }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            // PowerShell could not be started, which is a failure to report, not a crash.
+            return TweakResult.Fail($"PowerShell could not be started. {ex.Message}");
+        }
         finally
         {
             if (prior.Exists && prior.Data is not null) registry.Write(Frequency, prior.Data);
@@ -45,10 +50,17 @@ public sealed class RestorePointService(IRegistryStore registry, IProcessRunner 
     public TweakResult EnableProtection(string drive)
     {
         var safe = Sanitize(drive);
-        var result = runner.Run("powershell.exe", PowerShellHost.ToArguments($"Enable-ComputerRestore -Drive '{safe}' -ErrorAction Stop"), Timeout);
-        return result.ExitCode == 0
-            ? TweakResult.Ok()
-            : TweakResult.Fail(PowerShellHost.FirstLine(result.Error, result.Output, "Could not turn on System Protection."));
+        try
+        {
+            var result = runner.Run("powershell.exe", PowerShellHost.ToArguments($"Enable-ComputerRestore -Drive '{safe}' -ErrorAction Stop"), Timeout);
+            return result.ExitCode == 0
+                ? TweakResult.Ok()
+                : TweakResult.Fail(PowerShellHost.FirstLine(result.Error, result.Output, "Could not turn on System Protection."));
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            return TweakResult.Fail($"PowerShell could not be started. {ex.Message}");
+        }
     }
 
     private static string Sanitize(string text) =>

@@ -1,6 +1,6 @@
 namespace Clarion.Core.Profiles;
 
-public enum CliMode { None, Help, Version, Apply, Clean, ListPresets, Verify, WhatBroke, ListSymptoms, History }
+public enum CliMode { None, Help, Version, Apply, Clean, ListPresets, Verify, WhatBroke, ListSymptoms, History, ListSettings, ListCleanups }
 
 public sealed record CliOptions(
     CliMode Mode,
@@ -60,6 +60,8 @@ public sealed record CliOptions(
                 case "--save": saveReport = true; break;
                 case "--history": mode = CliMode.History; break;
                 case "--list-symptoms": mode = CliMode.ListSymptoms; break;
+                case "--list-settings": mode = CliMode.ListSettings; break;
+                case "--list-cleanups": mode = CliMode.ListCleanups; break;
                 case "--what-broke":
                     mode = CliMode.WhatBroke;
                     symptom = Next();
@@ -94,12 +96,15 @@ public sealed record CliOptions(
           Clarion.exe --list-symptoms
           Clarion.exe --history
           Clarion.exe --list-presets
+          Clarion.exe --list-settings
+          Clarion.exe --list-cleanups
           Clarion.exe --version
 
         --preview           show what would change and change nothing
         --no-restore-point  skip the System Restore point
         --enable-protection turn on System Protection if it is off, so the restore point can be made
-        --only / --include  cleanup row names, such as shaders.nvidia,windows.temp
+        --only / --include  cleanup row names, such as shaders.nvidia,windows.temp. --list-cleanups shows them all
+        --list-settings     list every setting with the name a setup file uses for it
 
         --verify            read only: check what Clarion applied against Windows now. Exit code 1 when something changed back
         --save              with --verify, keep the result so Clarion can show it next time it is opened. The exit code is then 0, since finding changes is not a failure (the monthly check uses this)

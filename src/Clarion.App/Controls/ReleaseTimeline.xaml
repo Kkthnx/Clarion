@@ -24,6 +24,7 @@
                     </Grid>
 
                     <Expander Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsExpanded="{x:Bind IsExpanded}"
+                              AutomationProperties.Name="{x:Bind AccessibleName}"
                               Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}" CornerRadius="8">
                         <Expander.Header>
                             <StackPanel Spacing="3" Padding="0,8,0,8">

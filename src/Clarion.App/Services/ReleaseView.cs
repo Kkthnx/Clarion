@@ -15,6 +15,9 @@ public sealed record ReleaseVm(
     public bool HasGroups => Groups.Count > 0;
     public bool HasNoGroups => Groups.Count == 0;
     public bool HasUrl => Url is not null;
+
+    /// <summary>What a screen reader says for the card, since its header is built from several parts and has no text of its own.</summary>
+    public string AccessibleName => ShowBadge ? $"{Version}, {BadgeText}, {Summary}" : $"{Version}, {Summary}";
 }
 
 public static class ReleaseViews

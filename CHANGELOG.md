@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+New
+- A setting to turn off Notepad's AI features, using the policy Microsoft documents for it. Needs Notepad 11.2503.16.0 or later.
+- `--list-settings` and `--list-cleanups` print every setting and cleanup row with the name that setup files, `--only` and `--include` use.
+
+Fixed
+- A repair job whose tool could not be started, for example because it is missing or blocked, left its window open with no way to close it. It now ends as a failed job with the reason, and the steps that put services back still run.
+- Making a restore point failed with a crash instead of the usual "No restore point" choices when PowerShell could not be started.
+- On a small screen with large text scaling the window could not be made short enough to keep the bottom bar on screen.
+- Screen readers read the symptom list on What broke and the release cards on What's new with no name.
+- Each scan or clean on the Clean up page left its cancellation object behind.
+
 ## 0.1.0-beta.5
 
 New

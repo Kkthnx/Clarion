@@ -465,3 +465,25 @@ Idea taken from the way phone apps show an update: a clear "an update is availab
 ### How it was tried
 - `CLARION_RELEASES_JSON` points the update check at a local file instead of GitHub, so the update screens can be seen without publishing a
   release. A data folder with an older `LastSeenVersion` gives the "updated" notice. Checked in dark and light themes.
+
+## Research and bug pass after beta 5
+
+### Measured, nothing to fix
+- Memory over 16 rounds through every page: private memory 130 MB to 187 MB, with growth falling from about 10 MB a round to about 1 MB a round and handles dropping back when the garbage collector ran. That is warm up and lazy collection, not a leak. Pages that subscribe to shared objects already unsubscribe on unload.
+- Screen reader names: a UI Automation sweep of every page found two unnamed controls (the symptom list and the release cards). Both fixed, sweep now clean.
+- The catalog already has every Windows AI policy that applies to Pro on a shipped build. Click to Do, the Settings agent and Copilot app removal are Insider or Enterprise only in Microsoft's policy reference, so they were left out.
+- Setup file save and load already exist (Settings, Your setup), so that gap from the comparison with O&O ShutUp10++ and WinUtil was not real.
+
+### Found and fixed
+- A tool that cannot start (Win32Exception) escaped the repair runner. Proved with a failing test first. In the app that left the repair dialog open with no way to close it and the page stuck "running". The runner now reports it as a failed job, the "always" steps still run, and the page ends the dialog whatever happens.
+- Same hole in the restore point service (PowerShell cannot start). Now a reported failure, and the frequency value is still put back.
+- Window minimum size is clamped to the work area. 580 scaled pixels at 200% on a 1080p screen is taller than the screen.
+- Cleanup scan and clean left their cancellation sources undisposed.
+
+### Added from research
+- Notepad AI policy. Microsoft's Notepad management page gives `DisableAIFeatures` = 1 under `HKLM\SOFTWARE\Policies\WindowsNotepad`, for Windows 11 22H2 and later and Notepad 11.2503.16.0 or later. Notepad is not installed on this PC, so only the registry round trip was checked here (write, read as DWORD, delete), not Notepad's behaviour.
+- `--list-settings` and `--list-cleanups`, because setup files and `--only` need names and nothing listed them.
+
+### Looked at and left
+- Analyzer run with all rules: most output is style. The real ones were the items above. `HttpClient` use is disposed. Dates written for machines (Task Scheduler XML) already use the invariant culture.
+- A startup apps page: Windows Settings and Task Manager already do it, and the registry format is only documented by the community, so the value is low.

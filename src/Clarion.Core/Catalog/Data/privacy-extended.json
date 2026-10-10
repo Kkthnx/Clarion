@@ -2100,6 +2100,47 @@
     ]
   },
   {
+    "id": "ai.notepad-ai-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Copilot and Recall",
+    "name": "Turn off Notepad AI features",
+    "summary": "Remove Rewrite, Summarize and the other AI features from Notepad.",
+    "what": "Applies Microsoft's Notepad policy that disables its AI features for every account.",
+    "benefit": "Notepad stays a plain text editor and sends no text to an online AI service.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use Notepad's AI features.",
+    "facts": [
+      "Applies to every account",
+      "Needs Notepad 11.2503.16.0 or later",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22621
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\WindowsNotepad",
+          "name": "DisableAIFeatures"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/manage-notepad"
+    ]
+  },
+  {
     "id": "defender.maps-off",
     "lastVerifiedBuild": 26200,
     "category": "Security",

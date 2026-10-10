@@ -36,8 +36,9 @@ public sealed class ActionRunner(IStreamingRunner runner, Func<string, string>? 
             log("Stopped.");
             outcome = new ActionResult(false, "Stopped by you.", freed, DateTime.UtcNow - started, Cancelled: true);
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or System.ComponentModel.Win32Exception)
         {
+            // Win32Exception is what starting a tool throws when it is missing or blocked.
             outcome = Fail(ex.Message, freed, started);
         }
         finally
@@ -45,7 +46,7 @@ public sealed class ActionRunner(IStreamingRunner runner, Func<string, string>? 
             foreach (var step in action.Always)
             {
                 try { await RunStepAsync(step, log, CancellationToken.None, v => freed += v); }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException) { log($"Cleanup step failed: {ex.Message}"); }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or System.ComponentModel.Win32Exception) { log($"Cleanup step failed: {ex.Message}"); }
             }
         }
         return outcome! with { BytesFreed = freed };

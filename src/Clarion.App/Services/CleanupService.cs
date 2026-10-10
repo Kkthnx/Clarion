@@ -56,15 +56,16 @@ public sealed class CleanupService : UiObservableObject
     {
         IsBusy = true;
         Status = "Scanning";
-        _cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
+        _cts = cts;
         try
         {
             await Task.Run(() =>
             {
                 foreach (var item in Items)
                 {
-                    _cts.Token.ThrowIfCancellationRequested();
-                    var scan = _engine.Scan(item.Target, _cts.Token);
+                    cts.Token.ThrowIfCancellationRequested();
+                    var scan = _engine.Scan(item.Target, cts.Token);
                     item.Scan = scan;
                     item.Result = null;
                     if (!item.CanSelect) item.IsChecked = false;
@@ -79,6 +80,7 @@ public sealed class CleanupService : UiObservableObject
         }
         finally
         {
+            _cts = null;
             IsBusy = false;
             OnPropertyChanged(nameof(SelectedBytes));
         }
@@ -97,7 +99,8 @@ public sealed class CleanupService : UiObservableObject
         IsBusy = true;
         FreedLive = 0;
         FilesLive = 0;
-        _cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
+        _cts = cts;
         var started = DateTime.UtcNow;
         var expert = AppServices.Instance.ExpertMode;
         var chosen = Items.Where(i => i.IsChecked && i.CanSelect && (expert || !i.Target.ExpertOnly)).ToList();
@@ -114,7 +117,7 @@ public sealed class CleanupService : UiObservableObject
             {
                 foreach (var item in chosen)
                 {
-                    _cts.Token.ThrowIfCancellationRequested();
+                    cts.Token.ThrowIfCancellationRequested();
                     item.IsBusy = true;
                     var seen = 0;
                     var result = _engine.Clean(item.Target, queueDriverFiles, preview, file =>
@@ -123,7 +126,7 @@ public sealed class CleanupService : UiObservableObject
                         lastUi = DateTime.UtcNow;
                         CurrentFile = file;
                         FilesLive = deleted + seen;
-                    }, _cts.Token);
+                    }, cts.Token);
                     item.IsBusy = false;
                     item.Result = result;
                     freed += result.BytesFreed;
@@ -143,6 +146,7 @@ public sealed class CleanupService : UiObservableObject
         }
         finally
         {
+            _cts = null;
             foreach (var i in Items) i.IsBusy = false;
             IsBusy = false;
             CurrentFile = "";

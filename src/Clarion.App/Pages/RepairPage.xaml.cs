@@ -93,7 +93,7 @@ public sealed partial class RepairPage : Page
     private async Task RunWithLogAsync(ActionItem item)
     {
         _running = true;
-        var cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
         var builder = new StringBuilder();
         var dirty = false;
 
@@ -155,6 +155,12 @@ public sealed partial class RepairPage : Page
         {
             status.Text = "Running";
             result = await _app.Runtime.Actions.RunAsync(item.Def, Append, cts.Token);
+        }
+        catch (Exception ex)
+        {
+            // Anything the runner did not expect still ends the dialog cleanly. Otherwise it stays open with no way to close it.
+            Log.Write($"repair {item.Def.Id}: {ex}");
+            result = new Clarion.Core.Actions.ActionResult(false, ex.Message, 0, TimeSpan.Zero);
         }
         finally
         {

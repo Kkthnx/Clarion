@@ -188,6 +188,22 @@ public sealed class BatchTests : IDisposable
     }
 
     [Fact]
+    public void A_restore_point_that_cannot_start_powershell_is_a_failure_and_the_frequency_value_is_put_back()
+    {
+        _reg.Write(Freq, new RegistryData(RegistryKind.DWord, "1440"));
+        _proc.Respond = _ => throw new System.ComponentModel.Win32Exception(5, "Access is denied");
+        var svc = new RestorePointService(_reg, _proc);
+
+        var made = svc.Create("Clarion test");
+        var enabled = svc.EnableProtection("C:\\");
+
+        Assert.False(made.Success);
+        Assert.Contains("could not be started", made.Error);
+        Assert.False(enabled.Success);
+        Assert.Equal("1440", _reg.Read(Freq).Data!.Value);
+    }
+
+    [Fact]
     public void Revert_batch_restores_values()
     {
         var tweak = UserTweak();

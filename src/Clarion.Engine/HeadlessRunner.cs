@@ -48,6 +48,12 @@ public static class HeadlessRunner
             case CliMode.ListPresets:
                 foreach (var (name, ids) in CatalogLoader.LoadPresets()) Say($"{name} ({ids.Count} settings)");
                 return 0;
+            case CliMode.ListSettings:
+                Say(Core.Reports.CliReports.Settings(CatalogLoader.LoadEmbedded()));
+                return 0;
+            case CliMode.ListCleanups:
+                Say(Core.Reports.CliReports.Cleanups(CatalogLoader.LoadCleanup()));
+                return 0;
             case CliMode.ListSymptoms:
                 Say(Core.Reports.CliReports.Symptoms(CatalogLoader.LoadSymptoms()));
                 return 0;

@@ -12,7 +12,7 @@
                            Text="Pick what stopped working. Clarion lists the changes it made that could explain it, newest first, so you can undo them one at a time." />
             </StackPanel>
 
-            <ComboBox x:Name="SymptomBox" Width="640" PlaceholderText="What is not working?" SelectionChanged="OnSymptomChanged" />
+            <ComboBox x:Name="SymptomBox" Width="640" PlaceholderText="What is not working?" AutomationProperties.Name="What is not working" SelectionChanged="OnSymptomChanged" />
 
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <CalendarDatePicker x:Name="WorkedUntil" PlaceholderText="It worked until roughly (optional)" DateChanged="OnDateChanged"

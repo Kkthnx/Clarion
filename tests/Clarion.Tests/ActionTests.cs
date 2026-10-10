@@ -11,6 +11,7 @@ public sealed class FakeStreamingRunner : IStreamingRunner
     public List<string> Calls { get; } = [];
     public Dictionary<string, int> ExitCodes { get; } = new(StringComparer.OrdinalIgnoreCase);
     public Func<string, bool>? CancelOn { get; set; }
+    public Func<string, Exception?>? ThrowOn { get; set; }
     public string[] Lines { get; set; } = [];
 
     public Task<int> RunAsync(string systemTool, string args, bool utf16, Action<string> onLine, CancellationToken cancel)
@@ -19,6 +20,7 @@ public sealed class FakeStreamingRunner : IStreamingRunner
         Calls.Add(key);
         foreach (var l in Lines) onLine(l);
         if (CancelOn?.Invoke(key) == true) throw new OperationCanceledException();
+        if (ThrowOn?.Invoke(key) is { } boom) throw boom;
         return Task.FromResult(ExitCodes.TryGetValue(key, out var code) ? code : 0);
     }
 }
@@ -72,6 +74,21 @@ public sealed class ActionTests : IDisposable
         Assert.False(result.Success);
         Assert.Contains("netsh.exe", result.Error);
         Assert.Single(_fake.Calls);
+    }
+
+    [Fact]
+    public async Task A_tool_that_cannot_start_is_a_failed_run_not_a_crash_and_the_always_steps_still_run()
+    {
+        // Process.Start throws Win32Exception when the tool is missing or blocked, which happens on stripped images and under some security software.
+        _fake.ThrowOn = k => k.StartsWith("wsreset.exe", StringComparison.Ordinal) ? new System.ComponentModel.Win32Exception(2, "The system cannot find the file specified") : null;
+        var always = new ActionStep[] { new RunProcess("net.exe", "start wuauserv", [0, 2]) };
+
+        var result = await _runner.RunAsync(Make([new RunProcess("wsreset.exe", "")], always), _log.Add, default);
+
+        Assert.False(result.Success);
+        Assert.False(result.Cancelled);
+        Assert.Contains("cannot find the file", result.Error);
+        Assert.Contains("net.exe start wuauserv", _fake.Calls);
     }
 
     [Fact]

@@ -52,6 +52,15 @@ public static class CliReports
         return sb.ToString().TrimEnd();
     }
 
+    /// <summary>Every setting with the name a setup file uses for it, grouped by category, so a file can be written by hand.</summary>
+    public static string Settings(IEnumerable<Tweak> tweaks) =>
+        string.Join(Environment.NewLine, tweaks.OrderBy(t => t.Category, StringComparer.Ordinal).ThenBy(t => t.Id, StringComparer.Ordinal)
+            .Select(t => $"{t.Id,-44} {t.Category,-9} {t.Name}"));
+
+    /// <summary>Every cleanup row with the name --only and --include take.</summary>
+    public static string Cleanups(IEnumerable<Clarion.Core.Cleanup.CleanTarget> targets) =>
+        string.Join(Environment.NewLine, targets.Select(t => $"{t.Id,-28} {t.Name}"));
+
     public static string Symptoms(IEnumerable<Symptom> symptoms) =>
         string.Join(Environment.NewLine, symptoms.Select(s => $"{s.Id,-22} {s.Title}"));
 

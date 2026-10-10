@@ -116,8 +116,10 @@ public sealed partial class MainWindow : Window
         if (appWindow.Presenter is OverlappedPresenter presenter)
         {
             var scale = GetDpiForWindow(hwnd) / 96.0;
-            presenter.PreferredMinimumWidth = (int)(860 * scale);
-            presenter.PreferredMinimumHeight = (int)(580 * scale);
+            // Never ask for more than the screen has. At 200% scaling on a 1080p screen 580 scaled pixels is taller than the work area,
+            // and a window that cannot be made smaller would push the bottom bar off the screen.
+            presenter.PreferredMinimumWidth = Math.Min((int)(860 * scale), area.Width);
+            presenter.PreferredMinimumHeight = Math.Min((int)(580 * scale), area.Height);
         }
     }
 
