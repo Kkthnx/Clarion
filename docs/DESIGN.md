@@ -1,6 +1,6 @@
 # Clarion Design and Approach
 
-> **Status.** This is the original design. Where it differs from what ships, the README, CHANGELOG and docs/WORKLOG.md are right. Not built yet: registry `.reg` exports before a change (the journal records the previous value instead), ARM64 builds, an MSIX build, localization, and code signing. Administrator rights are asked for when the window opens, not through the manifest.
+> **Status.** This is the original design. Where it differs from what ships, the README and CHANGELOG are right. Not built yet: registry `.reg` exports before a change (the journal records the previous value instead), ARM64 builds, an MSIX build, localization, and code signing. Administrator rights are asked for when the window opens, not through the manifest.
 
 ## 1. Goals
 

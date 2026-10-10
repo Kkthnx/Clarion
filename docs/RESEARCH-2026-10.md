@@ -6,7 +6,7 @@ Tested build: 0.1.0-beta.9 (`cc39d86`) on Windows 11 Pro 25H2, build 26200.9457.
 
 ## Status
 
-Done after this was written (details in docs/WORKLOG.md): finding 1 (app data warning, Sticky Notes rated Medium), finding 2 (the command line is now tested through the real program), finding 3 (Windows tools started by full path), finding 4 (two restore points in a row confirmed on a real PC), the installer (installed, checked and uninstalled for real), high contrast (the theme file is now checked by tests), and Atlas and ReviOS naming (read from their playbooks, see docs/CUSTOM-IMAGES.md). Still open: the update pause undo, seeing the taskbar bar, the licence page of the installer, and high contrast on screen.
+Done after this was written: finding 1 (app data warning, Sticky Notes rated Medium), finding 2 (the command line is now tested through the real program), finding 3 (Windows tools started by full path), finding 4 (two restore points in a row confirmed on a real PC), the installer (installed, checked and uninstalled for real), high contrast (the theme file is now checked by tests), and Atlas and ReviOS naming (read from their playbooks, see docs/CUSTOM-IMAGES.md). Still open: the update pause undo, seeing the taskbar bar, the licence page of the installer, and high contrast on screen.
 
 ## What was checked and found fine
 
@@ -43,7 +43,7 @@ Per account settings (winutil 4637, Clarion records the account), "already remov
 ## Looked at and not recommended
 
 - **Block or wipe the Windows Global Device Identifier (GDID).** A real and recent topic (a VPN vendor's `deGDID` script and the `no-gdid` project). The mitigations rely on registry permission changes, hosts file blocking and clearing sign-in caches, which their own authors say can affect licensing, Microsoft Store, Xbox, Outlook and sync. No Microsoft policy exists for it. The sources are a VPN vendor and third party testers. That fails the catalog rule (vendor documentation, or a read only check on a real machine). If it ever becomes useful, the part that fits Clarion is read only: show whether a GDID is present.
-- **A toast from the monthly check.** See the beta 8 worklog: unpackaged toast documentation conflicts and an open issue reports toasts that never appear.
+- **A toast from the monthly check.** Unpackaged toast documentation conflicts and an open issue reports toasts that never appear.
 - **Installing apps (fresh PC essentials).** Outside what Clarion promises.
 - **Shrinking the download.** See above.
 
