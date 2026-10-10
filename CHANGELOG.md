@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.10
 
 Safer
 - Clarion now starts Windows tools (PowerShell, Task Scheduler, the service tool, the power tool) by their full path in the Windows folder. Started by name alone, Windows looks in the program's own folder and the current folder first, and Clarion runs with administrator rights, so a file of the same name placed beside a portable copy would have run with those rights. The repair tools already did this. PowerShell is now always Windows PowerShell 5.1.
