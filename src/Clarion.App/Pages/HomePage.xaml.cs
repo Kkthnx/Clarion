@@ -181,6 +181,9 @@ public sealed partial class HomePage : Page
             {
                 var added = _app.QueuePreset(key);
                 ToolTipService.SetToolTip(queue, added == 0 ? "Everything in this preset is already on" : $"{added} settings queued");
+                // The answer is on the button itself. A tooltip alone left a press that queued nothing looking like a dead button.
+                queue.Content = added == 0 ? "Already on" : $"{added} queued";
+                queue.IsEnabled = added != 0;
             };
 
             var count = _app.Presets.TryGetValue(key, out var ids) ? ids.Count : 0;
