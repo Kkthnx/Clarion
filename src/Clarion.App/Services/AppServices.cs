@@ -134,7 +134,7 @@ public sealed partial class AppServices : UiObservableObject
 
     /// <summary>
     /// Compares the version running now with the one last seen. The first run on a PC just records it, so nobody is told they updated when
-    /// they only installed. A copy that was moved back to an older version is recorded quietly too.
+    /// they only installed. A copy that was moved back to an older version is recorded the same way, with no notice.
     /// </summary>
     private void DetectUpdatedVersion()
     {
