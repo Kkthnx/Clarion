@@ -31,6 +31,9 @@ public sealed record DriftReport(
     /// <summary>Ids of settings that were checked and still hold.</summary>
     public IReadOnlyList<string> Holding { get; init; } = [];
 
+    /// <summary>How many separate times each setting has been found changed back, from this PC's own scan history. See <see cref="DriftHistory"/>.</summary>
+    public IReadOnlyDictionary<string, int> TimesChangedBack { get; init; } = new Dictionary<string, int>();
+
     public IReadOnlyList<DriftItem> ReturnedApps => Items.Where(i => i.IsReturnedApp).ToList();
     public IReadOnlyList<DriftItem> ChangedBack => Items.Where(i => !i.IsReturnedApp).ToList();
     public bool HasDrift => Items.Count > 0;

@@ -19,6 +19,15 @@
             <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="20">
                 <StackPanel Spacing="8">
+                    <ToggleSwitch x:Name="AskRightsSwitch" Header="Ask for administrator rights when Clarion starts" OnContent="On" OffContent="Off" Toggled="OnAskRightsToggled" />
+                    <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                               Text="Most settings are machine wide, so changing them needs administrator rights, and Windows asks when Clarion starts. Turn this off to start without the prompt every time. Clarion then opens in the look and verify mode, and Home has a button to restart with administrator rights when you want to change something." />
+                </StackPanel>
+            </Border>
+
+            <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="8">
                     <ComboBox x:Name="ThemeBox" Header="Theme" SelectionChanged="OnThemeChanged" MinWidth="200">
                         <ComboBoxItem Content="Use my Windows setting" Tag="Default" />
                         <ComboBoxItem Content="Dark" Tag="Dark" />

@@ -66,7 +66,7 @@ public sealed class DnsSpeedTests
     [Fact]
     public async Task A_provider_that_never_answers_is_listed_last_with_no_time()
     {
-        var transport = new FakeTransport((server, _) => server == "9.9.9.9" ? null : TimeSpan.FromMilliseconds(30));
+        var transport = new FakeTransport((server, _) => server is "9.9.9.9" or "149.112.112.112" ? null : TimeSpan.FromMilliseconds(30));
 
         var result = await DnsSpeed.MeasureAsync(transport, DnsProviders.All, default);
 
@@ -85,6 +85,45 @@ public sealed class DnsSpeedTests
         Assert.All(result, r => Assert.Equal(40, r.Milliseconds));
         Assert.Equal(3, transport.Servers.Count(s => s == "1.1.1.1"));
         Assert.Equal(3, transport.Servers.Count(s => s == "8.8.8.8"));
+    }
+
+    [Fact]
+    public async Task A_second_address_is_tried_only_when_the_first_is_silent()
+    {
+        // Quad9's first address is unreachable and its second answers, so it still gets a time, and only the silent address is asked twice.
+        var transport = new FakeTransport((server, _) => server == "9.9.9.9" ? null : TimeSpan.FromMilliseconds(25));
+
+        var result = await DnsSpeed.MeasureAsync(transport, DnsProviders.All.Where(p => p.Key is "quad9" or "google"), default);
+
+        Assert.All(result, r => Assert.Equal(25, r.Milliseconds));
+        Assert.Equal(3, transport.Servers.Count(s => s == "149.112.112.112"));
+        Assert.Equal(3, transport.Servers.Count(s => s == "8.8.8.8"));
+        Assert.DoesNotContain("8.8.4.4", transport.Servers);
+    }
+
+    private sealed class OverlapTransport : IDnsTransport
+    {
+        private int _active;
+        public int MostAtOnce { get; private set; }
+
+        public async Task<TimeSpan?> RoundTripAsync(string server, byte[] query, TimeSpan timeout, CancellationToken cancel)
+        {
+            var now = Interlocked.Increment(ref _active);
+            lock (this) MostAtOnce = Math.Max(MostAtOnce, now);
+            await Task.Delay(30, cancel);
+            Interlocked.Decrement(ref _active);
+            return TimeSpan.FromMilliseconds(5);
+        }
+    }
+
+    [Fact]
+    public async Task Every_provider_is_asked_at_the_same_moment_not_one_after_another()
+    {
+        var transport = new OverlapTransport();
+
+        await DnsSpeed.MeasureAsync(transport, DnsProviders.All, default, rounds: 1);
+
+        Assert.Equal(DnsProviders.All.Count, transport.MostAtOnce);
     }
 
     [Fact]

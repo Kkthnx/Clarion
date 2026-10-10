@@ -10,8 +10,9 @@ public interface IDnsTransport
 }
 
 /// <summary>
-/// Measures which DNS provider answers fastest from this PC. It sends a real, tiny lookup to each provider's first address and times the
-/// answer, a few times with different names, and takes the middle time so one slow reply does not decide it. It is a rough guide to how
+/// Measures which DNS provider answers fastest from this PC. It sends a real, tiny lookup to each provider and times the answer, a few times
+/// with different names, and takes the middle time so one slow reply does not decide it. A provider's second address is tried only when the first does not answer. Every provider is asked at the same moment, so
+/// one that never answers costs one wait per name, not one wait per provider. It is a rough guide to how
 /// near each provider is, not a test of how fast every kind of name resolves. The only requests are these lookups, and only when asked.
 /// </summary>
 public static class DnsSpeed
@@ -52,20 +53,29 @@ public static class DnsSpeed
         var samples = list.ToDictionary(p => p.Key, _ => new List<double>());
         var id = (ushort)Random.Shared.Next(1, ushort.MaxValue);
 
-        // One name at a time across every provider, so each provider is asked the same thing at about the same moment.
+        // One name at a time, every provider at once, so each provider is asked the same thing at the same moment.
         for (var round = 0; round < rounds; round++)
         {
-            var name = Names[round % Names.Count];
-            foreach (var provider in list)
-            {
-                cancel.ThrowIfCancellationRequested();
-                var elapsed = await transport.RoundTripAsync(provider.Servers[0], BuildQuery(name, unchecked((ushort)(id + round))), limit, cancel);
-                if (elapsed is { } t) samples[provider.Key].Add(t.TotalMilliseconds);
-            }
+            var query = BuildQuery(Names[round % Names.Count], unchecked((ushort)(id + round)));
+            var asked = list.Select(p => AskAsync(transport, p, query, limit, cancel)).ToList();
+            var answers = await Task.WhenAll(asked);
+            for (var i = 0; i < list.Count; i++)
+                if (answers[i] is { } ms) samples[list[i].Key].Add(ms);
         }
 
         return list.Select(p => new DnsSpeedResult(p, samples[p.Key].Count == 0 ? null : (int)Math.Round(Median(samples[p.Key]))))
             .OrderBy(r => r.Milliseconds is null ? 1 : 0).ThenBy(r => r.Milliseconds).ThenBy(r => r.Provider.Name, StringComparer.Ordinal).ToList();
+    }
+
+    /// <summary>The time of the first of the provider's addresses that answers, or null when none does.</summary>
+    private static async Task<double?> AskAsync(IDnsTransport transport, DnsProvider provider, byte[] query, TimeSpan limit, CancellationToken cancel)
+    {
+        foreach (var server in provider.Servers)
+        {
+            cancel.ThrowIfCancellationRequested();
+            if (await transport.RoundTripAsync(server, query, limit, cancel) is { } elapsed) return elapsed.TotalMilliseconds;
+        }
+        return null;
     }
 
     private static double Median(List<double> values)

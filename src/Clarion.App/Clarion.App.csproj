@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260921001" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="System.Threading.AccessControl" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Clarion.ico" CopyToOutputDirectory="PreserveNewest" />

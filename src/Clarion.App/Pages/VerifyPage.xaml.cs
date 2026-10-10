@@ -57,8 +57,8 @@ public sealed partial class VerifyPage : Page
 
     private void Show(DriftReport report)
     {
-        var returned = report.ReturnedApps.Select(Row).ToList();
-        var changed = report.ChangedBack.Select(Row).ToList();
+        var returned = report.ReturnedApps.Select(i => Row(i, report)).ToList();
+        var changed = report.ChangedBack.Select(i => Row(i, report)).ToList();
         AppRows.ItemsSource = returned;
         SettingRows.ItemsSource = changed;
         AppsSection.Visibility = returned.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -93,7 +93,7 @@ public sealed partial class VerifyPage : Page
 
     private string NameOf(string id) => _app.Items.FirstOrDefault(i => i.Id == id)?.Name ?? id;
 
-    private static DriftRow Row(DriftItem item)
+    private static DriftRow Row(DriftItem item, DriftReport report)
     {
         // The exact registry and service steps are for Expert mode. Everyone else gets one plain sentence.
         var steps = string.Join("\n", item.Changed);
@@ -101,6 +101,9 @@ public sealed partial class VerifyPage : Page
             : AppServices.Instance.ExpertMode ? "No longer in effect. Windows or another program put it back.\n" + steps
             : "No longer in effect. Windows or another program put it back.";
         var when = item.AppliedAt == DateTimeOffset.MinValue ? "" : $"Applied {item.AppliedAt.LocalDateTime:g}";
+        // One time is news. A setting Windows keeps undoing is worth knowing about, and fixing it again may not last.
+        if (report.TimesChangedBack.TryGetValue(item.Tweak.Id, out var times) && times >= 2)
+            when += (when.Length > 0 ? ". " : "") + $"Changed back {times} times so far.";
         return new DriftRow(item.Tweak.Id, item.Tweak.Name, when, detail, item.Tweak.Apply.Any(o => o is Clarion.Core.Model.RemoveAppxPackage) ? "Remove again" : "Put back");
     }
 

@@ -36,7 +36,7 @@ public static class EngineFactory
         };
         var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"), System.Security.Principal.WindowsIdentity.GetCurrent().User?.Value);
         var engine = new TweakEngine(handlers, journal);
-        var drift = new Core.Drift.DriftScanner(engine, journal, new Core.Drift.DriftState(Path.Combine(dir, "drift.json")));
+        var drift = new Core.Drift.DriftScanner(engine, journal, new Core.Drift.DriftState(Path.Combine(dir, "drift.json")), history: new Core.Drift.DriftHistory(Path.Combine(dir, "drift-history.jsonl")));
         var batch = new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);
         var restorePoints = new RestorePointService(registry, runner);
         return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect(), restorePoints, new Core.Actions.ActionRunner(new WindowsStreamingRunner()),

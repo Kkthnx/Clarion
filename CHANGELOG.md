@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+New
+- A switch in Settings, "Ask for administrator rights when Clarion starts". Turn it off to start without the Windows prompt every time, which suits an account that cannot get the rights. Clarion then opens in the look and verify mode. The choice is kept in your own folder, so it works for an account that cannot write to Clarion's shared data folder, and the "Restart as administrator" button on Home takes it back.
+- Verify says when a setting has been changed back more than once, for example "Changed back 3 times so far", from a small history Clarion keeps on this PC. A setting that stays changed back across many scans counts once. Nothing about it is sent anywhere.
+
+Fixed
+- Starting Clarion a second time while it was already open in the look and verify mode showed the Windows prompt before bringing the open window forward. The window that is already open is now found first, and a second launch never shows the prompt.
+- The DNS speed test asked only a provider's first address, so a provider whose first address was unreachable but whose second worked was listed as not answering. It now tries the second address when the first is silent, and asks every provider at the same moment, so the worst case is a few seconds instead of about half a minute.
+- The plan for putting back an app that was not installed when it was removed now says there is nothing to put back, instead of reading as if something would be restored.
+
 ## 0.1.0-beta.8
 
 New

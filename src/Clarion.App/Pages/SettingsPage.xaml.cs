@@ -29,6 +29,7 @@ public sealed partial class SettingsPage : Page
         };
         VersionText.Text = $"Clarion {Version}";
         AutoUpdateSwitch.IsOn = _app.Settings.CheckForUpdates;
+        AskRightsSwitch.IsOn = !App.Launch.StartLimited;
         _loading = false;
         _ = ShowMonthlyStateAsync();
     }
@@ -45,6 +46,18 @@ public sealed partial class SettingsPage : Page
         MonthlySwitch.IsOn = on;
         _loading = false;
         if (on != _app.Settings.MonthlyVerify) _app.UpdateSettings(s => s with { MonthlyVerify = on });
+    }
+
+    private void OnAskRightsToggled(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        // Stored in the person's own folder, so it works for an account that cannot write to the shared data folder.
+        if (!App.Launch.SetStartLimited(!AskRightsSwitch.IsOn))
+        {
+            _loading = true;
+            AskRightsSwitch.IsOn = !App.Launch.StartLimited;
+            _loading = false;
+        }
     }
 
     private async void OnMonthlyToggled(object sender, RoutedEventArgs e)

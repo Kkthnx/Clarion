@@ -49,7 +49,10 @@ public sealed partial class HomePage : Page
     {
         // A run in progress must finish first. A queue that has not been applied is not carried over to the new window.
         if (_app.IsBusy) return;
-        ((App)Application.Current).RestartAsAdministrator();
+        // Asking for the rights is a clear wish for them, so a remembered "start without asking" is let go. If the prompt is refused, it comes back.
+        var hadChoice = App.Launch.StartLimited;
+        if (hadChoice) App.Launch.SetStartLimited(false);
+        if (!((App)Application.Current).RestartAsAdministrator() && hadChoice) App.Launch.SetStartLimited(true);
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e) => Refresh();

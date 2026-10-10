@@ -53,7 +53,9 @@ public sealed record RemoveAppxPackage(string Name, bool AllUsers = false, bool 
 /// <summary>Registers a removed app again. A null FamilyName means there was nothing to restore.</summary>
 public sealed record RestoreAppxPackage(string Name, string? FamilyName) : Operation
 {
-    public override string Describe() => $"Restore app {Name}";
+    public override string Describe() => FamilyName is null
+        ? $"Restore app {Name} (it was not installed for this account when it was removed, so there is nothing to put back)"
+        : $"Restore app {Name}";
 }
 /// <summary>Turns a Windows optional feature on or off. Turning on also enables the features it depends on.</summary>
 public sealed record SetWindowsFeature(string Name, bool Enabled) : Operation

@@ -8,7 +8,7 @@ namespace Clarion.Core.Drift;
 /// Compares what Clarion recorded applying with what Windows looks like now. Only settings the
 /// journal says are still on are checked, so a setting the user reverted never shows up here.
 /// </summary>
-public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, DriftState? state = null, TimeProvider? clock = null)
+public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, DriftState? state = null, TimeProvider? clock = null, DriftHistory? history = null)
 {
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
 
@@ -55,7 +55,8 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
         progress?.Report((tracked.Count, tracked.Count));
         var now = _clock.GetUtcNow();
         state?.Save(profile.Build, now);
-        return new DriftReport(now, profile.Build, previous, read, items, unreadable) { Holding = holding };
+        history?.Record(now, profile.Build, items.Select(i => i.Tweak.Id));
+        return new DriftReport(now, profile.Build, previous, read, items, unreadable) { Holding = holding, TimesChangedBack = history?.TimesChangedBack() ?? new Dictionary<string, int>() };
     }
 
     // Picking another choice in an exclusive group (a power plan, a DNS provider) inside Clarion replaces this one on
