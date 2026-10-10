@@ -134,7 +134,11 @@ public sealed partial class CleanupPage : Page
     private void UpdateSelected()
     {
         var chosen = _svc.Items.Count(i => i.IsChecked && i.CanSelect);
-        SelectedText.Text = chosen == 0 ? "Nothing selected" : $"{chosen} selected, {ByteSize.Format(_svc.SelectedBytes)}";
+        // Before the first scan nothing has a size yet, and "0 bytes" would read as if there was nothing to gain.
+        var scanned = _svc.Items.Any(i => i.Scan is not null);
+        SelectedText.Text = chosen == 0 ? "Nothing selected"
+            : scanned ? $"{chosen} selected, {ByteSize.Format(_svc.SelectedBytes)}"
+            : $"{chosen} selected, not scanned yet";
     }
 
     private async void OnScan(object sender, RoutedEventArgs e)

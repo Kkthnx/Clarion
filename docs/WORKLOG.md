@@ -487,3 +487,7 @@ Idea taken from the way phone apps show an update: a clear "an update is availab
 ### Looked at and left
 - Analyzer run with all rules: most output is style. The real ones were the items above. `HttpClient` use is disposed. Dates written for machines (Task Scheduler XML) already use the invariant culture.
 - A startup apps page: Windows Settings and Task Manager already do it, and the registry format is only documented by the community, so the value is low.
+
+### Journal shared between processes
+- The history file is opened by the window and, separately, by the monthly check (`--verify --save`) and any command line run. `ReadAll` used `File.ReadLines`, which opens with `FileShare.Read`, and `Append` holds the file for writing, so each could fail the other with a sharing violation. Two tests reproduced both failures before the fix. Reads now use `FileShare.ReadWrite | Delete`, and `Append` retries for up to two seconds, because by then the change itself has been made and the record of it must not be lost.
+- The other small files (drift state, restart queue, scheduled result, settings) already catch IO errors on read. Settings and the scheduled result are written atomically. The restart queue and drift state are not, and a damaged copy just reads as empty, so they were left alone.

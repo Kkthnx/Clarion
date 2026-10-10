@@ -66,12 +66,25 @@ public sealed class ChangeJournal
         var line = JsonSerializer.Serialize(entry, Options) + Environment.NewLine;
         lock (_gate)
         {
-            using var fs = new FileStream(_path, FileMode.Append, FileAccess.Write, FileShare.Read);
-            using var w = new StreamWriter(fs);
-            if (EndsWithPartialLine()) w.Write(Environment.NewLine);
-            w.Write(line);
-            w.Flush();
-            fs.Flush(true);
+            // Another Clarion process, such as the monthly check or a command line run, may have the file open for an instant.
+            // The change is already made by now, so a short wait is better than losing the record of it.
+            for (var attempt = 1; ; attempt++)
+            {
+                try
+                {
+                    using var fs = new FileStream(_path, FileMode.Append, FileAccess.Write, FileShare.Read);
+                    using var w = new StreamWriter(fs);
+                    if (EndsWithPartialLine()) w.Write(Environment.NewLine);
+                    w.Write(line);
+                    w.Flush();
+                    fs.Flush(true);
+                    return;
+                }
+                catch (IOException) when (attempt < 40)
+                {
+                    Thread.Sleep(50);
+                }
+            }
         }
     }
 
@@ -94,7 +107,10 @@ public sealed class ChangeJournal
             if (!File.Exists(_path)) return [];
             var list = new List<JournalEntry>();
             SkippedLines = 0;
-            foreach (var line in File.ReadLines(_path))
+            // Shared with writers, so a read in one process does not fail while another is appending.
+            using var stream = new FileStream(_path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            using var reader = new StreamReader(stream);
+            while (reader.ReadLine() is { } line)
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
                 try

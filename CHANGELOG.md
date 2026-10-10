@@ -12,6 +12,8 @@ Fixed
 - On a small screen with large text scaling the window could not be made short enough to keep the bottom bar on screen.
 - Screen readers read the symptom list on What broke and the release cards on What's new with no name.
 - Each scan or clean on the Clean up page left its cancellation object behind.
+- The history file could not be read while another Clarion process was adding to it, and an addition could fail while another process was reading. The monthly check and the command line run as their own processes, so they could hit this. Reads now share the file and a write waits up to two seconds for it.
+- The Clean up page said "3 selected, 0 bytes" before the first scan. It now says the rows have not been scanned yet.
 
 ## 0.1.0-beta.5
 

@@ -47,6 +47,36 @@ public sealed class JournalResilienceTests : IDisposable
     }
 
     [Fact]
+    public void Reading_while_another_process_is_writing_does_not_fail()
+    {
+        // The monthly check runs as its own process and reads the journal while the window may be appending to it.
+        var path = Path.Combine(_dir, "j.jsonl");
+        var journal = new ChangeJournal(path);
+        journal.Append(Entry("a"));
+
+        using var writer = new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Read);
+        var all = new ChangeJournal(path).ReadAll();
+
+        Assert.Equal(["a"], all.Select(e => e.TweakId).ToArray());
+    }
+
+    [Fact]
+    public async Task Appending_waits_out_another_writer_that_is_about_to_finish()
+    {
+        var path = Path.Combine(_dir, "j.jsonl");
+        var journal = new ChangeJournal(path);
+        journal.Append(Entry("a"));
+
+        var other = new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Read);
+        var release = Task.Run(async () => { await Task.Delay(150); other.Dispose(); });
+
+        journal.Append(Entry("b"));
+        await release;
+
+        Assert.Equal(["a", "b"], new ChangeJournal(path).ReadAll().Select(e => e.TweakId).ToArray());
+    }
+
+    [Fact]
     public void An_empty_or_missing_journal_reads_as_empty()
     {
         var journal = new ChangeJournal(Path.Combine(_dir, "none.jsonl"));
