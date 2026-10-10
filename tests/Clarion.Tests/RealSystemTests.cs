@@ -148,6 +148,36 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
     }
 
     [Fact]
+    public void Real_two_restore_points_made_back_to_back_both_exist()
+    {
+        // Windows allows one automatic restore point per 24 hours by default. Clarion sets the creation frequency to 0 for each call,
+        // so two batches in a row must give two points, not one. This checks that against the list Windows keeps.
+        if (!Enabled || Environment.GetEnvironmentVariable("CLARION_REAL_RESTORE") != "1") return;
+        var registry = new WindowsRegistryStore();
+        var freq = new RegistryTarget(Clarion.Core.Model.RegistryHive.LocalMachine,
+            "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\SystemRestore", "SystemRestorePointCreationFrequency");
+        var before = registry.Read(freq);
+        var service = new RestorePointService(registry, new WindowsProcessRunner());
+        var stamp = DateTime.Now.ToString("HHmmss");
+        var first = $"Clarion test A {stamp}";
+        var second = $"Clarion test B {stamp}";
+
+        var a = service.Create(first);
+        var b = service.Create(second);
+        output.WriteLine($"first: {(a.Success ? "ok" : a.Error)}; second: {(b.Success ? "ok" : b.Error)}");
+
+        Assert.True(a.Success, a.Error);
+        Assert.True(b.Success, b.Error);
+        var listed = service.List(30);
+        output.WriteLine(string.Join("\n", listed.Take(6).Select(p => $"{p.Sequence} {p.Created:u} {p.Description}")));
+        var pa = Assert.Single(listed, p => p.Description == first);
+        var pb = Assert.Single(listed, p => p.Description == second);
+        Assert.True(pb.Sequence > pa.Sequence);
+        Assert.Equal(before.Exists, registry.Read(freq).Exists);
+        if (before.Data is not null) Assert.Equal(before.Data, registry.Read(freq).Data);
+    }
+
+    [Fact]
     public void Real_power_plans_list_duplicate_rename_and_clean_up()
     {
         if (!Enabled) return;
