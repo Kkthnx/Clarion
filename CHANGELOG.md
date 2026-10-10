@@ -3,6 +3,7 @@
 ## Unreleased
 
 Safer
+- Clarion now starts Windows tools (PowerShell, Task Scheduler, the service tool, the power tool) by their full path in the Windows folder. Started by name alone, Windows looks in the program's own folder and the current folder first, and Clarion runs with administrator rights, so a file of the same name placed beside a portable copy would have run with those rights. The repair tools already did this. PowerShell is now always Windows PowerShell 5.1.
 - Every app removal now says that the app's own data is removed too, and that Revert reinstalls the app but not that data. It shows in the details pane and again in the review window. This is from Microsoft's app data documentation: the system removes an app's data stores completely when the app is uninstalled.
 - Removing Sticky Notes is now rated Medium risk, and no longer says that notes sync with your Microsoft account as if it were certain. Notes that were never synced live only in the app and are deleted with it.
 

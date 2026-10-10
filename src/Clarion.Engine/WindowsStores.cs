@@ -19,7 +19,8 @@ public sealed class WindowsProcessRunner : IProcessRunner
 {
     public ProcessResult Run(string fileName, string arguments, TimeSpan timeout)
     {
-        var psi = new ProcessStartInfo(fileName, arguments)
+        // By full path, so a program of the same name beside Clarion or in the current folder is never the one that runs.
+        var psi = new ProcessStartInfo(Clarion.Core.Engine.SystemTools.Resolve(fileName, Environment.SystemDirectory), arguments)
         {
             RedirectStandardOutput = true,
             RedirectStandardError = true,
