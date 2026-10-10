@@ -100,6 +100,78 @@ public sealed partial class DnsChooser : UserControl
         Choose(key, keepEncrypted);
     }
 
+    private string? _fastestKey;
+
+    /// <summary>
+    /// Times a lookup to each provider, on request. It sends three tiny lookups to each of the five providers, and only that, and it
+    /// changes nothing. The answer is a rough guide to which is nearest, which is why it is described that way.
+    /// </summary>
+    private async void OnTestSpeed(object sender, RoutedEventArgs e)
+    {
+        SpeedButton.IsEnabled = false;
+        SpeedRing.IsActive = true;
+        SpeedStatus.Text = "Asking each provider three times";
+        SpeedResults.Visibility = Visibility.Collapsed;
+        UseFastest.Visibility = Visibility.Collapsed;
+        _fastestKey = null;
+        try
+        {
+            using var limit = new CancellationTokenSource(TimeSpan.FromSeconds(45));
+            var results = await DnsSpeed.MeasureAsync(new Clarion.Engine.UdpDnsTransport(), DnsProviders.All, limit.Token);
+            ShowSpeed(results);
+        }
+        catch (OperationCanceledException)
+        {
+            SpeedStatus.Text = "That took too long and was stopped. Check the network and try again.";
+        }
+        finally
+        {
+            SpeedRing.IsActive = false;
+            SpeedButton.IsEnabled = true;
+        }
+    }
+
+    private void ShowSpeed(IReadOnlyList<DnsSpeedResult> results)
+    {
+        SpeedResults.Children.Clear();
+        var best = results.FirstOrDefault(r => r.Milliseconds is not null);
+        foreach (var r in results)
+        {
+            var row = new Grid { ColumnSpacing = 16 };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var isBest = ReferenceEquals(r, best);
+            row.Children.Add(new TextBlock { Text = r.Provider.Name, FontWeight = isBest ? Microsoft.UI.Text.FontWeights.SemiBold : Microsoft.UI.Text.FontWeights.Normal, Foreground = ThemeBrushes.Get(isBest ? "ClOkText" : "ClTextPrimary", ActualTheme) });
+            var time = new TextBlock { Text = r.Milliseconds is { } ms ? $"{ms} ms" : "no answer", Foreground = ThemeBrushes.Get(r.Milliseconds is null ? "ClTextMuted" : isBest ? "ClOkText" : "ClTextSecondary", ActualTheme) };
+            Grid.SetColumn(time, 1);
+            row.Children.Add(time);
+            SpeedResults.Children.Add(row);
+        }
+        SpeedResults.Visibility = Visibility.Visible;
+
+        if (best is null)
+        {
+            SpeedStatus.Text = "No provider answered. This PC may be offline, or a firewall may block DNS to other servers.";
+            return;
+        }
+        SpeedStatus.Text = $"Nearest from this PC: {best.Provider.Name}, {best.Milliseconds} ms. A rough guide, not a test of every site.";
+        // Offering the one already chosen would be a button that changes nothing.
+        var chosen = _items.FirstOrDefault(i => i.IsOn);
+        var alreadyChosen = chosen is not null && KeyOf(chosen) == best.Provider.Key;
+        if (!alreadyChosen && _items.Any(i => KeyOf(i) == best.Provider.Key && i.CanToggle))
+        {
+            _fastestKey = best.Provider.Key;
+            UseFastest.Content = $"Choose {best.Provider.Name}";
+            UseFastest.Visibility = Visibility.Visible;
+        }
+    }
+
+    private void OnUseFastest(object sender, RoutedEventArgs e)
+    {
+        if (_fastestKey is null) return;
+        Choose(_fastestKey, EncryptSwitch.IsOn);
+    }
+
     private void OnEncryptToggled(object sender, RoutedEventArgs e)
     {
         if (_syncing || ProviderBox.SelectedItem is not ComboBoxItem { Tag: string key } || key.Length == 0) return;

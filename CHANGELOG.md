@@ -3,6 +3,13 @@
 ## Unreleased
 
 New
+- A Compact switch on the settings lists. It shows one line per setting, so about three times as many fit on the screen, and keeps the details in the pane on the right. It is remembered.
+- Topic pills with counts (such as "App permissions · 19") replace the topic drop-down on the settings lists, so a long list can be narrowed in one click.
+- Home shows this PC at a glance: Windows, processor, memory, graphics, storage, and how many settings are in effect.
+- Each preset on Home has a "What is in it" list that names its settings and marks the ones already on.
+- Safety lists the newest restore points Windows has, and can make one on demand.
+- A "Test the speed of each provider" button on the Network page. It sends three small lookups to each DNS provider, times the answers, and shows which is nearest. It changes nothing, and only runs when you press it.
+- `--catalog-doc` prints the full settings reference, and `docs/CATALOG.md` is that page, kept current by a test.
 - A Stop button while changes are being made. It stops before the next setting, never in the middle of one, so nothing is left half done. The settings not reached stay queued.
 - Safety can go back to a day: pick a date and Clarion queues a revert for every setting last applied after the end of that day. You still review it before anything changes.
 - Home tells you when the monthly check starts a different copy of Clarion, for example after Clarion was moved to another folder, and "Fix it" sets it up again from this copy.
@@ -24,6 +31,7 @@ New
 - `--list-settings` and `--list-cleanups` print every setting and cleanup row with the name that setup files, `--only` and `--include` use.
 
 Polish
+- A preset whose settings are all already on now says "Already on" on its button. Before, pressing it did nothing and looked broken.
 - Text is easier to read. Chip labels in the light theme were between 3.4 and 4.2 to 1 against their background, and muted text in both themes fell below 4.5 to 1 on some surfaces, which is the usual minimum for small text. Status text now uses its own darker (light theme) or lighter (dark theme) colour, and a test keeps every text colour above the line.
 - Windows features finish loading in about half the time. Clarion asked Windows about every optional feature on the PC, about 140 of them, when it only needs the dozen it has settings for. On the test PC that took the full read at start up from about 20 seconds to about 10.
 

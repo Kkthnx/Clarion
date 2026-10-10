@@ -538,3 +538,23 @@ Each point was checked against the code before anything was built.
 
 ### Also found along the way
 - A flaky journal test on CI: the competing writer was released from a thread pool task that a busy runner could starve past Append's two second wait. It now uses its own thread. The release workflow for the beta 6 tag ran the same test and failed, so that run is red, but the release itself was built and uploaded by hand and is unaffected.
+
+## Learning from WinUtil and Sparkle
+
+Source: `design-study/COMPARISON.md` (kept outside git). What was built, in the order of that note, and how each piece was checked.
+
+### Built
+- **Compact list and topic pills (settings pages).** Moved the row template into a resource, added a one line template, and swap them from the saved setting `CompactLists`. A first version squeezed the names to a few letters (the long "Suggested: turn on" chip took the room), so the compact row uses short chip text, shows the risk chip only when it is not plain Safe, drops the On/Off text (the switch says it), and gives the list more of the width. Measured by screenshot: 3 rows per screen before, 9 or more now. The topic drop-down became pills with counts, rebuilt only when the topics change. Checked through UI Automation: a pill filters the list, the switch changes the template and persists.
+- **Presets show their contents.** An expander on each card lists the settings and marks those already on.
+- **Home dashboard.** Six tiles (`InfoTile`): Windows, processor, memory, graphics, storage, settings in effect, filled from the system report Clarion already reads. A tile shows its full text as a tooltip when it is cut short.
+- **Restore points on Safety.** Lists the newest six through `Get-ComputerRestorePoint` and makes one on demand. Parsing is tested with canned output. Checked in the real app: pressing the button made a point and the list showed it a few seconds later.
+- **Fastest DNS.** Not WinUtil's TCP connect: a real UDP lookup is sent to each provider's first address, three times with three different well known names, and the middle time is used. The network part is behind an interface, so the logic is tested with a fake (packet bytes, answer validation, median, failure, same number of asks per provider, cancellation). On this PC it took about two seconds for five providers. The button that offers the nearest one is hidden when that provider is already chosen.
+- **Settings reference, contributor guide, package manifests.** `--catalog-doc` writes `docs/CATALOG.md` from the catalog, and a test fails when the file is out of date. `CONTRIBUTING.md` says what stays true and how to add a setting. `scripts/make-package-manifests.ps1` writes winget manifests (schema 1.12.0, checked with `winget validate`, which passes with no warnings) and a Scoop manifest from a release's checksums. It will not run without `-License`, because the licence is not chosen.
+- **Analyzers and a page check in the build.** A small curated set (undisposed objects, types that own disposables, blocking calls in async code, a token not passed on) is an error in the normal build, through `.editorconfig`, with the same rules switched off for test code. It found one real item (a cancellation source that was cancelled synchronously) and two false positives that now carry a comment saying why. A test reads every page file and fails when an input control has no accessible name. It had one false positive (a switch named by its on and off text), which it now understands.
+
+### Looked at and not built
+- **Updates modes.** WinUtil's Recommended mode defers feature updates 365 days and quality updates 4 days and keeps drivers out. Only two of the matching Clarion settings are marked "suggested for everyone" (no forced restart, no wake); the delay and the driver exclusion are marked "only if it fits you". A mode that applied all four would be stronger advice than the catalog gives. WinUtil's Disable updates mode stops security patches, which Clarion never does. The individual settings already cover the sensible choices.
+- **Installing apps, ISO creator, removing Edge or OneDrive.** Outside what Clarion promises.
+
+### Notes
+- An apply of Game Mode and background recording appeared in the real history at 10:11 on 10 October, with the restore point box unticked. None of the test data folders used for screenshots and tests ran an apply, so it was made in the real app by hand.

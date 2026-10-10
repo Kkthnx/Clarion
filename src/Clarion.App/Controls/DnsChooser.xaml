@@ -23,6 +23,15 @@
                 </StackPanel>
             </Grid>
             <TextBlock x:Name="AdviceText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button x:Name="SpeedButton" Content="Test the speed of each provider" Click="OnTestSpeed"
+                        ToolTipService.ToolTip="Sends three small lookups for well known sites to each provider and times the answers. Nothing is changed." />
+                <ProgressRing x:Name="SpeedRing" Width="18" Height="18" IsActive="False" />
+                <TextBlock x:Name="SpeedStatus" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+            </StackPanel>
+            <StackPanel x:Name="SpeedResults" Spacing="4" Visibility="Collapsed" />
+            <Button x:Name="UseFastest" Visibility="Collapsed" Click="OnUseFastest" />
         </StackPanel>
     </Border>
 </UserControl>
