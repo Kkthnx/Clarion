@@ -41,11 +41,27 @@ Core `tiny11Coremaker.ps1` (the maintainer calls it not for production):
 
 - Atlas: its install guide has the user pause updates for a week, run Windows Update fully, then resume. The README lists Windows Update as an optional, togglable item. Folders named by its docs: `C:\Windows\AtlasDesktop` (documented) and, per a third party overview, `AtlasModules` (not confirmed). The playbook version shows in System > About and `winver` (documented). A community post says it disables automatic updates and uses a scheduled task, not verified.
 - ReviOS: its comparison page lists Windows Update as "Fully compatible, Paused". It removes components at the WinSxS level using an empty update package, which keeps the original files so uninstalling that package restores them. The Revision Tool is its settings app, GPL v3, made only for ReviOS.
-- Not found for either: the exact registry values or services their playbooks change. Do not write detection for them from guesses. Read their playbooks first, or check a real install.
+- Added later, read from their repositories (Atlas-OS/Atlas and meetrevision/playbook): see "Atlas and ReviOS, from their playbooks" below.
 
 ## What Clarion does now
 
 Built after this research: items 1 and 2 below. The System page names Ghost Spectre from the Toolbox marker and words tiny11 as a guess. A "Windows Update right now" card reports working, limited or held, from the services, policies, scan task, stored pause, Windows' own pause status and the last check and install dates. Items 3 and 4 are not built. See "Why the undo is not built" at the end.
+
+## Atlas and ReviOS, from their playbooks
+
+Read from the two projects' own source on GitHub in October 2026.
+
+**AtlasOS** (Atlas-OS/Atlas):
+- `HKLMSOFTWAREMicrosoftWindowsCurrentVersionOEMInformation`: `Model` = "Atlas Playbook <version>", `Manufacturer` = "Atlas Team", `SupportURL` = https://discord.atlasos.net, `SupportPhone` = the GitHub address. `HKLMSOFTWAREMicrosoftWindows NTCurrentVersionRegisteredOrganization` = "Atlas Playbook <version>". The boot entry is named "AtlasOS 11 <version>".
+- A registry key `HKLMSOFTWAREAtlasOS` (per setting state under `Services`), and the folders `%windir%AtlasModules` and `%windir%AtlasDesktop`.
+- Windows Update by default: the "Disable Automatic Updates (default)" script sets the `AUOptions` policy to 2 (ask before downloading). Its `NoAutoUpdate` line is commented out because it breaks updates for other Microsoft products. A separate "Toggle Windows Updates" script sets the service to disabled, but that is a choice the person makes later.
+
+**ReviOS** (meetrevision/playbook):
+- `OEMInformation`: `Model` = "ReviOS 11 <version>", `Manufacturer` = "Revision". `RegisteredOrganization` = "ReviOS 11 <version>". `HKLMSOFTWAREMicrosoftWindows NTCurrentVersionditionSubVersion` = "ReviOS".
+- The Revision Tool in `%ProgramFiles%Revision Tool`.
+- Windows Update: pauses updates to 19 January 2038 through its own tool (`revitool tweaks updates wu-pause-updates enable`, with `FlightSettingsMaxPauseDays`), the same kind of long stored pause as Ghost Spectre's 2077. Its `NoAutoUpdate` line is commented out.
+
+Clarion now recognizes both from these markers. Atlas was already caught by the discord address; the others needed the new checks.
 
 ## What this means for Clarion
 

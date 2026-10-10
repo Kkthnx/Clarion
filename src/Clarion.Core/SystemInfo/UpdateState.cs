@@ -20,6 +20,9 @@ public sealed record UpdateInputs
     public bool AccessBlockedByPolicy { get; init; }
     public bool NoConnectPolicy { get; init; }
     public bool AutoUpdateOff { get; init; }
+
+    /// <summary>The AUOptions policy: 1 off, 2 ask before downloading, 3 download then ask, 4 download and schedule. Null when not set.</summary>
+    public int? AutoUpdateOption { get; init; }
     public bool UseUpdateServer { get; init; }
     public string? UpdateServer { get; init; }
     public bool SettingsPageHidden { get; init; }
@@ -84,10 +87,17 @@ public static class UpdateState
         if (i.MedicMissing)
             Add(UpdateFindingKind.Info, "The Windows Update Medic service is not installed. It normally repairs Windows Update when something breaks it.");
 
+        // Microsoft: this policy removes the "Check for updates" button, and "any background update scans, downloads, and installations will
+        // continue to work as configured". It is not a block.
         if (i.AccessBlockedByPolicy)
-            Add(UpdateFindingKind.Problem, "A policy blocks access to Windows Update.");
+            Add(UpdateFindingKind.Info, "A policy removes the Check for updates button in Settings. Updates that run in the background are not affected by it.");
+
+        // Microsoft: this policy applies only when the PC is set to use an intranet update server. Without one it does nothing.
         if (i.NoConnectPolicy)
-            Add(UpdateFindingKind.Problem, "A policy stops Windows from connecting to Microsoft's update servers.");
+            Add(i.UseUpdateServer ? UpdateFindingKind.Limit : UpdateFindingKind.Info,
+                i.UseUpdateServer
+                    ? "A policy stops Windows from contacting Microsoft's own update locations while it uses an update server, which can also affect the Microsoft Store."
+                    : "A policy about Microsoft's update locations is set, but it only takes effect on a PC that uses an update server, so it does nothing here.");
 
         if (i.UseUpdateServer && !string.IsNullOrWhiteSpace(i.UpdateServer))
         {
@@ -99,6 +109,10 @@ public static class UpdateState
 
         if (i.AutoUpdateOff)
             Add(UpdateFindingKind.Limit, "Automatic updating is turned off by a policy, so updates install only when you check by hand.");
+        if (i.AutoUpdateOption == 1)
+            Add(UpdateFindingKind.Limit, "A policy turns automatic updating off, so updates install only when you check by hand.");
+        else if (i.AutoUpdateOption == 2)
+            Add(UpdateFindingKind.Limit, "A policy makes Windows ask before it downloads updates, so nothing downloads until you open Windows Update and start it.");
         if (i.ScanTaskEnabled == false)
             Add(UpdateFindingKind.Limit, "The task that checks for updates in the background is disabled.");
         if (i.SettingsPageHidden)

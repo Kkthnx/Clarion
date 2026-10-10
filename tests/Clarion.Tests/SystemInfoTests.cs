@@ -209,4 +209,51 @@ public sealed class SystemInfoTests
         foreach (var n in names) s.Set(n, ServiceStartType.Manual);
         return s;
     }
+
+    // What each playbook writes, read from its own repository (github.com/Atlas-OS/Atlas and github.com/meetrevision/playbook).
+
+    [Fact]
+    public void Atlas_is_named_from_its_own_branding_in_the_oem_information()
+    {
+        var (probe, registry, _) = Make();
+        const string oem = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\OEMInformation";
+        registry.Write(Local(oem, "Model"), new RegistryData(RegistryKind.String, "Atlas Playbook 0.4.1"));
+        registry.Write(Local(oem, "Manufacturer"), new RegistryData(RegistryKind.String, "Atlas Team"));
+
+        var report = probe.Build(Sample);
+
+        Assert.Equal("AtlasOS", report.Install.ImageName);
+        Assert.True(report.Install.ImageNameIsFirm);
+        Assert.Equal(InstallLevel.Likely, report.Install.Level);
+    }
+
+    [Fact]
+    public void Atlas_is_named_from_its_folders_or_registry_key_when_the_branding_was_changed()
+    {
+        var (probe, _, _) = Make();
+        var report = probe.Build(Sample.Replace("\"store\":true", "\"store\":true,\"atlasMarker\":true"));
+
+        Assert.Equal("AtlasOS", report.Install.ImageName);
+        Assert.Contains(report.Install.Signals, s => s.Text.Contains("AtlasOS playbook"));
+    }
+
+    [Fact]
+    public void ReviOS_is_named_from_its_registered_organization_edition_sub_version_or_the_Revision_Tool()
+    {
+        var (probe, registry, _) = Make();
+        registry.Write(Local("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "EditionSubVersion"), new RegistryData(RegistryKind.String, "ReviOS"));
+        Assert.Equal("ReviOS", probe.Build(Sample).Install.ImageName);
+
+        var (probe2, _, _) = Make();
+        var byTool = probe2.Build(Sample.Replace("\"store\":true", "\"store\":true,\"revisionTool\":true"));
+        Assert.Equal("ReviOS", byTool.Install.ImageName);
+        Assert.Contains(byTool.Install.Signals, s => s.Text.Contains("Revision Tool"));
+    }
+
+    [Fact]
+    public void A_plain_install_is_not_named_as_any_image()
+    {
+        var (probe, _, _) = Make();
+        Assert.Null(probe.Build(Sample).Install.ImageName);
+    }
 }

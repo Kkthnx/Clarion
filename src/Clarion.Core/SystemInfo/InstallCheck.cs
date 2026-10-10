@@ -17,6 +17,12 @@ public sealed record InstallInputs
     /// <summary>The Ghost Toolbox folder or shortcut that comes with Ghost Spectre.</summary>
     public bool GhostToolboxFound { get; init; }
 
+    /// <summary>Atlas's own registry key or its folders under the Windows folder, which its playbook creates.</summary>
+    public bool AtlasMarkerFound { get; init; }
+
+    /// <summary>The Revision Tool, which the ReviOS playbook installs in Program Files.</summary>
+    public bool RevisionToolFound { get; init; }
+
     /// <summary>All five hardware check skips and the network setup skip, which is what tiny11 writes into the image.</summary>
     public bool Tiny11SetupPattern { get; init; }
 
@@ -36,7 +42,7 @@ public static class InstallCheck
 
     private static readonly Dictionary<string, string> KnownImages = new()
     {
-        ["ghost spectre"] = "Ghost Spectre", ["tiny11"] = "Tiny11", ["tiny10"] = "Tiny10", ["atlasos"] = "AtlasOS", ["revios"] = "ReviOS",
+        ["ghost spectre"] = "Ghost Spectre", ["tiny11"] = "Tiny11", ["tiny10"] = "Tiny10", ["atlasos"] = "AtlasOS", ["atlas playbook"] = "AtlasOS", ["revios"] = "ReviOS",
     };
 
     private static readonly string[] KnownImageNames = [.. KnownImages.Keys];
@@ -51,6 +57,8 @@ public static class InstallCheck
         var named = i.Branding.FirstOrDefault(b => KnownImageNames.Any(k => b.Contains(k, StringComparison.OrdinalIgnoreCase)));
         if (named is not null) signals.Add(new($"The system information names a custom Windows image: \"{named.Trim()}\"", 5));
         if (i.GhostToolboxFound) signals.Add(new("Ghost Toolbox, the tool that comes with Ghost Spectre, is on this PC", 5));
+        if (i.AtlasMarkerFound) signals.Add(new("Atlas's own folder or registry key, which the AtlasOS playbook creates, is on this PC", 5));
+        if (i.RevisionToolFound) signals.Add(new("The Revision Tool, which the ReviOS playbook installs, is on this PC", 5));
         if (i.Tiny11CorePattern) signals.Add(new("Windows Update is turned off and pointed at this PC, which is what tiny11 Core does", 4));
         if (i.Tiny11SetupPattern) signals.Add(new("Setup skipped all five hardware checks and the network setup, which is what tiny11 writes", 3));
 
@@ -79,6 +87,8 @@ public static class InstallCheck
         var firm = true;
         if (named is not null) name = KnownImages.First(k => named.Contains(k.Key, StringComparison.OrdinalIgnoreCase)).Value;
         else if (i.GhostToolboxFound) name = "Ghost Spectre";
+        else if (i.AtlasMarkerFound) name = "AtlasOS";
+        else if (i.RevisionToolFound) name = "ReviOS";
         else if (i.Tiny11CorePattern) { name = "tiny11 Core"; firm = false; }
         else if (i.Tiny11SetupPattern) { name = "tiny11"; firm = false; }
         return new InstallVerdict(level, signals) { Inputs = i, ImageName = name, ImageNameIsFirm = firm };

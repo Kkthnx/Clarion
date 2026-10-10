@@ -38,6 +38,8 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
         $store = [bool](Try-Get { Get-AppxPackage -AllUsers Microsoft.WindowsStore | Select-Object -First 1 })
         $edge = Test-Path "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
         $ghost = [bool]((Test-Path "$env:SystemDrive\Ghost Toolbox") -or (Test-Path "$env:PUBLIC\Desktop\Ghost Toolbox.lnk") -or (Test-Path "$env:USERPROFILE\Desktop\Ghost Toolbox.lnk"))
+        $atlas = [bool]((Test-Path 'HKLM:\SOFTWARE\AtlasOS') -or (Test-Path "$env:windir\AtlasModules") -or (Test-Path "$env:windir\AtlasDesktop"))
+        $revision = [bool](Test-Path "$env:ProgramFiles\Revision Tool")
         $wu = Try-Get { (New-Object -ComObject Microsoft.Update.AutoUpdate).Results }
         function Wu-Date($d) { if ($d) { try { ([datetime]$d).ToUniversalTime().ToString('o') } catch { $null } } }
         $o = [ordered]@{
@@ -52,7 +54,7 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
           secureBoot = $secure; vbs = $vbs; av = $av
           licChannel = $lic.ProductKeyChannel; licStatus = $(if ($lic) { [int]$lic.LicenseStatus }); licName = $lic.Name
           store = $store; edge = $edge
-          ghostToolbox = $ghost; lastCheck = (Wu-Date $wu.LastSearchSuccessDate); lastInstall = (Wu-Date $wu.LastInstallationSuccessDate)
+          ghostToolbox = $ghost; atlasMarker = $atlas; revisionTool = $revision; lastCheck = (Wu-Date $wu.LastSearchSuccessDate); lastInstall = (Wu-Date $wu.LastInstallationSuccessDate)
         }
         ConvertTo-Json -InputObject $o -Depth 5 -Compress
         """;
@@ -106,6 +108,8 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
         var inputs = new InstallInputs
         {
             GhostToolboxFound = Bool(j, "ghostToolbox") == true,
+            AtlasMarkerFound = Bool(j, "atlasMarker") == true,
+            RevisionToolFound = Bool(j, "revisionTool") == true,
             Tiny11SetupPattern = new[] { "BypassTPMCheck", "BypassSecureBootCheck", "BypassRAMCheck", "BypassCPUCheck", "BypassStorageCheck" }.All(n => Number(LabConfig, n) == 1)
                 && Number("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\OOBE", "BypassNRO") == 1,
             Tiny11CorePattern = (update is null or ServiceStartType.Disabled) && updates.UseUpdateServer && updates.AutoUpdateOff
@@ -149,6 +153,7 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
             AccessBlockedByPolicy = Number(UpdatePolicyKey, "DisableWindowsUpdateAccess") == 1,
             NoConnectPolicy = Number(UpdatePolicyKey, "DoNotConnectToWindowsUpdateInternetLocations") == 1,
             AutoUpdateOff = Number(UpdatePolicyKey + "\\AU", "NoAutoUpdate") == 1,
+            AutoUpdateOption = NumberOrNull(UpdatePolicyKey + "\\AU", "AUOptions"),
             UseUpdateServer = Number(UpdatePolicyKey + "\\AU", "UseWUServer") == 1,
             UpdateServer = server.Length > 0 ? server : null,
             SettingsPageHidden = Text(Local("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer", "SettingsPageVisibility"))
@@ -179,6 +184,7 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
         all.AddRange(
         [
             Text(Local(CurrentVersion, "ProductName")), Text(Local(CurrentVersion, "RegisteredOwner")), Text(Local(CurrentVersion, "RegisteredOrganization")),
+            Text(Local(CurrentVersion, "EditionSubVersion")),
             Text(Local(Oem, "Manufacturer")), Text(Local(Oem, "Model")), Text(Local(Oem, "SupportURL")),
         ]);
         return all.Where(x => x.Length > 0).ToList();

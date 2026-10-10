@@ -107,7 +107,7 @@ public sealed class UpdateStateTests
 
         Assert.Equal(UpdateLevel.Held, v.Level);
         Assert.Contains(v.Findings, f => f.Kind == UpdateFindingKind.Problem && f.Text.Contains("localhost"));
-        Assert.Contains(v.Findings, f => f.Text.Contains("blocks access"));
+        Assert.Contains(v.Findings, f => f.Kind == UpdateFindingKind.Info && f.Text.Contains("Check for updates button"));
         Assert.Contains(v.Findings, f => f.Text.Contains("hidden in Settings"));
     }
 
@@ -145,5 +145,43 @@ public sealed class UpdateStateTests
         var v = UpdateState.Evaluate(new UpdateInputs { LastCheck = Now.AddDays(-30), LastInstall = Now.AddDays(-200) }, Now);
         Assert.Empty(v.Findings);
         Assert.Equal(UpdateLevel.Working, v.Level);
+    }
+
+    // What Microsoft's Windows Update policy pages say each setting does. The card must not claim more than that.
+
+    [Fact]
+    public void Removing_the_check_for_updates_button_is_a_note_not_a_block()
+    {
+        // "Any background update scans, downloads, and installations will continue to work as configured."
+        var v = UpdateState.Evaluate(Healthy() with { AccessBlockedByPolicy = true }, Now);
+
+        Assert.Equal(UpdateLevel.Working, v.Level);
+        Assert.Contains(v.Findings, f => f.Kind == UpdateFindingKind.Info && f.Text.Contains("background"));
+    }
+
+    [Fact]
+    public void The_do_not_connect_policy_only_matters_when_an_update_server_is_used()
+    {
+        // "This policy applies only when the device is configured to connect to an intranet update service."
+        var alone = UpdateState.Evaluate(Healthy() with { NoConnectPolicy = true }, Now);
+        Assert.Equal(UpdateLevel.Working, alone.Level);
+        Assert.Contains(alone.Findings, f => f.Kind == UpdateFindingKind.Info && f.Text.Contains("does nothing here"));
+
+        var withServer = UpdateState.Evaluate(Healthy() with { NoConnectPolicy = true, UseUpdateServer = true, UpdateServer = "http://wsus.example.com" }, Now);
+        Assert.Equal(UpdateLevel.Limited, withServer.Level);
+    }
+
+    [Theory]
+    [InlineData(1, UpdateLevel.Limited, "turns automatic updating off")]
+    [InlineData(2, UpdateLevel.Limited, "ask before it downloads")]
+    [InlineData(3, UpdateLevel.Working, null)]
+    [InlineData(4, UpdateLevel.Working, null)]
+    public void The_automatic_updates_option_is_read_as_microsoft_defines_it(int option, UpdateLevel level, string? text)
+    {
+        // 1 off, 2 notify before download, 3 download then notify, 4 download and schedule. Atlas sets 2 by default.
+        var v = UpdateState.Evaluate(Healthy() with { AutoUpdateOption = option }, Now);
+
+        Assert.Equal(level, v.Level);
+        if (text is not null) Assert.Contains(v.Findings, f => f.Kind == UpdateFindingKind.Limit && f.Text.Contains(text));
     }
 }
