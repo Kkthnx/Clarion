@@ -87,10 +87,16 @@ public sealed class ActivityLog : UiObservableObject
     public int Value { get => _value; private set => SetProperty(ref _value, value); }
     public bool Indeterminate => IsRunning && Total == 0;
 
+    /// <summary>How the last run ended, for the taskbar button. Cleared when the next run starts.</summary>
+    public bool EndedWithProblems { get; private set; }
+    public bool EndedStopped { get; private set; }
+
     public void Start(string title)
     {
         Lines.Clear();
         Title = title;
+        EndedWithProblems = false;
+        EndedStopped = false;
         Total = 0;
         Value = 0;
         ProgressText = "Getting ready";
@@ -142,6 +148,8 @@ public sealed class ActivityLog : UiObservableObject
     public void Finish(int done, int failed, int untouched = 0, int notStarted = 0)
     {
         foreach (var l in Lines.Where(l => l.State == LineState.Running)) l.State = LineState.Done;
+        EndedWithProblems = failed > 0;
+        EndedStopped = notStarted > 0;
         IsRunning = false;
         Value = Total;
         OnPropertyChanged(nameof(Indeterminate));

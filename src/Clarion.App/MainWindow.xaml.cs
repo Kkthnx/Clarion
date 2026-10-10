@@ -168,14 +168,31 @@ public sealed partial class MainWindow : Window
         }
     }
 
+    private TaskbarProgress? _taskbar;
+
     private void UpdateActivity()
     {
+        ShowTaskbarProgress();
         ActivityPanel.Visibility = Activity.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         ActivityBar.IsIndeterminate = Activity.Indeterminate;
         ActivityBar.Maximum = Math.Max(1, Activity.Total);
         ActivityBar.Value = Activity.Value;
         ActivityHide.IsEnabled = !Activity.IsRunning;
         ActivityStop.Visibility = Activity.IsRunning && _runStop is not null ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    /// <summary>Mirrors the run on the taskbar button: moving while it works, yellow when stopped, red when something failed, gone when it is closed.</summary>
+    private void ShowTaskbarProgress()
+    {
+        _taskbar ??= new TaskbarProgress(WindowNative.GetWindowHandle(this));
+        if (Activity.IsRunning)
+        {
+            if (Activity.Indeterminate) _taskbar.Set(TaskbarState.Indeterminate);
+            else _taskbar.Set(TaskbarState.Normal, Activity.Value, Activity.Total);
+        }
+        else if (Activity.IsOpen && Activity.EndedWithProblems) _taskbar.Set(TaskbarState.Error, 1, 1);
+        else if (Activity.IsOpen && Activity.EndedStopped) _taskbar.Set(TaskbarState.Paused, 1, 1);
+        else _taskbar.Set(TaskbarState.None);
     }
 
     private CancellationTokenSource? _runStop;
