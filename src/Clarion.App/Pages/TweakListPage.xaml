@@ -85,9 +85,9 @@
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Spacing="6"
                                                 Visibility="{x:Bind HasLastError, Mode=OneWay}">
-                                        <FontIcon Glyph="&#xE783;" FontSize="12" Foreground="{ThemeResource ClDangerBrush}" />
+                                        <FontIcon Glyph="&#xE783;" FontSize="12" Foreground="{ThemeResource ClDangerTextBrush}" />
                                         <TextBlock Text="{x:Bind LastError, Mode=OneWay}" TextWrapping="Wrap" FontSize="12"
-                                                   Foreground="{ThemeResource ClDangerBrush}" />
+                                                   Foreground="{ThemeResource ClDangerTextBrush}" />
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Spacing="6" Visibility="{x:Bind IsLocked}">
                                         <FontIcon Glyph="&#xE72E;" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />

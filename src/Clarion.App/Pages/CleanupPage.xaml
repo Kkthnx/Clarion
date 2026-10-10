@@ -46,7 +46,7 @@
                     BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12,16,12">
                 <StackPanel Spacing="6">
                     <ProgressBar IsIndeterminate="True" />
-                    <TextBlock x:Name="LiveText" Foreground="{ThemeResource ClCyanBrush}" FontWeight="SemiBold" />
+                    <TextBlock x:Name="LiveText" Foreground="{ThemeResource ClCyanTextBrush}" FontWeight="SemiBold" />
                     <TextBlock x:Name="FileText" FontSize="12" FontFamily="Cascadia Mono" TextTrimming="CharacterEllipsis"
                                Foreground="{ThemeResource ClTextMutedBrush}" />
                 </StackPanel>
@@ -116,7 +116,7 @@
                                                         <TextBlock Text="{x:Bind StatusText, Mode=OneWay}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
                                                     </StackPanel>
                                                     <TextBlock Grid.Column="2" Text="{x:Bind SizeText, Mode=OneWay}" FontSize="16" FontWeight="SemiBold"
-                                                               VerticalAlignment="Center" Foreground="{ThemeResource ClCyanBrush}" />
+                                                               VerticalAlignment="Center" Foreground="{ThemeResource ClCyanTextBrush}" />
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>

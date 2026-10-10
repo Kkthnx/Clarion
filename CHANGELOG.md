@@ -7,6 +7,7 @@ New
 - `--list-settings` and `--list-cleanups` print every setting and cleanup row with the name that setup files, `--only` and `--include` use.
 
 Polish
+- Text is easier to read. Chip labels in the light theme were between 3.4 and 4.2 to 1 against their background, and muted text in both themes fell below 4.5 to 1 on some surfaces, which is the usual minimum for small text. Status text now uses its own darker (light theme) or lighter (dark theme) colour, and a test keeps every text colour above the line.
 - Windows features finish loading in about half the time. Clarion asked Windows about every optional feature on the PC, about 140 of them, when it only needs the dozen it has settings for. On the test PC that took the full read at start up from about 20 seconds to about 10.
 
 Fixed

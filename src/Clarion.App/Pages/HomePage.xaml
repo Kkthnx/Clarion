@@ -14,10 +14,10 @@
                         <TextBlock Text="Clarion" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                         <Border VerticalAlignment="Center" Padding="8,2,8,2" CornerRadius="10" BorderThickness="1"
                                 Background="{ThemeResource ClAccentTintBrush}" BorderBrush="{ThemeResource ClAccentBrush}">
-                            <TextBlock Text="{x:Bind svc:AppServices.Version}" FontSize="12" Foreground="{ThemeResource ClAccentBrush}" />
+                            <TextBlock Text="{x:Bind svc:AppServices.Version}" FontSize="12" Foreground="{ThemeResource ClAccentTextBrush}" />
                         </Border>
                     </StackPanel>
-                    <TextBlock Text="See it. Set it. Done." FontSize="16" Foreground="{ThemeResource ClAccentBrush}" />
+                    <TextBlock Text="See it. Set it. Done." FontSize="16" Foreground="{ThemeResource ClAccentTextBrush}" />
                 </StackPanel>
             </StackPanel>
 
@@ -88,7 +88,7 @@
                     <StackPanel Grid.Column="3">
                         <TextBlock Text="Settings in effect" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
                         <StackPanel Orientation="Horizontal" Spacing="6">
-                            <TextBlock x:Name="AppliedText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClCyanBrush}" />
+                            <TextBlock x:Name="AppliedText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClCyanTextBrush}" />
                             <ProgressRing x:Name="Busy" Width="16" Height="16" IsActive="False" />
                         </StackPanel>
                     </StackPanel>

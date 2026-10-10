@@ -99,7 +99,7 @@
             <Color x:Key="ClDividerColor">#1F2833</Color>
             <Color x:Key="ClTextPrimaryColor">#E6EBF2</Color>
             <Color x:Key="ClTextSecondaryColor">#A7B3C4</Color>
-            <Color x:Key="ClTextMutedColor">#7A8799</Color>
+            <Color x:Key="ClTextMutedColor">#8D98A7</Color>
             <Color x:Key="ClAccentColor">#5C8BCF</Color>
             <Color x:Key="ClAccentTintColor">#1B2A42</Color>
             <Color x:Key="ClOnAccentColor">#0B1016</Color>
@@ -111,6 +111,11 @@
             <Color x:Key="ClWarnTintColor">#33290E</Color>
             <Color x:Key="ClDangerColor">#E5534B</Color>
             <Color x:Key="ClDangerTintColor">#3A1614</Color>
+            <Color x:Key="ClAccentTextColor">#6994D3</Color>
+            <Color x:Key="ClCyanTextColor">#3FD0E0</Color>
+            <Color x:Key="ClOkTextColor">#4CC38A</Color>
+            <Color x:Key="ClWarnTextColor">#E3B341</Color>
+            <Color x:Key="ClDangerTextColor">#E76159</Color>
             <SolidColorBrush x:Key="ClBaseBrush" Color="{StaticResource ClBaseColor}" />
             <SolidColorBrush x:Key="ClSidebarBrush" Color="{StaticResource ClSidebarColor}" />
             <SolidColorBrush x:Key="ClSurface1Brush" Color="{StaticResource ClSurface1Color}" />
@@ -132,6 +137,11 @@
             <SolidColorBrush x:Key="ClWarnTintBrush" Color="{StaticResource ClWarnTintColor}" />
             <SolidColorBrush x:Key="ClDangerBrush" Color="{StaticResource ClDangerColor}" />
             <SolidColorBrush x:Key="ClDangerTintBrush" Color="{StaticResource ClDangerTintColor}" />
+            <SolidColorBrush x:Key="ClAccentTextBrush" Color="{StaticResource ClAccentTextColor}" />
+            <SolidColorBrush x:Key="ClCyanTextBrush" Color="{StaticResource ClCyanTextColor}" />
+            <SolidColorBrush x:Key="ClOkTextBrush" Color="{StaticResource ClOkTextColor}" />
+            <SolidColorBrush x:Key="ClWarnTextBrush" Color="{StaticResource ClWarnTextColor}" />
+            <SolidColorBrush x:Key="ClDangerTextBrush" Color="{StaticResource ClDangerTextColor}" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="ScrollBarThumbFill" Color="#B4BFCE" />
@@ -151,7 +161,7 @@
             <Color x:Key="ClDividerColor">#E1E6ED</Color>
             <Color x:Key="ClTextPrimaryColor">#131A24</Color>
             <Color x:Key="ClTextSecondaryColor">#4A5668</Color>
-            <Color x:Key="ClTextMutedColor">#6B7788</Color>
+            <Color x:Key="ClTextMutedColor">#5E6978</Color>
             <Color x:Key="ClAccentColor">#3F6DB5</Color>
             <Color x:Key="ClAccentTintColor">#DDE8F7</Color>
             <Color x:Key="ClOnAccentColor">#FFFFFF</Color>
@@ -163,6 +173,11 @@
             <Color x:Key="ClWarnTintColor">#F6EAC8</Color>
             <Color x:Key="ClDangerColor">#C4372F</Color>
             <Color x:Key="ClDangerTintColor">#F8DAD7</Color>
+            <Color x:Key="ClAccentTextColor">#3B66AA</Color>
+            <Color x:Key="ClCyanTextColor">#0C7482</Color>
+            <Color x:Key="ClOkTextColor">#1A7850</Color>
+            <Color x:Key="ClWarnTextColor">#8B6000</Color>
+            <Color x:Key="ClDangerTextColor">#B4332B</Color>
             <SolidColorBrush x:Key="ClBaseBrush" Color="{StaticResource ClBaseColor}" />
             <SolidColorBrush x:Key="ClSidebarBrush" Color="{StaticResource ClSidebarColor}" />
             <SolidColorBrush x:Key="ClSurface1Brush" Color="{StaticResource ClSurface1Color}" />
@@ -184,6 +199,11 @@
             <SolidColorBrush x:Key="ClWarnTintBrush" Color="{StaticResource ClWarnTintColor}" />
             <SolidColorBrush x:Key="ClDangerBrush" Color="{StaticResource ClDangerColor}" />
             <SolidColorBrush x:Key="ClDangerTintBrush" Color="{StaticResource ClDangerTintColor}" />
+            <SolidColorBrush x:Key="ClAccentTextBrush" Color="{StaticResource ClAccentTextColor}" />
+            <SolidColorBrush x:Key="ClCyanTextBrush" Color="{StaticResource ClCyanTextColor}" />
+            <SolidColorBrush x:Key="ClOkTextBrush" Color="{StaticResource ClOkTextColor}" />
+            <SolidColorBrush x:Key="ClWarnTextBrush" Color="{StaticResource ClWarnTextColor}" />
+            <SolidColorBrush x:Key="ClDangerTextBrush" Color="{StaticResource ClDangerTextColor}" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <StaticResource x:Key="ClAccentTintColor" ResourceKey="SystemColorWindowColor" />
@@ -227,6 +247,16 @@
             <SolidColorBrush x:Key="ClTextPrimaryBrush" Color="{StaticResource ClTextPrimaryColor}" />
             <SolidColorBrush x:Key="ClOkTintBrush" Color="{StaticResource ClOkTintColor}" />
             <SolidColorBrush x:Key="ClTextMutedBrush" Color="{StaticResource ClTextMutedColor}" />
+            <StaticResource x:Key="ClAccentTextColor" ResourceKey="SystemColorHotlightColor" />
+            <StaticResource x:Key="ClCyanTextColor" ResourceKey="SystemColorHotlightColor" />
+            <StaticResource x:Key="ClOkTextColor" ResourceKey="SystemColorWindowTextColor" />
+            <StaticResource x:Key="ClWarnTextColor" ResourceKey="SystemColorWindowTextColor" />
+            <StaticResource x:Key="ClDangerTextColor" ResourceKey="SystemColorWindowTextColor" />
+            <SolidColorBrush x:Key="ClAccentTextBrush" Color="{StaticResource ClAccentTextColor}" />
+            <SolidColorBrush x:Key="ClCyanTextBrush" Color="{StaticResource ClCyanTextColor}" />
+            <SolidColorBrush x:Key="ClOkTextBrush" Color="{StaticResource ClOkTextColor}" />
+            <SolidColorBrush x:Key="ClWarnTextBrush" Color="{StaticResource ClWarnTextColor}" />
+            <SolidColorBrush x:Key="ClDangerTextBrush" Color="{StaticResource ClDangerTextColor}" />
             <SolidColorBrush x:Key="ClDividerBrush" Color="{StaticResource ClDividerColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>

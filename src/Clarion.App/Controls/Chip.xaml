@@ -12,35 +12,35 @@
                     <VisualState.Setters>
                         <Setter Target="Root.Background" Value="{ThemeResource ClAccentTintBrush}" />
                         <Setter Target="Root.BorderBrush" Value="{ThemeResource ClAccentBrush}" />
-                        <Setter Target="Label.Foreground" Value="{ThemeResource ClAccentBrush}" />
+                        <Setter Target="Label.Foreground" Value="{ThemeResource ClAccentTextBrush}" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Cyan">
                     <VisualState.Setters>
                         <Setter Target="Root.Background" Value="{ThemeResource ClCyanTintBrush}" />
                         <Setter Target="Root.BorderBrush" Value="{ThemeResource ClCyanBrush}" />
-                        <Setter Target="Label.Foreground" Value="{ThemeResource ClCyanBrush}" />
+                        <Setter Target="Label.Foreground" Value="{ThemeResource ClCyanTextBrush}" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Ok">
                     <VisualState.Setters>
                         <Setter Target="Root.Background" Value="{ThemeResource ClOkTintBrush}" />
                         <Setter Target="Root.BorderBrush" Value="{ThemeResource ClOkBrush}" />
-                        <Setter Target="Label.Foreground" Value="{ThemeResource ClOkBrush}" />
+                        <Setter Target="Label.Foreground" Value="{ThemeResource ClOkTextBrush}" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Warn">
                     <VisualState.Setters>
                         <Setter Target="Root.Background" Value="{ThemeResource ClWarnTintBrush}" />
                         <Setter Target="Root.BorderBrush" Value="{ThemeResource ClWarnBrush}" />
-                        <Setter Target="Label.Foreground" Value="{ThemeResource ClWarnBrush}" />
+                        <Setter Target="Label.Foreground" Value="{ThemeResource ClWarnTextBrush}" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Danger">
                     <VisualState.Setters>
                         <Setter Target="Root.Background" Value="{ThemeResource ClDangerTintBrush}" />
                         <Setter Target="Root.BorderBrush" Value="{ThemeResource ClDangerBrush}" />
-                        <Setter Target="Label.Foreground" Value="{ThemeResource ClDangerBrush}" />
+                        <Setter Target="Label.Foreground" Value="{ThemeResource ClDangerTextBrush}" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
