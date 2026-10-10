@@ -175,6 +175,7 @@ public sealed partial class AppServices : UiObservableObject
         DetectUpdatedVersion();
         Runtime = EngineFactory.Create();
         Profile = Runtime.Profile;
+        _systemReport = new(Runtime.System.Read);
         var tweaks = CatalogLoader.LoadEmbedded();
         Presets = CatalogLoader.LoadPresets();
         foreach (var t in tweaks)
@@ -225,16 +226,13 @@ public sealed partial class AppServices : UiObservableObject
     public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
     public ActivityLog Activity { get; } = new();
 
-    private Clarion.Core.SystemInfo.SystemReport? _systemReport;
+    private readonly Clarion.Core.Engine.SharedRead<Clarion.Core.SystemInfo.SystemReport> _systemReport;
 
     /// <summary>The system report from the last read, or null before the first one finishes.</summary>
-    public Clarion.Core.SystemInfo.SystemReport? CachedSystemReport => _systemReport;
+    public Clarion.Core.SystemInfo.SystemReport? CachedSystemReport => _systemReport.Latest;
 
-    public async Task<Clarion.Core.SystemInfo.SystemReport> GetSystemReportAsync(bool refresh = false)
-    {
-        if (refresh || _systemReport is null) _systemReport = await Task.Run(Runtime.System.Read);
-        return _systemReport;
-    }
+    /// <summary>Pages that ask while a read is running share it, so the probe runs once at startup.</summary>
+    public Task<Clarion.Core.SystemInfo.SystemReport> GetSystemReportAsync(bool refresh = false) => _systemReport.GetAsync(refresh);
 
     public string Status { get => _status; set => SetProperty(ref _status, value); }
     public int AppliedCount { get => _appliedCount; set => SetProperty(ref _appliedCount, value); }
