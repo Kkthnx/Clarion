@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+Polish
+- Starting Clarion read the system report twice, because Home and the image notes both asked for it before the first read finished. Each read took about six seconds on a test PC, so the second only added load. They now share the read that is running, and a failed read is tried again the next time it is asked for.
+- The system read asks Windows only for the facts it shows. The processor query no longer measures live load, and disks come straight from Windows storage instead of loading the storage module first. Each saved about a second here, and the answers are identical.
+
+Fixed
+- A program that started a helper and exited could hold Clarion's command output until the helper ended: 24 seconds in a test with a 3 second limit. Output is now collected as it arrives and Clarion waits two seconds after the program exits.
+- The update check buttons on Settings and What's New, and the restore point button on Safety, stayed greyed out if their call failed. They now come back either way.
+
+Safer
+- The program loads its native Windows libraries from the Windows System32 folder only, never from the folder it runs from.
+
 ## 0.1.0-beta.10
 
 Safer
