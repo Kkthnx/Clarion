@@ -61,17 +61,20 @@ public sealed class JournalResilienceTests : IDisposable
     }
 
     [Fact]
-    public async Task Appending_waits_out_another_writer_that_is_about_to_finish()
+    public void Appending_waits_out_another_writer_that_is_about_to_finish()
     {
         var path = Path.Combine(_dir, "j.jsonl");
         var journal = new ChangeJournal(path);
         journal.Append(Entry("a"));
 
         var other = new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Read);
-        var release = Task.Run(async () => { await Task.Delay(150); other.Dispose(); });
+        // A dedicated thread, not the thread pool: other tests block pool threads, and on a small build machine the pool can stay
+        // starved for longer than Append is willing to wait.
+        var release = new Thread(() => { Thread.Sleep(150); other.Dispose(); }) { IsBackground = true };
+        release.Start();
 
         journal.Append(Entry("b"));
-        await release;
+        release.Join();
 
         Assert.Equal(["a", "b"], new ChangeJournal(path).ReadAll().Select(e => e.TweakId).ToArray());
     }
