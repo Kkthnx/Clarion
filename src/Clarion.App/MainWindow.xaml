@@ -106,6 +106,9 @@
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="About" Tag="about">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE77B;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="What's new" Tag="whatsnew">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE946;" /></NavigationViewItem.Icon>
                     <NavigationViewItem.InfoBadge><InfoBadge x:Name="WhatsNewBadge" Visibility="Collapsed" /></NavigationViewItem.InfoBadge>

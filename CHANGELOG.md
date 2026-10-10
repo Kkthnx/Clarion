@@ -13,6 +13,7 @@ New
 - A Stop button while changes are being made. It stops before the next setting, never in the middle of one, so nothing is left half done. The settings not reached stay queued.
 - Safety can go back to a day: pick a date and Clarion queues a revert for every setting last applied after the end of that day. You still review it before anything changes.
 - Home tells you when the monthly check starts a different copy of Clarion, for example after Clarion was moved to another folder, and "Fix it" sets it up again from this copy.
+- An About page, under What's new, with why Clarion exists, who makes it, links, and ways to support it.
 - The read only command line commands (`--verify`, `--history`, `--what-broke`, and the list commands) now start without administrator rights, as the help text always said. The window asks for the rights when it opens, with the usual Windows prompt. If you say no, it opens in a look and verify mode with a "Restart as administrator" button, and asks for the rights before it makes any change.
 
 Safer
@@ -31,6 +32,7 @@ New
 - `--list-settings` and `--list-cleanups` print every setting and cleanup row with the name that setup files, `--only` and `--include` use.
 
 Polish
+- A redrawn logo and app icon. The mark is drawn from shapes at each size instead of scaled from one picture, so the edges are sharp, and the small sizes (16 to 32 pixels) use a heavier C so it still reads in the taskbar and title bar. The icon file now has nine sizes up to 256 pixels, the logo is 512 pixels, and the README has a new banner.
 - A preset whose settings are all already on now says "Already on" on its button. Before, pressing it did nothing and looked broken.
 - Text is easier to read. Chip labels in the light theme were between 3.4 and 4.2 to 1 against their background, and muted text in both themes fell below 4.5 to 1 on some surfaces, which is the usual minimum for small text. Status text now uses its own darker (light theme) or lighter (dark theme) colour, and a test keeps every text colour above the line.
 - Windows features finish loading in about half the time. Clarion asked Windows about every optional feature on the PC, about 140 of them, when it only needs the dozen it has settings for. On the test PC that took the full read at start up from about 20 seconds to about 10.

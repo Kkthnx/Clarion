@@ -156,6 +156,7 @@ public sealed partial class MainWindow : Window
             case "troubleshoot": ContentFrame.Navigate(typeof(TroubleshootPage)); break;
             case "verify": ContentFrame.Navigate(typeof(VerifyPage)); break;
             case "whatsnew": ContentFrame.Navigate(typeof(WhatsNewPage)); break;
+            case "about": ContentFrame.Navigate(typeof(AboutPage)); break;
             case "safety": ContentFrame.Navigate(typeof(SafetyPage)); break;
             case "cleanup": ContentFrame.Navigate(typeof(CleanupPage)); break;
             case "repair": ContentFrame.Navigate(typeof(RepairPage)); break;

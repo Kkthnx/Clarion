@@ -558,3 +558,8 @@ Source: `design-study/COMPARISON.md` (kept outside git). What was built, in the 
 
 ### Notes
 - An apply of Game Mode and background recording appeared in the real history at 10:11 on 10 October, with the restore point box unticked. None of the test data folders used for screenshots and tests ran an apply, so it was made in the real app by hand.
+
+## Branding
+- The supplied mark (steel-blue C, one cyan dot, dark tile) looked soft and thin at small sizes because it came as a single 256 pixel picture with four icon sizes. `scripts/make-brand-assets.ps1` now draws it from geometry: eight times oversampled then reduced, three weights of C (16 to 24, 32 to 48, larger), icon sizes 16, 20, 24, 32, 40, 48, 64, 128, 256, a 512 pixel logo, and a 2400 by 800 banner. Run it to regenerate; pass `-OutDir` to write somewhere else first.
+- Checked by screenshot in both themes: title bar (22), Home and About (72).
+- About page added from the supplied pack, with the wording changed to "the source is public on GitHub" until a licence is chosen.
