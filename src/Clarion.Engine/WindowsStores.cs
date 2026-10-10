@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Principal;
+using System.Text;
 using Clarion.Core.Abstractions;
 using Clarion.Core.Appx;
 using Clarion.Core.Dns;
@@ -28,14 +29,40 @@ public sealed class WindowsProcessRunner : IProcessRunner
             CreateNoWindow = true,
         };
         using var p = Process.Start(psi) ?? throw new InvalidOperationException($"Could not start {fileName}");
-        var stdout = p.StandardOutput.ReadToEndAsync();
-        var stderr = p.StandardError.ReadToEndAsync();
+        var stdout = new StringBuilder();
+        var stderr = new StringBuilder();
+        var pumps = new[] { Pump(p.StandardOutput, stdout), Pump(p.StandardError, stderr) };
         if (!p.WaitForExit(timeout))
         {
             try { p.Kill(entireProcessTree: true); } catch (InvalidOperationException) { }
             return new ProcessResult(-1, "", $"{fileName} timed out");
         }
-        return new ProcessResult(p.ExitCode, stdout.Result, stderr.Result);
+        // A helper the program left running keeps both pipes open after the program itself has exited. Waiting for the pipes to close
+        // would then block until that helper ends, so the output gathered so far is taken after a short grace period instead.
+        Task.WaitAll(pumps, PipeGrace);
+        return new ProcessResult(p.ExitCode, Read(stdout), Read(stderr));
+    }
+
+    private static readonly TimeSpan PipeGrace = TimeSpan.FromSeconds(2);
+
+    private static async Task Pump(StreamReader reader, StringBuilder into)
+    {
+        var buffer = new char[4096];
+        try
+        {
+            int count;
+            while ((count = await reader.ReadAsync(buffer).ConfigureAwait(false)) > 0)
+            {
+                lock (into) into.Append(buffer, 0, count);
+            }
+        }
+        catch (ObjectDisposedException) { }
+        catch (IOException) { }
+    }
+
+    private static string Read(StringBuilder text)
+    {
+        lock (text) return text.ToString();
     }
 }
 
