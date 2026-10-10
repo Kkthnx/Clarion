@@ -67,7 +67,7 @@ public sealed partial class TroubleshootPage : Page
 
         var image = _app.ImageVerdict;
         // The wording follows how sure the install check is. "May be" is not "looks like".
-        var imageName = image?.ImageName is { } n ? $" ({n})" : "";
+        var imageName = image is { ImageName: not null } ? $" ({image.ImageLabel})" : "";
         lines.Add(image?.Level switch
         {
             Clarion.Core.SystemInfo.InstallLevel.Likely =>

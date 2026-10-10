@@ -40,7 +40,7 @@ public static class EngineFactory
         var batch = new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);
         var restorePoints = new RestorePointService(registry, runner);
         return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect(), restorePoints, new Core.Actions.ActionRunner(new WindowsStreamingRunner()),
-            new Core.SystemInfo.SystemProbe(registry, new WindowsServiceStore(runner), runner), drift);
+            new Core.SystemInfo.SystemProbe(registry, new WindowsServiceStore(runner), runner, new WindowsTaskStore()), drift);
     }
 }
 

@@ -92,4 +92,121 @@ public sealed class SystemInfoTests
         Assert.Empty(joined.Signals);
         Assert.Equal(InstallLevel.Standard, plain.Level);
     }
+
+    private static readonly string[] FiveChecks = ["BypassTPMCheck", "BypassSecureBootCheck", "BypassRAMCheck", "BypassCPUCheck", "BypassStorageCheck"];
+
+    private sealed class FixedClock(DateTimeOffset now) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => now;
+    }
+
+    [Fact]
+    public void The_Ghost_Toolbox_names_Ghost_Spectre_even_when_the_system_information_does_not()
+    {
+        var (probe, _, _) = Make();
+        var report = probe.Build(Sample.Replace("\"store\":true", "\"store\":true,\"ghostToolbox\":true"));
+
+        Assert.Equal(InstallLevel.Likely, report.Install.Level);
+        Assert.Equal("Ghost Spectre", report.Install.ImageName);
+        Assert.True(report.Install.ImageNameIsFirm);
+        Assert.Equal("This looks like Ghost Spectre, a customized Windows image", report.Install.Headline);
+        Assert.Contains(report.Install.Signals, s => s.Text.Contains("Ghost Toolbox"));
+    }
+
+    [Fact]
+    public void Tiny11_is_only_guessed_from_the_full_pattern_and_the_guess_says_so()
+    {
+        var (probe, registry, _) = Make();
+        foreach (var n in FiveChecks) registry.Write(Local("SYSTEM\\Setup\\LabConfig", n), new RegistryData(RegistryKind.DWord, "1"));
+        registry.Write(Local("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\OOBE", "BypassNRO"), new RegistryData(RegistryKind.DWord, "1"));
+
+        var report = probe.Build(Sample);
+
+        Assert.Equal("tiny11", report.Install.ImageName);
+        Assert.False(report.Install.ImageNameIsFirm);
+        Assert.Equal("possibly tiny11", report.Install.ImageLabel);
+        Assert.Contains("possibly tiny11", report.Install.Headline);
+    }
+
+    [Fact]
+    public void Three_of_the_five_bypass_values_is_not_the_tiny11_pattern()
+    {
+        // Read from a real Ghost Spectre PC, which skips the TPM, Secure Boot and CPU checks only.
+        var (probe, registry, _) = Make();
+        foreach (var n in new[] { "BypassTPMCheck", "BypassSecureBootCheck", "BypassCPUCheck" })
+            registry.Write(Local("SYSTEM\\Setup\\LabConfig", n), new RegistryData(RegistryKind.DWord, "1"));
+
+        var report = probe.Build(Sample);
+
+        Assert.Null(report.Install.ImageName);
+        Assert.Contains(report.Install.Signals, s => s.Text.Contains("skip the hardware checks"));
+    }
+
+    [Fact]
+    public void Windows_Update_turned_off_and_pointed_at_this_PC_looks_like_tiny11_Core()
+    {
+        var (probe, registry, services) = Make();
+        services.Set("wuauserv", ServiceStartType.Disabled);
+        const string policy = "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate";
+        registry.Write(Local(policy, "WUServer"), new RegistryData(RegistryKind.String, "localhost"));
+        registry.Write(Local(policy + "\\AU", "UseWUServer"), new RegistryData(RegistryKind.DWord, "1"));
+        registry.Write(Local(policy + "\\AU", "NoAutoUpdate"), new RegistryData(RegistryKind.DWord, "1"));
+
+        var report = probe.Build(Sample);
+
+        Assert.Equal("tiny11 Core", report.Install.ImageName);
+        Assert.Equal(UpdateLevel.Held, report.Updates!.Level);
+        Assert.Contains("Windows Update is held back", report.ToText());
+    }
+
+    [Fact]
+    public void The_report_reads_the_pause_values_and_the_dates_windows_keeps()
+    {
+        var (probe, registry, _) = Make();
+        const string ux = "SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings";
+        const string status = "SOFTWARE\\Microsoft\\WindowsUpdate\\UpdatePolicy\\Settings";
+        foreach (var n in new[] { "PauseUpdatesExpiryTime", "PauseFeatureUpdatesEndTime", "PauseQualityUpdatesEndTime" })
+            registry.Write(Local(ux, n), new RegistryData(RegistryKind.String, "2077-01-01T10:38:56Z"));
+        registry.Write(Local(status, "PausedFeatureStatus"), new RegistryData(RegistryKind.DWord, "2"));
+        registry.Write(Local(status, "PausedQualityStatus"), new RegistryData(RegistryKind.DWord, "2"));
+        var json = Sample.Replace("\"store\":true", "\"store\":true,\"lastCheck\":\"2026-10-10T18:23:38.0000000Z\",\"lastInstall\":\"2026-10-10T19:51:11.0000000Z\"");
+        var probeWithClock = new SystemProbe(registry, FakeServicesWith(AllServices), new FakeProcessRunner(), null, new FixedClock(new DateTimeOffset(2026, 10, 10, 21, 0, 0, TimeSpan.Zero)));
+
+        var report = probeWithClock.Build(json);
+
+        Assert.Equal(UpdateLevel.Working, report.Updates!.Level);
+        Assert.Contains(report.Updates.Findings, f => f.Text.Contains("reports it as ended"));
+        Assert.Contains(report.Updates.Findings, f => f.Kind == UpdateFindingKind.Good && f.Text.Contains("installed an update"));
+        Assert.Equal(new DateTimeOffset(2077, 1, 1, 10, 38, 56, TimeSpan.Zero), report.Updates.Inputs!.PauseEnds);
+    }
+
+    [Fact]
+    public void Windows_placeholder_dates_for_never_are_not_read_as_real()
+    {
+        var (probe, _, _) = Make();
+        var report = probe.Build(Sample.Replace("\"store\":true", "\"store\":true,\"lastCheck\":\"1899-12-30T05:00:00.0000000Z\",\"lastInstall\":null"));
+        Assert.Null(report.Updates!.Inputs!.LastCheck);
+        Assert.Null(report.Updates.Inputs.LastInstall);
+    }
+
+    [Fact]
+    public void A_disabled_scan_task_is_read_from_the_task_store()
+    {
+        var registry = new FakeRegistry();
+        var tasks = new FakeTasks();
+        tasks.Set("\\Microsoft\\Windows\\UpdateOrchestrator\\Schedule Scan", false);
+        var probe = new SystemProbe(registry, FakeServicesWith(AllServices), new FakeProcessRunner(), tasks);
+
+        var report = probe.Build(Sample);
+
+        Assert.Equal(false, report.Updates!.Inputs!.ScanTaskEnabled);
+        Assert.Equal(UpdateLevel.Limited, report.Updates.Level);
+    }
+
+    private static FakeServices FakeServicesWith(IEnumerable<string> names)
+    {
+        var s = new FakeServices();
+        foreach (var n in names) s.Set(n, ServiceStartType.Manual);
+        return s;
+    }
 }

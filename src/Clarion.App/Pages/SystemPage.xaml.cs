@@ -1,3 +1,4 @@
+using Clarion.App.Controls;
 using Clarion.App.Services;
 using Clarion.Core.SystemInfo;
 using Microsoft.UI.Xaml;
@@ -42,6 +43,28 @@ public sealed partial class SystemPage : Page
         }
     }
 
+    private void ShowUpdates(UpdateVerdict? verdict)
+    {
+        UpdateCard.Visibility = verdict is null ? Visibility.Collapsed : Visibility.Visible;
+        if (verdict is null) return;
+
+        UpdateHeadline.Text = verdict.Headline;
+        UpdateExplanation.Text = verdict.Explanation;
+        UpdateFindings.ItemsSource = verdict.Findings.Select(f => f.Kind switch
+        {
+            UpdateFindingKind.Good => new UpdateRow("✓", ThemeBrushes.Get("ClOkText", ActualTheme), f.Text),
+            UpdateFindingKind.Problem => new UpdateRow("✕", ThemeBrushes.Get("ClDangerText", ActualTheme), f.Text),
+            UpdateFindingKind.Limit => new UpdateRow("!", ThemeBrushes.Get("ClWarnText", ActualTheme), f.Text),
+            _ => new UpdateRow("•", ThemeBrushes.Get("ClAccentText", ActualTheme), f.Text),
+        }).ToList();
+        UpdateCard.BorderBrush = ThemeBrushes.Get(verdict.Level switch
+        {
+            UpdateLevel.Held => "ClDanger",
+            UpdateLevel.Limited => "ClWarn",
+            _ => "ClBorder",
+        }, ActualTheme);
+    }
+
     private void Show(SystemReport report)
     {
         _report = report;
@@ -49,6 +72,7 @@ public sealed partial class SystemPage : Page
         Explanation.Text = report.Install.Explanation;
         Signals.ItemsSource = report.Install.Signals;
         Groups.ItemsSource = report.Groups;
+        ShowUpdates(report.Updates);
         InstallCard.Visibility = Visibility.Visible;
         InstallCard.BorderBrush = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources[
             report.Install.Level == InstallLevel.Standard ? "ClBorderBrush" : "ClWarnBrush"];
@@ -72,3 +96,6 @@ public sealed partial class SystemPage : Page
         StatusLabel.Text = "Copied.";
     }
 }
+
+/// <summary>One line in the Windows Update card: a mark, its colour, and the sentence.</summary>
+public sealed record UpdateRow(string Mark, Microsoft.UI.Xaml.Media.Brush MarkBrush, string Text);

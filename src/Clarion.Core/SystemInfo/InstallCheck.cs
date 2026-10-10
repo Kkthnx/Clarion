@@ -13,6 +13,15 @@ public sealed record InstallInputs
     public bool? EdgeMissing { get; init; }
     public string? LicenseChannel { get; init; }
     public bool Domain { get; init; }
+
+    /// <summary>The Ghost Toolbox folder or shortcut that comes with Ghost Spectre.</summary>
+    public bool GhostToolboxFound { get; init; }
+
+    /// <summary>All five hardware check skips and the network setup skip, which is what tiny11 writes into the image.</summary>
+    public bool Tiny11SetupPattern { get; init; }
+
+    /// <summary>Windows Update off and pointed at this PC, which is what tiny11 Core writes.</summary>
+    public bool Tiny11CorePattern { get; init; }
 }
 
 /// <summary>
@@ -41,6 +50,9 @@ public static class InstallCheck
 
         var named = i.Branding.FirstOrDefault(b => KnownImageNames.Any(k => b.Contains(k, StringComparison.OrdinalIgnoreCase)));
         if (named is not null) signals.Add(new($"The system information names a custom Windows image: \"{named.Trim()}\"", 5));
+        if (i.GhostToolboxFound) signals.Add(new("Ghost Toolbox, the tool that comes with Ghost Spectre, is on this PC", 5));
+        if (i.Tiny11CorePattern) signals.Add(new("Windows Update is turned off and pointed at this PC, which is what tiny11 Core does", 4));
+        if (i.Tiny11SetupPattern) signals.Add(new("Setup skipped all five hardware checks and the network setup, which is what tiny11 writes", 3));
 
         if (i.HardwareChecksBypassed)
             signals.Add(new("Setup was told to skip the hardware checks (TPM, Secure Boot, RAM or CPU)", 2));
@@ -62,6 +74,13 @@ public static class InstallCheck
 
         var score = signals.Sum(s => s.Weight);
         var level = score >= LikelyAt ? InstallLevel.Likely : score >= PossibleAt ? InstallLevel.Possible : InstallLevel.Standard;
-        return new InstallVerdict(level, signals) { Inputs = i, ImageName = named is null ? null : KnownImages.First(k => named.Contains(k.Key, StringComparison.OrdinalIgnoreCase)).Value };
+        // A name in the system information, or a marker on disk, is firm. A pattern of settings is only a guess.
+        string? name = null;
+        var firm = true;
+        if (named is not null) name = KnownImages.First(k => named.Contains(k.Key, StringComparison.OrdinalIgnoreCase)).Value;
+        else if (i.GhostToolboxFound) name = "Ghost Spectre";
+        else if (i.Tiny11CorePattern) { name = "tiny11 Core"; firm = false; }
+        else if (i.Tiny11SetupPattern) { name = "tiny11"; firm = false; }
+        return new InstallVerdict(level, signals) { Inputs = i, ImageName = name, ImageNameIsFirm = firm };
     }
 }

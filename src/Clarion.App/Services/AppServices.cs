@@ -476,6 +476,9 @@ public sealed partial class AppServices : UiObservableObject
     /// <summary>What the install check found, or null before the system has been read.</summary>
     public Clarion.Core.SystemInfo.InstallVerdict? ImageVerdict { get; private set; }
 
+    /// <summary>How Windows Update looks on this PC, or null before the system has been read.</summary>
+    public Clarion.Core.SystemInfo.UpdateVerdict? UpdateVerdict { get; private set; }
+
     /// <summary>How many settings have a note about this Windows image.</summary>
     public int ImageNoteCount { get; private set; }
 
@@ -488,6 +491,7 @@ public sealed partial class AppServices : UiObservableObject
             var notes = Clarion.Core.SystemInfo.ImageAdvice.Notes(Items.Select(i => i.Tweak).ToList(), report.Install);
             foreach (var item in Items) item.ImageNote = notes.TryGetValue(item.Id, out var note) ? note : "";
             ImageVerdict = report.Install;
+            UpdateVerdict = report.Updates;
             ImageNoteCount = notes.Count;
             OnPropertyChanged(nameof(ImageVerdict));
         }

@@ -2,7 +2,8 @@
 <Page x:Class="Clarion.App.Pages.SystemPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:si="using:Clarion.Core.SystemInfo">
+    xmlns:si="using:Clarion.Core.SystemInfo"
+    xmlns:pg="using:Clarion.App.Pages">
 
     <ScrollViewer>
         <StackPanel Padding="32,24,46,24" Spacing="20" MaxWidth="1000" HorizontalAlignment="Left">
@@ -33,6 +34,30 @@
                                     <TextBlock Text="&#x2022;" Foreground="{ThemeResource ClAccentBrush}" />
                                     <TextBlock Text="{x:Bind Text}" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                                 </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="UpdateCard" Visibility="Collapsed" CornerRadius="8" Padding="20" BorderThickness="1"
+                    Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Windows Update right now" FontSize="13" Foreground="{ThemeResource ClTextMutedBrush}" />
+                    <TextBlock x:Name="UpdateHeadline" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock x:Name="UpdateExplanation" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    <ItemsControl x:Name="UpdateFindings">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="pg:UpdateRow">
+                                <Grid ColumnSpacing="10" Margin="0,2,0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="18" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Bind Mark}" Foreground="{x:Bind MarkBrush}" FontWeight="SemiBold" HorizontalAlignment="Center"
+                                               AutomationProperties.AccessibilityView="Raw" />
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Text}" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

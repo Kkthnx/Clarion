@@ -16,12 +16,22 @@ public sealed record InstallVerdict(InstallLevel Level, IReadOnlyList<InstallSig
     /// <summary>What was observed on this PC, kept so settings can be matched against it.</summary>
     public InstallInputs? Inputs { get; init; }
 
-    /// <summary>The well known image named in the system information, such as Tiny11, or null.</summary>
+    /// <summary>The image Clarion thinks this is, such as Ghost Spectre, or null.</summary>
     public string? ImageName { get; init; }
+
+    /// <summary>True when the name came from the system information or a marker, false when it is a guess from a pattern of settings.</summary>
+    public bool ImageNameIsFirm { get; init; } = true;
+
+    /// <summary>The name as it reads in a sentence, with "possibly" when it is a guess. Empty when there is none.</summary>
+    public string ImageLabel => ImageName is null ? "" : ImageNameIsFirm ? ImageName : $"possibly {ImageName}";
 
     public string Headline => Level switch
     {
+        InstallLevel.Likely when ImageName is not null => ImageNameIsFirm
+            ? $"This looks like {ImageName}, a customized Windows image"
+            : $"This looks like a customized Windows image, {ImageLabel}",
         InstallLevel.Likely => "This looks like a customized Windows image",
+        InstallLevel.Possible when ImageName is not null => $"This Windows install may be a customized image, {ImageLabel}",
         InstallLevel.Possible => "This Windows install may have been customized",
         _ => "This looks like a standard Windows install",
     };
@@ -36,6 +46,9 @@ public sealed record InstallVerdict(InstallLevel Level, IReadOnlyList<InstallSig
 
 public sealed record SystemReport(IReadOnlyList<FactGroup> Groups, InstallVerdict Install)
 {
+    /// <summary>How Windows Update looks on this PC, or null when it could not be read.</summary>
+    public UpdateVerdict? Updates { get; init; }
+
     /// <summary>Plain text for pasting into a bug report or forum post.</summary>
     public string ToText()
     {
@@ -49,6 +62,13 @@ public sealed record SystemReport(IReadOnlyList<FactGroup> Groups, InstallVerdic
         sb.AppendLine("Windows install check");
         sb.AppendLine($"  {Install.Headline}");
         foreach (var s in Install.Signals) sb.AppendLine($"  - {s.Text}");
+        if (Updates is not null)
+        {
+            sb.AppendLine();
+            sb.AppendLine("Windows Update");
+            sb.AppendLine($"  {Updates.Headline}");
+            foreach (var u in Updates.Findings) sb.AppendLine($"  - {u.Text}");
+        }
         return sb.ToString().TrimEnd();
     }
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+New
+- The System page has a "Windows Update right now" card. It reads the update services, the policies that can block updates, the background scan task, any stored pause, and the dates Windows last checked and last installed, then says in plain words whether updates are working, limited or held back, with the reason for each finding. A pause stored far past the 35 days Windows allows is reported as a note when Windows itself says it has ended, because updates still install in that case. Home mentions it when updates are limited or held.
+
+Polish
+- Customized images are named from evidence. Ghost Spectre is recognized by its Ghost Toolbox folder or shortcut, which the old check missed because the Windows name on those PCs is plain. tiny11 is recognized only from its full pattern (all five hardware check skips plus the network setup skip, or Windows Update off and pointed at the PC itself for tiny11 Core), and that name is worded as a guess. Three of the five skips, as on Ghost Spectre, is not read as tiny11.
+
 ## 0.1.0-beta.7
 
 New

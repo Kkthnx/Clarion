@@ -208,11 +208,12 @@ public sealed partial class HomePage : Page
         ImageBar.Visibility = ImageBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (verdict is not { Level: not Clarion.Core.SystemInfo.InstallLevel.Standard }) return;
 
-        var named = verdict.ImageName is { } name ? $" ({name})" : "";
-        ImageBar.Title = verdict.Headline + named;
-        ImageBar.Message = _app.ImageNoteCount > 0
+        ImageBar.Title = verdict.Headline;
+        var notes = _app.ImageNoteCount > 0
             ? $"{_app.ImageNoteCount} settings have a note about this. Settings whose target is already gone show as having nothing to change."
             : "Settings whose target is already gone show as having nothing to change. Clarion only changes what you choose.";
+        var updates = _app.UpdateVerdict is { Level: not Clarion.Core.SystemInfo.UpdateLevel.Working } u ? $" {u.Headline}. See why." : "";
+        ImageBar.Message = notes + updates;
     }
 
     private void OnSeeImage(object sender, RoutedEventArgs e) => _app.RequestNavigate("system");

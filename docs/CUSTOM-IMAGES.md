@@ -43,12 +43,20 @@ Core `tiny11Coremaker.ps1` (the maintainer calls it not for production):
 - ReviOS: its comparison page lists Windows Update as "Fully compatible, Paused". It removes components at the WinSxS level using an empty update package, which keeps the original files so uninstalling that package restores them. The Revision Tool is its settings app, GPL v3, made only for ReviOS.
 - Not found for either: the exact registry values or services their playbooks change. Do not write detection for them from guesses. Read their playbooks first, or check a real install.
 
+## What Clarion does now
+
+Built after this research: items 1 and 2 below. The System page names Ghost Spectre from the Toolbox marker and words tiny11 as a guess. A "Windows Update right now" card reports working, limited or held, from the services, policies, scan task, stored pause, Windows' own pause status and the last check and install dates. Items 3 and 4 are not built. See "Why the undo is not built" at the end.
+
 ## What this means for Clarion
 
 1. Name the image from evidence, not the caption. Ghost Spectre has a solid marker (the Toolbox folder and shortcut). tiny11 has only a pattern (all five bypass values with `BypassNRO`; Core adds the localhost update server and removed services). Atlas and ReviOS need a read of their playbooks first. Every sign stays listed with its reason, and the result stays a hint.
 2. Report the real state of Windows Update, separate from the image name, because it is what the user acts on. Gather: pause dates and whether they run past the 35 day limit, `PausedFeatureStatus` and `PausedQualityStatus`, the policy keys above (`NoAutoUpdate`, `WUServer`, `DisableWindowsUpdateAccess`), service start types, the orchestrator tasks, and the Settings page hiding. Then say in plain words: held, not held, or unclear. The Ghost Spectre PC shows why: a pause to 2077 is stored but updates still run.
 3. Offer to undo it, as ordinary Clarion settings with a recorded previous value so Revert puts the image's choice back: clear the stored pause, remove the policy overrides, set the services and tasks to normal. This matches the rule that Clarion never weakens security; it only strengthens.
 4. Do not touch the image builder's own tools (the Toolbox), and expect them to re-apply their choices.
+
+## Why the undo is not built
+
+No source documents what the Settings "Resume updates" button changes. Community guides say to delete the six pause values under `UXSettings` and some also reset `PausedFeatureStatus` and `PausedQualityStatus`, and one forum thread says deleting them unpauses but nothing downloads until Resume is pressed. On the Ghost Spectre PC the stored pause is already ignored by Windows, so clearing it would change nothing observable here. A setting that edits update state should be shipped only after a before and after export of both keys around a real Resume on a PC where the pause is in effect. Until then Clarion reports the state and leaves it alone.
 
 ## Sources
 

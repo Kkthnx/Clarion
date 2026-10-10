@@ -7,13 +7,18 @@ using Clarion.Core.Model;
 namespace Clarion.Core.SystemInfo;
 
 /// <summary>Collects facts about this PC and the Windows install, then judges whether the image looks customized.</summary>
-public sealed class SystemProbe(IRegistryStore registry, IServiceStore services, IProcessRunner runner)
+public sealed class SystemProbe(IRegistryStore registry, IServiceStore services, IProcessRunner runner, ITaskStore? tasks = null, TimeProvider? clock = null)
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(90);
 
     private const string CurrentVersion = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion";
     private const string Oem = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\OEMInformation";
     private const string LabConfig = "SYSTEM\\Setup\\LabConfig";
+    private const string UxSettings = "SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings";
+    private const string UpdatePolicySettings = "SOFTWARE\\Microsoft\\WindowsUpdate\\UpdatePolicy\\Settings";
+    private const string UpdatePolicyKey = "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate";
+    private const string ScanTask = "\\Microsoft\\Windows\\UpdateOrchestrator\\Schedule Scan";
+    private readonly TimeProvider _clock = clock ?? TimeProvider.System;
 
     // One PowerShell start collects everything slow, which keeps the page quick to open.
     internal const string Script = """
@@ -32,6 +37,9 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
         $lic = Try-Get { Get-CimInstance SoftwareLicensingProduct -Filter "ApplicationId='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL" | Select-Object -First 1 }
         $store = [bool](Try-Get { Get-AppxPackage -AllUsers Microsoft.WindowsStore | Select-Object -First 1 })
         $edge = Test-Path "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
+        $ghost = [bool]((Test-Path "$env:SystemDrive\Ghost Toolbox") -or (Test-Path "$env:PUBLIC\Desktop\Ghost Toolbox.lnk") -or (Test-Path "$env:USERPROFILE\Desktop\Ghost Toolbox.lnk"))
+        $wu = Try-Get { (New-Object -ComObject Microsoft.Update.AutoUpdate).Results }
+        function Wu-Date($d) { if ($d) { try { ([datetime]$d).ToUniversalTime().ToString('o') } catch { $null } } }
         $o = [ordered]@{
           osCaption = $os.Caption; osBuild = $os.BuildNumber; osArch = $os.OSArchitecture; installDate = $os.InstallDate.ToString('o'); boot = $os.LastBootUpTime.ToString('o')
           language = (Get-Culture).Name; domain = [bool]$cs.PartOfDomain; manufacturer = $cs.Manufacturer; model = $cs.Model
@@ -44,6 +52,7 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
           secureBoot = $secure; vbs = $vbs; av = $av
           licChannel = $lic.ProductKeyChannel; licStatus = $(if ($lic) { [int]$lic.LicenseStatus }); licName = $lic.Name
           store = $store; edge = $edge
+          ghostToolbox = $ghost; lastCheck = (Wu-Date $wu.LastSearchSuccessDate); lastInstall = (Wu-Date $wu.LastInstallationSuccessDate)
         }
         ConvertTo-Json -InputObject $o -Depth 5 -Compress
         """;
@@ -93,8 +102,14 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
         };
 
         var update = services.GetStartType("wuauserv");
+        var updates = ReadUpdates(j, update);
         var inputs = new InstallInputs
         {
+            GhostToolboxFound = Bool(j, "ghostToolbox") == true,
+            Tiny11SetupPattern = new[] { "BypassTPMCheck", "BypassSecureBootCheck", "BypassRAMCheck", "BypassCPUCheck", "BypassStorageCheck" }.All(n => Number(LabConfig, n) == 1)
+                && Number("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\OOBE", "BypassNRO") == 1,
+            Tiny11CorePattern = (update is null or ServiceStartType.Disabled) && updates.UseUpdateServer && updates.AutoUpdateOff
+                && updates.UpdateServer is { } server && UpdateState.IsThisPc(server),
             Branding = Branding(Str(j, "osCaption")),
             HardwareChecksBypassed = Bypassed(),
             DefenderServiceMissing = services.GetStartType("WinDefend") is null,
@@ -109,8 +124,44 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
 
         return new SystemReport(
             [new("Windows", windows), new("Hardware", hardware), new("Security", security)],
-            InstallCheck.Evaluate(inputs));
+            InstallCheck.Evaluate(inputs))
+        {
+            Updates = UpdateState.Evaluate(updates, _clock.GetUtcNow()),
+        };
     }
+
+    /// <summary>Reads the update settings from the registry, the services and the task list, plus the dates Windows keeps.</summary>
+    private UpdateInputs ReadUpdates(JsonElement j, ServiceStartType? update)
+    {
+        var ends = new[] { "PauseUpdatesExpiryTime", "PauseFeatureUpdatesEndTime", "PauseQualityUpdatesEndTime" }
+            .Select(n => Time(Text(Local(UxSettings, n)))).Where(t => t is not null).Select(t => t!.Value).ToList();
+        var server = Text(Local(UpdatePolicyKey, "WUServer"));
+
+        return new UpdateInputs
+        {
+            PauseEnds = ends.Count > 0 ? ends.Max() : null,
+            PausedFeatureStatus = NumberOrNull(UpdatePolicySettings, "PausedFeatureStatus"),
+            PausedQualityStatus = NumberOrNull(UpdatePolicySettings, "PausedQualityStatus"),
+            WindowsUpdateServiceMissing = update is null,
+            WindowsUpdateServiceDisabled = update == ServiceStartType.Disabled,
+            OrchestratorMissing = services.GetStartType("UsoSvc") is null,
+            MedicMissing = services.GetStartType("WaaSMedicSvc") is null,
+            AccessBlockedByPolicy = Number(UpdatePolicyKey, "DisableWindowsUpdateAccess") == 1,
+            NoConnectPolicy = Number(UpdatePolicyKey, "DoNotConnectToWindowsUpdateInternetLocations") == 1,
+            AutoUpdateOff = Number(UpdatePolicyKey + "\\AU", "NoAutoUpdate") == 1,
+            UseUpdateServer = Number(UpdatePolicyKey + "\\AU", "UseWUServer") == 1,
+            UpdateServer = server.Length > 0 ? server : null,
+            SettingsPageHidden = Text(Local("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer", "SettingsPageVisibility"))
+                .Contains("windowsupdate", StringComparison.OrdinalIgnoreCase),
+            ScanTaskEnabled = tasks?.GetEnabled(ScanTask),
+            LastCheck = Time(Str(j, "lastCheck")),
+            LastInstall = Time(Str(j, "lastInstall")),
+        };
+    }
+
+    /// <summary>A date from Windows, or null when it is missing or one of the placeholder dates it uses for "never".</summary>
+    private static DateTimeOffset? Time(string text) =>
+        DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var t) && t.Year >= 2000 ? t : null;
 
     private static RegistryTarget Local(string path, string name) => new(RegistryHive.LocalMachine, path, name);
 
@@ -118,6 +169,9 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
 
     private long Number(string path, string name) =>
         registry.Read(Local(path, name)) is { Data: { } d } && long.TryParse(d.Value, out var n) ? n : 0;
+
+    private int? NumberOrNull(string path, string name) =>
+        registry.Read(Local(path, name)) is { Exists: true, Data: { } d } && int.TryParse(d.Value, out var n) ? n : null;
 
     private List<string> Branding(string caption)
     {
