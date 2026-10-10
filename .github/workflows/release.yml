@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
+      # The command line tests start the real program, so it is built before they run, as in ci.yml.
+      - run: dotnet build src/Clarion.App -p:Platform=x64
       - run: dotnet test tests/Clarion.Tests
 
       - name: Publish app
