@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.7
 
 New
 - A Compact switch on the settings lists. It shows one line per setting, so about three times as many fit on the screen, and keeps the details in the pane on the right. It is remembered.
@@ -14,6 +14,7 @@ New
 - Safety can go back to a day: pick a date and Clarion queues a revert for every setting last applied after the end of that day. You still review it before anything changes.
 - Home tells you when the monthly check starts a different copy of Clarion, for example after Clarion was moved to another folder, and "Fix it" sets it up again from this copy.
 - An About page, under What's new, with why Clarion exists, who makes it, links, and ways to support it.
+- A LICENSE file. Clarion is all rights reserved with public source: anyone can read the code and check what it does, and run the releases free, but the code, catalog and logo may not be reused or redistributed. The installer shows it.
 - The read only command line commands (`--verify`, `--history`, `--what-broke`, and the list commands) now start without administrator rights, as the help text always said. The window asks for the rights when it opens, with the usual Windows prompt. If you say no, it opens in a look and verify mode with a "Restart as administrator" button, and asks for the rights before it makes any change.
 
 Safer

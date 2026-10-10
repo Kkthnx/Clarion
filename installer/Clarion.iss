@@ -21,6 +21,7 @@ DisableProgramGroupPage=yes
 UninstallDisplayIcon={app}\Clarion.exe
 UninstallDisplayName=Clarion
 SetupIconFile=..\src\Clarion.App\Assets\Clarion.ico
+LicenseFile=..\LICENSE
 OutputDir=..\artifacts
 OutputBaseFilename=Clarion-{#AppVersion}-setup
 Compression=lzma2/max

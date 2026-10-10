@@ -1,6 +1,6 @@
 # Builds the setup program and portable zip. Signing steps run only when the repository
 # variable SIGNPATH_ORGANIZATION_ID is set, so this works unsigned until signing is set up.
-# See docs/SIGNING.md. This workflow has not been run yet.
+# See docs/SIGNING.md.
 name: release
 on:
   push:

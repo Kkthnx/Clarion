@@ -563,3 +563,9 @@ Source: `design-study/COMPARISON.md` (kept outside git). What was built, in the 
 - The supplied mark (steel-blue C, one cyan dot, dark tile) looked soft and thin at small sizes because it came as a single 256 pixel picture with four icon sizes. `scripts/make-brand-assets.ps1` now draws it from geometry: eight times oversampled then reduced, three weights of C (16 to 24, 32 to 48, larger), icon sizes 16, 20, 24, 32, 40, 48, 64, 128, 256, a 512 pixel logo, and a 2400 by 800 banner. Run it to regenerate; pass `-OutDir` to write somewhere else first.
 - Checked by screenshot in both themes: title bar (22), Home and About (72).
 - About page added from the supplied pack, with the wording changed to "the source is public on GitHub" until a licence is chosen.
+
+## Before beta 7
+- Licence decided: all rights reserved, source public. `LICENSE` added, shown by the installer, README, CONTRIBUTING, PACKAGING and SIGNING updated. The free SignPath route needs an OSI licence, so it is closed.
+- About page: removed YouTube, X, Facebook and Patreon. The remaining buttons (Website, GitHub, source, Twitch, PayPal) carry Segoe icons. Brand logos were not used: they would mean bundling third party artwork and keeping it current.
+- Stale statements fixed: DESIGN.md said the manifest requires administrator rights (it is asInvoker with a relaunch), promised registry exports and a signed release, and described Revert All on Home (it is on Safety). A status note at the top lists what the design describes but is not built. The release workflow comment said it had never run.
+- README: version, 177 settings, Home, Safety, Stop, DNS speed test, the read only and list commands, how the administrator prompt behaves, links to the settings reference, contributing, signing and licence. All four screenshots were from the first UI and were retaken from the current build in the dark theme with a clean data folder.

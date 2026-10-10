@@ -1,5 +1,7 @@
 # Clarion Design and Approach
 
+> **Status.** This is the original design. Where it differs from what ships, the README, CHANGELOG and docs/WORKLOG.md are right. Not built yet: registry `.reg` exports before a change (the journal records the previous value instead), ARM64 builds, an MSIX build, localization, and code signing. Administrator rights are asked for when the window opens, not through the manifest.
+
 ## 1. Goals
 
 1. Every change is explained, reversible, and backed by a verifiable source.
@@ -102,7 +104,7 @@ Full keyboard navigation, Narrator labels on every control, 4.5:1 text contrast,
 2. **System Restore point.** Created before every Apply batch through the Checkpoint-Computer cmdlet. Windows limits automatic creation to one per 24 hours by default, so the app temporarily sets the `SystemRestorePointCreationFrequency` value under `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore` to 0, creates the point, then restores the previous value. If System Protection is off, the app offers to turn it on for the system drive. Apply is blocked if the user declines and has not explicitly accepted the risk.
 3. **Change journal.** A local append-only file records every operation with the prior value, the new value, time, and tweak id. Undo reads from it, so a revert restores what was actually there, not a guessed default.
 4. **Registry exports.** Before touching a key, the app exports it to a `.reg` file in the backup folder.
-5. **Per tweak Revert.** Every card has Revert. Home has Revert All.
+5. **Per tweak Revert.** Every setting can be reverted. Safety can queue a revert for everything, or for everything changed after a chosen day.
 6. **Profile export and import.** Selections save as a small JSON file the user can share.
 7. **Dry run.** Shows the exact operations without running them.
 8. **Protected list.** Packages and services the app refuses to touch: Microsoft Store, Windows Security, shell and Start experience hosts, Desktop App Installer, runtime frameworks, input and language components, and the WebView2 runtime.
@@ -117,7 +119,7 @@ Full keyboard navigation, Narrator labels on every control, 4.5:1 text contrast,
 
 - C# on current .NET LTS, WinUI 3 with the Windows App SDK, MVVM with the CommunityToolkit.Mvvm package.
 - Unpackaged, self contained, with an optional MSIX build. Targets x64 and ARM64.
-- Requires administrator rights through the application manifest.
+- Starts without administrator rights and asks for them when the window opens (a relaunch through the Windows prompt). If the user says no, it runs in a read only look and verify mode.
 
 ### Layers
 
@@ -172,11 +174,11 @@ Most tweaks are data only. Scripts exist only for operations with no clean nativ
 - Every tweak has a unit test for detect, apply and undo against a mock system layer.
 - Integration tests run in disposable virtual machines on Windows 11 Home, Pro, and Windows 10 22H2.
 - Static analysis and a script linter run in CI.
-- Release binaries are code signed, and a SHA-256 list is published with each release.
+- A SHA-256 file is published with each release. Signing is planned (see docs/SIGNING.md).
 
 ### Distribution
 
-Zip portable build, installer, and a winget manifest. Update check compares a signed version file.
+Zip portable build and installer from the GitHub release page. `scripts/make-package-manifests.ps1` writes winget and Scoop manifests. The update check reads the GitHub release list and is off until the user turns it on.
 
 ### Telemetry in Clarion itself
 

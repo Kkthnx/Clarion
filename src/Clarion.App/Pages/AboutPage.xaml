@@ -34,15 +34,30 @@
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
                            Text="Clarion is made by Kkthnx, an Indiana dev who has been shipping free software for over a decade, from the KkthnxUI World of Warcraft interface to Windows utilities. The source for everything is public on GitHub." />
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button Content="Website" Click="OnWebsite" AutomationProperties.Name="Kkthnx website" />
-                    <Button Content="GitHub" Click="OnGitHub" AutomationProperties.Name="Kkthnx on GitHub" />
-                    <Button Content="Clarion source code" Click="OnSource" AutomationProperties.Name="Clarion source code on GitHub" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button Content="Twitch" Click="OnTwitch" AutomationProperties.Name="Kkthnx on Twitch" />
-                    <Button Content="YouTube" Click="OnYouTube" AutomationProperties.Name="Kkthnx on YouTube" />
-                    <Button Content="X" Click="OnX" AutomationProperties.Name="KkthnxUI on X" />
-                    <Button Content="Facebook" Click="OnFacebook" AutomationProperties.Name="KkthnxUI on Facebook" />
+                    <Button Click="OnWebsite" AutomationProperties.Name="Kkthnx website">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE774;" FontSize="14" />
+                            <TextBlock Text="Website" />
+                        </StackPanel>
+                    </Button>
+                    <Button Click="OnGitHub" AutomationProperties.Name="Kkthnx on GitHub">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE77B;" FontSize="14" />
+                            <TextBlock Text="GitHub" />
+                        </StackPanel>
+                    </Button>
+                    <Button Click="OnSource" AutomationProperties.Name="Clarion source code on GitHub">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE943;" FontSize="14" />
+                            <TextBlock Text="Clarion source code" />
+                        </StackPanel>
+                    </Button>
+                    <Button Click="OnTwitch" AutomationProperties.Name="Kkthnx on Twitch">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE714;" FontSize="14" />
+                            <TextBlock Text="Twitch" />
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </StackPanel>
 
@@ -51,8 +66,12 @@
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
                            Text="Clarion is free, and it stays free. If it saved you a headache, a donation keeps development going." />
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button Content="Donate with PayPal" Style="{StaticResource AccentButtonStyle}" Click="OnPayPal" AutomationProperties.Name="Donate with PayPal, opens in your browser" />
-                    <Button Content="Support on Patreon" Click="OnPatreon" AutomationProperties.Name="Support on Patreon, opens in your browser" />
+                    <Button Style="{StaticResource AccentButtonStyle}" Click="OnPayPal" AutomationProperties.Name="Donate with PayPal, opens in your browser">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xEB51;" FontSize="14" />
+                            <TextBlock Text="Donate with PayPal" />
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
                 <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}"
                            Text="Donations will never be a requirement. The full app is free either way." />

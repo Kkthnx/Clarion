@@ -14,7 +14,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 </div>
 
-> **Beta.** Clarion is in public beta (0.1.0-beta.6). Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
+> **Beta.** Clarion is in public beta (0.1.0-beta.7). Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
 
 ![Clarion home screen](docs/images/home.png)
 
@@ -25,23 +25,25 @@ Every change is explained, graded by evidence, backed up and reversible.
 - **Safe by design.** A restore point before every batch, a journal that records the real previous value, and one click revert.
 - **Honest.** No telemetry in the app and no account. The only request Clarion can make is an update check, and that is off unless you ask for it. Weak or unproven tweaks are hidden unless you turn on Expert mode.
 
-![Privacy settings with a tooltip](docs/images/privacy.png)
+![Privacy settings with the detail pane](docs/images/privacy.png)
 
 ## What it does
 
 | | |
 |---|---|
-| **Privacy and debloat** | About 175 settings across privacy, app removal, tweaks, power, network, Windows features and updates. |
+| **Privacy and debloat** | 177 settings across privacy, app removal, tweaks, power, network, Windows features and updates. A Compact switch fits about three times as many on screen, and topic pills narrow a long list in one click. |
 | **Clean up** | Shader caches, launcher caches, browser and Windows leftovers. Scans first, shows exact folders and sizes, skips files in use and queues locked files for the next restart. |
 | **Repair** | System file check, component repair, network and update resets. Output streams live and any job can be stopped. |
-| **Presets** | Minimal, Standard, Advanced, Gaming and Privacy. Queue one, review it, apply it. |
-| **DNS** | Pick a public provider from a dropdown, with optional encrypted lookups. Revert restores exactly what you had. |
+| **Presets** | Minimal, Standard, Advanced, Gaming and Privacy. Each lists the settings it holds and marks the ones already on. Queue one, review it, apply it. |
+| **DNS** | Pick a public provider from a dropdown, with optional encrypted lookups, or press a button to time each one from your PC and see which is nearest. Revert restores exactly what you had. |
+| **Home** | Windows, processor, memory, graphics, storage and how many settings are in effect, at a glance. |
 | **System** | Windows edition, build, hardware and security state, plus a check for customized Windows images that explains every sign it finds. Settings that depend on something the image removed carry a note. |
 | **Verify** | Checks everything Clarion applied against Windows now. Lists removed apps that came back and settings that were changed back, usually after a feature update. Put them back in one step, or leave them as they are. |
 | **What's new** | What changed in each version, grouped as New, Safer, Fixed and Polish. When a newer version exists it lists everything you missed and links to the release page. Clarion never downloads or installs the update itself. |
 | **Monthly check** | Optional. A scheduled task checks the settings Clarion applied on the second Wednesday of each month, the day after Windows' monthly updates, and tells you the next time you open Clarion what changed back. |
 | **What broke** | Pick what stopped working and see which of your changes could explain it, newest first, with a revert button on each. |
-| **Live progress** | A panel with a progress bar and one line per setting while changes apply. |
+| **Live progress** | A panel with a progress bar and one line per setting while changes apply. A Stop button ends the run before the next setting, never in the middle of one. |
+| **Safety** | Lists the restore points Windows has and can make one on demand. Revert one setting, everything, or everything changed after a day you pick. You review the revert before anything changes. |
 | **Report a problem** | Builds a bug report or suggestion with your system details and recent activity, with names, addresses and accounts removed. You can also add how your settings are holding up, which helps keep the "last checked" labels honest. You read it, then open it on GitHub yourself. |
 | **Setup files and command line** | Save your choices to a file and apply them on another PC, or run everything from a terminal. |
 
@@ -53,7 +55,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 1. Download `Clarion-<version>-setup.exe` from the [latest release](https://github.com/Kkthnx/Clarion/releases/latest). A portable zip is there too.
 2. Run it. Clarion installs to Program Files with a Start menu entry and a clean uninstaller.
-3. Open Clarion. It asks for administrator rights because most settings are machine wide.
+3. Open Clarion. It asks for administrator rights when it opens, because most settings are machine wide. If you say no, it opens in a read only mode that can look and verify but changes nothing, with a button to restart as administrator.
 
 The files are not code signed yet, so Windows SmartScreen may warn on first run. Signing is planned before 1.0. Each download has a SHA256 file next to it so you can verify it.
 
@@ -66,10 +68,14 @@ Clarion.exe --version
 Clarion.exe --list-presets
 Clarion.exe --apply-preset standard [--preview] [--no-restore-point]
 Clarion.exe --apply setup.json [--preview] [--no-restore-point]
-Clarion.exe --clean [--preview]
+Clarion.exe --clean [--only a,b] [--include c,d] [--preview]
+Clarion.exe --verify [--save]
+Clarion.exe --what-broke symptom [--since 2026-09-01]
+Clarion.exe --history
+Clarion.exe --list-presets | --list-settings | --list-cleanups | --list-symptoms
 ```
 
-`--preview` shows what would change and changes nothing. Exit codes: 0 success, 1 some steps failed, 2 bad arguments or file, 3 not elevated.
+`--preview` shows what would change and changes nothing. `--verify`, `--what-broke`, `--history` and the list commands only read, and start without administrator rights. Exit codes: 0 success, 1 some steps failed, 2 bad arguments or file, 3 not elevated.
 
 ## Build from source
 
@@ -86,8 +92,12 @@ To build the installer and zip, install Inno Setup 6 and run `scripts/build-inst
 
 - [Design and approach](docs/DESIGN.md)
 - [Feature matrix](docs/FEATURES.md)
+- [Every setting, written out](docs/CATALOG.md)
 - [Brand and palette](docs/BRAND.md)
 - [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Code signing plan](docs/SIGNING.md)
+- [License](LICENSE)
 
 ## Principles
 
