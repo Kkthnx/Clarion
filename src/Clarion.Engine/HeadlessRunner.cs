@@ -22,8 +22,11 @@ public static class HeadlessRunner
         try
         {
             AttachConsole(-1); // fails harmlessly when output is redirected to a file or pipe
+            // The writer owns the stream and is handed to the caller, who disposes it.
+#pragma warning disable CA2000
             var stream = Console.OpenStandardOutput();
             if (stream != Stream.Null) return new StreamWriter(stream) { AutoFlush = true };
+#pragma warning restore CA2000
         }
         catch (Exception ex) when (ex is IOException or InvalidOperationException) { }
         return TextWriter.Null;

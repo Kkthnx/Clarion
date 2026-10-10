@@ -1,0 +1,5 @@
+[*.cs]
+# Test code makes short lived objects and writes small files directly. Leaks and blocking calls here cost nothing and the rules are noise.
+dotnet_diagnostic.CA2000.severity = none
+dotnet_diagnostic.CA1849.severity = none
+dotnet_diagnostic.CA2213.severity = none

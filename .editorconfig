@@ -1,0 +1,19 @@
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+
+[*.cs]
+# A small set of analyzer rules that have found real bugs here. They are errors, because warnings are errors in this build.
+# Objects that are never disposed (leaks), and types that own something disposable without being disposable.
+dotnet_diagnostic.CA2000.severity = warning
+dotnet_diagnostic.CA2213.severity = warning
+dotnet_diagnostic.CA1001.severity = warning
+dotnet_diagnostic.CA1816.severity = warning
+# Blocking calls inside async code, and a cancellation token that is not passed on.
+dotnet_diagnostic.CA1849.severity = warning
+dotnet_diagnostic.CA2016.severity = warning
+# Data that is written for a machine, such as the history and task files, must not change with the language of Windows.
+dotnet_diagnostic.CA1304.severity = warning
+dotnet_diagnostic.CA1305.severity = none

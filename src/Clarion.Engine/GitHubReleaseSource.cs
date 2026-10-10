@@ -15,7 +15,10 @@ public sealed class GitHubReleaseSource(string appVersion, HttpMessageHandler? h
 
     public async Task<string> GetReleasesJsonAsync(CancellationToken cancel)
     {
+        // HttpClient disposes the handler it is given, so the handler made here is released with the client.
+#pragma warning disable CA2000
         using var client = new HttpClient(handler ?? new HttpClientHandler { UseCookies = false }) { Timeout = TimeSpan.FromSeconds(12) };
+#pragma warning restore CA2000
         using var request = new HttpRequestMessage(HttpMethod.Get, Address);
         request.Headers.UserAgent.Add(new ProductInfoHeaderValue("Clarion", appVersion));
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));

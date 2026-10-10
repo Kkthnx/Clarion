@@ -34,7 +34,8 @@ public partial class App : Application
         var cli = Clarion.Core.Profiles.CliOptions.Parse(Environment.GetCommandLineArgs().Skip(1).ToList());
         if (cli.IsCli)
         {
-            var code = Clarion.Engine.HeadlessRunner.Run(cli, Clarion.Engine.HeadlessRunner.OpenConsole(), Services.Log.Write);
+            int code;
+            using (var console = Clarion.Engine.HeadlessRunner.OpenConsole()) code = Clarion.Engine.HeadlessRunner.Run(cli, console, Services.Log.Write);
             Environment.Exit(code);
             return;
         }

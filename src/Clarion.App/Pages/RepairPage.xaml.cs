@@ -164,7 +164,7 @@ public sealed partial class RepairPage : Page
         }
         finally
         {
-            timerStop.Cancel();
+            await timerStop.CancelAsync();
             await refresh;
         }
 
