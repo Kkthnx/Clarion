@@ -27,14 +27,20 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
         $os = Get-CimInstance Win32_OperatingSystem
         $cs = Get-CimInstance Win32_ComputerSystem
         $bios = Get-CimInstance Win32_BIOS
-        $cpu = @(Get-CimInstance Win32_Processor)
-        $gpu = @(Get-CimInstance Win32_VideoController | Where-Object { $_.Name })
-        $disks = @(Get-PhysicalDisk | ForEach-Object { [pscustomobject]@{ Name = $_.FriendlyName; Bytes = [int64]$_.Size; Media = [string]$_.MediaType; Bus = [string]$_.BusType } })
+        # Only the properties used are asked for. Win32_Processor with all of them also measures the live load, which took about a second.
+        $cpu = @(Get-CimInstance Win32_Processor -Property Name,NumberOfCores,NumberOfLogicalProcessors)
+        $gpu = @(Get-CimInstance Win32_VideoController -Property Name,DriverVersion | Where-Object { $_.Name })
+        # Disks come straight from the storage provider, which is what Get-PhysicalDisk reads, without loading that module first (about a second).
+        # Value names are from Microsoft's MSFT_PhysicalDisk reference. When the module is loaded the values already arrive as names.
+        $busNames = @{ 1 = 'SCSI'; 2 = 'ATAPI'; 3 = 'ATA'; 4 = '1394'; 5 = 'SSA'; 6 = 'Fibre Channel'; 7 = 'USB'; 8 = 'RAID'; 9 = 'iSCSI'; 10 = 'SAS'; 11 = 'SATA'; 12 = 'SD'; 13 = 'MMC'; 15 = 'File Backed Virtual'; 16 = 'Storage Spaces'; 17 = 'NVMe' }
+        $mediaNames = @{ 3 = 'HDD'; 4 = 'SSD'; 5 = 'SCM' }
+        function Disk-Name($v, $map, $fallback) { if ($v -is [string]) { return $v }; if ($null -ne $v -and $map.ContainsKey([int]$v)) { return [string]$map[[int]$v] }; return $fallback }
+        $disks = @(Get-CimInstance -Namespace root\Microsoft\Windows\Storage -ClassName MSFT_PhysicalDisk -Property FriendlyName,Size,MediaType,BusType | ForEach-Object { [pscustomobject]@{ Name = $_.FriendlyName; Bytes = [int64]$_.Size; Media = (Disk-Name $_.MediaType $mediaNames 'Unspecified'); Bus = (Disk-Name $_.BusType $busNames 'Unknown') } })
         $tpm = Try-Get { Get-Tpm }
         $secure = Try-Get { Confirm-SecureBootUEFI }
         $vbs = Try-Get { (Get-CimInstance -Namespace root\Microsoft\Windows\DeviceGuard -ClassName Win32_DeviceGuard).VirtualizationBasedSecurityStatus }
         $av = @(Try-Get { Get-CimInstance -Namespace root\SecurityCenter2 -ClassName AntiVirusProduct | ForEach-Object { $_.displayName } })
-        $lic = Try-Get { Get-CimInstance SoftwareLicensingProduct -Filter "ApplicationId='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL" | Select-Object -First 1 }
+        $lic = Try-Get { Get-CimInstance SoftwareLicensingProduct -Property Name,ProductKeyChannel,LicenseStatus,ApplicationId,PartialProductKey -Filter "ApplicationId='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL" | Select-Object -First 1 }
         $store = [bool](Try-Get { Get-AppxPackage -AllUsers Microsoft.WindowsStore | Select-Object -First 1 })
         $edge = Test-Path "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
         $ghost = [bool]((Test-Path "$env:SystemDrive\Ghost Toolbox") -or (Test-Path "$env:PUBLIC\Desktop\Ghost Toolbox.lnk") -or (Test-Path "$env:USERPROFILE\Desktop\Ghost Toolbox.lnk"))
