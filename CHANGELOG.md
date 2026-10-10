@@ -9,15 +9,11 @@ Safer
 
 Fixed
 - The Windows Update card claimed more than Microsoft's documentation supports. The policy that removes the "Check for updates" button was reported as blocking updates, but Microsoft says background scans, downloads and installs continue as configured, so it is now a note. The policy about not contacting Microsoft's update locations was reported as a problem even with no update server, but Microsoft says it applies only when an update server is used, so it is a note unless one is set. The card also reads the "Configure Automatic Updates" option the way Microsoft defines it: it says so when a policy turns automatic updating off, or makes Windows ask before it downloads.
+- A small "F5" tip popped up in odd places, which looked like a stray button. F5 (re-check) works the same, and the tip is gone. The Re-check button still says F5 in its tooltip.
 
 Polish
 - AtlasOS and ReviOS are recognized from what their own playbooks write. AtlasOS leaves "Atlas Playbook" in the OEM model and registered organization, a registry key, and folders under the Windows folder. ReviOS leaves "ReviOS" in the same places, an edition sub version, and the Revision Tool in Program Files.
-
-Polish
 - Hovering a setting, a cleanup row or a repair job no longer opens a large tooltip that repeated the details pane on the right. Select a row and the pane explains it. The "Suggested" and risk labels have a short tooltip of their own that says what the label means, which is information the pane does not give. Microsoft's own guidance is that a tooltip is not needed for what is already on screen.
-
-Fixed
-- A small "F5" tip popped up in odd places, which looked like a stray button. F5 (re-check) works the same, and the tip is gone. The Re-check button still says F5 in its tooltip.
 
 ## 0.1.0-beta.9
 
