@@ -36,6 +36,8 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
     public string Summary => Target.Summary;
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Target.RiskLevel);
+    public string RecommendationHint => DetailHelpers.RecommendationHint(Target.Recommendation);
+    public string RiskHint => DetailHelpers.RiskHint(Target.RiskLevel);
     public string EvidenceText => Tooltip.EvidenceLabel;
     public IReadOnlyList<string> Provenance => [];
     public IReadOnlyList<SourceLink> SourceLinks => DetailHelpers.Links(Target.Sources);

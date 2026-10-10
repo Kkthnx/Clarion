@@ -37,12 +37,6 @@
                                     <ListView.ItemTemplate>
                                         <DataTemplate x:DataType="svc:ActionItem">
                                             <Border Padding="18,12,16,12">
-                                                <ToolTipService.ToolTip>
-                                                    <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
-                                                             Background="{ThemeResource ClSurface2Brush}" BorderBrush="{ThemeResource ClBorderBrush}">
-                                                        <TextBlock Text="Loading" Width="400" />
-                                                    </ToolTip>
-                                                </ToolTipService.ToolTip>
                                                 <Grid ColumnSpacing="16">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*" />
@@ -52,8 +46,10 @@
                                                         <TextBlock Text="{x:Bind Name}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                                                         <TextBlock Text="{x:Bind Summary}" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
                                                         <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-                                                            <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}" />
-                                                            <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" />
+                                                            <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}"
+                                                       ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
+                                                            <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}"
+                                                       ToolTipService.ToolTip="{x:Bind RiskHint}" />
                                                         </StackPanel>
                                                         <TextBlock Text="{x:Bind DurationText}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
                                                     </StackPanel>

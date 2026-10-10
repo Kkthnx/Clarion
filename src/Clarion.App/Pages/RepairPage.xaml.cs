@@ -199,5 +199,4 @@ public sealed partial class RepairPage : Page
         Pane.Show(item, technical: true);
     }
 
-    private void OnTipOpened(object sender, RoutedEventArgs e) => DetailHelpers.FillTipOnOpen(sender);
 }

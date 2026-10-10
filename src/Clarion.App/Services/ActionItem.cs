@@ -26,6 +26,8 @@ public sealed class ActionItem : IDetailSource
     public string Category => Def.Category;
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Def.RiskLevel);
+    public string RecommendationHint => DetailHelpers.RecommendationHint(Def.Recommendation);
+    public string RiskHint => DetailHelpers.RiskHint(Def.RiskLevel);
     public string EvidenceText => Tooltip.EvidenceLabel;
     public string DurationText => Def.EstimatedMinutes <= 1 ? "About a minute" : $"About {Def.EstimatedMinutes} minutes";
     public IReadOnlyList<string> Provenance => [];

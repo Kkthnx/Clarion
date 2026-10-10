@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+Polish
+- Hovering a setting, a cleanup row or a repair job no longer opens a large tooltip that repeated the details pane on the right. Select a row and the pane explains it. The "Suggested" and risk labels have a short tooltip of their own that says what the label means, which is information the pane does not give. Microsoft's own guidance is that a tooltip is not needed for what is already on screen.
+
 Fixed
 - A small "F5" tip popped up in odd places, which looked like a stray button. F5 (re-check) works the same, and the tip is gone. The Re-check button still says F5 in its tooltip.
 

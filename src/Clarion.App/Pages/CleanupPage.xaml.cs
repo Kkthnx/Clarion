@@ -286,5 +286,4 @@ public sealed partial class CleanupPage : Page
         Pane.Show(item, technical: true);
     }
 
-    private void OnTipOpened(object sender, RoutedEventArgs e) => DetailHelpers.FillTipOnOpen(sender);
 }

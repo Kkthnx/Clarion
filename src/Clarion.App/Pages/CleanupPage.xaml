@@ -96,12 +96,6 @@
                                     <ListView.ItemTemplate>
                                         <DataTemplate x:DataType="svc:CleanupItem">
                                             <Border Padding="16,10,14,10">
-                                                <ToolTipService.ToolTip>
-                                                    <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
-                                                             Background="{ThemeResource ClSurface2Brush}" BorderBrush="{ThemeResource ClBorderBrush}">
-                                                        <TextBlock Text="Loading" Width="400" />
-                                                    </ToolTip>
-                                                </ToolTipService.ToolTip>
                                                 <Grid ColumnSpacing="12">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto" />
@@ -114,8 +108,10 @@
                                                         <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                                                         <TextBlock Text="{x:Bind Summary}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
                                                         <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2,0,0">
-                                                            <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}" />
-                                                            <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" />
+                                                            <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}"
+                                                       ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
+                                                            <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}"
+                                                       ToolTipService.ToolTip="{x:Bind RiskHint}" />
                                                         </StackPanel>
                                                         <TextBlock Text="{x:Bind StatusText, Mode=OneWay}" Visibility="{x:Bind HasStatus, Mode=OneWay}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
                                                     </StackPanel>

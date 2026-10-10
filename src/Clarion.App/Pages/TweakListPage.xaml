@@ -8,13 +8,6 @@
         <!-- The roomy row: the summary is shown under the name. -->
         <DataTemplate x:Key="RoomyRow" x:DataType="svc:TweakItem">
                         <Border Padding="18,14,16,14" Opacity="{x:Bind RowOpacity, Mode=OneWay}">
-                            <ToolTipService.ToolTip>
-                                <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
-                                         Background="{ThemeResource ClSurface2Brush}"
-                                         BorderBrush="{ThemeResource ClBorderBrush}">
-                                    <TextBlock Text="Loading" Width="400" />
-                                </ToolTip>
-                            </ToolTipService.ToolTip>
                             <Grid ColumnSpacing="16">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -27,8 +20,10 @@
                                     <TextBlock Text="{x:Bind Summary}" TextWrapping="Wrap"
                                                Foreground="{ThemeResource ClTextSecondaryBrush}" />
                                     <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-                                        <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}" />
-                                        <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" />
+                                        <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}"
+                                                       ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
+                                        <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}"
+                                                       ToolTipService.ToolTip="{x:Bind RiskHint}" />
                                         <controls:Chip Text="{x:Bind PendingText, Mode=OneWay}" Kind="Accent"
                                                        Visibility="{x:Bind IsPending, Mode=OneWay}" />
                                         <controls:Chip Text="Changed back by Windows" Kind="Warn"
@@ -60,13 +55,6 @@
         <!-- One line per setting, for scanning a long list. The summary and the detail stay in the pane on the right. -->
         <DataTemplate x:Key="CompactRow" x:DataType="svc:TweakItem">
             <Border Padding="14,5,10,5" Opacity="{x:Bind RowOpacity, Mode=OneWay}">
-                <ToolTipService.ToolTip>
-                    <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
-                             Background="{ThemeResource ClSurface2Brush}"
-                             BorderBrush="{ThemeResource ClBorderBrush}">
-                        <TextBlock Text="Loading" Width="400" />
-                    </ToolTip>
-                </ToolTipService.ToolTip>
                 <Grid ColumnSpacing="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -76,8 +64,9 @@
                     <TextBlock Text="{x:Bind Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-                        <controls:Chip Text="{x:Bind RecommendationShort}" Kind="{x:Bind RecommendationKind}" />
-                        <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" Visibility="{x:Bind RiskIsNotable}" />
+                        <controls:Chip Text="{x:Bind RecommendationShort}" Kind="{x:Bind RecommendationKind}" ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
+                        <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" Visibility="{x:Bind RiskIsNotable}"
+                                  ToolTipService.ToolTip="{x:Bind RiskHint}" />
                         <controls:Chip Text="{x:Bind PendingText, Mode=OneWay}" Kind="Accent" Visibility="{x:Bind IsPending, Mode=OneWay}" />
                         <controls:Chip Text="Changed back" Kind="Warn" Visibility="{x:Bind IsDrifted, Mode=OneWay}" />
                         <FontIcon Glyph="&#xE783;" FontSize="13" Foreground="{ThemeResource ClDangerTextBrush}"

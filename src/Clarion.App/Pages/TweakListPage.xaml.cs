@@ -201,7 +201,6 @@ public sealed partial class TweakListPage : Page
 
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateDetail();
 
-    private void OnTipOpened(object sender, RoutedEventArgs e) => DetailHelpers.FillTipOnOpen(sender);
 
     private void UpdateDetail() => Pane.Show(List.SelectedItem as TweakItem, _app.ExpertMode);
 }

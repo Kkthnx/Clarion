@@ -23,6 +23,8 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
 
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Tweak.RiskLevel);
+    public string RecommendationHint => DetailHelpers.RecommendationHint(Tweak.Recommendation);
+    public string RiskHint => DetailHelpers.RiskHint(Tweak.RiskLevel);
 
     /// <summary>False for the lowest risk, which every setting on the page says and so tells nothing in a one line row.</summary>
     public bool RiskIsNotable => Tweak.RiskLevel > RiskLevel.Safe;
