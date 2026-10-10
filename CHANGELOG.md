@@ -6,7 +6,13 @@ New
 - The System page has a "Windows Update right now" card. It reads the update services, the policies that can block updates, the background scan task, any stored pause, and the dates Windows last checked and last installed, then says in plain words whether updates are working, limited or held back, with the reason for each finding. A pause stored far past the 35 days Windows allows is reported as a note when Windows itself says it has ended, because updates still install in that case. Home mentions it when updates are limited or held.
 
 Polish
-- Customized images are named from evidence. Ghost Spectre is recognized by its Ghost Toolbox folder or shortcut, which the old check missed because the Windows name on those PCs is plain. tiny11 is recognized only from its full pattern (all five hardware check skips plus the network setup skip, or Windows Update off and pointed at the PC itself for tiny11 Core), and that name is worded as a guess. Three of the five skips, as on Ghost Spectre, is not read as tiny11.
+- Topic pills wrap onto a second row instead of running off the edge, and wait until a list is long enough to need them. On Network they counted ten DNS providers as ten settings, and now count the one row they appear as.
+- The details pane shows a centred hint with an icon when nothing is selected, and Verify shows a clear card when there is nothing to check yet, or when everything is in place.
+- On Home the Standard preset is the one filled button, marked Recommended. The other four are plain buttons, so the choice is easier to see. The list of what is in a preset lines up in two columns.
+- The Windows group in the sidebar closes when you go to another page, so Verify, Safety and the rest stay on screen.
+- A setting name that was just wide enough to wrap could leave a blank line under it until the row was measured again. The state text beside the switch now has a fixed width, so the name wraps the same way every time.
+- Right margins match on every page. Rows on Clean up no longer keep an empty line when there is no status to show.
+- The Customized images are named from evidence. Ghost Spectre is recognized by its Ghost Toolbox folder or shortcut, which the old check missed because the Windows name on those PCs is plain. tiny11 is recognized only from its full pattern (all five hardware check skips plus the network setup skip, or Windows Update off and pointed at the PC itself for tiny11 Core), and that name is worded as a guess. Three of the five skips, as on Ghost Spectre, is not read as tiny11.
 
 ## 0.1.0-beta.7
 

@@ -5,7 +5,7 @@
     xmlns:svc="using:Clarion.App.Services">
 
     <ScrollViewer>
-        <StackPanel Padding="32,24,46,24" Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+        <StackPanel Padding="32,24,32,24" Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
 
             <StackPanel Orientation="Horizontal" Spacing="18">
                 <Image Source="ms-appx:///Assets/Clarion.png" Width="72" Height="72" VerticalAlignment="Center" />

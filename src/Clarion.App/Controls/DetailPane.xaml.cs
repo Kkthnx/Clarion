@@ -29,7 +29,7 @@ public sealed partial class DetailPane : UserControl
         var note = _shown?.ImageNote ?? "";
         ImageNoteText.Text = note;
         ImageNoteText.Visibility = note.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
-        EmptyText.Visibility = item is null ? Visibility.Visible : Visibility.Collapsed;
+        EmptyPanel.Visibility = item is null ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void ShowDeprovision(bool expert)

@@ -18,7 +18,8 @@
                             <Grid ColumnSpacing="16">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <!-- A fixed width, so the state text changing from "Checking" to "On" cannot change how the name wraps. -->
+                                    <ColumnDefinition Width="84" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Spacing="6">
                                     <TextBlock Text="{x:Bind Name}" FontSize="15" FontWeight="SemiBold"
@@ -50,6 +51,7 @@
                                                   AutomationProperties.Name="{x:Bind Name}"
                                                   OnContent="" OffContent="" MinWidth="0" HorizontalAlignment="Right" />
                                     <TextBlock Text="{x:Bind StateText, Mode=OneWay}" FontSize="12" HorizontalAlignment="Right"
+                                               TextWrapping="Wrap" TextAlignment="Right"
                                                Foreground="{ThemeResource ClTextMutedBrush}" />
                                 </StackPanel>
                             </Grid>
@@ -132,9 +134,7 @@
             <TextBlock x:Name="CountText" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" TextWrapping="NoWrap"
                        Foreground="{ThemeResource ClTextMutedBrush}" />
         </Grid>
-        <ScrollViewer x:Name="TopicScroll" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Visibility="Collapsed">
-            <StackPanel x:Name="TopicPills" Orientation="Horizontal" Spacing="6" Padding="0,0,0,8" />
-        </ScrollViewer>
+        <controls:WrapPanel x:Name="TopicPills" Visibility="Collapsed" HorizontalSpacing="6" VerticalSpacing="6" />
         </StackPanel>
 
         <controls:DnsChooser x:Name="Chooser" Grid.Row="2" Visibility="Collapsed" />

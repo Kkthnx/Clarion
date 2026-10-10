@@ -6,7 +6,7 @@
     xmlns:pg="using:Clarion.App.Pages">
 
     <ScrollViewer>
-        <StackPanel Padding="32,24,46,24" Spacing="20" MaxWidth="1000" HorizontalAlignment="Left">
+        <StackPanel Padding="32,24,32,24" Spacing="20" MaxWidth="1000" HorizontalAlignment="Left">
             <StackPanel Spacing="4">
                 <TextBlock Text="System" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"

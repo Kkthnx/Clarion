@@ -95,22 +95,28 @@ public sealed partial class TweakListPage : Page
     private void FillTopics(IEnumerable<TweakItem> scope)
     {
         var list = scope.ToList();
+        // The DNS providers show as one row (the chooser), so they count as one here, not as one each.
+        var dnsCount = list.Count(DnsChooser.IsDnsItem);
+        var rows = list.Count - dnsCount + (dnsCount > 0 ? 1 : 0);
         var counts = list.Where(i => i.Tweak.Topic.Length > 0).GroupBy(i => i.Tweak.Topic).OrderBy(g => g.Key, StringComparer.CurrentCultureIgnoreCase)
-            .Select(g => (Topic: g.Key, Count: g.Count())).ToList();
+            .Select(g => (Topic: g.Key, Count: g.Count(i => !DnsChooser.IsDnsItem(i)) + (g.Any(DnsChooser.IsDnsItem) ? 1 : 0))).ToList();
         if (!counts.Any(c => c.Topic == _topic)) _topic = "";
 
-        var key = string.Join("|", counts.Select(c => $"{c.Topic}:{c.Count}")) + $"|{list.Count}";
+        // Narrowing a short list takes more room than it saves, so the pills wait for a list worth narrowing.
+        var worthIt = counts.Count > 1 && rows > 6;
+        if (!worthIt) _topic = "";
+        var key = string.Join("|", counts.Select(c => $"{c.Topic}:{c.Count}")) + $"|{rows}";
         if (key != _pillsBuiltFor)
         {
             _pillsBuiltFor = key;
             TopicPills.Children.Clear();
-            if (counts.Count > 1)
+            if (worthIt)
             {
-                TopicPills.Children.Add(Pill("", "All", list.Count));
+                TopicPills.Children.Add(Pill("", "All", rows));
                 foreach (var (topic, count) in counts) TopicPills.Children.Add(Pill(topic, topic, count));
             }
         }
-        TopicScroll.Visibility = counts.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
+        TopicPills.Visibility = worthIt ? Visibility.Visible : Visibility.Collapsed;
         foreach (var pill in TopicPills.Children.OfType<ToggleButton>()) pill.IsChecked = (pill.Tag as string) == _topic;
     }
 

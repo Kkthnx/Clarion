@@ -224,7 +224,9 @@ public sealed partial class HomePage : Page
     {
         foreach (var (key, title, text) in Services.PresetInfo.All)
         {
-            var queue = new Button { Content = "Queue this preset", Style = (Style)Application.Current.Resources["AccentButtonStyle"] };
+            var queue = new Button { Content = "Queue this preset" };
+            // One filled button, on the preset most people want. Five equally loud buttons made the choice harder, not easier.
+            if (key == "standard") queue.Style = (Style)Application.Current.Resources["AccentButtonStyle"];
             queue.Click += (_, _) =>
             {
                 var added = _app.QueuePreset(key);
@@ -257,10 +259,17 @@ public sealed partial class HomePage : Page
             : [];
         foreach (var item in items)
         {
-            var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+            var row = new Grid { ColumnSpacing = 16 };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             row.Children.Add(new TextBlock { Text = item.Name, TextWrapping = TextWrapping.Wrap, Foreground = ThemeBrushes.Get("ClTextPrimary", ActualTheme) });
             var note = item.IsApplied ? "already on" : !item.IsSupported || item.IsUnavailable ? "not on this PC" : "";
-            if (note.Length > 0) row.Children.Add(new TextBlock { Text = note, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = ThemeBrushes.Get("ClTextMuted", ActualTheme) });
+            if (note.Length > 0)
+            {
+                var label = new TextBlock { Text = note, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = ThemeBrushes.Get(item.IsApplied ? "ClOkText" : "ClTextMuted", ActualTheme) };
+                Grid.SetColumn(label, 1);
+                row.Children.Add(label);
+            }
             list.Children.Add(row);
         }
         var inEffect = items.Count(i => i.IsApplied);
@@ -269,7 +278,9 @@ public sealed partial class HomePage : Page
             Header = inEffect == 0 ? "What is in it" : $"What is in it ({inEffect} already on)",
             Content = list,
             HorizontalAlignment = HorizontalAlignment.Left,
-            HorizontalContentAlignment = HorizontalAlignment.Left,
+            HorizontalContentAlignment = HorizontalAlignment.Stretch,
+            MinWidth = 520,
+            MaxWidth = 640,
             Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent),
             BorderThickness = new Thickness(0),
             Padding = new Thickness(0),
@@ -285,7 +296,10 @@ public sealed partial class HomePage : Page
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
         var left = new StackPanel { Spacing = 4 };
-        left.Children.Add(new TextBlock { Text = title, FontSize = 18, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = ThemeBrushes.Get("ClTextPrimary", ActualTheme) });
+        var heading = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
+        heading.Children.Add(new TextBlock { Text = title, FontSize = 18, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = ThemeBrushes.Get("ClTextPrimary", ActualTheme) });
+        if (key == "standard") heading.Children.Add(new Chip { Text = "Recommended", Kind = ChipKind.Accent, VerticalAlignment = VerticalAlignment.Center });
+        left.Children.Add(heading);
         left.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Foreground = ThemeBrushes.Get("ClTextSecondary", ActualTheme) });
         left.Children.Add(new TextBlock { Text = $"{count} settings", FontSize = 12, Foreground = ThemeBrushes.Get("ClTextMuted", ActualTheme) });
         left.Children.Add(WhatIsInIt(key));

@@ -48,8 +48,26 @@
             <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False" Title="Windows was updated" />
             <InfoBar x:Name="UnreadableBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False" Title="Some settings could not be read" />
 
-            <TextBlock x:Name="AllGoodText" Visibility="Collapsed" Foreground="{ThemeResource ClTextPrimaryBrush}"
-                       Text="Everything Clarion applied is still in place." />
+            <Border x:Name="AllGoodText" Visibility="Collapsed" CornerRadius="8" Padding="20,16,20,16" BorderThickness="1"
+                    Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClOkBrush}">
+                <StackPanel Orientation="Horizontal" Spacing="14">
+                    <FontIcon Glyph="&#xE73E;" FontSize="22" Foreground="{ThemeResource ClOkTextBrush}" VerticalAlignment="Center" />
+                    <StackPanel Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Text="Everything is still in place" FontSize="16" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                        <TextBlock Text="Every setting Clarion applied matches what Windows has now." Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="NothingCard" Visibility="Collapsed" CornerRadius="8" Padding="20,28,20,28" BorderThickness="1"
+                    Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}">
+                <StackPanel Spacing="10" HorizontalAlignment="Center" MaxWidth="520">
+                    <FontIcon Glyph="&#xE73E;" FontSize="30" Opacity="0.55" Foreground="{ThemeResource ClTextMutedBrush}" />
+                    <TextBlock Text="Nothing to check yet" FontSize="16" FontWeight="SemiBold" TextAlignment="Center" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                               Text="Once you apply a setting, Clarion checks it here, and again after Windows updates, which is when changes are most likely to be undone." />
+                </StackPanel>
+            </Border>
 
             <StackPanel x:Name="AppsSection" Spacing="10" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" Spacing="12">

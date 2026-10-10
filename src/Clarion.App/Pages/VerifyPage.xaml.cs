@@ -64,9 +64,10 @@ public sealed partial class VerifyPage : Page
         AppsSection.Visibility = returned.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         SettingsSection.Visibility = changed.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         AllGoodText.Visibility = report.HasDrift || report.Checked == 0 ? Visibility.Collapsed : Visibility.Visible;
+        NothingCard.Visibility = report.Checked == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         SummaryText.Text = report.Checked == 0
-            ? "Clarion has not applied anything yet, so there is nothing to check."
+            ? ""
             : $"Checked {report.Checked} setting{(report.Checked == 1 ? "" : "s")} at {report.ScannedAt.LocalDateTime:t}.";
 
         var pending = _app.PendingRestartNow;

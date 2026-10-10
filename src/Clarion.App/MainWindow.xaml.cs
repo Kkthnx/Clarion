@@ -148,6 +148,10 @@ public sealed partial class MainWindow : Window
         }
 
         var tag = (args.SelectedItem as NavigationViewItem)?.Tag as string;
+        // The Windows group holds five rows. Left open it pushes Verify, Safety and the rest out of sight on a normal screen.
+        // Done after the selection has settled. Collapsing inside the handler leaves the selection bar on the Windows row.
+        if (tag is not (null or "tweaks" or "power" or "network" or "features" or "updates") && WindowsGroup.IsExpanded)
+            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => WindowsGroup.IsExpanded = false);
         switch (tag)
         {
             case "home": ContentFrame.Navigate(typeof(HomePage)); break;

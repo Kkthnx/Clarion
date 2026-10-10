@@ -71,7 +71,7 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
         {
             if (!SetProperty(ref _scan, value)) return;
             OnPropertyChanged(nameof(SizeText));
-            OnPropertyChanged(nameof(StatusText));
+            OnPropertyChanged(nameof(StatusText)); OnPropertyChanged(nameof(HasStatus));
             OnPropertyChanged(nameof(CanSelect));
             OnPropertyChanged(nameof(ExactChanges));
             OnPropertyChanged(nameof(IsPresent));
@@ -84,12 +84,12 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
         set
         {
             if (!SetProperty(ref _result, value)) return;
-            OnPropertyChanged(nameof(StatusText));
+            OnPropertyChanged(nameof(StatusText)); OnPropertyChanged(nameof(HasStatus));
             OnPropertyChanged(nameof(SizeText));
         }
     }
 
-    public bool IsBusy { get => _busy; set { if (SetProperty(ref _busy, value)) OnPropertyChanged(nameof(StatusText)); } }
+    public bool IsBusy { get => _busy; set { if (SetProperty(ref _busy, value)) OnPropertyChanged(nameof(StatusText)); OnPropertyChanged(nameof(HasStatus)); } }
 
     public bool IsPresent => _scan is null || _scan.Present;
     public bool CanSelect => _scan is null || (_scan.Present && _scan.RunningApps.Count == 0);
@@ -109,6 +109,9 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
 
     /// <summary>What a screen reader says for the row. Otherwise it would read the type name.</summary>
     public override string ToString() => StatusText.Length > 0 ? $"{Name}, {StatusText}" : Name;
+
+    /// <summary>Whether there is any status line to show, so an empty one does not leave a gap in the row.</summary>
+    public bool HasStatus => StatusText.Length > 0;
 
     public string StatusText
     {

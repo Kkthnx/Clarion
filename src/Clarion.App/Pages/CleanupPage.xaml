@@ -117,7 +117,7 @@
                                                             <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}" />
                                                             <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" />
                                                         </StackPanel>
-                                                        <TextBlock Text="{x:Bind StatusText, Mode=OneWay}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
+                                                        <TextBlock Text="{x:Bind StatusText, Mode=OneWay}" Visibility="{x:Bind HasStatus, Mode=OneWay}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
                                                     </StackPanel>
                                                     <TextBlock Grid.Column="2" Text="{x:Bind SizeText, Mode=OneWay}" FontSize="16" FontWeight="SemiBold"
                                                                VerticalAlignment="Center" Foreground="{ThemeResource ClCyanTextBrush}" />
