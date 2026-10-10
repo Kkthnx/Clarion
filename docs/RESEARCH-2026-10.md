@@ -4,6 +4,10 @@ What was looked at, what was found, and what is worth doing, in order. Everythin
 
 Tested build: 0.1.0-beta.9 (`cc39d86`) on Windows 11 Pro 25H2, build 26200.9457.
 
+## Status
+
+Done after this was written (details in docs/WORKLOG.md): finding 1 (app data warning, Sticky Notes rated Medium), finding 2 (the command line is now tested through the real program), finding 3 (Windows tools started by full path), finding 4 (two restore points in a row confirmed on a real PC), the installer (installed, checked and uninstalled for real), high contrast (the theme file is now checked by tests), and Atlas and ReviOS naming (read from their playbooks, see docs/CUSTOM-IMAGES.md). Still open: the update pause undo, seeing the taskbar bar, the licence page of the installer, and high contrast on screen.
+
 ## What was checked and found fine
 
 - **The released zip works.** Extracted `Clarion-0.1.0-beta.9-win-x64.zip` into a clean folder: `--version` and `--list-presets` ran correctly. 428 files, 215 MB unpacked, 90 MB zipped. (The installer was not run here; it is built on GitHub only.)
