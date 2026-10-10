@@ -249,6 +249,18 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
         Assert.True(forBeta4 is null || forBeta4.Tag != "v0.1.0-beta.4");
     }
 
+    private static string? ParseStored(Clarion.Core.Scheduling.IScheduledTaskStore store, string name) =>
+        store.ReadXml(name) is { } xml ? Clarion.Core.Scheduling.MonthlyVerifySchedule.ParseCommand(xml) : null;
+
+    /// <summary>Lets the schedule class look at a test task instead of the real monthly one.</summary>
+    private sealed class SingleTask(Clarion.Core.Scheduling.IScheduledTaskStore inner, string name) : Clarion.Core.Scheduling.IScheduledTaskStore
+    {
+        public bool Exists(string n) => inner.Exists(name);
+        public void Create(string n, string xml) => inner.Create(name, xml);
+        public void Delete(string n) => inner.Delete(name);
+        public string? ReadXml(string n) => inner.ReadXml(name);
+    }
+
     [Fact]
     public void Real_task_scheduler_accepts_the_monthly_task_reports_its_next_run_and_removes_it()
     {
@@ -268,6 +280,11 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
             Assert.Contains("<StartWhenAvailable>true</StartWhenAvailable>", xml);
             Assert.Contains("<RunLevel>HighestAvailable</RunLevel>", xml);
             Assert.Contains("--verify --save", xml);
+
+            // The location check reads the program back the same way, and sees it as moved when this copy is somewhere else.
+            Assert.Equal(@"C:\Windows\System32\cmd.exe", ParseStored(store, name));
+            Assert.False(new Clarion.Core.Scheduling.MonthlyVerifySchedule(new SingleTask(store, name)).PointsElsewhere(@"C:\Windows\System32\cmd.exe"));
+            Assert.True(new Clarion.Core.Scheduling.MonthlyVerifySchedule(new SingleTask(store, name)).PointsElsewhere(@"D:\Elsewhere\Clarion.exe"));
 
             var verbose = runner.Run("schtasks.exe", $"/Query /TN \"{name}\" /V /FO LIST", TimeSpan.FromSeconds(30)).Output;
             var next = verbose.Split('\n').FirstOrDefault(l => l.StartsWith("Next Run Time", StringComparison.OrdinalIgnoreCase)) ?? "(no next run line)";

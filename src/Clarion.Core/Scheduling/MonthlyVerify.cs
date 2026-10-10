@@ -14,6 +14,9 @@ public interface IScheduledTaskStore
     void Create(string name, string xml);
 
     void Delete(string name);
+
+    /// <summary>The task's definition as XML, or null when there is no such task.</summary>
+    string? ReadXml(string name);
 }
 
 /// <summary>
@@ -27,6 +30,32 @@ public sealed class MonthlyVerifySchedule(IScheduledTaskStore store)
     public const string Arguments = "--verify --save";
 
     public bool IsEnabled() => store.Exists(TaskName);
+
+    /// <summary>The program the task starts, or null when there is no task or its definition cannot be read.</summary>
+    public string? CurrentCommand()
+    {
+        var xml = store.ReadXml(TaskName);
+        return xml is null ? null : ParseCommand(xml);
+    }
+
+    /// <summary>
+    /// True when the task exists and starts a different program file than this one, which is what happens after Clarion is moved to
+    /// another folder. A path with letters outside plain ASCII is not compared, because the text Task Scheduler prints can be changed
+    /// by the console's code page and a false alarm would be worse than no check.
+    /// </summary>
+    public bool PointsElsewhere(string thisExe)
+    {
+        var command = CurrentCommand();
+        if (command is null) return false;
+        if (command.Any(c => c > 127) || thisExe.Any(c => c > 127)) return false;
+        return !string.Equals(command.Trim().Trim('"'), thisExe.Trim().Trim('"'), StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static string? ParseCommand(string xml)
+    {
+        var m = System.Text.RegularExpressions.Regex.Match(xml, "<Command>(.*?)</Command>", System.Text.RegularExpressions.RegexOptions.Singleline);
+        return m.Success ? System.Net.WebUtility.HtmlDecode(m.Groups[1].Value) : null;
+    }
 
     public void Enable(string exePath, string userId, DateTime firstDay) => store.Create(TaskName, BuildXml(exePath, userId, firstDay));
 

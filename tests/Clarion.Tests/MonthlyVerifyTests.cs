@@ -9,6 +9,67 @@ public sealed class FakeTaskStore : IScheduledTaskStore
     public bool Exists(string name) => Tasks.ContainsKey(name);
     public void Create(string name, string xml) => Tasks[name] = xml;
     public void Delete(string name) => Tasks.Remove(name);
+    public string? ReadXml(string name) => Tasks.TryGetValue(name, out var xml) ? xml : null;
+}
+
+public sealed class MonthlyTaskLocationTests
+{
+    private const string Exe = @"C:\Program Files\Clarion\Clarion.exe";
+
+    [Fact]
+    public void The_program_the_task_starts_is_read_back_from_its_definition()
+    {
+        var store = new FakeTaskStore();
+        var schedule = new MonthlyVerifySchedule(store);
+        schedule.Enable(Exe, @"PC\me", new DateTime(2026, 10, 14));
+
+        Assert.Equal(Exe, schedule.CurrentCommand());
+        Assert.False(schedule.PointsElsewhere(Exe));
+        Assert.False(schedule.PointsElsewhere(@"c:\program files\clarion\CLARION.EXE"));
+    }
+
+    [Fact]
+    public void A_task_made_from_another_folder_is_noticed()
+    {
+        var store = new FakeTaskStore();
+        var schedule = new MonthlyVerifySchedule(store);
+        schedule.Enable(@"D:\Old place\Clarion.exe", @"PC\me", new DateTime(2026, 10, 14));
+
+        Assert.True(schedule.PointsElsewhere(Exe));
+    }
+
+    [Fact]
+    public void No_task_or_an_unreadable_one_is_not_reported_as_moved()
+    {
+        var store = new FakeTaskStore();
+        var schedule = new MonthlyVerifySchedule(store);
+        Assert.False(schedule.PointsElsewhere(Exe));
+
+        store.Tasks[MonthlyVerifySchedule.TaskName] = "not xml at all";
+        Assert.False(schedule.PointsElsewhere(Exe));
+    }
+
+    [Fact]
+    public void Paths_with_letters_outside_ascii_are_not_compared_so_a_console_code_page_cannot_cause_a_false_alarm()
+    {
+        var store = new FakeTaskStore();
+        var schedule = new MonthlyVerifySchedule(store);
+        schedule.Enable(@"C:\Users\José\Clarion\Clarion.exe", @"PC\José", new DateTime(2026, 10, 14));
+
+        Assert.False(schedule.PointsElsewhere(@"C:\Users\Jos?\Clarion\Clarion.exe"));
+    }
+
+    [Fact]
+    public void Enabling_again_from_this_copy_repairs_the_task()
+    {
+        var store = new FakeTaskStore();
+        var schedule = new MonthlyVerifySchedule(store);
+        schedule.Enable(@"D:\Old place\Clarion.exe", @"PC\me", new DateTime(2026, 10, 14));
+        schedule.Enable(Exe, @"PC\me", new DateTime(2026, 10, 14));
+
+        Assert.False(schedule.PointsElsewhere(Exe));
+        Assert.Single(store.Tasks);
+    }
 }
 
 public sealed class MonthlyVerifyTests : IDisposable

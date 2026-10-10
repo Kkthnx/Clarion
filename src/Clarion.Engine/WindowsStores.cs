@@ -134,17 +134,25 @@ public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
     private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(5);
     private readonly object _gate = new();
     private AppxSnapshot? _cache;
+    private string? _failure;
 
     public void Invalidate()
     {
-        lock (_gate) _cache = null;
+        lock (_gate) { _cache = null; _failure = null; }
     }
 
+    /// <summary>
+    /// A failed read is remembered until the next refresh. Every app setting asks for this list, and without administrator rights each
+    /// ask would run PowerShell again just to fail the same way, which kept the whole read busy for minutes.
+    /// </summary>
     public AppxSnapshot GetSnapshot()
     {
         lock (_gate)
         {
-            return _cache ??= AppxSnapshot.Parse(Run(AppxScripts.Inventory()));
+            if (_cache is not null) return _cache;
+            if (_failure is not null) throw new InvalidOperationException(_failure);
+            try { return _cache = AppxSnapshot.Parse(Run(AppxScripts.Inventory())); }
+            catch (InvalidOperationException ex) { _failure = ex.Message; throw; }
         }
     }
 
@@ -180,6 +188,7 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
     // A null state means this PC does not have the feature, which is remembered too so it is not asked again.
     private readonly Dictionary<string, string?> _features = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string?> _capabilities = new(StringComparer.OrdinalIgnoreCase);
+    private string? _featureFailure;
 
     public void Prefetch(IReadOnlyList<string> featureNames) => LoadFeatures(featureNames);
 
@@ -189,6 +198,7 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
         {
             _features.Clear();
             _capabilities.Clear();
+            _featureFailure = null;
         }
     }
 
@@ -199,7 +209,12 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
         {
             var missing = names.Where(n => !_features.ContainsKey(n)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
             if (missing.Count == 0) return;
-            var found = FeatureScripts.ParseStates(Run(FeatureScripts.FeatureStates(missing)), "features", "FeatureName");
+            // A read that failed, for example because the rights are missing, is remembered until the next refresh. Otherwise each
+            // setting would run PowerShell again to fail the same way.
+            if (_featureFailure is not null) throw new InvalidOperationException(_featureFailure);
+            Dictionary<string, string> found;
+            try { found = FeatureScripts.ParseStates(Run(FeatureScripts.FeatureStates(missing)), "features", "FeatureName"); }
+            catch (InvalidOperationException ex) { _featureFailure = ex.Message; throw; }
             foreach (var n in missing) _features[n] = found.TryGetValue(n, out var state) ? state : null;
         }
     }
@@ -214,7 +229,7 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
     {
         Run(FeatureScripts.SetFeature(name, enabled));
         // Turning one feature on can turn on the ones it needs, so every cached state is dropped.
-        lock (_gate) _features.Clear();
+        lock (_gate) { _features.Clear(); _featureFailure = null; }
     }
 
     public bool? IsCapabilityInstalled(string name)

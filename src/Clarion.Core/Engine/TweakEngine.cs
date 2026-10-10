@@ -28,9 +28,17 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
     public void WarmUp(IEnumerable<Tweak> tweaks)
     {
         var ops = tweaks.SelectMany(t => t.Apply).ToList();
+        WarmUpProblem = null;
         try { Parallel.ForEach(_handlers, h => h.Warm(ops)); }
-        catch (AggregateException) { }
+        catch (AggregateException ex)
+        {
+            // Warming up only saves time, so a failure does not stop anything, but the reason is kept for the log.
+            WarmUpProblem = string.Join("; ", ex.Flatten().InnerExceptions.Select(e => e.Message));
+        }
     }
+
+    /// <summary>Why the last warm up did not finish, or null when it did. Reads are only slower when this is set.</summary>
+    public string? WarmUpProblem { get; private set; }
 
     /// <summary>Clears every handler cache so the next read is fresh.</summary>
     public void Invalidate()
@@ -69,27 +77,38 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
             var handler = HandlerFor(op);
             if (!handler.IsApplicable(op)) continue;
 
-            Operation? undo = null;
+            JournalEntry? pending = null;
             try
             {
-                undo = handler.CaptureUndo(op);
-                handler.Execute(op);
-                if (!handler.IsSatisfied(op))
-                {
-                    RollBack(tweak.Id, batchId, done, undo);
-                    return TweakResult.Fail($"Verification failed: {op.Describe()}");
-                }
+                var undo = handler.CaptureUndo(op);
+                // The record is written before the change. If the process dies in between, the history holds a change that may not
+                // have happened, which is harmless to revert. The other order could leave a change that nothing remembers.
                 var entry = new JournalEntry(batchId, tweak.Id, JournalAction.Apply, _clock.GetUtcNow(), op, undo);
                 journal.Append(entry);
+                pending = entry;
+                handler.Execute(op);
+                if (!handler.IsSatisfied(op))
+                    return Failed(tweak.Id, batchId, done, pending, $"Verification failed: {op.Describe()}");
                 done.Add(entry);
+                pending = null;
             }
             catch (Exception ex) when (ex is not OutOfMemoryException)
             {
-                RollBack(tweak.Id, batchId, done, undo);
-                return TweakResult.Fail($"{op.Describe()}: {ex.Message}");
+                return Failed(tweak.Id, batchId, done, pending, $"{op.Describe()}: {ex.Message}");
             }
         }
         return TweakResult.Ok();
+    }
+
+    /// <summary>
+    /// Undoes what this run had done so far and builds the failure. When some of the undoing fails too, the message says so, because
+    /// the setting is then partly applied. Its earlier steps stay in the history as still on, so Safety can revert them.
+    /// </summary>
+    private TweakResult Failed(string tweakId, Guid batchId, List<JournalEntry> done, JournalEntry? pending, string reason)
+    {
+        var stuck = RollBack(tweakId, batchId, done, pending);
+        if (stuck.Count == 0) return TweakResult.Fail(reason);
+        return TweakResult.Fail($"{reason} Going back also failed for {stuck.Count} earlier step{(stuck.Count == 1 ? "" : "s")}, so this setting is partly applied: {string.Join("; ", stuck)}. Revert it from Safety to try again.");
     }
 
     /// <summary>
@@ -165,22 +184,38 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
         journal.Append(new JournalEntry(batchId, tweakId, action, _clock.GetUtcNow(), op, inverse));
     }
 
-    private void RollBack(string tweakId, Guid batchId, List<JournalEntry> done, Operation? failedUndo)
+    /// <summary>
+    /// Puts back what this run had changed and returns what could not be put back, one line each. The undo is written to the
+    /// history only when all of it worked. The history counts a setting as still on until something other than an apply follows it,
+    /// so writing a partial undo would make a half-undone setting look finished and hide it from Revert.
+    /// </summary>
+    private List<string> RollBack(string tweakId, Guid batchId, List<JournalEntry> done, JournalEntry? pending)
     {
-        if (failedUndo is not null)
+        var stuck = new List<string>();
+        var steps = new List<JournalEntry>();
+        if (pending is not null) steps.Add(pending);
+        steps.AddRange(Enumerable.Reverse(done));
+
+        foreach (var entry in steps)
         {
             try
             {
-                var handler = HandlerFor(failedUndo);
-                if (!handler.IsSatisfied(failedUndo)) handler.Execute(failedUndo);
+                var handler = HandlerFor(entry.Undo);
+                // A step that failed may not have changed anything. Putting back what is already there is skipped.
+                if (ReferenceEquals(entry, pending) && handler.IsSatisfied(entry.Undo)) continue;
+                handler.Execute(entry.Undo);
             }
-            catch (Exception ex) when (ex is not OutOfMemoryException) { }
+            catch (Exception ex) when (ex is not OutOfMemoryException) { stuck.Add($"{entry.Operation.Describe()} ({ex.Message})"); }
         }
-        foreach (var entry in Enumerable.Reverse(done))
+
+        if (stuck.Count > 0) return stuck;
+
+        foreach (var entry in steps)
         {
-            try { RunAndRecord(tweakId, batchId, JournalAction.Revert, entry.Undo, entry.Operation, verify: false); }
-            catch (Exception ex) when (ex is not OutOfMemoryException) { }
+            try { journal.Append(new JournalEntry(batchId, tweakId, JournalAction.Revert, _clock.GetUtcNow(), entry.Undo, entry.Operation)); }
+            catch (IOException) { break; } // the PC is back as it was, and the history still lists the setting, which a later Revert settles
         }
+        return stuck;
     }
 
     private IOperationHandler HandlerFor(Operation op) =>

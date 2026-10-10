@@ -80,6 +80,25 @@ public sealed class JournalResilienceTests : IDisposable
     }
 
     [Fact]
+    public void Going_back_to_a_day_queues_only_what_was_applied_after_the_end_of_that_day()
+    {
+        static DateTimeOffset At(int month, int day, int hour, int minute) => new(new DateTime(2026, month, day, hour, minute, 0, DateTimeKind.Local));
+        var applied = new[]
+        {
+            ("early", At(10, 1, 9, 0)),
+            ("late on the day", At(10, 3, 23, 59)),
+            ("next morning", At(10, 4, 0, 0)),
+            ("later", At(10, 8, 15, 30)),
+        };
+
+        var ids = HistoryRange.AppliedAfter(applied, new DateTime(2026, 10, 3));
+
+        Assert.Equal(["next morning", "later"], ids.ToArray());
+        Assert.Empty(HistoryRange.AppliedAfter(applied, new DateTime(2026, 10, 8)));
+        Assert.Equal(4, HistoryRange.AppliedAfter(applied, new DateTime(2026, 9, 30)).Count);
+    }
+
+    [Fact]
     public void An_empty_or_missing_journal_reads_as_empty()
     {
         var journal = new ChangeJournal(Path.Combine(_dir, "none.jsonl"));

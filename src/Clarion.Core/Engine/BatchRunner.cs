@@ -12,6 +12,12 @@ public sealed record BatchOptions
     /// <summary>When the restore point cannot be made, turn on System Protection for the system drive and try again.</summary>
     public bool TurnOnSystemProtection { get; init; }
 
+    /// <summary>
+    /// Asks the run to stop. It is checked before each setting, never inside one, so the setting in progress is finished first and
+    /// nothing is left half done. Settings not reached are counted in <see cref="BatchResult.NotStarted"/> and changed nothing.
+    /// </summary>
+    public CancellationToken Stop { get; init; }
+
     /// <summary>Called as each setting starts and finishes, so a window or console can show live progress.</summary>
     public Action<BatchStep>? Step { get; init; }
 }
@@ -41,9 +47,10 @@ internal sealed class StepCounter(int total, Action<BatchStep>? report)
 
 public sealed record BatchItem(string TweakId, TweakResult Result, bool Skipped = false);
 
-public sealed record BatchResult(Guid BatchId, IReadOnlyList<BatchItem> Items, string? Blocked = null)
+public sealed record BatchResult(Guid BatchId, IReadOnlyList<BatchItem> Items, string? Blocked = null, int NotStarted = 0)
 {
-    public bool AllSucceeded => Blocked is null && Items.All(i => i.Result.Success);
+    public bool Stopped => NotStarted > 0;
+    public bool AllSucceeded => Blocked is null && NotStarted == 0 && Items.All(i => i.Result.Success);
 }
 
 /// <summary>Runs pre-flight checks, makes one restore point, then applies each tweak.</summary>
@@ -59,13 +66,15 @@ public sealed class BatchRunner(TweakEngine engine, IRestorePointService restore
         var gate = new RestorePointGate(restorePoints, options, log);
         var applied = toApply.Count > 0 ? ApplyCore(toApply, profile, options, log, counter, gate) : new BatchResult(Guid.NewGuid(), []);
         if (applied.Blocked is not null || toRevert.Count == 0) return applied;
+        if (options.Stop.IsCancellationRequested)
+            return new BatchResult(applied.BatchId, applied.Items, null, applied.NotStarted + toRevert.Count);
 
         // The dialog offers the restore point for the whole run, so a run that only reverts gets one too.
         var blocked = gate.Ensure();
         if (blocked is not null) return new BatchResult(applied.BatchId, applied.Items, blocked);
 
-        var reverted = RevertCore(toRevert, log, counter);
-        return new BatchResult(applied.BatchId, applied.Items.Concat(reverted.Items).ToList());
+        var reverted = RevertCore(toRevert, log, counter, options.Stop);
+        return new BatchResult(applied.BatchId, applied.Items.Concat(reverted.Items).ToList(), null, applied.NotStarted + reverted.NotStarted);
     }
 
     public BatchResult Apply(IReadOnlyList<Tweak> tweaks, MachineProfile profile, BatchOptions options, Action<string>? log = null) =>
@@ -118,35 +127,44 @@ public sealed class BatchRunner(TweakEngine engine, IRestorePointService restore
 
         if (runnable.Count == 0) return new BatchResult(batch, items);
 
+        // Stopped before anything started: no restore point is made for a run that will change nothing.
+        if (options.Stop.IsCancellationRequested) return new BatchResult(batch, items, null, runnable.Count);
+
         var blocked = gate.Ensure();
         if (blocked is not null) return new BatchResult(batch, items, blocked);
 
-        foreach (var t in runnable)
+        var notStarted = 0;
+        for (var n = 0; n < runnable.Count; n++)
         {
+            if (options.Stop.IsCancellationRequested) { notStarted = runnable.Count - n; log?.Invoke($"Stopped. {notStarted} not started."); break; }
+            var t = runnable[n];
             log?.Invoke($"Applying {t.Name}");
             var index = counter.Begin(t, false);
             var result = engine.Apply(t, batch);
             counter.End(index, t, false, result);
             items.Add(new BatchItem(t.Id, result));
         }
-        return new BatchResult(batch, items);
+        return new BatchResult(batch, items, null, notStarted);
     }
 
     public BatchResult Revert(IReadOnlyList<Tweak> tweaks, Action<string>? log = null, Action<BatchStep>? step = null) =>
         RevertCore(tweaks, log, new StepCounter(tweaks.Count, step));
 
-    private BatchResult RevertCore(IReadOnlyList<Tweak> tweaks, Action<string>? log, StepCounter counter)
+    private BatchResult RevertCore(IReadOnlyList<Tweak> tweaks, Action<string>? log, StepCounter counter, CancellationToken stop = default)
     {
         var batch = Guid.NewGuid();
         var items = new List<BatchItem>();
-        foreach (var t in tweaks)
+        var notStarted = 0;
+        for (var n = 0; n < tweaks.Count; n++)
         {
+            if (stop.IsCancellationRequested) { notStarted = tweaks.Count - n; log?.Invoke($"Stopped. {notStarted} not started."); break; }
+            var t = tweaks[n];
             log?.Invoke($"Reverting {t.Name}");
             var index = counter.Begin(t, true);
             var result = engine.Revert(t, batch);
             counter.End(index, t, true, result);
             items.Add(new BatchItem(t.Id, result));
         }
-        return new BatchResult(batch, items);
+        return new BatchResult(batch, items, null, notStarted);
     }
 }

@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+New
+- A Stop button while changes are being made. It stops before the next setting, never in the middle of one, so nothing is left half done. The settings not reached stay queued.
+- Safety can go back to a day: pick a date and Clarion queues a revert for every setting last applied after the end of that day. You still review it before anything changes.
+- Home tells you when the monthly check starts a different copy of Clarion, for example after Clarion was moved to another folder, and "Fix it" sets it up again from this copy.
+- The read only command line commands (`--verify`, `--history`, `--what-broke`, and the list commands) now start without administrator rights, as the help text always said. The window asks for the rights when it opens, with the usual Windows prompt. If you say no, it opens in a look and verify mode with a "Restart as administrator" button, and asks for the rights before it makes any change.
+
+Safer
+- The record of each step is written before the step is made. If Windows or the PC stopped in between, the history would hold a change that may not have happened, which is harmless to revert, and never a change that nothing remembers.
+- When a setting fails part way and going back also fails for some steps, the message now says the setting is partly applied and which steps could not be put back, and the history keeps listing it so Revert can try again. Before, those failures were dropped without a word.
+
+Fixed
+- PowerShell errors were shown as "#< CLIXML", the first line of an XML document. They now show the actual error text.
+- Without administrator rights, reading the apps and the Windows features failed again and again, one setting at a time, and kept Clarion busy for minutes. A failed read is now remembered until the next refresh, and the read finishes in a few seconds.
+- A warm up that failed was ignored without a trace. It is now written to the log.
+
 ## 0.1.0-beta.6
 
 New

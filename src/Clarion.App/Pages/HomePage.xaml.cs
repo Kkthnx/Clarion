@@ -34,6 +34,23 @@ public sealed partial class HomePage : Page
 
     private void OnAppChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(Refresh);
 
+    private async void OnFixMonthly(object sender, RoutedEventArgs e)
+    {
+        var problem = await _app.RepairMonthlyCheckAsync();
+        if (problem is not null)
+        {
+            MovedBar.Severity = InfoBarSeverity.Error;
+            MovedBar.Message = $"Could not set it up again. {problem}";
+        }
+    }
+
+    private void OnRestartAsAdmin(object sender, RoutedEventArgs e)
+    {
+        // A run in progress must finish first. A queue that has not been applied is not carried over to the new window.
+        if (_app.IsBusy) return;
+        ((App)Application.Current).RestartAsAdministrator();
+    }
+
     protected override void OnNavigatedTo(NavigationEventArgs e) => Refresh();
 
     private void Refresh()
@@ -43,6 +60,10 @@ public sealed partial class HomePage : Page
         AdminText.Text = _app.IsElevated ? "Yes" : "No";
         AppliedText.Text = $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
         Busy.IsActive = _app.IsBusy;
+        MovedBar.IsOpen = _app.MonthlyCheckMoved;
+        MovedBar.Visibility = MovedBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        LimitedBar.IsOpen = !_app.IsElevated;
+        LimitedBar.Visibility = LimitedBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         ShowUpdated();
         ShowUpdate();
         ShowScheduled();

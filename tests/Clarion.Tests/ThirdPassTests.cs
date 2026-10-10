@@ -241,6 +241,14 @@ public sealed class ThirdPassTests : IDisposable
     }
 
     [Fact]
+    public void The_marker_for_a_copy_started_to_get_administrator_rights_opens_the_window_and_is_not_an_error()
+    {
+        var o = CliOptions.Parse([CliOptions.RelaunchMarker]);
+        Assert.False(o.IsCli);
+        Assert.Null(o.Error);
+    }
+
+    [Fact]
     public void The_help_text_lists_the_read_only_commands()
     {
         foreach (var word in new[] { "--verify", "--what-broke", "--since", "--list-symptoms", "--history" })

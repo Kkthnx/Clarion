@@ -24,6 +24,22 @@
             <InfoBar x:Name="AccountBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
                      Title="Clarion is running as a different account" />
 
+            <InfoBar x:Name="LimitedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
+                     Title="Clarion is running without administrator rights"
+                     Message="You can look at your settings and run Verify. Changing anything needs administrator rights, because Clarion keeps its history in a folder only administrators can write to.">
+                <InfoBar.ActionButton>
+                    <Button Content="Restart as administrator" Click="OnRestartAsAdmin" />
+                </InfoBar.ActionButton>
+            </InfoBar>
+
+            <InfoBar x:Name="MovedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
+                     Title="The monthly check starts a different copy of Clarion"
+                     Message="It was set up from another folder, so it may not run. Set it up again from this copy to fix it.">
+                <InfoBar.ActionButton>
+                    <Button Content="Fix it" Click="OnFixMonthly" />
+                </InfoBar.ActionButton>
+            </InfoBar>
+
             <InfoBar x:Name="UpdatedBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="True" Closed="OnUpdatedClosed">
                 <InfoBar.ActionButton>
                     <Button Content="See what's new" Click="OnSeeWhatsNew" />

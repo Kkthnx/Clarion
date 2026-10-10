@@ -28,6 +28,38 @@ public sealed partial class AppServices : UiObservableObject
 
     public MonthlyVerifySchedule MonthlySchedule { get; } = new(new WindowsScheduledTaskStore(new WindowsProcessRunner()));
 
+    /// <summary>The monthly check is on but starts a different copy of Clarion, for example one that was moved. Home offers to fix it.</summary>
+    public bool MonthlyCheckMoved { get; private set; }
+
+    /// <summary>Looks once at start up. It only reads Task Scheduler, and only when the person turned the check on.</summary>
+    public async Task CheckMonthlyTaskAsync()
+    {
+        if (!Settings.MonthlyVerify || Environment.ProcessPath is not { } exe) return;
+        try { MonthlyCheckMoved = await Task.Run(() => MonthlySchedule.PointsElsewhere(exe)); }
+        catch (Exception ex) when (ex is InvalidOperationException or IOException or System.ComponentModel.Win32Exception) { Log.Write($"Monthly check location: {ex.Message}"); return; }
+        if (MonthlyCheckMoved) Log.Write("The monthly check starts a different copy of Clarion");
+        OnPropertyChanged(nameof(MonthlyCheckMoved));
+    }
+
+    /// <summary>Sets the task up again from this copy. Needs administrator rights, like turning the check on.</summary>
+    public async Task<string?> RepairMonthlyCheckAsync()
+    {
+        try
+        {
+            var exe = Environment.ProcessPath ?? throw new InvalidOperationException("Clarion could not find its own program file.");
+            var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            await Task.Run(() => MonthlySchedule.Enable(exe, user, DateTime.Today));
+            MonthlyCheckMoved = false;
+            OnPropertyChanged(nameof(MonthlyCheckMoved));
+            return null;
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or IOException)
+        {
+            Log.Write($"Monthly check repair: {ex.Message}");
+            return ex.Message;
+        }
+    }
+
     private readonly ScheduledVerifyStore _scheduledResult = new(Path.Combine(EngineFactory.DefaultDataDirectory, "scheduled-verify.json"));
 
     /// <summary>What the last scheduled check found, as long as the person has not looked at it yet.</summary>
@@ -498,7 +530,7 @@ public sealed partial class AppServices : UiObservableObject
 
     public IReadOnlyList<string> AppliedIds() => Items.Where(i => i.IsApplied && i.IsSupported).Select(i => i.Id).ToList();
 
-    public async Task<BatchResult> ApplyPendingAsync(bool restorePoint, Action<string> log, Action<BatchStep>? step = null, bool turnOnProtection = false)
+    public async Task<BatchResult> ApplyPendingAsync(bool restorePoint, Action<string> log, Action<BatchStep>? step = null, bool turnOnProtection = false, CancellationToken stop = default)
     {
         IsBusy = true;
         var toApply = Pending.Where(p => p.IsOn).Select(p => p.EffectiveTweak).ToList();
@@ -506,7 +538,7 @@ public sealed partial class AppServices : UiObservableObject
         var replacedGroups = toApply.Select(t => t.ExclusiveGroup).Where(g => g is not null).ToHashSet();
         var toRevert = Pending.Where(p => !p.IsOn && !(p.Tweak.ExclusiveGroup is not null && replacedGroups.Contains(p.Tweak.ExclusiveGroup)))
             .Select(p => p.Tweak).ToList();
-        var options = new BatchOptions { CreateRestorePoint = restorePoint, ContinueWithoutRestorePoint = !restorePoint, Step = step, TurnOnSystemProtection = turnOnProtection };
+        var options = new BatchOptions { CreateRestorePoint = restorePoint, ContinueWithoutRestorePoint = !restorePoint, Step = step, TurnOnSystemProtection = turnOnProtection, Stop = stop };
 
         Action<string> both = msg => { Log.Write(msg); log(msg); };
         Log.Write($"Run started: {toApply.Count} to apply, {toRevert.Count} to revert, restore point {(restorePoint ? "on" : "off")}");
@@ -514,6 +546,7 @@ public sealed partial class AppServices : UiObservableObject
         foreach (var entry in result.Items)
             Log.Write($"{entry.TweakId}: {(entry.Result.Success ? (entry.Skipped ? "skipped" : "ok") : "failed " + entry.Result.Error)}");
         if (result.Blocked is not null) Log.Write($"Blocked: {result.Blocked}");
+        if (result.Stopped) Log.Write($"Stopped by the person: {result.NotStarted} not started");
         await RefreshStatesAsync();
 
         foreach (var entry in result.Items)

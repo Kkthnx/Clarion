@@ -18,6 +18,9 @@ public sealed record CliOptions(
 {
     public bool IsCli => Mode != CliMode.None;
 
+    /// <summary>Not for people. It marks a copy started by the window to get administrator rights.</summary>
+    public const string RelaunchMarker = "--elevated-relaunch";
+
     /// <summary>Parses command line arguments. Unknown switches give an error instead of being ignored.</summary>
     public static CliOptions Parse(IReadOnlyList<string> args)
     {
@@ -39,6 +42,8 @@ public sealed record CliOptions(
             {
                 case "--help" or "-h" or "/?": mode = CliMode.Help; break;
                 case "--version": mode = CliMode.Version; break;
+                // Added by the window when it starts itself again with administrator rights, so that copy never tries a second time.
+                case RelaunchMarker: break;
                 case "--list-presets": mode = CliMode.ListPresets; break;
                 case "--apply":
                     mode = CliMode.Apply;

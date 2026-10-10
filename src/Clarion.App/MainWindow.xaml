@@ -125,14 +125,17 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{x:Bind Activity.Title, Mode=OneWay}" FontSize="16" FontWeight="SemiBold"
                                Foreground="{ThemeResource ClTextPrimaryBrush}" VerticalAlignment="Center" />
                     <TextBlock Grid.Column="1" Text="{x:Bind Activity.ProgressText, Mode=OneWay}"
                                Foreground="{ThemeResource ClTextSecondaryBrush}" VerticalAlignment="Center" />
                     <ProgressBar x:Name="ActivityBar" Grid.Column="2" VerticalAlignment="Center" MinWidth="120" />
-                    <Button Grid.Column="3" Content="Open log" Click="OnOpenLog" />
-                    <Button x:Name="ActivityHide" Grid.Column="4" Content="Hide" Click="OnHideActivity" />
+                    <Button x:Name="ActivityStop" Grid.Column="3" Content="Stop after this one" Click="OnStopRun" Visibility="Collapsed"
+                            ToolTipService.ToolTip="Stops before the next setting. The one being changed now is finished first, so nothing is left half done. The rest stay queued." />
+                    <Button Grid.Column="4" Content="Open log" Click="OnOpenLog" />
+                    <Button x:Name="ActivityHide" Grid.Column="5" Content="Hide" Click="OnHideActivity" />
                 </Grid>
                 <ScrollViewer x:Name="ActivityScroll" MaxHeight="190" Padding="0,0,14,0">
                     <ItemsControl ItemsSource="{x:Bind Activity.Lines}">

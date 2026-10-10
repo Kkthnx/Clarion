@@ -64,6 +64,59 @@ public sealed class TweakEngineTests : IDisposable
     }
 
     [Fact]
+    public void The_record_of_a_step_is_written_before_the_step_is_run()
+    {
+        // If the process died during the write of B, B's record has to exist already. A change with no record could never be reverted.
+        var recordsWhileWritingB = -1;
+        _reg.FailWrite = t =>
+        {
+            if (t.Name == "B") recordsWhileWritingB = _journal.OutstandingFor("t.one").Count;
+            return false;
+        };
+
+        Assert.True(_engine.Apply(Make(Dword(T("A"), "0"), Dword(T("B"), "0")), Guid.NewGuid()).Success);
+
+        Assert.Equal(2, recordsWhileWritingB);
+    }
+
+    [Fact]
+    public void A_step_that_fails_is_written_down_as_undone_and_leaves_nothing_listed_as_on()
+    {
+        _reg.Write(T("A"), new RegistryData(RegistryKind.DWord, "1"));
+        _reg.FailWrite = t => t.Name == "B";
+
+        var result = _engine.Apply(Make(Dword(T("A"), "0"), Dword(T("B"), "0")), Guid.NewGuid());
+
+        Assert.False(result.Success);
+        Assert.Equal("1", _reg.Read(T("A")).Data!.Value);
+        Assert.Empty(_journal.OutstandingFor("t.one"));
+    }
+
+    [Fact]
+    public void When_going_back_also_fails_the_message_says_the_setting_is_partly_applied_and_the_history_still_lists_it()
+    {
+        _reg.Write(T("A"), new RegistryData(RegistryKind.DWord, "1"));
+        var writesToA = 0;
+        // B cannot be written, and then the write that puts A back fails as well.
+        _reg.FailWrite = t => t.Name == "B" || (t.Name == "A" && ++writesToA == 2);
+
+        var result = _engine.Apply(Make(Dword(T("A"), "0"), Dword(T("B"), "0")), Guid.NewGuid());
+
+        Assert.False(result.Success);
+        Assert.Contains("partly applied", result.Error);
+        Assert.Contains("Going back also failed for 1 earlier step", result.Error);
+        // A is still changed. The history lists the whole run as on, A and the step that failed (which may or may not have changed
+        // anything), so Revert has something to work from and a half undone setting is not mistaken for a finished one.
+        Assert.Equal("0", _reg.Read(T("A")).Data!.Value);
+        Assert.Equal(2, _journal.OutstandingFor("t.one").Count);
+
+        _reg.FailWrite = null;
+        Assert.True(_engine.Revert(Make(Dword(T("A"), "0"), Dword(T("B"), "0")), Guid.NewGuid()).Success);
+        Assert.Equal("1", _reg.Read(T("A")).Data!.Value);
+        Assert.Empty(_journal.OutstandingFor("t.one"));
+    }
+
+    [Fact]
     public void Failed_step_rolls_back_earlier_steps()
     {
         _reg.Write(T("A"), new RegistryData(RegistryKind.DWord, "1"));

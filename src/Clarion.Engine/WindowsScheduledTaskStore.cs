@@ -30,6 +30,12 @@ public sealed class WindowsScheduledTaskStore(IProcessRunner runner) : ISchedule
         }
     }
 
+    public string? ReadXml(string name)
+    {
+        var result = runner.Run("schtasks.exe", $"/Query /TN \"{Safe(name)}\" /XML", Timeout);
+        return result.ExitCode == 0 ? result.Output : null;
+    }
+
     public void Delete(string name)
     {
         var result = runner.Run("schtasks.exe", $"/Delete /TN \"{Safe(name)}\" /F", Timeout);

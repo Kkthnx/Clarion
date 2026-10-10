@@ -51,6 +51,7 @@ public sealed partial class MainWindow : Window
         _ = StartupAsync();
         _ = _app.LoadImageNotesAsync();
         _ = _app.StartupUpdateCheckAsync();
+        _ = _app.CheckMonthlyTaskAsync();
     }
 
     private async void OnClosing(AppWindow sender, AppWindowClosingEventArgs args)
@@ -169,6 +170,16 @@ public sealed partial class MainWindow : Window
         ActivityBar.Maximum = Math.Max(1, Activity.Total);
         ActivityBar.Value = Activity.Value;
         ActivityHide.IsEnabled = !Activity.IsRunning;
+        ActivityStop.Visibility = Activity.IsRunning && _runStop is not null ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private CancellationTokenSource? _runStop;
+
+    private void OnStopRun(object sender, RoutedEventArgs e)
+    {
+        _runStop?.Cancel();
+        ActivityStop.IsEnabled = false;
+        Activity.Info("Stopping after the setting in progress. The rest stay queued.");
     }
 
     private void ScrollActivity()
@@ -284,6 +295,22 @@ public sealed partial class MainWindow : Window
     {
         if (_app.PendingCount == 0) return;
 
+        if (!_app.IsElevated)
+        {
+            // The history and settings live in a folder only administrators can write to, and a change that cannot be recorded is not made.
+            var ask = new ContentDialog
+            {
+                Title = "Administrator rights are needed to make changes",
+                Content = "Clarion keeps its history in a folder only administrators can write to, and it will not change anything it cannot record. Restart it as administrator to continue. The queue you built is not carried over.",
+                PrimaryButtonText = "Restart as administrator",
+                CloseButtonText = "Not now",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = Content.XamlRoot,
+            };
+            if (await ask.ShowAsync() == ContentDialogResult.Primary) ((App)Application.Current).RestartAsAdministrator();
+            return;
+        }
+
         var list = new StackPanel { Spacing = 12 };
         foreach (var item in _app.Pending)
         {
@@ -332,12 +359,21 @@ public sealed partial class MainWindow : Window
         var needsSignOut = _app.Pending.Any(p => p.Tweak.NeedsSignOut);
 
         Activity.Start(restorePoint ? "Applying changes, making a restore point first" : "Applying changes");
-        var result = await _app.ApplyPendingAsync(restorePoint,
-            msg => DispatcherQueue.TryEnqueue(() => { _app.Status = msg; Activity.Info(msg); }),
-            step => DispatcherQueue.TryEnqueue(() => Activity.Step(step)),
-            turnOnProtection);
+        using var stop = new CancellationTokenSource();
+        _runStop = stop;
+        ActivityStop.IsEnabled = true;
+        UpdateActivity();
+        Clarion.Core.Engine.BatchResult result;
+        try
+        {
+            result = await _app.ApplyPendingAsync(restorePoint,
+                msg => DispatcherQueue.TryEnqueue(() => { _app.Status = msg; Activity.Info(msg); }),
+                step => DispatcherQueue.TryEnqueue(() => Activity.Step(step)),
+                turnOnProtection, stop.Token);
+        }
+        finally { _runStop = null; }
         if (result.Blocked is not null) Activity.Close();
-        else Activity.Finish(result.Items.Count(i => i.Result.Success && !i.Skipped), result.Items.Count(i => !i.Result.Success), result.Items.Count(i => i.Skipped && i.Result.Success));
+        else Activity.Finish(result.Items.Count(i => i.Result.Success && !i.Skipped), result.Items.Count(i => !i.Result.Success), result.Items.Count(i => i.Skipped && i.Result.Success), result.NotStarted);
 
         if (result.Blocked is not null)
         {

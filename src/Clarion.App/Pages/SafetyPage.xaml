@@ -31,6 +31,14 @@
                 <Button x:Name="RevertAll" Content="Queue revert for all" Click="OnRevertAll" />
             </StackPanel>
 
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBlock Text="Go back to how it was on" VerticalAlignment="Center" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                <CalendarDatePicker x:Name="SinceDate" PlaceholderText="Pick a day" AutomationProperties.Name="Go back to how it was on this day" />
+                <Button x:Name="RevertSince" Content="Queue revert for what came after" Click="OnRevertSince"
+                        ToolTipService.ToolTip="Queues a revert for every setting that was last applied after the end of that day. You still review it before anything changes." />
+                <TextBlock x:Name="SinceStatus" VerticalAlignment="Center" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+            </StackPanel>
+
             <TextBlock x:Name="EmptyText" Text="Nothing yet. Settings you apply will show up here."
                        Foreground="{ThemeResource ClTextMutedBrush}" />
 

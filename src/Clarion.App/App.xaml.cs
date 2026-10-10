@@ -39,6 +39,19 @@ public partial class App : Application
             return;
         }
 
+        // The program starts without administrator rights, so the read only command line commands need none. The window asks for them
+        // here, before it takes the single instance lock, by starting itself again with the usual Windows prompt. When that is
+        // refused it carries on in the limited mode the pages already handle, and Home offers to ask again.
+        // A copy that was itself started for this must not ask again. If Windows did not give it administrator rights, asking again
+        // would start copies without end, so it stays in the limited mode.
+        var startedForRights = Environment.GetCommandLineArgs().Contains(Clarion.Core.Profiles.CliOptions.RelaunchMarker);
+        if (!Clarion.Engine.WindowsMachine.IsElevated() && !startedForRights && Environment.GetEnvironmentVariable("CLARION_NO_ELEVATE") != "1"
+            && Services.Elevation.RestartAsAdministrator() == Services.ElevationOutcome.Started)
+        {
+            Exit();
+            return;
+        }
+
         _instanceLock = new Mutex(true, "Global\\Clarion.SingleInstance", out var first);
         if (!first)
         {
@@ -51,6 +64,25 @@ public partial class App : Application
         Theme = Services.AppServices.Instance.Settings.Theme switch { "Light" => ElementTheme.Light, "Dark" => ElementTheme.Dark, _ => ElementTheme.Default };
         _window = new MainWindow();
         _window.Activate();
+    }
+
+    /// <summary>
+    /// Starts a copy with administrator rights and closes this one. The lock is let go first, or the new copy would take this one for
+    /// a second launch and leave. When the prompt is refused the lock is taken again and nothing changes.
+    /// </summary>
+    public bool RestartAsAdministrator()
+    {
+        _instanceLock?.Dispose();
+        _instanceLock = null;
+        var outcome = Services.Elevation.RestartAsAdministrator();
+        Services.Log.Write($"Restart as administrator: {outcome}");
+        if (outcome == Services.ElevationOutcome.Started)
+        {
+            Exit();
+            return true;
+        }
+        _instanceLock = new Mutex(true, "Global\\Clarion.SingleInstance", out _);
+        return false;
     }
 
     private static void LogCrash(Exception ex)

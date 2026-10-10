@@ -188,6 +188,54 @@ public sealed class BatchTests : IDisposable
     }
 
     [Fact]
+    public void Stopping_a_run_finishes_the_setting_in_progress_and_leaves_the_rest_untouched()
+    {
+        var (a, b, c) = (UserTweak("u.a"), UserTweak("u.b"), UserTweak("u.c"));
+        using var stop = new CancellationTokenSource();
+        var options = new BatchOptions { CreateRestorePoint = false, Stop = stop.Token, Step = s => { if (s.State == BatchStepState.Done) stop.Cancel(); } };
+        var runner = Runner();
+
+        var result = runner.Apply([a, b, c], Win11, options);
+
+        Assert.True(result.Stopped);
+        Assert.Equal(2, result.NotStarted);
+        Assert.False(result.AllSucceeded);
+        Assert.Equal(["u.a"], result.Items.Select(i => i.TweakId).ToArray());
+        Assert.Equal(TweakState.Applied, runner.Engine.Detect(a));
+        Assert.Equal(TweakState.NotApplied, runner.Engine.Detect(b));
+        Assert.Equal(TweakState.NotApplied, runner.Engine.Detect(c));
+    }
+
+    [Fact]
+    public void A_run_stopped_before_it_begins_changes_nothing_and_makes_no_restore_point()
+    {
+        using var stop = new CancellationTokenSource();
+        stop.Cancel();
+
+        var result = Runner().Apply([UserTweak("u.a"), UserTweak("u.b")], Win11, new BatchOptions { Stop = stop.Token });
+
+        Assert.Equal(2, result.NotStarted);
+        Assert.Empty(result.Items);
+        Assert.Empty(_proc.Calls);
+    }
+
+    [Fact]
+    public void Stopping_also_applies_to_the_revert_part_of_a_run()
+    {
+        var (a, b) = (UserTweak("u.a"), UserTweak("u.b"));
+        var runner = Runner();
+        runner.Apply([a, b], Win11, new BatchOptions { CreateRestorePoint = false });
+        using var stop = new CancellationTokenSource();
+        var options = new BatchOptions { CreateRestorePoint = false, Stop = stop.Token, Step = s => { if (s.State == BatchStepState.Done) stop.Cancel(); } };
+
+        var result = runner.Execute([], [a, b], Win11, options);
+
+        Assert.Equal(1, result.NotStarted);
+        Assert.Equal(TweakState.NotApplied, runner.Engine.Detect(a));
+        Assert.Equal(TweakState.Applied, runner.Engine.Detect(b));
+    }
+
+    [Fact]
     public void A_run_that_only_reverts_still_makes_the_restore_point_the_dialog_offered()
     {
         var tweak = UserTweak();

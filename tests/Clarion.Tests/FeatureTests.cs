@@ -175,6 +175,18 @@ public sealed class FeatureTests : IDisposable
     }
 
     [Fact]
+    public void A_powershell_error_document_is_turned_back_into_the_plain_error_text()
+    {
+        var xml = "#< CLIXML\r\n<Objs Version=\"1.1.0.1\" xmlns=\"http://schemas.microsoft.com/powershell/2004/04\"><S S=\"Error\">Get-AppxPackage : Access is denied._x000D__x000A_</S><S S=\"Error\">At line:1 char:5_x000D__x000A_</S></Objs>";
+
+        var line = PowerShellHost.FirstLine(xml, "", "fallback");
+
+        Assert.Equal("Get-AppxPackage : Access is denied.", line);
+        Assert.Equal("plain text stays as it is", PowerShellHost.DecodeErrorStream("plain text stays as it is"));
+        Assert.Equal("#< CLIXML", PowerShellHost.FirstLine("#< CLIXML", "", "x").Split('\n')[0]);
+    }
+
+    [Fact]
     public void Warming_up_asks_only_about_the_features_the_catalog_uses()
     {
         var store = new FakeFeatureStore();
@@ -211,6 +223,25 @@ public sealed class FeatureTests : IDisposable
         Assert.True(store.IsFeatureEnabled("SMB1Protocol"));
         Assert.Null(store.IsFeatureEnabled("NotHere"));
         Assert.Single(proc.Calls);
+    }
+
+    [Fact]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public void A_feature_read_that_fails_is_remembered_so_each_setting_does_not_run_it_again()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var proc = new FakeProcessRunner { Respond = _ => new ProcessResult(1, "", "The requested operation requires elevation.") };
+        var store = new WindowsFeatureStore(proc);
+
+        Assert.Throws<InvalidOperationException>(() => store.IsFeatureEnabled("NetFx3"));
+        Assert.Throws<InvalidOperationException>(() => store.IsFeatureEnabled("DirectPlay"));
+        Assert.Throws<InvalidOperationException>(() => store.IsFeatureEnabled("SMB1Protocol"));
+
+        Assert.Single(proc.Calls);
+
+        store.Invalidate();
+        Assert.Throws<InvalidOperationException>(() => store.IsFeatureEnabled("NetFx3"));
+        Assert.Equal(2, proc.Calls.Count);
     }
 
     [Fact]

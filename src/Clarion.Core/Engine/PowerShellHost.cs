@@ -31,10 +31,28 @@ public static class PowerShellHost
         return result.Output;
     }
 
+    /// <summary>
+    /// PowerShell writes its errors as an XML document, with a first line of "#&lt; CLIXML", when its error output is redirected, and
+    /// that first line is all a person would have seen. This turns the document back into the plain error text.
+    /// </summary>
+    public static string DecodeErrorStream(string error)
+    {
+        if (!error.StartsWith("#< CLIXML", StringComparison.Ordinal)) return error;
+        var lines = new List<string>();
+        foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(error, "<S S=\"Error\">(.*?)</S>", System.Text.RegularExpressions.RegexOptions.Singleline))
+        {
+            var text = System.Net.WebUtility.HtmlDecode(m.Groups[1].Value)
+                .Replace("_x000D__x000A_", "\n", StringComparison.Ordinal).Replace("_x000A_", "\n", StringComparison.Ordinal).Replace("_x000D_", "", StringComparison.Ordinal);
+            lines.Add(text);
+        }
+        var joined = string.Join("\n", lines).Trim();
+        return joined.Length > 0 ? joined : error;
+    }
+
     /// <summary>The first non-empty line of the error text, or of the output when there is no error text.</summary>
     public static string FirstLine(string error, string output, string fallback)
     {
-        var text = string.IsNullOrWhiteSpace(error) ? output : error;
+        var text = string.IsNullOrWhiteSpace(error) ? output : DecodeErrorStream(error);
         return text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault() ?? fallback;
     }
 }

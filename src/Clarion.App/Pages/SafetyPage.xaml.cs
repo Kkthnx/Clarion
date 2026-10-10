@@ -53,6 +53,29 @@ public sealed partial class SafetyPage : Page
             QueueRevert(id);
     }
 
+    private void OnRevertSince(object sender, RoutedEventArgs e)
+    {
+        if (SinceDate.Date is not { } picked)
+        {
+            SinceStatus.Text = "Pick a day first.";
+            return;
+        }
+        var applied = _app.Runtime.Journal.OutstandingByTweak().Select(kv => (kv.Key, kv.Value[0].Time));
+        var ids = HistoryRange.AppliedAfter(applied, picked.LocalDateTime);
+        var queued = 0;
+        foreach (var id in ids)
+        {
+            var item = _app.Items.FirstOrDefault(i => i.Id == id);
+            if (item is not { CanToggle: true, IsApplied: true }) continue;
+            item.IsOn = false;
+            queued++;
+        }
+        SinceStatus.Text = queued == 0
+            ? $"Nothing was applied after {picked.LocalDateTime:MMM d}."
+            : $"{queued} setting{(queued == 1 ? "" : "s")} queued. Review them at the bottom.";
+        Rebuild();
+    }
+
     private void QueueRevert(string id)
     {
         var item = _app.Items.FirstOrDefault(i => i.Id == id);
