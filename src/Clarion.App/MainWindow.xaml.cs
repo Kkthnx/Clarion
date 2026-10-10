@@ -350,6 +350,8 @@ public sealed partial class MainWindow : Window
             {
                 foreach (var step in item.ExactChanges)
                     block.Children.Add(new TextBlock { Text = step, FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"), FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
+                if (item.RemovesApps)
+                    block.Children.Add(new TextBlock { Text = Clarion.Core.Appx.AppRemovalNotice.Text, FontSize = 12, TextWrapping = TextWrapping.Wrap, Foreground = Clarion.App.Controls.ThemeBrushes.Get("ClWarnText", Root.ActualTheme) });
             }
             else
             {

@@ -32,6 +32,10 @@ public sealed partial class DetailPane : UserControl
             note = gone.RemovesApps
                 ? "This app is not installed for your account, so there is nothing to remove. If Windows brings it back, for example after a feature update, this switch works again."
                 : "What this changes is not on this PC, so there is nothing to change. If Windows puts it back, this switch works again.";
+        // Every app removal says that the app's own data goes with it, since Revert cannot bring that back.
+        var removesApp = _shown is { IsSupported: true, IsUnavailable: false, RemovesApps: true };
+        DataNoteText.Text = removesApp ? Clarion.Core.Appx.AppRemovalNotice.Text : "";
+        DataNoteText.Visibility = removesApp ? Visibility.Visible : Visibility.Collapsed;
         ImageNoteText.Text = note;
         ImageNoteText.Visibility = note.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         EmptyPanel.Visibility = item is null ? Visibility.Visible : Visibility.Collapsed;

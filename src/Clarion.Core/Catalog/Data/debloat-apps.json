@@ -471,13 +471,13 @@
     "summary": "Uninstall Sticky Notes for your account.",
     "what": "Removes the Microsoft.MicrosoftStickyNotes package for the current account. Other accounts are not touched.",
     "benefit": "Less clutter in Start and search, and no background updates for the app.",
-    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "risk": "Medium. Notes that are not synced to your Microsoft account are deleted with the app, and Revert cannot bring them back.",
     "evidence": "Situational",
-    "riskLevel": "Low",
+    "riskLevel": "Medium",
     "recommendation": "OnlyIf",
     "advice": "Skip it if you keep notes there.",
     "facts": [
-      "Notes sync with your Microsoft account",
+      "Notes that are not synced live only in this app and are deleted with it",
       "Removes it for your account only",
       "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
     ],
@@ -489,6 +489,9 @@
         "allUsers": false,
         "deprovision": false
       }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/apps/design/app-settings/store-and-retrieve-app-data"
     ],
     "topic": "Apps"
   },

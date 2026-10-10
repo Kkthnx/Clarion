@@ -16,6 +16,8 @@
             <ScrollViewer Padding="20,20,26,20">
                 <StackPanel x:Name="Body" Spacing="16" Visibility="Collapsed">
                     <controls:TweakDetail x:Name="Detail" />
+                    <TextBlock x:Name="DataNoteText" TextWrapping="Wrap" FontSize="12" Visibility="Collapsed"
+                               Foreground="{ThemeResource ClWarnTextBrush}" />
                     <TextBlock x:Name="ImageNoteText" TextWrapping="Wrap" FontSize="12" Visibility="Collapsed"
                                Foreground="{ThemeResource ClTextSecondaryBrush}" />
                     <StackPanel x:Name="DeprovisionPanel" Spacing="4" Visibility="Collapsed">

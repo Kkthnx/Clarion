@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Safer
+- Every app removal now says that the app's own data is removed too, and that Revert reinstalls the app but not that data. It shows in the details pane and again in the review window. This is from Microsoft's app data documentation: the system removes an app's data stores completely when the app is uninstalled.
+- Removing Sticky Notes is now rated Medium risk, and no longer says that notes sync with your Microsoft account as if it were certain. Notes that were never synced live only in the app and are deleted with it.
+
 Polish
 - Hovering a setting, a cleanup row or a repair job no longer opens a large tooltip that repeated the details pane on the right. Select a row and the pane explains it. The "Suggested" and risk labels have a short tooltip of their own that says what the label means, which is information the pane does not give. Microsoft's own guidance is that a tooltip is not needed for what is already on screen.
 

@@ -360,15 +360,16 @@ Uninstall Solitaire Collection for your account.
 
 #### Remove Sticky Notes
 
-`debloat.app.microsoftstickynotes` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+`debloat.app.microsoftstickynotes` · Medium · Helps in some cases · Only if it fits you · checked on build 26200
 
 Uninstall Sticky Notes for your account.
 
 - **What it does:** Removes the Microsoft.MicrosoftStickyNotes package for the current account. Other accounts are not touched.
 - **Benefit:** Less clutter in Start and search, and no background updates for the app.
-- **Risk:** Low. The app can be put back with Revert or from the Microsoft Store.
+- **Risk:** Medium. Notes that are not synced to your Microsoft account are deleted with the app, and Revert cannot bring them back.
 - **Changes:**
   - `Remove app Microsoft.MicrosoftStickyNotes for this account`
+- **Sources:** <https://learn.microsoft.com/en-us/windows/apps/design/app-settings/store-and-retrieve-app-data>
 
 #### Remove Tips
 
