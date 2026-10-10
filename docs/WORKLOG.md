@@ -272,7 +272,7 @@ That picture was deleted unused, and the script was changed.
   app resources. Real fix was structural: the five Windows pages sit under one expandable entry.
 - The window set a size but not a position, so Windows could start it low enough to push the bottom bar off
   screen. It is now centred in the work area.
-- Closed notices (account, changed back, image, update) still took layout space, leaving a gap at
+- Closed notices (account, changed back, image, update) still took layout space, so a gap sat at
   the top of Home and Verify. They are collapsed when closed.
 - The "N settings" label was clipped to "settings" because its column was 65 pixels wide.
 - Repair job duration chips were clipped. Duration is now its own line.
@@ -623,3 +623,9 @@ Each item was checked against the code before anything was changed.
 ## Atlas and ReviOS, and two corrections to the update card
 - Read both playbooks on GitHub (details in docs/CUSTOM-IMAGES.md). Added their markers to the image check, with tests. Checked on this PC: still read as Ghost Spectre, no false match.
 - Reading Microsoft's update policy pages for the AUOptions values showed two claims in the update card were stronger than the documentation. Fixed: removing the Check for updates button does not stop background updates; the do-not-connect policy only applies with an update server. Added the AUOptions reading (1 off, 2 ask before download).
+
+## Standing rules adopted (commits, versions, writing)
+- Three rule files from the owner now apply to every commit, release and piece of prose: plain-sentence commit subjects of at most 72 characters in the imperative with what-and-why bodies; semantic versioning with immutable releases; and a banned list of words and structures with a self-audit.
+- Self-audit of the prose already in the repo against the writing list: 0 banned words, 0 em or en dashes, 1 trailing -ing clause (reworded). Early commits had subjects over 72 characters. Pushed history is left as it is.
+- The Master AI Writing Rules document that the writing rules extend has not been shared, so its em dash, word and syntax rules are not applied beyond avoiding em dashes.
+- Slip against the versioning rules: the beta 10 release workflow failed after the tag was pushed, and the tag was deleted and pushed again on the fixed commit. No release had been published from it. The rule is to ship the next number instead, so the next failure after a pushed tag means beta 11, not a moved tag.
