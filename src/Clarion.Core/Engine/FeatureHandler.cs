@@ -15,7 +15,9 @@ public sealed class FeatureHandler(IFeatureStore store) : IOperationHandler
     {
         var mine = operations.Where(Handles).ToList();
         if (mine.Count == 0) return;
-        var work = new List<Action> { store.Prefetch };
+        var features = mine.OfType<SetWindowsFeature>().Select(f => f.Name).Distinct().ToList();
+        var work = new List<Action>();
+        if (features.Count > 0) work.Add(() => store.Prefetch(features));
         work.AddRange(mine.OfType<SetWindowsCapability>().Select(c => c.Name).Distinct().Select(n => (Action)(() => store.IsCapabilityInstalled(n))));
         Parallel.Invoke(work.ToArray());
     }

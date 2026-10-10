@@ -6,8 +6,8 @@ namespace Clarion.Core.Features;
 
 public interface IFeatureStore
 {
-    /// <summary>Reads the feature list once so later lookups are instant.</summary>
-    void Prefetch();
+    /// <summary>Reads the state of these features in one go so later lookups are instant.</summary>
+    void Prefetch(IReadOnlyList<string> featureNames);
 
     /// <summary>Drops cached lists so the next lookup reads Windows again.</summary>
     void Invalidate();
@@ -48,9 +48,19 @@ public static partial class FeatureRules
 
 public static class FeatureScripts
 {
-    public static string Inventory() =>
-        "$f=@(Get-WindowsOptionalFeature -Online | Select-Object FeatureName,@{n='State';e={\"$($_.State)\"}}); " +
-        "ConvertTo-Json -InputObject @{features=$f} -Depth 3 -Compress";
+    /// <summary>
+    /// The state of just the named features, in one PowerShell run. Asking for every feature on the PC took about 16 seconds in a
+    /// measurement here, and asking for the eleven the catalog uses about 8. A name this PC does not have gives nothing back.
+    /// </summary>
+    public static string FeatureStates(IEnumerable<string> names)
+    {
+        var list = names.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        foreach (var n in list) Require(n);
+        var quoted = string.Join(",", list.Select(n => $"'{n}'"));
+        return
+            $"$f=@(foreach ($n in @({quoted})) {{ Get-WindowsOptionalFeature -Online -FeatureName $n -ErrorAction SilentlyContinue | Select-Object FeatureName,@{{n='State';e={{$_.State.ToString()}}}} }}); " +
+            "ConvertTo-Json -InputObject @{features=$f} -Depth 3 -Compress";
+    }
 
     public static string CapabilityState(string name)
     {

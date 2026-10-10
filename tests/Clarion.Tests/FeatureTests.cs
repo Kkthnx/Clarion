@@ -1,4 +1,5 @@
 using System.Text;
+using Clarion.Core.Abstractions;
 using Clarion.Core.Catalog;
 using Clarion.Core.Engine;
 using Clarion.Core.Features;
@@ -14,7 +15,8 @@ public sealed class FakeFeatureStore : IFeatureStore
     private readonly Dictionary<string, bool> _caps = new(StringComparer.OrdinalIgnoreCase);
     public List<string> Calls { get; } = [];
 
-    public void Prefetch() { }
+    public List<string> Prefetched { get; } = [];
+    public void Prefetch(IReadOnlyList<string> featureNames) => Prefetched.AddRange(featureNames);
     public void Invalidate() { }
     public void AddFeature(string name, bool on) => _features[name] = on;
     public void AddCapability(string name, bool on) => _caps[name] = on;
@@ -170,6 +172,64 @@ public sealed class FeatureTests : IDisposable
         Assert.Contains(ops, o => o is SetWindowsFeature f && f.Name == "Microsoft-Windows-Subsystem-Linux");
         Assert.Contains(ops, o => o is SetWindowsCapability c && c.Name.StartsWith("OpenSSH.Server", StringComparison.Ordinal));
         Assert.Empty(CatalogLoader.Validate(CatalogLoader.LoadEmbedded()));
+    }
+
+    [Fact]
+    public void Warming_up_asks_only_about_the_features_the_catalog_uses()
+    {
+        var store = new FakeFeatureStore();
+        var handler = new FeatureHandler(store);
+        handler.Warm([new SetWindowsFeature("NetFx3", true), new SetWindowsFeature("NetFx3", true), new SetWindowsFeature("Microsoft-Hyper-V-All", true), new SetWindowsCapability("OpenSSH.Server~~~~0.0.1.0", true)]);
+        Assert.Equal(["NetFx3", "Microsoft-Hyper-V-All"], store.Prefetched);
+    }
+
+    [Fact]
+    public void The_feature_script_names_each_feature_once_and_refuses_a_bad_name()
+    {
+        var script = FeatureScripts.FeatureStates(["NetFx3", "SMB1Protocol", "netfx3"]);
+        Assert.Contains("'NetFx3'", script);
+        Assert.Contains("'SMB1Protocol'", script);
+        Assert.DoesNotContain("'netfx3'", script);
+        Assert.DoesNotContain("Get-WindowsOptionalFeature -Online |", script);
+        Assert.Throws<ArgumentException>(() => FeatureScripts.FeatureStates(["x'; Remove-Item C:\\ -Recurse; '"]));
+    }
+
+    [Fact]
+    public void The_store_reads_the_wanted_features_in_one_call_and_remembers_the_ones_this_pc_does_not_have()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var proc = new FakeProcessRunner
+        {
+            Respond = _ => new ProcessResult(0, """{"features":[{"FeatureName":"NetFx3","State":"Disabled"},{"FeatureName":"SMB1Protocol","State":"Enabled"}]}""", ""),
+        };
+        var store = new WindowsFeatureStore(proc);
+
+        store.Prefetch(["NetFx3", "SMB1Protocol", "NotHere"]);
+
+        Assert.Single(proc.Calls);
+        Assert.False(store.IsFeatureEnabled("NetFx3"));
+        Assert.True(store.IsFeatureEnabled("SMB1Protocol"));
+        Assert.Null(store.IsFeatureEnabled("NotHere"));
+        Assert.Single(proc.Calls);
+    }
+
+    [Fact]
+    public void A_feature_that_was_not_warmed_up_is_read_on_its_own_and_a_change_clears_what_was_read()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var proc = new FakeProcessRunner
+        {
+            Respond = a => new ProcessResult(0, PowerShellHost.Decode(a).Contains("Disable-", StringComparison.Ordinal) ? "" : """{"features":[{"FeatureName":"DirectPlay","State":"Enabled"}]}""", ""),
+        };
+        var store = new WindowsFeatureStore(proc);
+
+        Assert.True(store.IsFeatureEnabled("DirectPlay"));
+        Assert.True(store.IsFeatureEnabled("DirectPlay"));
+        Assert.Single(proc.Calls);
+
+        store.SetFeature("DirectPlay", false);
+        Assert.True(store.IsFeatureEnabled("DirectPlay"));
+        Assert.Equal(3, proc.Calls.Count);
     }
 
     [Fact]

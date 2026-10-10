@@ -497,3 +497,9 @@ Idea taken from the way phone apps show an update: a clear "an update is availab
 
 ### Screen reader names for list rows
 - The first sweep only looked at buttons, boxes and pickers. Reading the names of the list rows themselves showed every row on Privacy, Debloat, Tweaks, Power, Network, Windows features, Updates, Clean up and Repair named `Clarion.App.Services.TweakItem` (or `CleanupItem`, `ActionItem`): a WinUI list row takes its name from the item's text, and the items had none. The three row types now say what they are ("Hide search highlights, On"). Checked again through UI Automation in the running app.
+
+### Windows features read, measured and shortened
+- The gated test `Startup_state_read_is_fast_enough` failed on its own at 20 s against a 15 s limit (twice, so not noise from other tests). Timing each slow source separately on this PC, cold: `Get-WindowsOptionalFeature -Online` for every feature 16.7 s, the DISM tool itself 8.3 s, `Get-WindowsCapability` 4.1 s, `Get-AppxPackage -AllUsers` 2.8 s, `Get-NetAdapter` 5.1 s, `Get-ScheduledTask` 7.2 s, a bare PowerShell start 1.7 s.
+- Clarion enumerated all 137 features to look at 11. Asking for only the 11 by name (the cmdlet takes one name per call, so a loop inside one PowerShell run) took 8.4 s cold. Unknown names return nothing without an error, which keeps the old meaning of "this PC does not have it".
+- The store now reads the wanted names in one run, remembers each answer (including "not here"), reads any other name on demand, and clears everything after a change because enabling one feature can enable the ones it needs. The gated test now takes 10 s and passes. DISM text was not parsed instead, because its state words are translated on other languages of Windows while the cmdlet's are not.
+- The 2.5 minute `Real_dns_provider_switch_and_exact_restore` is a real switch and restore through PowerShell on every adapter, so it is slow by nature.

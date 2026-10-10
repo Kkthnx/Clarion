@@ -177,35 +177,44 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(30);
     private readonly object _gate = new();
-    private Dictionary<string, string>? _features;
+    // A null state means this PC does not have the feature, which is remembered too so it is not asked again.
+    private readonly Dictionary<string, string?> _features = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string?> _capabilities = new(StringComparer.OrdinalIgnoreCase);
 
-    public void Prefetch() => LoadFeatures();
+    public void Prefetch(IReadOnlyList<string> featureNames) => LoadFeatures(featureNames);
 
     public void Invalidate()
     {
         lock (_gate)
         {
-            _features = null;
+            _features.Clear();
             _capabilities.Clear();
         }
     }
 
-    private Dictionary<string, string> LoadFeatures()
+    /// <summary>Reads the states of the names not known yet, all in one PowerShell run.</summary>
+    private void LoadFeatures(IEnumerable<string> names)
     {
         lock (_gate)
         {
-            return _features ??= FeatureScripts.ParseStates(Run(FeatureScripts.Inventory()), "features", "FeatureName");
+            var missing = names.Where(n => !_features.ContainsKey(n)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            if (missing.Count == 0) return;
+            var found = FeatureScripts.ParseStates(Run(FeatureScripts.FeatureStates(missing)), "features", "FeatureName");
+            foreach (var n in missing) _features[n] = found.TryGetValue(n, out var state) ? state : null;
         }
     }
 
-    public bool? IsFeatureEnabled(string name) =>
-        LoadFeatures().TryGetValue(name, out var state) ? FeatureRules.IsEnabledState(state) : null;
+    public bool? IsFeatureEnabled(string name)
+    {
+        LoadFeatures([name]);
+        lock (_gate) return _features[name] is { } state ? FeatureRules.IsEnabledState(state) : null;
+    }
 
     public void SetFeature(string name, bool enabled)
     {
         Run(FeatureScripts.SetFeature(name, enabled));
-        lock (_gate) _features = null;
+        // Turning one feature on can turn on the ones it needs, so every cached state is dropped.
+        lock (_gate) _features.Clear();
     }
 
     public bool? IsCapabilityInstalled(string name)
