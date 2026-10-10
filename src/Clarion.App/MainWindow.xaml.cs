@@ -44,6 +44,9 @@ public sealed partial class MainWindow : Window
         var refresh = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.F5 };
         refresh.Invoked += (_, a) => { OnRefresh(this, new RoutedEventArgs()); a.Handled = true; };
         Root.KeyboardAccelerators.Add(refresh);
+        // F5 belongs to the whole window. Left alone, Windows pops up a small "F5" tip wherever focus or the pointer lands, which looks
+        // like a stray button. The Re-check button's own tooltip already says F5.
+        Root.KeyboardAcceleratorPlacementMode = Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode.Hidden;
         // There is no back button, so keep the frame from collecting a history entry for every page opened.
         ContentFrame.Navigated += (_, _) => ContentFrame.BackStack.Clear();
         Nav.SelectedItem = Nav.MenuItems[0];

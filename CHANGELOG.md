@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+Fixed
+- A small "F5" tip popped up in odd places, which looked like a stray button. F5 (re-check) works the same, and the tip is gone. The Re-check button still says F5 in its tooltip.
+
 ## 0.1.0-beta.9
 
 New
