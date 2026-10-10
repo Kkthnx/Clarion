@@ -98,4 +98,4 @@ To build the installer and zip, install Inno Setup 6 and run `scripts/build-inst
 
 ## License
 
-All rights reserved for now.
+All rights reserved. The source is public so you can read it and check what Clarion does, but it is not open source and you may not reuse or redistribute it. You are welcome to run the releases and to report problems. The full terms are in [LICENSE](LICENSE).

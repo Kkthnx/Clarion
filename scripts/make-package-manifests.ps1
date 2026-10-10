@@ -1,14 +1,14 @@
 # Writes the winget and Scoop manifests for one release, from the checksums that release published.
 # Nothing is submitted anywhere. The files are for you to read, validate and send.
 #
-#   ./scripts/make-package-manifests.ps1 -License "MIT"
+#   ./scripts/make-package-manifests.ps1 -Version 0.1.0-beta.6
 #   ./scripts/make-package-manifests.ps1 -Version 0.1.0-beta.6 -License "Proprietary" -OutDir packaging
 #
-# -License has no default on purpose. Both package managers show it to people, and the project has not chosen one yet.
+# The licence is Proprietary (all rights reserved, public source, free to run) and points at the LICENSE file.
 param(
     [string]$Version,
-    [Parameter(Mandatory = $true)][string]$License,
-    [string]$LicenseUrl = "",
+    [string]$License = "Proprietary",
+    [string]$LicenseUrl = "https://github.com/Kkthnx/Clarion/blob/main/LICENSE",
     [string]$OutDir = "packaging"
 )
 $ErrorActionPreference = 'Stop'

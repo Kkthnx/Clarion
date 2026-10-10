@@ -1,0 +1,26 @@
+Clarion
+Copyright (c) 2026 Kkthnx. All rights reserved.
+
+The source code is public so that anyone can read it and check what Clarion does.
+Public does not mean free to reuse. No open source licence applies.
+
+You may:
+- Read the source code, and build it on your own PC to check that the program you downloaded does what the code says.
+- Download and run the released builds for your own use, on your own PCs, free of charge.
+- Report problems and suggest changes through GitHub issues.
+- Use the copying and forking tools GitHub itself provides on github.com, as its Terms of Service allow.
+
+You may not, without written permission from the owner:
+- Copy, modify, or reuse any part of the code, catalog, text, images or logo in another project.
+- Publish or distribute Clarion, a modified version of it, or anything built from its code or catalog, in source or binary form.
+- Sell Clarion, or include it in something that is sold.
+- Use the Clarion name, logo or icon for another product.
+
+Contributions: if you send a change to this repository, you give the owner permission to use, change and
+distribute it as part of Clarion, and you confirm the work is yours to give.
+
+Clarion is provided as it is, with no warranty of any kind. You use it at your own risk. The owner is not
+liable for any loss that comes from using it.
+
+To ask for permission to do something listed above, open an issue on GitHub or use the contact details at
+https://kkthnx.com.

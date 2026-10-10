@@ -2,7 +2,7 @@
 
 Thank you for looking. This page says how the project is kept honest, and how to add a setting.
 
-The licence is not chosen yet. Until it is, please open an issue before sending a large change, so nothing is built that cannot be used.
+Clarion is all rights reserved with public source (see [LICENSE](LICENSE)). Please open an issue before sending a large change, so nothing is built that cannot be used. By sending a change you give permission to use it in Clarion, as the licence says.
 
 ## What stays true
 

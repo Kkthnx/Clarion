@@ -3,10 +3,10 @@
 Clarion is a download from the GitHub release page (a setup program and a portable zip, each with a checksum). `scripts/make-package-manifests.ps1` writes the manifests that put it in two package managers, from the checksums the release published.
 
 ```
-./scripts/make-package-manifests.ps1 -Version 0.1.0-beta.6 -License "<licence>"
+./scripts/make-package-manifests.ps1 -Version 0.1.0-beta.6
 ```
 
-It needs the licence to be named on the command line. Both package managers show it to people, and the project has not chosen one, so the script has no default and nothing is submitted until it is chosen.
+The licence defaults to `Proprietary` with a link to the LICENSE file, which is how winget and Scoop describe source-available software that is free to run. Pass `-License` to override it.
 
 ## What it writes
 
@@ -15,8 +15,7 @@ It needs the licence to be named on the command line. Both package managers show
 
 ## Before the first submission
 
-1. Choose the licence.
-2. Decide whether to sign the setup program (see SIGNING.md). Unsigned installers work, but SmartScreen warns about them, and the winget reviewers will see it.
-3. Run the script for the release, validate, read the files.
+1. Decide whether to sign the setup program (see SIGNING.md). Unsigned installers work, but SmartScreen warns about them, and the winget reviewers will see it.
+2. Run the script for the release, validate, read the files.
 
 The generated folder is not committed. It is rebuilt for each release from what the release says.

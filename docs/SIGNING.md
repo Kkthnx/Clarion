@@ -22,27 +22,25 @@ is the biggest trust problem it has. Signing is part of the 1.0 gate, next to fi
 | [Azure Artifact Signing](https://learn.microsoft.com/azure/artifact-signing/quickstart) | Paid, about $10 a month in one report | Closed or open source | Individuals must be in the US or Canada for public trust. Microsoft's pages disagree on the organization country list, so check the live page. |
 | A commercial certificate authority | Paid | Anyone | Not researched here. |
 
-## What blocks the free route
+## The free route is closed
 
-Clarion's README says "All rights reserved for now" and the repository has no license file. SignPath
-Foundation needs an OSI approved license with no commercial dual licensing and no proprietary
-components. That is a decision for the owner, not something to settle in a build script. If Clarion
-stays closed, Azure Artifact Signing or a commercial certificate is the way instead, and the
-workflow only needs its two signing steps swapped.
+Clarion is all rights reserved with public source (see LICENSE). SignPath Foundation needs an OSI
+approved license, so it is not available. Azure Artifact Signing or a commercial certificate is the
+way, and the workflow only needs its two signing steps swapped. If the licence ever changes to an OSI
+one, the SignPath steps below apply.
 
-## Steps for SignPath Foundation
+## Steps for SignPath Foundation (only if the licence changes)
 
-1. Choose and add an OSI approved license.
-2. Apply at [signpath.org](https://signpath.org). Describe what Clarion does on the download page.
-3. In SignPath, create the project and two artifact configurations named `app` and `setup`.
+1. Apply at [signpath.org](https://signpath.org). Describe what Clarion does on the download page.
+2. In SignPath, create the project and two artifact configurations named `app` and `setup`.
    `app` signs `Clarion.exe` and Clarion's own `.dll` files inside the uploaded zip. `setup` signs
    `Clarion-*-setup.exe`. Add the predefined GitHub trusted build system to the project.
-4. In the GitHub repository settings add:
+3. In the GitHub repository settings add:
    - secret `SIGNPATH_API_TOKEN` (a token for a user who can submit signing requests)
    - variables `SIGNPATH_ORGANIZATION_ID`, `SIGNPATH_PROJECT_SLUG`, `SIGNPATH_SIGNING_POLICY_SLUG`
-5. Run the workflow from the Actions tab. Check that the setup program and `Clarion.exe` show the
+4. Run the workflow from the Actions tab. Check that the setup program and `Clarion.exe` show the
    signature in file properties.
-6. Update the README line that says the files are not signed, and say who the publisher is.
+5. Update the README line that says the files are not signed, and say who the publisher is.
 
 ## Not known yet
 
