@@ -57,11 +57,13 @@ public sealed class SharedReadTests
     public async Task A_slow_older_read_does_not_replace_a_newer_refresh()
     {
         using var releaseOld = new ManualResetEventSlim();
+        using var oldStarted = new ManualResetEventSlim();
         var runs = 0;
         var shared = new SharedRead<string>(() =>
         {
             if (Interlocked.Increment(ref runs) == 1)
             {
+                oldStarted.Set();
                 releaseOld.Wait(TimeSpan.FromSeconds(10));
                 return "old";
             }
@@ -69,6 +71,8 @@ public sealed class SharedReadTests
         });
 
         var old = shared.GetAsync();
+        // The thread pool may start either read first, so the refresh waits until the older one is really running.
+        Assert.True(oldStarted.Wait(TimeSpan.FromSeconds(10)));
         Assert.Equal("new", await shared.GetAsync(refresh: true));
         releaseOld.Set();
         Assert.Equal("old", await old);
