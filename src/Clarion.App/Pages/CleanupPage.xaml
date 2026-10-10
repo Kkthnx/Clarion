@@ -20,7 +20,11 @@
                        Text="See what is taking space, then clear only what you choose. Nothing is deleted until you press Clean, and only files that Windows or your games rebuild by themselves are touched." />
         </StackPanel>
 
-        <Grid Grid.Row="1" ColumnSpacing="10">
+        <Grid Grid.Row="1" ColumnSpacing="10" RowSpacing="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -35,9 +39,9 @@
                           ToolTipService.ToolTip="Measure what would be removed and delete nothing" MinWidth="0" />
             <Button x:Name="CleanButton" Grid.Column="3" Content="Clean selected" Style="{StaticResource AccentButtonStyle}" Click="OnClean" />
             <Button x:Name="StopButton" Grid.Column="4" Content="Stop" Click="OnStop" Visibility="Collapsed" />
-            <StackPanel Grid.Column="5" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <TextBlock x:Name="StatusLabel" HorizontalAlignment="Right" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                <TextBlock x:Name="SelectedText" HorizontalAlignment="Right" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+            <StackPanel x:Name="StatusPanel" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <TextBlock x:Name="StatusLabel" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock x:Name="SelectedText" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
             </StackPanel>
         </Grid>
 
@@ -75,8 +79,8 @@
 
         <Grid Grid.Row="3" ColumnSpacing="20">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="360" />
-                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="*" MinWidth="300" />
+                <ColumnDefinition Width="1.05*" MinWidth="280" MaxWidth="400" />
             </Grid.ColumnDefinitions>
 
             <ScrollViewer Padding="0,0,14,0">

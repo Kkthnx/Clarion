@@ -18,7 +18,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 </div>
 
-> **Beta.** Clarion is in public beta (0.1.0-beta.5). Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
+> **Beta.** Clarion is in public beta (0.1.0-beta.6). Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
 
 ![Clarion home screen](docs/images/home.png)
 

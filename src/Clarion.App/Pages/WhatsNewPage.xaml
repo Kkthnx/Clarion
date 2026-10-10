@@ -57,11 +57,16 @@
 
             <!-- Nothing newer -->
             <StackPanel x:Name="UpToDate" Spacing="10" Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal" Spacing="12">
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
                     <Button x:Name="CheckButton" Content="Check for updates" Click="OnCheck" />
-                    <ProgressRing x:Name="Busy" Width="18" Height="18" IsActive="False" />
-                    <TextBlock x:Name="StatusText" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
-                </StackPanel>
+                    <ProgressRing x:Name="Busy" Grid.Column="1" Width="18" Height="18" IsActive="False" />
+                    <TextBlock x:Name="StatusText" Grid.Column="2" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                </Grid>
             </StackPanel>
 
             <StackPanel x:Name="NewerSection" Spacing="10" Visibility="Collapsed">

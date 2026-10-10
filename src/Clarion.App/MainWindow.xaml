@@ -30,7 +30,7 @@
                             QuerySubmitted="OnGlobalSearch" />
         </Grid>
 
-        <NavigationView x:Name="Nav" Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="220"
+        <NavigationView x:Name="Nav" Grid.Row="1" PaneDisplayMode="Auto" OpenPaneLength="220" ExpandedModeThresholdWidth="1000" CompactModeThresholdWidth="640"
                         IsBackButtonVisible="Collapsed" IsSettingsVisible="True"
                         SelectionChanged="OnNavSelectionChanged" Background="Transparent">
             <NavigationView.Resources>

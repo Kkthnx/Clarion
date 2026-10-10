@@ -22,10 +22,10 @@
 
         <Grid Grid.Row="1" ColumnSpacing="12">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="200" MaxWidth="300" />
-                <ColumnDefinition Width="170" />
-                <ColumnDefinition Width="210" />
-                <ColumnDefinition Width="Auto" MinWidth="110" />
+                <ColumnDefinition Width="1.4*" MinWidth="150" MaxWidth="300" />
+                <ColumnDefinition Width="1*" MinWidth="120" MaxWidth="170" />
+                <ColumnDefinition Width="1.2*" MinWidth="130" MaxWidth="210" />
+                <ColumnDefinition Width="Auto" MinWidth="90" />
             </Grid.ColumnDefinitions>
             <AutoSuggestBox x:Name="SearchBox" PlaceholderText="Search settings" QueryIcon="Find"
                             AutomationProperties.Name="Search settings on this page"
@@ -48,8 +48,8 @@
 
         <Grid Grid.Row="3" ColumnSpacing="20">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="360" />
-                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="*" MinWidth="300" />
+                <ColumnDefinition Width="1.05*" MinWidth="280" MaxWidth="400" />
             </Grid.ColumnDefinitions>
 
             <ListView x:Name="List" Padding="0,0,14,0" SelectionMode="Single" SelectionChanged="OnSelectionChanged"

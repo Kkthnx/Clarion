@@ -104,8 +104,11 @@ public sealed partial class MainWindow : Window
         var hwnd = WindowNative.GetWindowHandle(this);
         var appWindow = AppWindow.GetFromWindowId(Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd));
         var area = DisplayArea.GetFromWindowId(appWindow.Id, DisplayAreaFallback.Primary).WorkArea;
-        var width = Math.Min(1360, area.Width - 80);
-        var height = Math.Min(900, area.Height - 80);
+        // Sized in device independent pixels (1088 x 720, which is 1360 x 900 on a 125% screen). A fixed pixel size gave a 150%
+        // screen a window about 900 wide, too narrow for the pages, which are laid out for about 1050.
+        var dpiScale = GetDpiForWindow(hwnd) / 96.0;
+        var width = Math.Min((int)(1088 * dpiScale), area.Width - 80);
+        var height = Math.Min((int)(720 * dpiScale), area.Height - 80);
         // Size alone leaves the position to Windows, which can start the window low enough to push the bottom bar off the screen.
         var x = area.X + (area.Width - width) / 2;
         var y = area.Y + (area.Height - height) / 2;

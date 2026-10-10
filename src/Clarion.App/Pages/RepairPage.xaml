@@ -20,8 +20,8 @@
 
         <Grid Grid.Row="1" ColumnSpacing="20">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="360" />
-                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="*" MinWidth="300" />
+                <ColumnDefinition Width="1.05*" MinWidth="280" MaxWidth="400" />
             </Grid.ColumnDefinitions>
 
             <ScrollViewer Padding="0,0,14,0">

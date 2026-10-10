@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.6
 
 New
 - A setting to turn off Notepad's AI features, using the policy Microsoft documents for it. Needs Notepad 11.2503.16.0 or later.
@@ -11,6 +11,7 @@ Polish
 - Windows features finish loading in about half the time. Clarion asked Windows about every optional feature on the PC, about 140 of them, when it only needs the dozen it has settings for. On the test PC that took the full read at start up from about 20 seconds to about 10.
 
 Fixed
+- Pages were cut off on the right at the smallest window size, and on screens scaled to 150%, where the window opened narrower than the pages need. The filter row, the settings count, the detail pane and the Clean up status text could not be seen. The sidebar now becomes a column of icons on narrower windows, the list and detail columns shrink to fit, the Clean up status line sits under the buttons, and the window opens at the same size in scaled pixels on every screen.
 - A repair job whose tool could not be started, for example because it is missing or blocked, left its window open with no way to close it. It now ends as a failed job with the reason, and the steps that put services back still run.
 - Making a restore point failed with a crash instead of the usual "No restore point" choices when PowerShell could not be started.
 - On a small screen with large text scaling the window could not be made short enough to keep the bottom bar on screen.
