@@ -7,7 +7,7 @@
     <Page.Resources>
         <!-- The roomy row: the summary is shown under the name. -->
         <DataTemplate x:Key="RoomyRow" x:DataType="svc:TweakItem">
-                        <Border Padding="18,14,16,14">
+                        <Border Padding="18,14,16,14" Opacity="{x:Bind RowOpacity, Mode=OneWay}">
                             <ToolTipService.ToolTip>
                                 <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
                                          Background="{ThemeResource ClSurface2Brush}"
@@ -59,7 +59,7 @@
                     </DataTemplate>
         <!-- One line per setting, for scanning a long list. The summary and the detail stay in the pane on the right. -->
         <DataTemplate x:Key="CompactRow" x:DataType="svc:TweakItem">
-            <Border Padding="14,5,10,5">
+            <Border Padding="14,5,10,5" Opacity="{x:Bind RowOpacity, Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip MaxWidth="440" Padding="16" Opened="OnTipOpened" Tag="{x:Bind}"
                              Background="{ThemeResource ClSurface2Brush}"
@@ -125,6 +125,7 @@
                 <ComboBoxItem Content="Suggested" Tag="suggested" />
                 <ComboBoxItem Content="Currently on" Tag="on" />
                 <ComboBoxItem Content="Currently off" Tag="off" />
+                <ComboBoxItem Content="Can be changed here" Tag="available" />
                 <ComboBoxItem Content="Needs attention" Tag="attention" />
             </ComboBox>
             <ToggleButton x:Name="CompactToggle" Grid.Column="2" Content="Compact" VerticalAlignment="Stretch"

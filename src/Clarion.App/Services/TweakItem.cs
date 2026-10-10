@@ -99,6 +99,7 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
             OnPropertyChanged(nameof(StateText));
             OnPropertyChanged(nameof(IsApplied));
             OnPropertyChanged(nameof(IsUnavailable));
+            OnPropertyChanged(nameof(RowOpacity));
             OnPropertyChanged(nameof(PendingText));
         }
     }
@@ -145,6 +146,12 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
 
     public bool IsApplied => State == TweakState.Applied;
     public bool IsUnavailable => State == TweakState.Unavailable;
+
+    /// <summary>True when this setting only removes apps, so "nothing to change" means the app is not installed.</summary>
+    public bool RemovesApps => Tweak.Apply.Count > 0 && Tweak.Apply.All(o => o is RemoveAppxPackage);
+
+    /// <summary>Rows that do not apply on this PC are dimmed, so they read as inactive and not as a switch that is simply off.</summary>
+    public double RowOpacity => !IsSupported || IsUnavailable ? 0.6 : 1.0;
     public bool CanToggle => IsSupported && !IsChecking && State != TweakState.Unavailable;
     public bool IsPending => CanToggle && IsOn != IsApplied;
 
@@ -160,7 +167,7 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
         {
             TweakState.Applied => "On",
             TweakState.Partial => "Partly on",
-            TweakState.Unavailable => "Nothing to change here",
+            TweakState.Unavailable => RemovesApps ? "Not installed" : "Nothing to change",
             _ => "Off",
         };
 

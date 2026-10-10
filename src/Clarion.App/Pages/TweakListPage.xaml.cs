@@ -194,6 +194,7 @@ public sealed partial class TweakListPage : Page
         "suggested" => i.Tweak.Recommendation == Recommendation.Recommended && i.CanToggle,
         "on" => i.IsApplied && !i.IsUnavailable,
         "off" => i.CanToggle && !i.IsApplied,
+        "available" => i.CanToggle,
         "attention" => i.IsDrifted || i.HasLastError || (i.Tweak.Recommendation == Recommendation.Recommended && i.CanToggle && !i.IsApplied),
         _ => true,
     };

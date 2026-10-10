@@ -6,6 +6,7 @@ New
 - The System page has a "Windows Update right now" card. It reads the update services, the policies that can block updates, the background scan task, any stored pause, and the dates Windows last checked and last installed, then says in plain words whether updates are working, limited or held back, with the reason for each finding. A pause stored far past the 35 days Windows allows is reported as a note when Windows itself says it has ended, because updates still install in that case. Home mentions it when updates are limited or held.
 
 Polish
+- Settings that do not apply on this PC are dimmed, and say why. An app that is not installed reads "Not installed" instead of "Nothing to change here", and the details pane explains that nothing needs removing and that the switch works again if Windows brings the app back. A new "Can be changed here" filter hides everything that does not apply.
 - Topic pills wrap onto a second row instead of running off the edge, and wait until a list is long enough to need them. On Network they counted ten DNS providers as ten settings, and now count the one row they appear as.
 - The details pane shows a centred hint with an icon when nothing is selected, and Verify shows a clear card when there is nothing to check yet, or when everything is in place.
 - On Home the Standard preset is the one filled button, marked Recommended. The other four are plain buttons, so the choice is easier to see. The list of what is in a preset lines up in two columns.
