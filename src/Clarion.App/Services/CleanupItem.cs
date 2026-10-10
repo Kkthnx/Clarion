@@ -107,6 +107,9 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
         }
     }
 
+    /// <summary>What a screen reader says for the row. Otherwise it would read the type name.</summary>
+    public override string ToString() => StatusText.Length > 0 ? $"{Name}, {StatusText}" : Name;
+
     public string StatusText
     {
         get

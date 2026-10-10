@@ -10,7 +10,7 @@ Fixed
 - A repair job whose tool could not be started, for example because it is missing or blocked, left its window open with no way to close it. It now ends as a failed job with the reason, and the steps that put services back still run.
 - Making a restore point failed with a crash instead of the usual "No restore point" choices when PowerShell could not be started.
 - On a small screen with large text scaling the window could not be made short enough to keep the bottom bar on screen.
-- Screen readers read the symptom list on What broke and the release cards on What's new with no name.
+- Screen readers read every row in the settings, Clean up and Repair lists as an internal name, "Clarion.App.Services.TweakItem". They now read the setting's name and whether it is on. The symptom list on What broke and the release cards on What's new had no name at all and now have one.
 - Each scan or clean on the Clean up page left its cancellation object behind.
 - The history file could not be read while another Clarion process was adding to it, and an addition could fail while another process was reading. The monthly check and the command line run as their own processes, so they could hit this. Reads now share the file and a write waits up to two seconds for it.
 - The review window offers a restore point for the whole run, but a run that only reverted settings made none. It now makes one, and stops with nothing changed if it cannot, the same as for applying.

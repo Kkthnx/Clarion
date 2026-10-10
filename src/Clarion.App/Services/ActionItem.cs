@@ -20,6 +20,9 @@ public sealed class ActionItem : IDetailSource
 
     public string Name => Def.Name;
     public string Summary => Def.Summary;
+
+    /// <summary>What a screen reader says for the row. Otherwise it would read the type name.</summary>
+    public override string ToString() => $"{Name}. {Summary}";
     public string Category => Def.Category;
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Def.RiskLevel);

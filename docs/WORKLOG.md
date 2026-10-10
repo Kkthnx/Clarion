@@ -494,3 +494,6 @@ Idea taken from the way phone apps show an update: a clear "an update is availab
 
 ### Restore point for revert only runs
 - The review window always offers "Create a restore point first", ticked. The restore point was made inside the apply step only, so a queue that held only reverts skipped it silently. `BatchRunner` now shares one restore point gate between the apply and revert parts of a run, so a run gets exactly one, made before the first change of either kind, and a failure blocks both. Tests cover revert only, revert only with a failing restore point, and apply plus revert making a single one.
+
+### Screen reader names for list rows
+- The first sweep only looked at buttons, boxes and pickers. Reading the names of the list rows themselves showed every row on Privacy, Debloat, Tweaks, Power, Network, Windows features, Updates, Clean up and Repair named `Clarion.App.Services.TweakItem` (or `CleanupItem`, `ActionItem`): a WinUI list row takes its name from the item's text, and the items had none. The three row types now say what they are ("Hide search highlights, On"). Checked again through UI Automation in the running app.

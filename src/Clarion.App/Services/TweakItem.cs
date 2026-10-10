@@ -136,6 +136,11 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     public bool CanToggle => IsSupported && !IsChecking && State != TweakState.Unavailable;
     public bool IsPending => CanToggle && IsOn != IsApplied;
 
+    /// <summary>
+    /// What a screen reader says for the row. A list row is named from its item's text, which would otherwise be the type name.
+    /// </summary>
+    public override string ToString() => $"{Name}, {StateText}";
+
     public string StateText => !IsSupported ? "Not on this PC"
         : IsChecking ? "Checking"
         : IsDrifted ? "Changed back by Windows"
