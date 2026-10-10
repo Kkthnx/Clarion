@@ -46,8 +46,15 @@ public sealed partial class SafetyPage : Page
     {
         MakeRestore.IsEnabled = false;
         RestoreStatus.Text = "Making a restore point. This can take a little while.";
-        var made = await Task.Run(() => _app.Runtime.RestorePoints.CreateEnsuring($"Clarion {DateTime.Now:yyyy-MM-dd HH:mm} (made by hand)", turnOnProtection: false, Log.Write));
-        MakeRestore.IsEnabled = true;
+        Clarion.Core.Engine.TweakResult made;
+        try
+        {
+            made = await Task.Run(() => _app.Runtime.RestorePoints.CreateEnsuring($"Clarion {DateTime.Now:yyyy-MM-dd HH:mm} (made by hand)", turnOnProtection: false, Log.Write));
+        }
+        finally
+        {
+            MakeRestore.IsEnabled = true;
+        }
         if (made.Success) await LoadRestorePointsAsync();
         else RestoreStatus.Text = $"{made.Error} If System Protection is off, turn it on for the system drive in System Restore, then try again.";
     }

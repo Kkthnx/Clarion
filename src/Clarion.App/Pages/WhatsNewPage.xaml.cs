@@ -70,9 +70,16 @@ public sealed partial class WhatsNewPage : Page
         CheckButton.IsEnabled = false;
         Busy.IsActive = true;
         StatusText.Text = "Asking GitHub";
-        var message = await _app.CheckForUpdateAsync(manual: true);
-        Busy.IsActive = false;
-        CheckButton.IsEnabled = true;
+        string message;
+        try
+        {
+            message = await _app.CheckForUpdateAsync(manual: true);
+        }
+        finally
+        {
+            Busy.IsActive = false;
+            CheckButton.IsEnabled = true;
+        }
         Build();
         if (_app.NewerReleases.Count == 0) StatusText.Text = message;
     }

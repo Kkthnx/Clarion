@@ -94,9 +94,15 @@ public sealed partial class SettingsPage : Page
         CheckUpdateButton.IsEnabled = false;
         UpdateBusy.IsActive = true;
         UpdateStatus.Text = "Asking GitHub";
-        UpdateStatus.Text = await _app.CheckForUpdateAsync(manual: true);
-        UpdateBusy.IsActive = false;
-        CheckUpdateButton.IsEnabled = true;
+        try
+        {
+            UpdateStatus.Text = await _app.CheckForUpdateAsync(manual: true);
+        }
+        finally
+        {
+            UpdateBusy.IsActive = false;
+            CheckUpdateButton.IsEnabled = true;
+        }
     }
 
     private void OnAutoUpdateToggled(object sender, RoutedEventArgs e)
