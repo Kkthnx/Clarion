@@ -14,7 +14,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 </div>
 
-> **Beta.** Clarion is in public beta (0.1.0-beta.10). Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
+> **Beta.** Clarion is in public beta. Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
 
 ![Clarion home screen](docs/images/home.png)
 
@@ -95,6 +95,7 @@ To build the installer and zip, install Inno Setup 6 and run `scripts/build-inst
 - [Every setting, written out](docs/CATALOG.md)
 - [Brand and palette](docs/BRAND.md)
 - [Changelog](CHANGELOG.md)
+- [Versioning](docs/VERSIONING.md)
 - [Contributing](CONTRIBUTING.md)
 - [Code signing plan](docs/SIGNING.md)
 - [License](LICENSE)

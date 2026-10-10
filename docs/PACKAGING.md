@@ -3,7 +3,7 @@
 Clarion is a download from the GitHub release page (a setup program and a portable zip, each with a checksum). `scripts/make-package-manifests.ps1` writes the manifests that put it in two package managers, from the checksums the release published.
 
 ```
-./scripts/make-package-manifests.ps1 -Version 0.1.0-beta.6
+./scripts/make-package-manifests.ps1
 ```
 
 The licence defaults to `Proprietary` with a link to the LICENSE file, which is how winget and Scoop describe source-available software that is free to run. Pass `-License` to override it.
