@@ -188,6 +188,51 @@ public sealed class BatchTests : IDisposable
     }
 
     [Fact]
+    public void A_run_that_only_reverts_still_makes_the_restore_point_the_dialog_offered()
+    {
+        var tweak = UserTweak();
+        var runner = Runner();
+        runner.Apply([tweak], Win11, new BatchOptions { CreateRestorePoint = false });
+        _proc.Calls.Clear();
+
+        var result = runner.Execute([], [tweak], Win11, new BatchOptions());
+
+        Assert.True(result.AllSucceeded);
+        Assert.Single(_proc.Calls);
+        Assert.Contains("Checkpoint-Computer", PowerShellHost.Decode(_proc.Calls[0]));
+    }
+
+    [Fact]
+    public void A_run_that_only_reverts_changes_nothing_when_the_restore_point_fails_and_was_not_waived()
+    {
+        var tweak = UserTweak();
+        var runner = Runner();
+        runner.Apply([tweak], Win11, new BatchOptions { CreateRestorePoint = false });
+        _proc.Respond = _ => new ProcessResult(1, "", "System Protection is off");
+
+        var result = runner.Execute([], [tweak], Win11, new BatchOptions());
+
+        Assert.NotNull(result.Blocked);
+        Assert.Contains("nothing was changed", result.Blocked);
+        Assert.Equal(TweakState.Applied, runner.Engine.Detect(tweak));
+    }
+
+    [Fact]
+    public void One_restore_point_covers_the_apply_and_the_revert_of_the_same_run()
+    {
+        var back = UserTweak("u.back");
+        var fresh = UserTweak("u.fresh");
+        var runner = Runner();
+        runner.Apply([back], Win11, new BatchOptions { CreateRestorePoint = false });
+        _proc.Calls.Clear();
+
+        var result = runner.Execute([fresh], [back], Win11, new BatchOptions());
+
+        Assert.True(result.AllSucceeded);
+        Assert.Single(_proc.Calls);
+    }
+
+    [Fact]
     public void A_restore_point_that_cannot_start_powershell_is_a_failure_and_the_frequency_value_is_put_back()
     {
         _reg.Write(Freq, new RegistryData(RegistryKind.DWord, "1440"));

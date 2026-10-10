@@ -56,17 +56,46 @@ public sealed class BatchRunner(TweakEngine engine, IRestorePointService restore
     public BatchResult Execute(IReadOnlyList<Tweak> toApply, IReadOnlyList<Tweak> toRevert, MachineProfile profile, BatchOptions options, Action<string>? log = null)
     {
         var counter = new StepCounter(toApply.Count + toRevert.Count, options.Step);
-        var applied = toApply.Count > 0 ? ApplyCore(toApply, profile, options, log, counter) : new BatchResult(Guid.NewGuid(), []);
+        var gate = new RestorePointGate(restorePoints, options, log);
+        var applied = toApply.Count > 0 ? ApplyCore(toApply, profile, options, log, counter, gate) : new BatchResult(Guid.NewGuid(), []);
         if (applied.Blocked is not null || toRevert.Count == 0) return applied;
+
+        // The dialog offers the restore point for the whole run, so a run that only reverts gets one too.
+        var blocked = gate.Ensure();
+        if (blocked is not null) return new BatchResult(applied.BatchId, applied.Items, blocked);
 
         var reverted = RevertCore(toRevert, log, counter);
         return new BatchResult(applied.BatchId, applied.Items.Concat(reverted.Items).ToList());
     }
 
     public BatchResult Apply(IReadOnlyList<Tweak> tweaks, MachineProfile profile, BatchOptions options, Action<string>? log = null) =>
-        ApplyCore(tweaks, profile, options, log, new StepCounter(tweaks.Count, options.Step));
+        ApplyCore(tweaks, profile, options, log, new StepCounter(tweaks.Count, options.Step), new RestorePointGate(restorePoints, options, log));
 
-    private BatchResult ApplyCore(IReadOnlyList<Tweak> tweaks, MachineProfile profile, BatchOptions options, Action<string>? log, StepCounter counter)
+    /// <summary>Makes the restore point once per run, the first time something is about to change, and remembers the answer.</summary>
+    private sealed class RestorePointGate(IRestorePointService service, BatchOptions options, Action<string>? log)
+    {
+        private bool _done;
+        private string? _blocked;
+
+        /// <summary>Null when it is fine to go on, otherwise why nothing may change.</summary>
+        public string? Ensure()
+        {
+            if (_done) return _blocked;
+            _done = true;
+            if (!options.CreateRestorePoint) return null;
+
+            log?.Invoke("Creating restore point");
+            var rp = service.CreateEnsuring($"Clarion {DateTime.Now:yyyy-MM-dd HH:mm}", options.TurnOnSystemProtection, log);
+            if (rp.Success) return null;
+            if (!options.ContinueWithoutRestorePoint)
+                _blocked = $"No restore point, nothing was changed. {rp.Error}";
+            else
+                log?.Invoke($"Restore point failed, continuing by request: {rp.Error}");
+            return _blocked;
+        }
+    }
+
+    private BatchResult ApplyCore(IReadOnlyList<Tweak> tweaks, MachineProfile profile, BatchOptions options, Action<string>? log, StepCounter counter, RestorePointGate gate)
     {
         var batch = Guid.NewGuid();
         var items = new List<BatchItem>();
@@ -89,14 +118,8 @@ public sealed class BatchRunner(TweakEngine engine, IRestorePointService restore
 
         if (runnable.Count == 0) return new BatchResult(batch, items);
 
-        if (options.CreateRestorePoint)
-        {
-            log?.Invoke("Creating restore point");
-            var rp = restorePoints.CreateEnsuring($"Clarion {DateTime.Now:yyyy-MM-dd HH:mm}", options.TurnOnSystemProtection, log);
-            if (!rp.Success && !options.ContinueWithoutRestorePoint)
-                return new BatchResult(batch, items, $"No restore point, nothing was changed. {rp.Error}");
-            if (!rp.Success) log?.Invoke($"Restore point failed, continuing by request: {rp.Error}");
-        }
+        var blocked = gate.Ensure();
+        if (blocked is not null) return new BatchResult(batch, items, blocked);
 
         foreach (var t in runnable)
         {
