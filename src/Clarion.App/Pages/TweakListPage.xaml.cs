@@ -4,6 +4,7 @@ using Clarion.App.Services;
 using Clarion.Core.Model;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Navigation;
 
 namespace Clarion.App.Pages;
@@ -17,7 +18,8 @@ public sealed partial class TweakListPage : Page
     private string _query = "";
     private string _filter = "all";
     private string _topic = "";
-    private bool _fillingTopics;
+    private string _pillsBuiltFor = "";
+    private bool _compact;
     private bool _building;
     private readonly bool _ready;
 
@@ -44,7 +46,29 @@ public sealed partial class TweakListPage : Page
         SubtitleText.Text = _args.Subtitle;
         _query = _args.Query;
         SearchBox.Text = _query;
+        _compact = _app.Settings.CompactLists;
+        ApplyDensity();
         Rebuild();
+    }
+
+    /// <summary>The compact list is one line per setting. The choice is remembered, and the page keeps its selection when it changes.</summary>
+    private void ApplyDensity()
+    {
+        CompactToggle.IsChecked = _compact;
+        List.ItemTemplate = (DataTemplate)Resources[_compact ? "CompactRow" : "RoomyRow"];
+        List.ItemContainerStyle = (Style)Application.Current.Resources[_compact ? "CompactListViewItemStyle" : "CardListViewItemStyle"];
+        // One line per setting reads best with room for the name, so the list takes more of the width and the pane less.
+        ListColumn.Width = new GridLength(_compact ? 1.5 : 1, GridUnitType.Star);
+        DetailColumn.Width = new GridLength(_compact ? 1 : 1.05, GridUnitType.Star);
+    }
+
+    private void OnCompactClicked(object sender, RoutedEventArgs e)
+    {
+        _compact = CompactToggle.IsChecked == true;
+        _app.UpdateSettings(s => s with { CompactLists = _compact });
+        var selected = (List.SelectedItem as TweakItem)?.Id;
+        ApplyDensity();
+        if (selected is not null) List.SelectedItem = Visible.FirstOrDefault(i => i.Id == selected);
     }
 
     private void OnModeChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(Rebuild);
@@ -57,25 +81,52 @@ public sealed partial class TweakListPage : Page
         Rebuild();
     }
 
-    private void OnTopicChanged(object sender, SelectionChangedEventArgs e)
+    private void OnPillClicked(object sender, RoutedEventArgs e)
     {
-        if (!_ready || _fillingTopics) return;
-        _topic = TopicBox.SelectedIndex <= 0 ? "" : TopicBox.SelectedItem as string ?? "";
+        if (!_ready || sender is not ToggleButton { Tag: string topic }) return;
+        _topic = topic;
         Rebuild();
     }
 
+    /// <summary>
+    /// One pill per topic with how many settings it holds, and one for all of them. The pills are made again only when the topics or their
+    /// counts change, so pressing one does not rebuild the row it was pressed in.
+    /// </summary>
     private void FillTopics(IEnumerable<TweakItem> scope)
     {
-        var topics = scope.Select(i => i.Tweak.Topic).Where(t => t.Length > 0).Distinct().Order().ToList();
-        _fillingTopics = true;
-        TopicBox.Items.Clear();
-        TopicBox.Items.Add("All topics");
-        foreach (var t in topics) TopicBox.Items.Add(t);
-        var index = topics.IndexOf(_topic);
-        TopicBox.SelectedIndex = index >= 0 ? index + 1 : 0;
-        if (index < 0) _topic = "";
-        TopicBox.Visibility = topics.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
-        _fillingTopics = false;
+        var list = scope.ToList();
+        var counts = list.Where(i => i.Tweak.Topic.Length > 0).GroupBy(i => i.Tweak.Topic).OrderBy(g => g.Key, StringComparer.CurrentCultureIgnoreCase)
+            .Select(g => (Topic: g.Key, Count: g.Count())).ToList();
+        if (!counts.Any(c => c.Topic == _topic)) _topic = "";
+
+        var key = string.Join("|", counts.Select(c => $"{c.Topic}:{c.Count}")) + $"|{list.Count}";
+        if (key != _pillsBuiltFor)
+        {
+            _pillsBuiltFor = key;
+            TopicPills.Children.Clear();
+            if (counts.Count > 1)
+            {
+                TopicPills.Children.Add(Pill("", "All", list.Count));
+                foreach (var (topic, count) in counts) TopicPills.Children.Add(Pill(topic, topic, count));
+            }
+        }
+        TopicScroll.Visibility = counts.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
+        foreach (var pill in TopicPills.Children.OfType<ToggleButton>()) pill.IsChecked = (pill.Tag as string) == _topic;
+    }
+
+    private ToggleButton Pill(string topic, string label, int count)
+    {
+        var pill = new ToggleButton
+        {
+            Content = $"{label} · {count}",
+            Tag = topic,
+            Padding = new Thickness(12, 4, 12, 4),
+            MinHeight = 30,
+            CornerRadius = new CornerRadius(15),
+        };
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(pill, $"{label}, {count} settings");
+        pill.Click += OnPillClicked;
+        return pill;
     }
 
     private void OnFilterChanged(object sender, SelectionChangedEventArgs e)

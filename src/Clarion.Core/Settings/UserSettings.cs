@@ -10,6 +10,9 @@ public sealed record UserSettings
 
     public bool ExpertMode { get; init; }
 
+    /// <summary>The settings lists show one line per setting, so more fit on the screen.</summary>
+    public bool CompactLists { get; init; }
+
     /// <summary>The welcome and preset choice has been shown, so it is not shown again.</summary>
     public bool FirstRunDone { get; init; }
 

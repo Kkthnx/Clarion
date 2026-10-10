@@ -23,6 +23,18 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
 
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Tweak.RiskLevel);
+
+    /// <summary>False for the lowest risk, which every setting on the page says and so tells nothing in a one line row.</summary>
+    public bool RiskIsNotable => Tweak.RiskLevel > RiskLevel.Safe;
+
+    /// <summary>The recommendation in one or two words, for the compact list where the full label would crowd out the name.</summary>
+    public string RecommendationShort => Tweak.Recommendation switch
+    {
+        Recommendation.Recommended => "Suggested",
+        Recommendation.OnlyIf => "If it fits",
+        Recommendation.Avoid => "Avoid",
+        _ => "Optional",
+    };
     public string EvidenceText => Tooltip.EvidenceLabel;
     public IReadOnlyList<string> ExactChanges => EffectiveTweak.Apply.Select(o => o.Describe()).ToList();
     public IReadOnlyList<SourceLink> SourceLinks => DetailHelpers.Links(Tweak.Sources);

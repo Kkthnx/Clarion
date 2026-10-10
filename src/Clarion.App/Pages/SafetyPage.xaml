@@ -18,7 +18,23 @@
                     <TextBlock Text="Restore points" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
                                Text="A System Restore point is made before every batch. If Windows ever misbehaves, open System Restore and pick the Clarion point from before the change. From the Windows recovery screen you can reach the same tool under Advanced options." />
+                    <ItemsControl x:Name="RestoreList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="svc:RestoreRow">
+                                <Grid ColumnSpacing="16" Margin="0,2,0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Bind Description}" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                    <TextBlock Grid.Column="1" Text="{x:Bind When}" FontSize="12" VerticalAlignment="Center" Foreground="{ThemeResource ClTextMutedBrush}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock x:Name="RestoreStatus" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
                     <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button x:Name="MakeRestore" Content="Make a restore point now" Click="OnMakeRestore" />
                         <Button Content="Open System Restore" Click="OnOpenRestore" />
                         <Button Content="Open Clarion data folder" Click="OnOpenData" />
                     </StackPanel>

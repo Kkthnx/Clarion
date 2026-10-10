@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Clarion.App.Services;
+using Clarion.Core.Engine;
 using Clarion.Core.Journal;
 using Clarion.Engine;
 using Microsoft.UI.Xaml;
@@ -17,7 +18,39 @@ public sealed partial class SafetyPage : Page
         InitializeComponent();
     }
 
-    protected override void OnNavigatedTo(NavigationEventArgs e) => Rebuild();
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        Rebuild();
+        _ = LoadRestorePointsAsync();
+    }
+
+    /// <summary>The newest restore points Windows has, so it is clear what is there to go back to.</summary>
+    private async Task LoadRestorePointsAsync()
+    {
+        RestoreStatus.Text = "Reading restore points";
+        try
+        {
+            var list = await Task.Run(() => _app.Runtime.RestorePoints.List(6));
+            RestoreList.ItemsSource = list.Select(p => new RestoreRow(p.Description, p.Created.LocalDateTime.ToString("g"))).ToList();
+            RestoreStatus.Text = list.Count == 0 ? "Windows has no restore points. System Protection may be off for the system drive." : "";
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or IOException or System.ComponentModel.Win32Exception or System.Text.Json.JsonException)
+        {
+            Log.Write($"Restore points could not be listed: {ex.Message}");
+            RestoreList.ItemsSource = null;
+            RestoreStatus.Text = "The list of restore points could not be read. Reading it needs administrator rights.";
+        }
+    }
+
+    private async void OnMakeRestore(object sender, RoutedEventArgs e)
+    {
+        MakeRestore.IsEnabled = false;
+        RestoreStatus.Text = "Making a restore point. This can take a little while.";
+        var made = await Task.Run(() => _app.Runtime.RestorePoints.CreateEnsuring($"Clarion {DateTime.Now:yyyy-MM-dd HH:mm} (made by hand)", turnOnProtection: false, Log.Write));
+        MakeRestore.IsEnabled = true;
+        if (made.Success) await LoadRestorePointsAsync();
+        else RestoreStatus.Text = $"{made.Error} If System Protection is off, turn it on for the system drive in System Restore, then try again.";
+    }
 
     private void Rebuild()
     {
@@ -91,6 +124,8 @@ public sealed partial class SafetyPage : Page
         Shell.Open(EngineFactory.DefaultDataDirectory);
     }
 }
+
+public sealed record RestoreRow(string Description, string When);
 
 public sealed record HistoryRow(string TweakId, string Name, string When, string Detail, bool CanRevert)
 {

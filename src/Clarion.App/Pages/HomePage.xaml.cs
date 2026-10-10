@@ -18,6 +18,7 @@ public sealed partial class HomePage : Page
         {
             if (PresetList.Items.Count == 0) BuildPresets();
             Refresh();
+            _ = FillTilesAsync();
             var account = await Task.Run(AccountCheck.Detect);
             if (account.Differs)
             {
@@ -55,11 +56,13 @@ public sealed partial class HomePage : Page
 
     private void Refresh()
     {
-        BuildText.Text = _app.Profile.Build.ToString();
-        EditionText.Text = _app.Profile.Edition;
-        AdminText.Text = _app.IsElevated ? "Yes" : "No";
-        AppliedText.Text = $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
-        Busy.IsActive = _app.IsBusy;
+        if (!_tilesFilled)
+        {
+            WindowsTile.Value = $"Build {_app.Profile.Build}";
+            WindowsTile.Detail = _app.Profile.Edition;
+        }
+        ClarionTile.Value = _app.IsBusy ? "Reading" : $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
+        ClarionTile.Detail = _app.IsElevated ? "Running as administrator" : "Not running as administrator";
         MovedBar.IsOpen = _app.MonthlyCheckMoved;
         MovedBar.Visibility = MovedBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         LimitedBar.IsOpen = !_app.IsElevated;
@@ -70,6 +73,50 @@ public sealed partial class HomePage : Page
         ShowDrift();
         ShowRestart();
         ShowImage();
+    }
+
+    private bool _tilesFilled;
+
+    /// <summary>Fills the hardware tiles from the system report, reading it first when it has not been read yet.</summary>
+    private async Task FillTilesAsync()
+    {
+        try
+        {
+            var report = _app.CachedSystemReport ?? await _app.GetSystemReportAsync();
+            string Fact(string group, string label) =>
+                report.Groups.FirstOrDefault(g => g.Name == group)?.Facts.FirstOrDefault(f => f.Label == label)?.Value ?? "";
+            static (string Head, string Tail) Split(string text, string separator)
+            {
+                var at = text.IndexOf(separator, StringComparison.Ordinal);
+                return at < 0 ? (text, "") : (text[..at], text[(at + separator.Length)..]);
+            }
+
+            WindowsTile.Value = Fact("Windows", "Edition");
+            WindowsTile.Detail = Fact("Windows", "Version");
+
+            var (cpu, cores) = Split(Fact("Hardware", "Processor"), ", ");
+            CpuTile.Value = cpu.Length > 0 ? cpu : "Not reported";
+            CpuTile.Detail = cores;
+
+            MemoryTile.Value = Fact("Hardware", "Memory");
+            MemoryTile.Detail = "Installed memory";
+
+            var gpus = report.Groups.FirstOrDefault(g => g.Name == "Hardware")?.Facts.Where(f => f.Label == "Graphics").ToList() ?? [];
+            var (gpu, driver) = Split(gpus.FirstOrDefault()?.Value ?? "", ", driver ");
+            GraphicsTile.Value = gpu.Length > 0 ? gpu : "Not reported";
+            GraphicsTile.Detail = (driver.Length > 0 ? $"Driver {driver}" : "") + (gpus.Count > 1 ? $"  +{gpus.Count - 1} more" : "");
+
+            var disks = report.Groups.FirstOrDefault(g => g.Name == "Hardware")?.Facts.Where(f => f.Label == "Storage").ToList() ?? [];
+            var parts = (disks.FirstOrDefault()?.Value ?? "").Split(", ");
+            StorageTile.Value = parts.Length > 1 ? parts[1] : "Not reported";
+            StorageTile.Detail = parts.Length > 2 ? $"{parts[0]}, {parts[2]}" + (disks.Count > 1 ? $"  +{disks.Count - 1} more" : "") : "";
+            _tilesFilled = true;
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or IOException or System.ComponentModel.Win32Exception)
+        {
+            Log.Write($"Home tiles: {ex.Message}");
+            CpuTile.Value = MemoryTile.Value = GraphicsTile.Value = StorageTile.Value = "Not available";
+        }
     }
 
     private void ShowDrift()
@@ -194,13 +241,43 @@ public sealed partial class HomePage : Page
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(20),
-                Child = BuildCardContent(title, text, count, queue),
+                Child = BuildCardContent(key, title, text, count, queue),
             };
             PresetList.Items.Add(card);
         }
     }
 
-    private Grid BuildCardContent(string title, string text, int count, Button action)
+    /// <summary>The settings a preset would queue, with the ones already on marked, so the choice is made knowing what is in it.</summary>
+    private Expander WhatIsInIt(string key)
+    {
+        var list = new StackPanel { Spacing = 4, Margin = new Thickness(0, 6, 0, 6) };
+        var items = _app.Presets.TryGetValue(key, out var ids)
+            ? ids.Select(id => _app.Items.FirstOrDefault(i => i.Id == id)).OfType<TweakItem>().OrderBy(i => i.Name, StringComparer.CurrentCultureIgnoreCase).ToList()
+            : [];
+        foreach (var item in items)
+        {
+            var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+            row.Children.Add(new TextBlock { Text = item.Name, TextWrapping = TextWrapping.Wrap, Foreground = ThemeBrushes.Get("ClTextPrimary", ActualTheme) });
+            var note = item.IsApplied ? "already on" : !item.IsSupported || item.IsUnavailable ? "not on this PC" : "";
+            if (note.Length > 0) row.Children.Add(new TextBlock { Text = note, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = ThemeBrushes.Get("ClTextMuted", ActualTheme) });
+            list.Children.Add(row);
+        }
+        var inEffect = items.Count(i => i.IsApplied);
+        var expander = new Expander
+        {
+            Header = inEffect == 0 ? "What is in it" : $"What is in it ({inEffect} already on)",
+            Content = list,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            HorizontalContentAlignment = HorizontalAlignment.Left,
+            Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent),
+            BorderThickness = new Thickness(0),
+            Padding = new Thickness(0),
+        };
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(expander, "What is in this preset");
+        return expander;
+    }
+
+    private Grid BuildCardContent(string key, string title, string text, int count, Button action)
     {
         var grid = new Grid { ColumnSpacing = 20 };
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -210,6 +287,7 @@ public sealed partial class HomePage : Page
         left.Children.Add(new TextBlock { Text = title, FontSize = 18, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = ThemeBrushes.Get("ClTextPrimary", ActualTheme) });
         left.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Foreground = ThemeBrushes.Get("ClTextSecondary", ActualTheme) });
         left.Children.Add(new TextBlock { Text = $"{count} settings", FontSize = 12, Foreground = ThemeBrushes.Get("ClTextMuted", ActualTheme) });
+        left.Children.Add(WhatIsInIt(key));
         grid.Children.Add(left);
 
         Grid.SetColumn(action, 1);

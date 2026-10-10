@@ -27,6 +27,7 @@ public sealed class UserSettingsTests : IDisposable
 
         Assert.Equal("System", s.Theme);
         Assert.False(s.ExpertMode);
+        Assert.False(s.CompactLists);
         Assert.False(s.FirstRunDone);
         Assert.False(s.CheckForUpdates);
         Assert.False(s.MonthlyVerify);
@@ -41,13 +42,13 @@ public sealed class UserSettingsTests : IDisposable
 
         Assert.True(store.Save(new UserSettings
         {
-            Theme = "Dark", ExpertMode = true, FirstRunDone = true, CheckForUpdates = true,
+            Theme = "Dark", ExpertMode = true, CompactLists = true, FirstRunDone = true, CheckForUpdates = true,
             LastUpdateCheck = when, DismissedUpdate = "v0.1.0-beta.5", MonthlyVerify = true,
         }));
 
         var loaded = new UserSettingsStore(FilePath).Load();
         Assert.Equal("Dark", loaded.Theme);
-        Assert.True(loaded.ExpertMode && loaded.FirstRunDone && loaded.CheckForUpdates && loaded.MonthlyVerify);
+        Assert.True(loaded.ExpertMode && loaded.FirstRunDone && loaded.CheckForUpdates && loaded.MonthlyVerify && loaded.CompactLists);
         Assert.Equal(when, loaded.LastUpdateCheck);
         Assert.Equal("v0.1.0-beta.5", loaded.DismissedUpdate);
     }

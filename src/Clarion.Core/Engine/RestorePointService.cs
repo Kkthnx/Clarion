@@ -3,10 +3,15 @@ using Clarion.Core.Model;
 
 namespace Clarion.Core.Engine;
 
+public sealed record RestorePointInfo(int Sequence, string Description, DateTimeOffset Created);
+
 public interface IRestorePointService
 {
     TweakResult Create(string description);
     TweakResult EnableProtection(string drive);
+
+    /// <summary>The restore points Windows has, newest first. Needs administrator rights, and throws when they cannot be read.</summary>
+    IReadOnlyList<RestorePointInfo> List(int max);
 }
 
 /// <summary>
@@ -61,6 +66,31 @@ public sealed class RestorePointService(IRegistryStore registry, IProcessRunner 
         {
             return TweakResult.Fail($"PowerShell could not be started. {ex.Message}");
         }
+    }
+
+    public IReadOnlyList<RestorePointInfo> List(int max)
+    {
+        const string script =
+            "$p=@(Get-ComputerRestorePoint -ErrorAction Stop | ForEach-Object { [pscustomobject]@{ Seq=[int]$_.SequenceNumber; Description=[string]$_.Description; " +
+            "Created=[Management.ManagementDateTimeConverter]::ToDateTime($_.CreationTime).ToString('o') } }); " +
+            "ConvertTo-Json -InputObject @{points=$p} -Depth 3 -Compress";
+        return ParseList(PowerShellHost.Run(runner, script, Timeout), max);
+    }
+
+    /// <summary>Reads the list the script prints. Newest first, at most the number asked for. Entries it cannot read are left out.</summary>
+    public static IReadOnlyList<RestorePointInfo> ParseList(string json, int max)
+    {
+        using var doc = System.Text.Json.JsonDocument.Parse(json);
+        if (!doc.RootElement.TryGetProperty("points", out var points) || points.ValueKind != System.Text.Json.JsonValueKind.Array) return [];
+        var list = new List<RestorePointInfo>();
+        foreach (var p in points.EnumerateArray())
+        {
+            if (!p.TryGetProperty("Seq", out var seq) || seq.ValueKind != System.Text.Json.JsonValueKind.Number) continue;
+            var description = p.TryGetProperty("Description", out var d) && d.ValueKind == System.Text.Json.JsonValueKind.String ? d.GetString() ?? "" : "";
+            if (!p.TryGetProperty("Created", out var c) || !DateTimeOffset.TryParse(c.GetString(), System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var created)) continue;
+            list.Add(new RestorePointInfo(seq.GetInt32(), description, created));
+        }
+        return list.OrderByDescending(r => r.Created).Take(max).ToList();
     }
 
     private static string Sanitize(string text) =>

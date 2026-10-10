@@ -80,36 +80,25 @@
                 </InfoBar.ActionButton>
             </InfoBar>
 
-            <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="20">
-                <Grid ColumnSpacing="24" RowSpacing="12">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="Windows build" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
-                        <TextBlock x:Name="BuildText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Text="Edition" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
-                        <TextBlock x:Name="EditionText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="Administrator" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
-                        <TextBlock x:Name="AdminText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="3">
-                        <TextBlock Text="Settings in effect" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
-                        <StackPanel Orientation="Horizontal" Spacing="6">
-                            <TextBlock x:Name="AppliedText" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource ClCyanTextBrush}" />
-                            <ProgressRing x:Name="Busy" Width="16" Height="16" IsActive="False" />
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </Border>
+            <!-- This PC at a glance. The hardware tiles fill in when the system report has been read. -->
+            <Grid ColumnSpacing="12" RowSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <controls:InfoTile x:Name="WindowsTile" Glyph="&#xE770;" Title="Windows" Kind="Accent" />
+                <controls:InfoTile x:Name="CpuTile" Grid.Column="1" Glyph="&#xE950;" Title="Processor" Kind="Cyan" />
+                <controls:InfoTile x:Name="MemoryTile" Grid.Column="2" Glyph="&#xEEA1;" Title="Memory" Kind="Ok" />
+                <controls:InfoTile x:Name="GraphicsTile" Grid.Row="1" Glyph="&#xE7F4;" Title="Graphics" Kind="Warn" />
+                <controls:InfoTile x:Name="StorageTile" Grid.Row="1" Grid.Column="1" Glyph="&#xEDA2;" Title="Storage" Kind="Accent" />
+                <controls:InfoTile x:Name="ClarionTile" Grid.Row="1" Grid.Column="2" Glyph="&#xE73E;" Title="Settings in effect" Kind="Cyan" />
+            </Grid>
+
 
             <StackPanel Spacing="4">
                 <TextBlock Text="Start with a preset" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />

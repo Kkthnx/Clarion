@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="Clarion.App.Controls.InfoTile"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- A small card: a colored icon, what it is, its main value and a line of detail. The color comes from visual states, so it follows the theme. -->
+    <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="10" Padding="16,14,16,14">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="Kinds">
+                <VisualState x:Name="Accent">
+                    <VisualState.Setters>
+                        <Setter Target="IconBox.Background" Value="{ThemeResource ClAccentTintBrush}" />
+                        <Setter Target="Icon.Foreground" Value="{ThemeResource ClAccentTextBrush}" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Cyan">
+                    <VisualState.Setters>
+                        <Setter Target="IconBox.Background" Value="{ThemeResource ClCyanTintBrush}" />
+                        <Setter Target="Icon.Foreground" Value="{ThemeResource ClCyanTextBrush}" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Ok">
+                    <VisualState.Setters>
+                        <Setter Target="IconBox.Background" Value="{ThemeResource ClOkTintBrush}" />
+                        <Setter Target="Icon.Foreground" Value="{ThemeResource ClOkTextBrush}" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Warn">
+                    <VisualState.Setters>
+                        <Setter Target="IconBox.Background" Value="{ThemeResource ClWarnTintBrush}" />
+                        <Setter Target="Icon.Foreground" Value="{ThemeResource ClWarnTextBrush}" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid ColumnSpacing="14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border x:Name="IconBox" Width="44" Height="44" CornerRadius="10" VerticalAlignment="Top" Background="{ThemeResource ClSurface3Brush}">
+                <FontIcon x:Name="Icon" FontSize="20" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+            </Border>
+            <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
+                <TextBlock x:Name="TitleText" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                <TextBlock x:Name="ValueText" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock x:Name="DetailText" FontSize="12" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

@@ -12,6 +12,11 @@
     <Color x:Key="SystemAccentColorDark3">#4673B3</Color>
 
 
+    <!-- The same card, with less room between rows, for the compact list. -->
+    <Style x:Key="CompactListViewItemStyle" TargetType="ListViewItem" BasedOn="{StaticResource CardListViewItemStyle}">
+        <Setter Property="Margin" Value="0,0,0,4" />
+    </Style>
+
     <!-- A card row that shows when it is hovered, pressed and selected. -->
     <Style x:Key="CardListViewItemStyle" TargetType="ListViewItem">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />

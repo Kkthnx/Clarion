@@ -297,6 +297,19 @@ public sealed class BatchTests : IDisposable
     }
 
     [Fact]
+    public void The_restore_point_list_is_read_newest_first_and_cut_to_the_number_asked_for()
+    {
+        const string json = """{"points":[{"Seq":3,"Description":"Clarion 2026-10-08 23:57","Created":"2026-10-08T23:57:01.0000000-04:00"},{"Seq":5,"Description":"Windows Update","Created":"2026-10-10T03:00:00.0000000-04:00"},{"Seq":4,"Description":"Clarion 2026-10-09 00:00","Created":"2026-10-09T00:00:10.0000000-04:00"},{"Seq":"x","Description":"broken"}]}""";
+
+        var list = RestorePointService.ParseList(json, 2);
+
+        Assert.Equal([5, 4], list.Select(p => p.Sequence).ToArray());
+        Assert.Equal("Windows Update", list[0].Description);
+        Assert.Empty(RestorePointService.ParseList("""{"points":[]}""", 5));
+        Assert.Empty(RestorePointService.ParseList("""{"other":1}""", 5));
+    }
+
+    [Fact]
     public void Revert_batch_restores_values()
     {
         var tweak = UserTweak();
