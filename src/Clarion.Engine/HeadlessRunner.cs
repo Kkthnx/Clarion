@@ -54,6 +54,9 @@ public static class HeadlessRunner
             case CliMode.ListCleanups:
                 Say(Core.Reports.CliReports.Cleanups(CatalogLoader.LoadCleanup()));
                 return 0;
+            case CliMode.CatalogDoc:
+                output.Write(Core.Reports.CatalogDocument.Markdown(CatalogLoader.LoadEmbedded()));
+                return 0;
             case CliMode.ListSymptoms:
                 Say(Core.Reports.CliReports.Symptoms(CatalogLoader.LoadSymptoms()));
                 return 0;
