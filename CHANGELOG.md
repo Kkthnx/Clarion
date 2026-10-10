@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.9
 
 New
 - A switch in Settings, "Ask for administrator rights when Clarion starts". Turn it off to start without the Windows prompt every time, which suits an account that cannot get the rights. Clarion then opens in the look and verify mode. The choice is kept in your own folder, so it works for an account that cannot write to Clarion's shared data folder, and the "Restart as administrator" button on Home takes it back.
