@@ -1,8 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.8
 
 New
+- Progress on the taskbar button while changes are being made, so a long run can be followed from another window. It moves as settings are done, turns yellow if you stop the run, and red if something did not finish. It goes away when you close the activity panel.
 - The System page has a "Windows Update right now" card. It reads the update services, the policies that can block updates, the background scan task, any stored pause, and the dates Windows last checked and last installed, then says in plain words whether updates are working, limited or held back, with the reason for each finding. A pause stored far past the 35 days Windows allows is reported as a note when Windows itself says it has ended, because updates still install in that case. Home mentions it when updates are limited or held.
 
 Polish
