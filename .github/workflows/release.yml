@@ -12,10 +12,12 @@ permissions:
 jobs:
   package:
     runs-on: windows-latest
-    # Writing is needed only to draft the release at the end. The build steps never use it.
+    # Writing is needed only to draft the release at the end, and the last two let the build vouch for its own files. The build steps never use them.
     permissions:
       contents: write
       actions: read
+      id-token: write
+      attestations: write
     env:
       SIGNING: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
     steps:
@@ -95,6 +97,16 @@ jobs:
             artifacts/Clarion-*-setup.exe
             artifacts/Clarion-*-win-x64.zip
             artifacts/*.sha256
+
+      # A signed statement from GitHub that these exact files were built by this workflow from this commit. It is free, and anyone can check
+      # it with `gh attestation verify`. It is not a Windows signature, so SmartScreen does not use it.
+      - name: Vouch for the release files
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/attest-build-provenance@v4.2.2
+        with:
+          subject-path: |
+            artifacts/Clarion-*-setup.exe
+            artifacts/Clarion-*-win-x64.zip
 
       # A tag draws up the release as a draft, with the changelog section as its notes. It stays a draft until a person reads it and
       # publishes it. A version with a dash, such as 0.1.0-beta.13, is marked as a pre-release.

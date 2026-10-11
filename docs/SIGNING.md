@@ -16,21 +16,32 @@ is the biggest trust problem it has. Signing is part of the 1.0 gate, next to fi
 - Two things are signed when it is switched on: the app files (before they go into the installer and
   zip), then the setup program. A zip itself cannot be signed.
 
-## Options
+## Options, with what each one costs and needs
 
-| Option | Cost | Who it suits | Catch |
-|---|---|---|---|
-| [SignPath Foundation](https://signpath.org/terms) | Free for open source | Open source projects, anywhere | Needs an OSI approved license, an automated build, a released version, active maintenance. The publisher shown to users is SignPath Foundation, not you. Requests may need a manual approval. |
-| [Azure Artifact Signing](https://learn.microsoft.com/azure/artifact-signing/quickstart) | Paid, about $10 a month in one report | Closed or open source | Individuals must be in the US or Canada for public trust. Microsoft's pages disagree on the organization country list, so check the live page. |
-| A commercial certificate authority | Paid | Anyone | Not researched here. |
+Checked on 2026-10-11 against Microsoft's page on [code signing options](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/code-signing-options) (updated 2026-08-29) and the [SignPath Foundation terms](https://signpath.org/terms).
 
-## The free route is closed
+| Option | Cost | Fits .Clarion today? |
+|---|---|---|
+| Microsoft Store as an MSIX package. The Store signs it, and users see no SmartScreen warning. | Free, worldwide. Individual registration is free. | Not without a rewrite. The app needs administrator rights, and a packaged app can only ask for them through the restricted `allowElevation` capability, which a Store vendor describes as very unlikely to be approved. How the package would treat the registry and files .Clarion changes was not confirmed from Microsoft's documentation. |
+| SignPath Foundation | Free | Not under the current licence. It needs an OSI approved licence on every part, with no dual licensing. The publisher shown is SignPath Foundation, the product name must match the project name, it reviews the project's reputation first, every release is approved by hand, and the project page needs a code signing policy section. |
+| Azure Artifact Signing | About $9.99 a month. Free and trial Azure subscriptions are not accepted. | Yes for an individual in the USA or Canada, but not free. Reputation still builds over time, so early releases can still show a warning. |
+| An OV certificate from a certificate authority | About $150 to $300 a year, and the key must live on a hardware token or cloud service. | Not free. The same reputation rule applies. |
+| A self-signed certificate | Free | No. Windows blocks it for anyone who has not installed the certificate by hand. |
+| No signature | Free | What it is today. SmartScreen blocks a download it has not seen before. |
 
-.Clarion is all rights reserved with public source (see LICENSE). SignPath Foundation needs an OSI
-approved license, so it is not available. Azure Artifact Signing or a commercial certificate is the
-way, and the workflow only needs its two signing steps swapped. If the licence ever changes to an OSI
-one, the SignPath steps below apply.
+No option is both free and fits a source-available, all rights reserved app. The two that cost nothing each need something that .Clarion does not have: an OSI licence, or a Store package.
 
+## What is done without a certificate
+
+- Every release file has a SHA-256 file next to it.
+- Since the build for 0.1.0-beta.16 every release file also carries a build attestation from GitHub, which is free. It is a signed statement that GitHub's runner built these exact files from this commit. Check one with `gh attestation verify <file> --repo Kkthnx/Clarion`. Windows does not read it, so SmartScreen is unchanged.
+- Windows SmartScreen tracks an unsigned file by the file itself, so each new build starts with no reputation. A signature moves the reputation to the publisher, which is what carries over between releases.
+
+## Ways to get a certificate
+
+1. Change the licence to an OSI approved one and apply to SignPath Foundation. That is a decision about the whole project, and it also means every part of .Clarion is open. The project is only days old, so the reputation review may not pass yet.
+2. Pay about $10 a month for Azure Artifact Signing. Donations on the About page could cover that, and nothing else changes.
+3. Keep releasing unsigned, which is honest in the readme, and sign once either of the above is possible.
 ## Steps for SignPath Foundation (only if the licence changes)
 
 1. Apply at [signpath.org](https://signpath.org). Describe what .Clarion does on the download page.

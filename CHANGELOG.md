@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+Safer
+- Each release file now carries a build attestation from GitHub, which is free: a signed statement that GitHub's runner built that exact file from this commit. Check one with gh attestation verify. It does not replace a Windows signature, so SmartScreen still warns, and docs/SIGNING.md sets out the options for a real one and what each costs.
+
 ## 0.1.0-beta.15
 
 Polish
