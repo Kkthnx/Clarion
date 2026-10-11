@@ -26,7 +26,12 @@ public static class Shell
     {
         try
         {
-            var info = new ProcessStartInfo(target) { UseShellExecute = true };
+            // A program named without a folder (notepad.exe, rstrui.exe) is looked for beside Clarion first, and Clarion runs with
+            // administrator rights, so those names are turned into the copy in the Windows folder before anything starts.
+            var file = target.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+                ? Clarion.Core.Engine.SystemTools.Resolve(target, Environment.SystemDirectory)
+                : target;
+            var info = new ProcessStartInfo(file) { UseShellExecute = true };
             if (arguments is not null) info.Arguments = arguments;
             // The handle is not needed. Without this the process object would hold it until the next collection.
             using var started = Process.Start(info);

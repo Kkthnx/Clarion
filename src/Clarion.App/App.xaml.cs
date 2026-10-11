@@ -119,7 +119,10 @@ public partial class App : Application
         {
             var dir = Clarion.Engine.EngineFactory.DefaultDataDirectory;
             Directory.CreateDirectory(dir);
-            File.AppendAllText(Path.Combine(dir, "crash.log"), $"{DateTime.Now:u} {ex}\n\n");
+            var file = Path.Combine(dir, "crash.log");
+            // Every error here is handled and the app carries on, so one that repeats must not fill the disk. Same limit as the main log.
+            if (File.Exists(file) && new FileInfo(file).Length > 1_000_000) File.Move(file, file + ".old", overwrite: true);
+            File.AppendAllText(file, $"{DateTime.Now:u} {ex}\n\n");
         }
         catch (IOException) { }
         catch (UnauthorizedAccessException) { }
