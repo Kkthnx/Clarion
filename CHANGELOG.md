@@ -16,6 +16,7 @@ Fixed
 - The check for a DNS server address accepted a trailing line break, and an address written with digits from another script made it fail with an error instead of being refused. It now takes plain digits only. An encrypted DNS address that contains an apostrophe is refused.
 
 Safer
+- Clarion's shared data folder under ProgramData is locked every time Clarion starts with administrator rights: administrators and the system get full control, ordinary accounts can only read. Windows lets any account create files there, so an ordinary account could have written the change journal before Clarion first ran with administrator rights, and a later Revert would have replayed it as an administrator. Anything already in the folder that another account owned, or gave itself rights on, goes back to the folder's permissions, and a folder that turns out to be a link is renamed and replaced. Nothing is deleted. A copy running without administrator rights can still read the folder, but cannot save settings or history there, as before.
 - Notepad and System Restore are started from the Windows folder, like the other tools, instead of by name alone.
 - The crash log rolls over at 1 MB like the main log, so an error that repeats cannot fill the disk.
 

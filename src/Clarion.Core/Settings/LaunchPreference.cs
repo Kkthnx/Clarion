@@ -2,8 +2,9 @@ namespace Clarion.Core.Settings;
 
 /// <summary>
 /// Whether this person wants Clarion to start without asking for administrator rights. It is a one file flag, and it lives in the
-/// person's own folder, not in the shared data folder, because that folder can only be written by administrators and the person who
-/// most wants this is the one who is not one. Nothing here leaves the PC.
+/// person's own folder, not in the shared data folder. Once Clarion has run with administrator rights, only administrators can write to
+/// the shared folder, and the person who most wants this is the one who is not one. Before that first run any account can add files
+/// there, which is why Clarion tightens it on every start with those rights. Nothing here leaves the PC.
 /// </summary>
 public sealed class LaunchPreference(string path)
 {

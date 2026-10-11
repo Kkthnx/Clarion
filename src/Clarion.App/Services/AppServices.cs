@@ -174,6 +174,7 @@ public sealed partial class AppServices : UiObservableObject
         _expertMode = Settings.ExpertMode;
         DetectUpdatedVersion();
         Runtime = EngineFactory.Create();
+        foreach (var note in EngineFactory.DataFolderNotes) Log.Write(note);
         Profile = Runtime.Profile;
         _systemReport = new(Runtime.System.Read);
         var tweaks = CatalogLoader.LoadEmbedded();

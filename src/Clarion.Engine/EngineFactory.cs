@@ -17,11 +17,22 @@ public static class EngineFactory
             ? Path.GetFullPath(custom)
             : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Clarion");
 
+    /// <summary>True when CLARION_DATA_DIR points somewhere else, which is a folder somebody chose and is left as it is.</summary>
+    public static bool IsDataDirectoryOverridden => Environment.GetEnvironmentVariable("CLARION_DATA_DIR") is { Length: > 0 };
+
+    /// <summary>What locking the data folder had to correct on this start, in plain words. Empty when it was already right.</summary>
+    public static IReadOnlyList<string> DataFolderNotes { get; private set; } = [];
+
+    private static int _folderChecked;
+
     public static BatchRunner CreateBatchRunner(string? dataDirectory = null) => Create(dataDirectory).Runner;
 
     public static ClarionRuntime Create(string? dataDirectory = null)
     {
         var dir = dataDirectory ?? DefaultDataDirectory;
+        // The shared folder holds the journal that a Revert replays with administrator rights, so with those rights it is locked first.
+        if (dataDirectory is null && !IsDataDirectoryOverridden && WindowsMachine.IsElevated() && Interlocked.Exchange(ref _folderChecked, 1) == 0)
+            DataFolderNotes = DataFolderGuard.Secure(dir);
         var registry = new WindowsRegistryStore();
         var runner = new WindowsProcessRunner();
         var handlers = new Core.Abstractions.IOperationHandler[]
