@@ -13,6 +13,7 @@ New
 Fixed
 - Battle.net failed to install with winget code 0x8A15005F. Its winget record says the installer cannot run without an install folder, so Clarion now gives it the folder the record names, Program Files (x86)\Battle.net. Winget codes for a missing install folder, an installer that refuses administrator rights, a failed or empty download and a few more now say what happened in plain words. The check of all 135 records found no other app with this requirement.
 - Winget's output is read as UTF-8, so a publisher or licence name with an accented letter or a registered sign no longer shows as garbage in the review. A failed install now also names the installer's own exit code when winget prints one, and when winget cannot be read, the log says so once with a count instead of once for every app.
+- Uninstalling Clarion removes the Monthly check scheduled task if you had turned it on. It used to stay behind and try to start a program that was no longer there.
 
 Safer
 - Web links, such as the winget, licence and GitHub links, now open in your browser with your normal rights. Clarion runs as administrator, and a browser started from it could run as administrator too, with its protections weakened, just to show a page. Clarion now starts it with the token of your desktop. If your desktop itself runs as administrator, which some setups do, the browser does as well.

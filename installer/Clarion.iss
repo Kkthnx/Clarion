@@ -50,6 +50,10 @@ Name: "{autodesktop}\Clarion"; Filename: "{app}\Clarion.exe"; Tasks: desktopicon
 [Run]
 Filename: "{app}\Clarion.exe"; Description: "Start Clarion"; Flags: nowait postinstall skipifsilent runascurrentuser
 
+[UninstallRun]
+; The optional monthly check is a scheduled task Clarion made. Left behind it would start a program that is no longer there.
+Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""\Clarion\Monthly check"" /F"; Flags: runhidden; RunOnceId: "RemoveMonthlyCheck"
+
 [Code]
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
