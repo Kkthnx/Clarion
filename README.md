@@ -32,6 +32,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 | | |
 |---|---|
 | **Privacy and debloat** | 190 settings across privacy, app removal, tweaks, power, network, Windows features and updates. A Compact switch fits about three times as many on screen, and topic pills narrow a long list in one click. |
+| **Apps** | 75 programs installed with winget, each one an exact package. The review shows the publisher, licence, installer host and checksum, and nothing installs until you accept the licence terms. Revert uninstalls. |
 | **Clean up** | Shader caches, launcher caches, browser and Windows leftovers. Scans first, shows exact folders and sizes, skips files in use and queues locked files for the next restart. |
 | **Repair** | System file check, component repair, network and update resets. Output streams live and any job can be stopped. |
 | **Presets** | Minimal, Standard, Advanced, Gaming and Privacy. Each lists the settings it holds and marks the ones already on. Queue one, review it, apply it. |
@@ -67,7 +68,7 @@ Requirements: Windows 10 version 2004 or later, 64-bit. Nothing else needs insta
 Clarion.exe --version
 Clarion.exe --list-presets
 Clarion.exe --apply-preset standard [--preview] [--no-restore-point]
-Clarion.exe --apply setup.json [--preview] [--no-restore-point]
+Clarion.exe --apply setup.json [--preview] [--no-restore-point] [--accept-package-agreements]
 Clarion.exe --clean [--only a,b] [--include c,d] [--preview]
 Clarion.exe --verify [--save]
 Clarion.exe --what-broke symptom [--since 2026-09-01]
@@ -75,7 +76,7 @@ Clarion.exe --history
 Clarion.exe --list-presets | --list-settings | --list-cleanups | --list-symptoms
 ```
 
-`--preview` shows what would change and changes nothing. `--verify`, `--what-broke`, `--history` and the list commands only read, and start without administrator rights. Exit codes: 0 success, 1 some steps failed, 2 bad arguments or file, 3 not elevated.
+`--preview` shows what would change and changes nothing. Apps in a setup are skipped unless you add `--accept-package-agreements`, which says you accept the publishers' licence terms. `--verify`, `--what-broke`, `--history` and the list commands only read, and start without administrator rights. Exit codes: 0 success, 1 some steps failed, 2 bad arguments or file, 3 not elevated.
 
 ## Build from source
 
