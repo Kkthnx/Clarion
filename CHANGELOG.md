@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.15
 
 Polish
 - The name is now .Clarion, with the leading dot, the way .NET is written. It is changed in the window title, every page, the dialogs, the command line help, the setting descriptions, the installer and its shortcuts, the readme and the other docs. The program file is still Clarion.exe, and the install folder, data folder, history and monthly check keep their names, so an update changes nothing about what is on your PC. The installer removes the old Clarion shortcuts when it upgrades. The icon, the logo in the app and the readme banner are new too. Earlier entries below still say Clarion.
