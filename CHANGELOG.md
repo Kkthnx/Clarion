@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.16
 
 Safer
 - If a history file that another account made is set aside when .Clarion starts, Home now says so, and where the file went. Before, it was only in the log, so a person's own undo history could seem to have vanished.
