@@ -48,6 +48,18 @@ public sealed partial class AppsPage : Page
             return;
         }
 
+        if (_app.AppsProblem is { } problem)
+        {
+            WingetBar.Severity = InfoBarSeverity.Warning;
+            WingetBar.Title = "Apps cannot be used right now";
+            WingetBar.Message = problem;
+            WingetBar.IsClosable = false;
+            WingetLink.Visibility = Visibility.Collapsed;
+            WingetBar.IsOpen = true;
+            WingetBar.Visibility = Visibility.Visible;
+            return;
+        }
+
         if (_noticeClosed)
         {
             WingetBar.IsOpen = false;

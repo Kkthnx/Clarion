@@ -29,7 +29,9 @@ public sealed partial class DetailPane : UserControl
         var note = _shown?.ImageNote ?? "";
         // A greyed switch with no reason reads as broken. Say what is going on, and that it comes back on its own.
         if (note.Length == 0 && _shown is { IsSupported: true, IsUnavailable: true } gone)
-            note = gone.RemovesApps
+            note = gone.InstallsApps
+                ? (AppServices.Instance.AppsProblem ?? "winget was not found for this account, so Clarion cannot see or change this app.")
+                : gone.RemovesApps
                 ? "This app is not installed for your account, so there is nothing to remove. If Windows brings it back, for example after a feature update, this switch works again."
                 : "What this changes is not on this PC, so there is nothing to change. If Windows puts it back, this switch works again.";
         // Every app removal says that the app's own data goes with it, since Revert cannot bring that back.

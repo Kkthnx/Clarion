@@ -236,6 +236,11 @@ public sealed partial class AppServices : UiObservableObject
     public Task<Clarion.Core.SystemInfo.SystemReport> GetSystemReportAsync(bool refresh = false) => _systemReport.GetAsync(refresh);
 
     public string Status { get => _status; set => SetProperty(ref _status, value); }
+
+    private string? _appsProblem;
+
+    /// <summary>Why the apps cannot be read or installed right now, in a sentence, or null when nothing is wrong.</summary>
+    public string? AppsProblem { get => _appsProblem; private set => SetProperty(ref _appsProblem, value); }
     public int AppliedCount { get => _appliedCount; set => SetProperty(ref _appliedCount, value); }
 
     public bool SimpleMode => !ExpertMode;
@@ -284,7 +289,7 @@ public sealed partial class AppServices : UiObservableObject
                 var apps = slow.Where(i => i.Tweak.Apply.Any(o => o is InstallWingetPackage or UninstallWingetPackage)).ToList();
                 var features = slow.Where(i => i.Tweak.Apply.Any(o => o is SetWindowsFeature or SetWindowsCapability)).ToList();
                 var others = slow.Except(features).Except(apps).ToList();
-                _featureRead = Task.WhenAll(ReadGroupAsync(features), ReadGroupAsync(apps), _appsRead);
+                _featureRead = Task.WhenAll(ReadGroupAsync(features), apps.Count > 0 ? ReadAppsAsync(apps) : Task.CompletedTask, _appsRead);
                 await ReadGroupAsync(others);
             }
 
@@ -337,7 +342,25 @@ public sealed partial class AppServices : UiObservableObject
 
     private async Task ReadAppsAsync(List<TweakItem> apps)
     {
-        try { await ReadGroupAsync(apps); }
+        try
+        {
+            // winget runs as the account Clarion runs as. When that is not the account that is signed in, the apps would be listed and
+            // installed for the other one, and the other one may not have winget at all, so it is not run.
+            var account = await Task.Run(Clarion.Engine.AccountCheck.Detect);
+            if (account.Differs)
+            {
+                AppsProblem = $"Clarion was started with {account.ElevatedAs}, but you are signed in as {account.SignedInAs}. Apps would be listed and installed for {account.ElevatedAs}, who may not have winget. Close Clarion and start it again from your own account to use this page.";
+                foreach (var app in apps) app.SyncToState(TweakState.Unavailable);
+            }
+            else
+            {
+                AppsProblem = null;
+                await ReadGroupAsync(apps);
+                // Every app unreadable while winget exists means winget itself did not answer, for example with no connection.
+                if (Runtime.Winget.IsAvailable && apps.Count > 0 && apps.All(a => a.IsUnavailable))
+                    AppsProblem = "winget did not answer, so Clarion cannot see which apps are installed. Check the internet connection, then press Re-check. The log has the detail.";
+            }
+        }
         catch (Exception ex) when (ex is not OutOfMemoryException) { Log.Write($"Apps could not be read: {ex.Message}"); }
         RefreshPending();
         StatesRefreshed?.Invoke(this, EventArgs.Empty);
