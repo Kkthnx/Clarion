@@ -74,7 +74,7 @@ public sealed partial class VerifyPage : Page
         RestartBar.IsOpen = pending is { IsPending: true };
         RestartBar.Visibility = RestartBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (pending is { IsPending: true })
-            RestartBar.Message = $"{string.Join(". ", pending.Reasons)}. After it restarts, Clarion will check the {report.Checked} setting{(report.Checked == 1 ? "" : "s")} it applied again, because updates are when changes are most likely to be undone. Scan again then.";
+            RestartBar.Message = $"{string.Join(". ", pending.Reasons)}. After it restarts, .Clarion will check the {report.Checked} setting{(report.Checked == 1 ? "" : "s")} it applied again, because updates are when changes are most likely to be undone. Scan again then.";
 
         var stopped = _app.StoppedChecking().Select(x => new StoppedRow(x.Item.Id, x.Item.Name, $"Applied {x.Applied.LocalDateTime:g}")).ToList();
         StoppedRows.ItemsSource = stopped;

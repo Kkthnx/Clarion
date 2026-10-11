@@ -100,7 +100,7 @@
     "summary": "Turn off tips, suggested apps and silent installs for the current user.",
     "what": "Sets the per user content delivery values that feed Start suggestions, lock screen tips and silent app installs to off.",
     "benefit": "Works on every edition, including Home and Pro, where the policy version is ignored.",
-    "risk": "None. These are per account preferences and are not documented as a supported policy, so Windows can reset them after a feature update. Clarion detects that and offers to reapply.",
+    "risk": "None. These are per account preferences and are not documented as a supported policy, so Windows can reset them after a feature update. .Clarion detects that and offers to reapply.",
     "evidence": "Situational",
     "riskLevel": "Safe",
     "scope": "User",
@@ -207,7 +207,7 @@
     "facts": [
       "Works on every edition",
       "Not a documented policy, so Windows may reset it after big updates",
-      "Clarion detects a reset and offers one click reapply"
+      ".Clarion detects a reset and offers one click reapply"
     ],
     "topic": "Suggestions and ads"
   },

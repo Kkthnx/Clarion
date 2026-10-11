@@ -20,9 +20,9 @@ public static class CliReports
     public static string Verify(DriftReport report, PendingRestartInfo? pending = null)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"Checked {report.Checked} setting{(report.Checked == 1 ? "" : "s")} Clarion applied, on Windows build {report.Build}.");
+        sb.AppendLine($"Checked {report.Checked} setting{(report.Checked == 1 ? "" : "s")} .Clarion applied, on Windows build {report.Build}.");
         if (pending is { IsPending: true })
-            sb.AppendLine($"{string.Join(". ", pending.Reasons)}. Clarion will need to check again after the restart.");
+            sb.AppendLine($"{string.Join(". ", pending.Reasons)}. .Clarion will need to check again after the restart.");
         if (report.FeatureUpdateSinceLastScan)
             sb.AppendLine($"Windows went from build {report.PreviousBuild} to {report.Build} since the last check.");
 
@@ -46,9 +46,9 @@ public static class CliReports
 
         sb.AppendLine();
         sb.AppendLine(report.HasDrift
-            ? $"{report.Items.Count} setting{(report.Items.Count == 1 ? "" : "s")} no longer in effect. Open Clarion and go to Verify to put them back."
+            ? $"{report.Items.Count} setting{(report.Items.Count == 1 ? "" : "s")} no longer in effect. Open .Clarion and go to Verify to put them back."
             : report.Unreadable.Count > 0 ? "Nothing was found that changed back, but some settings could not be checked."
-            : "Everything Clarion applied is still in place.");
+            : "Everything .Clarion applied is still in place.");
         return sb.ToString().TrimEnd();
     }
 
@@ -73,7 +73,7 @@ public static class CliReports
         sb.AppendLine();
         if (suspects.Count == 0)
         {
-            sb.AppendLine("Clarion did not change anything that could explain this. Other usual causes: a customized Windows image, another cleanup tool, a driver or Windows update.");
+            sb.AppendLine(".Clarion did not change anything that could explain this. Other usual causes: a customized Windows image, another cleanup tool, a driver or Windows update.");
             return sb.ToString().TrimEnd();
         }
         foreach (var s in suspects)
@@ -89,6 +89,6 @@ public static class CliReports
             .OrderByDescending(r => r.When)
             .Select(r => $"{r.When.LocalDateTime:yyyy-MM-dd HH:mm}  {r.Name}  ({r.Id})")
             .ToList();
-        return rows.Count == 0 ? "Clarion has not changed anything that is still on." : string.Join(Environment.NewLine, rows);
+        return rows.Count == 0 ? ".Clarion has not changed anything that is still on." : string.Join(Environment.NewLine, rows);
     }
 }

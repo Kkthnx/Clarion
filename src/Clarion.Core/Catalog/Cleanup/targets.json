@@ -577,7 +577,7 @@
     "recommendation": "Avoid",
     "expertOnly": true,
     "facts": [
-      "Each log is saved as an .evtx file in the Clarion data folder first. A log that cannot be saved is not cleared",
+      "Each log is saved as an .evtx file in the .Clarion data folder first. A log that cannot be saved is not cleared",
       "Open a saved file in Event Viewer to read the old events",
       "The Security log is never cleared",
       "Windows records that a log was cleared",

@@ -75,7 +75,7 @@ public sealed class MonthlyVerifySchedule(IScheduledTaskStore store)
         sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
         sb.AppendLine("<Task version=\"1.4\" xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">");
         sb.AppendLine("  <RegistrationInfo>");
-        sb.AppendLine("    <Description>Checks that the settings Clarion applied are still in place, the day after Windows' monthly updates. Read only. Nothing is sent anywhere.</Description>");
+        sb.AppendLine("    <Description>Checks that the settings .Clarion applied are still in place, the day after Windows' monthly updates. Read only. Nothing is sent anywhere.</Description>");
         sb.AppendLine($"    <URI>{E(TaskName)}</URI>");
         sb.AppendLine("  </RegistrationInfo>");
         sb.AppendLine("  <Triggers>");

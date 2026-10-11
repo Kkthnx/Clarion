@@ -8,7 +8,7 @@
             <StackPanel Spacing="4">
                 <TextBlock Text="Report a problem or suggest something" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                           Text="Clarion builds the report for you. Nothing is sent from here. You read it below, then open it on GitHub and press Submit yourself." />
+                           Text=".Clarion builds the report for you. Nothing is sent from here. You read it below, then open it on GitHub and press Submit yourself." />
             </StackPanel>
 
             <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="Kept private"

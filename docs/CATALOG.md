@@ -769,7 +769,7 @@ Turn off tips, suggested apps and silent installs for the current user.
 
 - **What it does:** Sets the per user content delivery values that feed Start suggestions, lock screen tips and silent app installs to off.
 - **Benefit:** Works on every edition, including Home and Pro, where the policy version is ignored.
-- **Risk:** None. These are per account preferences and are not documented as a supported policy, so Windows can reset them after a feature update. Clarion detects that and offers to reapply.
+- **Risk:** None. These are per account preferences and are not documented as a supported policy, so Windows can reset them after a feature update. .Clarion detects that and offers to reapply.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SilentInstalledAppsEnabled to 0 (DWord)`
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SystemPaneSuggestionsEnabled to 0 (DWord)`

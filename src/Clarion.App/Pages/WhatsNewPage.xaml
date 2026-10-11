@@ -10,7 +10,7 @@
             <StackPanel Spacing="4">
                 <TextBlock Text="What's new" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                           Text="What changed in each version of Clarion, written the same way as the release notes." />
+                           Text="What changed in each version of .Clarion, written the same way as the release notes." />
             </StackPanel>
 
             <!-- An update is available -->
@@ -50,7 +50,7 @@
                             <Button Content="Hide this version" Click="OnHide" />
                         </StackPanel>
                         <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}"
-                                   Text="The button opens the page in your browser. Clarion does not download or install anything itself." />
+                                   Text="The button opens the page in your browser. .Clarion does not download or install anything itself." />
                     </StackPanel>
                 </StackPanel>
             </Border>

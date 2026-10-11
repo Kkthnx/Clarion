@@ -35,7 +35,7 @@ public static class Elevation
         }
         catch (Exception ex) when (ex is Win32Exception or InvalidOperationException)
         {
-            Log.Write($"Could not start Clarion with administrator rights: {ex.Message}");
+            Log.Write($"Could not start .Clarion with administrator rights: {ex.Message}");
             return ElevationOutcome.Failed;
         }
     }

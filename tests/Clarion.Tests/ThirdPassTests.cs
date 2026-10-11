@@ -341,7 +341,7 @@ public sealed class ThirdPassTests : IDisposable
 
         Assert.Contains("(b)", lines[0]);
         Assert.Contains("(a)", lines[1]);
-        Assert.Equal("Clarion has not changed anything that is still on.", CliReports.History(new Dictionary<string, IReadOnlyList<JournalEntry>>(), []));
+        Assert.Equal(".Clarion has not changed anything that is still on.", CliReports.History(new Dictionary<string, IReadOnlyList<JournalEntry>>(), []));
     }
 
     [Fact]

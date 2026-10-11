@@ -64,7 +64,7 @@ public sealed class CommandLineSmokeTests(ITestOutputHelper output) : IDisposabl
     {
         if (Run("--version") is not var (code, text)) return;
         Assert.Equal(0, code);
-        Assert.Matches(@"^Clarion \d+\.\d+\.\d+", text.Trim());
+        Assert.Matches(@"^\.Clarion \d+\.\d+\.\d+", text.Trim());
     }
 
     [Fact]

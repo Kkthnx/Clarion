@@ -37,7 +37,7 @@ public sealed partial class AppServices : UiObservableObject
         if (!Settings.MonthlyVerify || Environment.ProcessPath is not { } exe) return;
         try { MonthlyCheckMoved = await Task.Run(() => MonthlySchedule.PointsElsewhere(exe)); }
         catch (Exception ex) when (ex is InvalidOperationException or IOException or System.ComponentModel.Win32Exception) { Log.Write($"Monthly check location: {ex.Message}"); return; }
-        if (MonthlyCheckMoved) Log.Write("The monthly check starts a different copy of Clarion");
+        if (MonthlyCheckMoved) Log.Write("The monthly check starts a different copy of .Clarion");
         OnPropertyChanged(nameof(MonthlyCheckMoved));
     }
 
@@ -46,7 +46,7 @@ public sealed partial class AppServices : UiObservableObject
     {
         try
         {
-            var exe = Environment.ProcessPath ?? throw new InvalidOperationException("Clarion could not find its own program file.");
+            var exe = Environment.ProcessPath ?? throw new InvalidOperationException(".Clarion could not find its own program file.");
             var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             await Task.Run(() => MonthlySchedule.Enable(exe, user, DateTime.Today));
             MonthlyCheckMoved = false;
@@ -357,7 +357,7 @@ public sealed partial class AppServices : UiObservableObject
             var account = await Task.Run(Clarion.Engine.AccountCheck.Detect);
             if (account.Differs)
             {
-                AppsProblem = $"Clarion was started with {account.ElevatedAs}, but you are signed in as {account.SignedInAs}. Apps would be listed and installed for {account.ElevatedAs}, who may not have winget. Close Clarion and start it again from your own account to use this page.";
+                AppsProblem = $".Clarion was started with {account.ElevatedAs}, but you are signed in as {account.SignedInAs}. Apps would be listed and installed for {account.ElevatedAs}, who may not have winget. Close .Clarion and start it again from your own account to use this page.";
                 foreach (var app in apps) app.SyncToState(TweakState.Unavailable);
             }
             else
@@ -366,7 +366,7 @@ public sealed partial class AppServices : UiObservableObject
                 await ReadGroupAsync(apps);
                 // Every app unreadable while winget exists means winget itself did not answer, for example with no connection.
                 if (Runtime.Winget.IsAvailable && apps.Count > 0 && apps.All(a => a.IsUnavailable))
-                    AppsProblem = "winget did not answer, so Clarion cannot see which apps are installed. Check the internet connection, then press Re-check. The log has the detail.";
+                    AppsProblem = "winget did not answer, so .Clarion cannot see which apps are installed. Check the internet connection, then press Re-check. The log has the detail.";
             }
         }
         catch (Exception ex) when (ex is not OutOfMemoryException) { Log.Write($"Apps could not be read: {ex.Message}"); }

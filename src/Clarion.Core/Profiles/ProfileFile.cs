@@ -33,15 +33,15 @@ public static partial class ProfileFile
     /// <summary>Reads a profile. A bad file never throws, it returns an error that is safe to show.</summary>
     public static ProfileLoad Parse(string json)
     {
-        if (json.Length > MaxBytes) return new(null, "That file is too large to be a Clarion setup.");
+        if (json.Length > MaxBytes) return new(null, "That file is too large to be a .Clarion setup.");
         try
         {
             var profile = JsonSerializer.Deserialize<SetupProfile>(json, Options);
-            if (profile is null || profile.App != "Clarion") return new(null, "That is not a Clarion setup file.");
+            if (profile is null || profile.App != "Clarion") return new(null, "That is not a .Clarion setup file.");
             if (profile.Format < SetupProfile.CurrentFormat)
-                return new(null, $"This setup file was made with an older Clarion (file format {profile.Format}, this version reads {SetupProfile.CurrentFormat}). It was not applied, because settings may have changed. Choose your settings again here and save a new setup file.");
+                return new(null, $"This setup file was made with an older .Clarion (file format {profile.Format}, this version reads {SetupProfile.CurrentFormat}). It was not applied, because settings may have changed. Choose your settings again here and save a new setup file.");
             if (profile.Format > SetupProfile.CurrentFormat)
-                return new(null, $"This setup file was made with a newer Clarion (file format {profile.Format}, this version reads {SetupProfile.CurrentFormat}). Update Clarion to use it.");
+                return new(null, $"This setup file was made with a newer .Clarion (file format {profile.Format}, this version reads {SetupProfile.CurrentFormat}). Update .Clarion to use it.");
             if (profile.Tweaks is null) return new(null, "The setup file lists no settings.");
             if (profile.Tweaks.Count > MaxIds) return new(null, "The setup file lists too many settings.");
             if (profile.Tweaks.Any(id => id is null || !IdPattern().IsMatch(id))) return new(null, "The setup file contains an invalid setting name.");
@@ -49,7 +49,7 @@ public static partial class ProfileFile
         }
         catch (JsonException)
         {
-            return new(null, "That file could not be read as a Clarion setup.");
+            return new(null, "That file could not be read as a .Clarion setup.");
         }
     }
 
@@ -57,7 +57,7 @@ public static partial class ProfileFile
     {
         try
         {
-            if (new FileInfo(path).Length > MaxBytes) return new(null, "That file is too large to be a Clarion setup.");
+            if (new FileInfo(path).Length > MaxBytes) return new(null, "That file is too large to be a .Clarion setup.");
             return Parse(File.ReadAllText(path));
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

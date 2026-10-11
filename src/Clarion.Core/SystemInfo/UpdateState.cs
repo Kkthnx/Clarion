@@ -54,7 +54,7 @@ public sealed record UpdateVerdict(UpdateLevel Level, IReadOnlyList<UpdateFindin
 
     public string Explanation => Level switch
     {
-        UpdateLevel.Held => "Something on this PC stops Windows from getting updates, so security fixes will not arrive until it is changed. Clarion does not change these on its own.",
+        UpdateLevel.Held => "Something on this PC stops Windows from getting updates, so security fixes will not arrive until it is changed. .Clarion does not change these on its own.",
         UpdateLevel.Limited => "Updates can still run, but something narrows what Windows does on its own. It is listed below.",
         _ => Findings.Any(f => f.Kind is UpdateFindingKind.Info)
             ? "Nothing found stops updates. The notes below are worth knowing, not faults."

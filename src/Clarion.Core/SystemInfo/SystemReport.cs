@@ -38,7 +38,7 @@ public sealed record InstallVerdict(InstallLevel Level, IReadOnlyList<InstallSig
 
     public string Explanation => Level switch
     {
-        InstallLevel.Likely => "Parts of Windows were probably removed or changed before it was installed. Some settings will show as not available, and Windows Update may behave differently. Clarion only changes what you choose.",
+        InstallLevel.Likely => "Parts of Windows were probably removed or changed before it was installed. Some settings will show as not available, and Windows Update may behave differently. .Clarion only changes what you choose.",
         InstallLevel.Possible => "A few things differ from a standard install. That is common after manual cleanup too, so this is only a hint.",
         _ => "Nothing unusual was found. This is a check of known signs, not proof.",
     };

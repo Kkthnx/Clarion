@@ -18,7 +18,7 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
         Root.RequestedTheme = ((App)Application.Current).Theme;
-        Title = "Clarion";
+        Title = ".Clarion";
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
         ResizeToFit();
@@ -67,7 +67,7 @@ public sealed partial class MainWindow : Window
         args.Cancel = true;
         await new ContentDialog
         {
-            Title = "Clarion is still working",
+            Title = ".Clarion is still working",
             Content = "Closing now could leave a change half done. Wait for it to finish, then close the window.",
             CloseButtonText = "OK",
             XamlRoot = Content.XamlRoot,
@@ -261,7 +261,7 @@ public sealed partial class MainWindow : Window
         var body = new StackPanel { Spacing = 12 };
         body.Children.Add(new TextBlock
         {
-            Text = "Clarion explains every change before it makes it, takes a restore point first, and can undo anything it did. Pick a starting point. Nothing changes until you have seen the list and pressed Apply.",
+            Text = ".Clarion explains every change before it makes it, takes a restore point first, and can undo anything it did. Pick a starting point. Nothing changes until you have seen the list and pressed Apply.",
             TextWrapping = TextWrapping.Wrap,
             MaxWidth = 480,
         });
@@ -269,7 +269,7 @@ public sealed partial class MainWindow : Window
 
         var dialog = new ContentDialog
         {
-            Title = "Welcome to Clarion",
+            Title = "Welcome to .Clarion",
             Content = new ScrollViewer { Content = body, MaxHeight = 460 },
             PrimaryButtonText = "Queue this and show me",
             SecondaryButtonText = "I will look around myself",
@@ -356,7 +356,7 @@ public sealed partial class MainWindow : Window
             var ask = new ContentDialog
             {
                 Title = "Administrator rights are needed to make changes",
-                Content = "Clarion keeps its history in a folder only administrators can write to, and it will not change anything it cannot record. Restart it as administrator to continue. The queue you built is not carried over.",
+                Content = ".Clarion keeps its history in a folder only administrators can write to, and it will not change anything it cannot record. Restart it as administrator to continue. The queue you built is not carried over.",
                 PrimaryButtonText = "Restart as administrator",
                 CloseButtonText = "Not now",
                 DefaultButton = ContentDialogButton.Primary,
@@ -404,7 +404,7 @@ public sealed partial class MainWindow : Window
             }
             else if (item.InstallsApps)
             {
-                block.Children.Add(new TextBlock { Text = "Runs the program's own uninstaller through winget. If you did not install it with Clarion, this removes the copy you already have.", FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
+                block.Children.Add(new TextBlock { Text = "Runs the program's own uninstaller through winget. If you did not install it with .Clarion, this removes the copy you already have.", FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
             }
             else
             {
@@ -499,7 +499,7 @@ public sealed partial class MainWindow : Window
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or System.ComponentModel.Win32Exception)
         {
             Activity.Close();
-            await Dialogs.Say(Content.XamlRoot, "The run did not finish", $"Some changes may have been made. Clarion has read your settings again, so what you see is what Windows has now. {ex.Message}");
+            await Dialogs.Say(Content.XamlRoot, "The run did not finish", $"Some changes may have been made. .Clarion has read your settings again, so what you see is what Windows has now. {ex.Message}");
             return;
         }
         finally { _runStop = null; }
@@ -513,7 +513,7 @@ public sealed partial class MainWindow : Window
                 Title = "No restore point, nothing was changed",
                 Content = result.Blocked + (turnOnProtection
                     ? "\n\nSystem Protection could not be turned on, or the restore point still failed. A policy on this PC can block it."
-                    : "\n\nSystem Protection is often off on a new Windows install. Clarion can turn it on for your system drive and try again. Restore points keep some disk space."),
+                    : "\n\nSystem Protection is often off on a new Windows install. .Clarion can turn it on for your system drive and try again. Restore points keep some disk space."),
                 PrimaryButtonText = turnOnProtection ? "" : "Turn on System Protection and retry",
                 SecondaryButtonText = "Continue without one",
                 CloseButtonText = "Cancel",

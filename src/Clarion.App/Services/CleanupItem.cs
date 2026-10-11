@@ -137,7 +137,7 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
         if (t.Processes.Count > 0) notes.Add($"Skipped while {t.Processes[0]} is running, so no open file is touched.");
         if (t.MinAgeHours > 0) notes.Add($"Only files untouched for {t.MinAgeHours} hours are removed.");
         if (t.QueueLockedAtRestart) notes.Add("Files held open by the driver are removed at the next restart.");
-        notes.Add("Clarion shows a preview first and counts only files it really deleted.");
+        notes.Add(".Clarion shows a preview first and counts only files it really deleted.");
         return notes;
     }
 

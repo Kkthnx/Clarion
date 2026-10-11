@@ -30,7 +30,7 @@ public sealed partial class DetailPane : UserControl
         // A greyed switch with no reason reads as broken. Say what is going on, and that it comes back on its own.
         if (note.Length == 0 && _shown is { IsSupported: true, IsUnavailable: true } gone)
             note = gone.InstallsApps
-                ? (AppServices.Instance.AppsProblem ?? "winget was not found for this account, so Clarion cannot see or change this app.")
+                ? (AppServices.Instance.AppsProblem ?? "winget was not found for this account, so .Clarion cannot see or change this app.")
                 : gone.RemovesApps
                 ? "This app is not installed for your account, so there is nothing to remove. If Windows brings it back, for example after a feature update, this switch works again."
                 : "What this changes is not on this PC, so there is nothing to change. If Windows puts it back, this switch works again.";
@@ -59,12 +59,12 @@ public sealed partial class DetailPane : UserControl
         DeprovisionNote.Text = storeMissing
             ? (item.DeprovisionLocked ? "Done. " : "Think before you tick this. ") +
               "The Microsoft Store is not installed on this PC. Revert puts the app back for you only, and only if Windows still has its files. " +
-              "For new accounts there is no way back until the Store itself is restored, and Clarion cannot do that for you."
+              "For new accounts there is no way back until the Store itself is restored, and .Clarion cannot do that for you."
             : item.DeprovisionLocked
                 ? "Done. Revert puts the app back for you only. New accounts get it from the Microsoft Store."
                 : elevated
                     ? "Expert option. Needs administrator rights. Revert puts the app back for you only, new accounts would need the Microsoft Store."
-                    : "Needs Clarion to run as administrator.";
+                    : "Needs .Clarion to run as administrator.";
         DeprovisionNote.Foreground = storeMissing
             ? ThemeBrushes.Get("ClWarn", ActualTheme)
             : ThemeBrushes.Get("ClTextSecondary", ActualTheme);

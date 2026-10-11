@@ -36,7 +36,7 @@ public static class FeedbackReport
         sb.AppendLine(input.Kind == FeedbackKind.Bug ? "### What happened" : "### Suggestion");
         sb.AppendLine(description.Length > 0 ? description : "_No description given._");
         sb.AppendLine();
-        sb.AppendLine("### Clarion");
+        sb.AppendLine("### .Clarion");
         sb.AppendLine($"- Version: {input.AppVersion}");
 
         if (input.IncludeSystem && input.System is { } report)
@@ -53,7 +53,7 @@ public static class FeedbackReport
         if (input.AppliedSettings.Count > 0)
         {
             sb.AppendLine();
-            sb.AppendLine("### Settings Clarion has applied");
+            sb.AppendLine("### Settings .Clarion has applied");
             sb.AppendLine(string.Join(", ", input.AppliedSettings.Order(StringComparer.Ordinal)));
         }
 

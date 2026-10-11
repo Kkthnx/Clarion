@@ -22,8 +22,8 @@ public sealed partial class HomePage : Page
             var account = await Task.Run(AccountCheck.Detect);
             if (account.Differs)
             {
-                AccountBar.Message = $"You are signed in as {account.SignedInAs}, but Clarion was started with {account.ElevatedAs}. " +
-                    "Settings that apply to one account will change that other account. Close Clarion and start it again from your own account.";
+                AccountBar.Message = $"You are signed in as {account.SignedInAs}, but .Clarion was started with {account.ElevatedAs}. " +
+                    "Settings that apply to one account will change that other account. Close .Clarion and start it again from your own account.";
                 AccountBar.IsOpen = true;
                 AccountBar.Visibility = AccountBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
             }
@@ -144,7 +144,7 @@ public sealed partial class HomePage : Page
         ScheduledBar.IsOpen = result is not null;
         ScheduledBar.Visibility = ScheduledBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (result is null) return;
-        ScheduledBar.Message = $"On {result.At.LocalDateTime:MMM d}, {result.Attention} of the {result.Checked} settings Clarion applied " +
+        ScheduledBar.Message = $"On {result.At.LocalDateTime:MMM d}, {result.Attention} of the {result.Checked} settings .Clarion applied " +
             $"had been changed back. Review shows which and lets you put them back.";
     }
 
@@ -161,7 +161,7 @@ public sealed partial class HomePage : Page
         UpdatedBar.IsOpen = from is not null;
         UpdatedBar.Visibility = UpdatedBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (from is null) return;
-        UpdatedBar.Title = $"Clarion was updated to {AppServices.Version}";
+        UpdatedBar.Title = $".Clarion was updated to {AppServices.Version}";
         UpdatedBar.Message = $"You were on {from}.";
     }
 
@@ -178,8 +178,8 @@ public sealed partial class HomePage : Page
         UpdateBar.Title = $"{offer.Name} is available";
         var count = _app.NewerReleases.Count;
         UpdateBar.Message = count > 1
-            ? $"You have {AppServices.Version}, which is {count} releases behind. Clarion does not download or install anything itself."
-            : $"You have {AppServices.Version}. Clarion does not download or install anything itself.";
+            ? $"You have {AppServices.Version}, which is {count} releases behind. .Clarion does not download or install anything itself."
+            : $"You have {AppServices.Version}. .Clarion does not download or install anything itself.";
     }
 
     private void OnOpenUpdate(object sender, RoutedEventArgs e)
@@ -200,8 +200,8 @@ public sealed partial class HomePage : Page
         var checkedCount = _app.Drift?.Checked ?? 0;
         RestartBar.Message = $"{string.Join(". ", pending.Reasons)}. " +
             (checkedCount > 0
-                ? $"After it restarts, Clarion will check the {checkedCount} setting{(checkedCount == 1 ? "" : "s")} it applied again, because updates are when changes are most likely to be undone."
-                : "Once you have applied settings, Clarion checks them again after a restart like this.");
+                ? $"After it restarts, .Clarion will check the {checkedCount} setting{(checkedCount == 1 ? "" : "s")} it applied again, because updates are when changes are most likely to be undone."
+                : "Once you have applied settings, .Clarion checks them again after a restart like this.");
     }
 
     private void ShowImage()
@@ -214,7 +214,7 @@ public sealed partial class HomePage : Page
         ImageBar.Title = verdict.Headline;
         var notes = _app.ImageNoteCount > 0
             ? $"{_app.ImageNoteCount} settings have a note about this. Settings whose target is already gone show as having nothing to change."
-            : "Settings whose target is already gone show as having nothing to change. Clarion only changes what you choose.";
+            : "Settings whose target is already gone show as having nothing to change. .Clarion only changes what you choose.";
         var updates = _app.UpdateVerdict is { Level: not Clarion.Core.SystemInfo.UpdateLevel.Working } u ? $" {u.Headline}. See why." : "";
         ImageBar.Message = notes + updates;
     }

@@ -70,7 +70,7 @@ public sealed partial class CleanupPage : Page
 
         QueueTitle.Text = $"{view.Waiting.Count:N0} files will be removed when Windows restarts";
         QueueNote.Text = view.OtherOperations > 0
-            ? $"Other programs have {view.OtherOperations:N0} more operations waiting for the restart. Clarion never touches those."
+            ? $"Other programs have {view.OtherOperations:N0} more operations waiting for the restart. .Clarion never touches those."
             : "Nothing else is waiting for the restart.";
         QueueList.Text = string.Join("\n", view.Waiting.Select(w => w.Path));
         CancelQueueButton.Visibility = Visibility.Visible;
@@ -241,7 +241,7 @@ public sealed partial class CleanupPage : Page
         if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
         try
         {
-            RestartHelper.Schedule(60, "Clarion is restarting Windows to finish cleaning. Save your work.");
+            RestartHelper.Schedule(60, ".Clarion is restarting Windows to finish cleaning. Save your work.");
             CancelRestartButton.Visibility = Visibility.Visible;
             RestartButton.IsEnabled = false;
         }

@@ -94,7 +94,7 @@ public sealed class BatchRunner(TweakEngine engine, IRestorePointService restore
             if (!options.CreateRestorePoint) return null;
 
             log?.Invoke("Creating restore point");
-            var rp = service.CreateEnsuring($"Clarion {DateTime.Now:yyyy-MM-dd HH:mm}", options.TurnOnSystemProtection, log);
+            var rp = service.CreateEnsuring($".Clarion {DateTime.Now:yyyy-MM-dd HH:mm}", options.TurnOnSystemProtection, log);
             if (rp.Success) return null;
             if (!options.ContinueWithoutRestorePoint)
                 _blocked = $"No restore point, nothing was changed. {rp.Error}";

@@ -6,7 +6,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Version>0.1.0-beta.14</Version>
     <Authors>Kkthnx</Authors>
-    <Product>Clarion</Product>
+    <Product>.Clarion</Product>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 </Project>

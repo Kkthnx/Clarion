@@ -168,7 +168,7 @@ public sealed class CleanupService : UiObservableObject
     public string BuildReport(IEnumerable<CleanupItem> rows, CleanupSummary s)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"Clarion cleanup {DateTime.Now:yyyy-MM-dd HH:mm}{(s.Preview ? " (preview)" : "")}");
+        sb.AppendLine($".Clarion cleanup {DateTime.Now:yyyy-MM-dd HH:mm}{(s.Preview ? " (preview)" : "")}");
         sb.AppendLine($"Freed {ByteSize.Format(s.BytesFreed)} from {s.FilesDeleted} files in {s.Duration.TotalSeconds:0.0} s");
         if (s.FilesLocked > 0) sb.AppendLine($"{s.FilesLocked} files were in use and left alone");
         if (s.Queued > 0) sb.AppendLine($"{s.Queued} files are queued for removal at the next restart");

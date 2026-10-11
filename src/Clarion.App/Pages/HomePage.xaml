@@ -10,24 +10,24 @@
             <StackPanel Orientation="Horizontal" Spacing="18">
                 <Image Source="ms-appx:///Assets/Clarion.png" Width="72" Height="72" VerticalAlignment="Center" />
                 <StackPanel Spacing="4" VerticalAlignment="Center">
-                    <TextBlock Text="Clarion" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock Text=".Clarion" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock Text="See it. Set it. Done." FontSize="16" Foreground="{ThemeResource ClAccentTextBrush}" />
                 </StackPanel>
             </StackPanel>
 
             <InfoBar x:Name="AccountBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
-                     Title="Clarion is running as a different account" />
+                     Title=".Clarion is running as a different account" />
 
             <InfoBar x:Name="LimitedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
-                     Title="Clarion is running without administrator rights"
-                     Message="You can look at your settings and run Verify. Changing anything needs administrator rights, because Clarion keeps its history in a folder only administrators can write to.">
+                     Title=".Clarion is running without administrator rights"
+                     Message="You can look at your settings and run Verify. Changing anything needs administrator rights, because .Clarion keeps its history in a folder only administrators can write to.">
                 <InfoBar.ActionButton>
                     <Button Content="Restart as administrator" Click="OnRestartAsAdmin" />
                 </InfoBar.ActionButton>
             </InfoBar>
 
             <InfoBar x:Name="MovedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
-                     Title="The monthly check starts a different copy of Clarion"
+                     Title="The monthly check starts a different copy of .Clarion"
                      Message="It was set up from another folder, so it may not run. Set it up again from this copy to fix it.">
                 <InfoBar.ActionButton>
                     <Button Content="Fix it" Click="OnFixMonthly" />
@@ -113,7 +113,7 @@
                 <StackPanel Spacing="4">
                     <TextBlock Text="Your safety net" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                               Text="Clarion makes a System Restore point before every batch, records the exact value it replaced, and can revert any single setting from the Safety page." />
+                               Text=".Clarion makes a System Restore point before every batch, records the exact value it replaced, and can revert any single setting from the Safety page." />
                 </StackPanel>
             </Border>
         </StackPanel>

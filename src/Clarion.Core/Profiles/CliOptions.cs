@@ -95,7 +95,7 @@ public sealed record CliOptions(
     private static CliOptions Fail(string message) => new(CliMode.Help, Error: message);
 
     public const string HelpText = """
-        Clarion command line
+        .Clarion command line
 
           Clarion.exe --apply setup.json [--preview] [--no-restore-point] [--enable-protection]
           Clarion.exe --apply-preset minimal|standard|advanced|gaming|privacy [--preview]
@@ -118,11 +118,11 @@ public sealed record CliOptions(
         --list-settings     list every setting with the name a setup file uses for it
         --catalog-doc       print the settings reference as Markdown, for docs/CATALOG.md
 
-        --verify            read only: check what Clarion applied against Windows now. Exit code 1 when something changed back
-        --save              with --verify, keep the result so Clarion can show it next time it is opened. The exit code is then 0, since finding changes is not a failure (the monthly check uses this)
+        --verify            read only: check what .Clarion applied against Windows now. Exit code 1 when something changed back
+        --save              with --verify, keep the result so .Clarion can show it next time it is opened. The exit code is then 0, since finding changes is not a failure (the monthly check uses this)
         --what-broke        read only: list the changes that could explain a symptom, newest first
         --since             with --what-broke, only changes made on or after this date
-        --history           read only: list what Clarion changed that is still on
+        --history           read only: list what .Clarion changed that is still on
 
         The read only commands need no administrator rights, though some checks cannot be read without them.
         Exit codes: 0 done, 1 some items did not finish or something changed back, 2 bad input, 3 needs administrator rights.

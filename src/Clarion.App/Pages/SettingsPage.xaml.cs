@@ -27,7 +27,7 @@ public sealed partial class SettingsPage : Page
             ElementTheme.Light => 2,
             _ => 0,
         };
-        VersionText.Text = $"Clarion {Version}";
+        VersionText.Text = $".Clarion {Version}";
         AutoUpdateSwitch.IsOn = _app.Settings.CheckForUpdates;
         AskRightsSwitch.IsOn = !App.Launch.StartLimited;
         _loading = false;
@@ -67,7 +67,7 @@ public sealed partial class SettingsPage : Page
         MonthlySwitch.IsEnabled = false;
         try
         {
-            var exe = Environment.ProcessPath ?? throw new InvalidOperationException("Clarion could not find its own program file.");
+            var exe = Environment.ProcessPath ?? throw new InvalidOperationException(".Clarion could not find its own program file.");
             var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             await Task.Run(() => { if (wantOn) _app.MonthlySchedule.Enable(exe, user, DateTime.Today); else _app.MonthlySchedule.Disable(); });
             _app.UpdateSettings(s => s with { MonthlyVerify = wantOn });
@@ -119,7 +119,7 @@ public sealed partial class SettingsPage : Page
     private async void OnSaveSetup(object sender, RoutedEventArgs e)
     {
         var ids = _app.AppliedIds();
-        var path = FileDialogs.Save(((App)Application.Current).WindowHandle, "Save my setup", "Clarion setup (*.json)|*.json", "my-clarion-setup.json");
+        var path = FileDialogs.Save(((App)Application.Current).WindowHandle, "Save my setup", ".Clarion setup (*.json)|*.json", "my-clarion-setup.json");
         if (path is null) return;
         try
         {
@@ -134,7 +134,7 @@ public sealed partial class SettingsPage : Page
 
     private async void OnLoadSetup(object sender, RoutedEventArgs e)
     {
-        var path = FileDialogs.Open(((App)Application.Current).WindowHandle, "Load a setup", "Clarion setup (*.json)|*.json");
+        var path = FileDialogs.Open(((App)Application.Current).WindowHandle, "Load a setup", ".Clarion setup (*.json)|*.json");
         if (path is null) return;
         var load = Clarion.Core.Profiles.ProfileFile.Load(path);
         if (load.Profile is null) { await Say("That file cannot be used", load.Error ?? "Unknown problem."); return; }
@@ -142,7 +142,7 @@ public sealed partial class SettingsPage : Page
         var (queued, unknown, notAvailable) = await _app.QueueIdsAsync(load.Profile.Tweaks);
         var text = $"{queued} settings were queued. Review them with Review and apply at the bottom.";
         if (notAvailable > 0) text += $" {notAvailable} are not available on this PC.";
-        if (unknown.Count > 0) text += $" {unknown.Count} are not known to this version of Clarion.";
+        if (unknown.Count > 0) text += $" {unknown.Count} are not known to this version of .Clarion.";
         await Say("Setup loaded", text);
     }
 

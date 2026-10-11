@@ -57,8 +57,8 @@ public sealed partial class TroubleshootPage : Page
     private void ExplainNothingFound(int hiddenByDate, DateTimeOffset? since)
     {
         NoneTitle.Text = hiddenByDate > 0
-            ? $"Nothing Clarion changed since {since!.Value:MMM d, yyyy} explains this"
-            : "Clarion did not change anything that explains this";
+            ? $"Nothing .Clarion changed since {since!.Value:MMM d, yyyy} explains this"
+            : ".Clarion did not change anything that explains this";
 
         var lines = new List<string>();
         if (hiddenByDate > 0)
@@ -76,7 +76,7 @@ public sealed partial class TroubleshootPage : Page
                 $"• This PC may be running a customized Windows image{imageName}. Those images remove or change parts of Windows before you ever install, and that can cause this on its own.",
             _ => "• A customized Windows image, if you installed one. They remove or change parts of Windows before you install.",
         });
-        lines.Add("• Another cleanup or privacy tool that ran before or after Clarion.");
+        lines.Add("• Another cleanup or privacy tool that ran before or after .Clarion.");
         lines.Add("• A driver or Windows update. Windows Update history shows what was installed and when.");
         NoneText.Text = string.Join("\n", lines);
     }

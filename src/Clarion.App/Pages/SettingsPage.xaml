@@ -19,9 +19,9 @@
             <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="20">
                 <StackPanel Spacing="8">
-                    <ToggleSwitch x:Name="AskRightsSwitch" Header="Ask for administrator rights when Clarion starts" OnContent="On" OffContent="Off" Toggled="OnAskRightsToggled" />
+                    <ToggleSwitch x:Name="AskRightsSwitch" Header="Ask for administrator rights when .Clarion starts" OnContent="On" OffContent="Off" Toggled="OnAskRightsToggled" />
                     <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                               Text="Most settings are machine wide, so changing them needs administrator rights, and Windows asks when Clarion starts. Turn this off to start without the prompt every time. Clarion then opens in the look and verify mode, and Home has a button to restart with administrator rights when you want to change something." />
+                               Text="Most settings are machine wide, so changing them needs administrator rights, and Windows asks when .Clarion starts. Turn this off to start without the prompt every time. .Clarion then opens in the look and verify mode, and Home has a button to restart with administrator rights when you want to change something." />
                 </StackPanel>
             </Border>
 
@@ -54,15 +54,15 @@
                 <StackPanel Spacing="10">
                     <TextBlock Text="Updates" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                               Text="Clarion does not update itself. It can tell you when a newer version is on GitHub, and you decide whether to download it." />
+                               Text=".Clarion does not update itself. It can tell you when a newer version is on GitHub, and you decide whether to download it." />
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <Button x:Name="CheckUpdateButton" Content="Check for updates now" Click="OnCheckUpdate" />
                         <ProgressRing x:Name="UpdateBusy" Width="18" Height="18" IsActive="False" />
                         <TextBlock x:Name="UpdateStatus" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
                     </StackPanel>
-                    <ToggleSwitch x:Name="AutoUpdateSwitch" Header="Also check when Clarion starts" OnContent="On" OffContent="Off" Toggled="OnAutoUpdateToggled" />
+                    <ToggleSwitch x:Name="AutoUpdateSwitch" Header="Also check when .Clarion starts" OnContent="On" OffContent="Off" Toggled="OnAutoUpdateToggled" />
                     <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}"
-                               Text="Off unless you turn it on. When it is on, Clarion asks github.com for the list of Clarion releases at most once a day. That is an ordinary web request, so GitHub sees your IP address, as with any web page. Nothing else about you or your PC is sent." />
+                               Text="Off unless you turn it on. When it is on, .Clarion asks github.com for the list of .Clarion releases at most once a day. That is an ordinary web request, so GitHub sees your IP address, as with any web page. Nothing else about you or your PC is sent." />
                 </StackPanel>
             </Border>
 
@@ -72,7 +72,7 @@
                 <StackPanel Spacing="10">
                     <TextBlock Text="Monthly check" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                               Text="Windows updates are when settings most often get undone. This adds a Windows scheduled task that checks the settings Clarion applied on the second Wednesday of each month, the day after Windows' monthly updates. If the PC was off it checks at the next start. The next time you open Clarion, Home tells you what changed back." />
+                               Text="Windows updates are when settings most often get undone. This adds a Windows scheduled task that checks the settings .Clarion applied on the second Wednesday of each month, the day after Windows' monthly updates. If the PC was off it checks at the next start. The next time you open .Clarion, Home tells you what changed back." />
                     <ToggleSwitch x:Name="MonthlySwitch" Header="Check my settings every month" OnContent="On" OffContent="Off" Toggled="OnMonthlyToggled" />
                     <TextBlock x:Name="MonthlyStatus" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}"
                                Text="The check only looks. It changes nothing and sends nothing anywhere. You can turn it off here, or delete the task called Monthly check in Task Scheduler." />
@@ -86,7 +86,7 @@
                     <TextBlock Text="About" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock x:Name="VersionText" Foreground="{ThemeResource ClTextMutedBrush}" FontSize="12" />
                     <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                               Text="Clarion has no telemetry and no account. It only goes onto the internet when you ask it to: the update check on this page, the Apps page, which runs winget, Microsoft's package manager, and links or problem reports you choose to open in your browser. Logs stay on this PC." />
+                               Text=".Clarion has no telemetry and no account. It only goes onto the internet when you ask it to: the update check on this page, the Apps page, which runs winget, Microsoft's package manager, and links or problem reports you choose to open in your browser. Logs stay on this PC." />
                     <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
                         <Button Content="Open log" Click="OnOpenLog" />
                     </StackPanel>

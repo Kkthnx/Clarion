@@ -54,7 +54,7 @@ public sealed partial class SafetyPage : Page
         Clarion.Core.Engine.TweakResult made;
         try
         {
-            made = await Task.Run(() => _app.Runtime.RestorePoints.CreateEnsuring($"Clarion {DateTime.Now:yyyy-MM-dd HH:mm} (made by hand)", turnOnProtection: false, Log.Write));
+            made = await Task.Run(() => _app.Runtime.RestorePoints.CreateEnsuring($".Clarion {DateTime.Now:yyyy-MM-dd HH:mm} (made by hand)", turnOnProtection: false, Log.Write));
         }
         finally
         {

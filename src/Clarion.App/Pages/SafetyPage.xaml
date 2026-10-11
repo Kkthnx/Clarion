@@ -9,7 +9,7 @@
             <StackPanel Spacing="4">
                 <TextBlock Text="Safety" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                           Text="Everything Clarion changed is recorded here with the value it replaced. Revert puts back what was really there." />
+                           Text="Everything .Clarion changed is recorded here with the value it replaced. Revert puts back what was really there." />
             </StackPanel>
 
             <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}"
@@ -17,7 +17,7 @@
                 <StackPanel Spacing="10">
                     <TextBlock Text="Restore points" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                               Text="A System Restore point is made before every batch. If Windows ever misbehaves, open System Restore and pick the Clarion point from before the change. From the Windows recovery screen you can reach the same tool under Advanced options." />
+                               Text="A System Restore point is made before every batch. If Windows ever misbehaves, open System Restore and pick the .Clarion point from before the change. From the Windows recovery screen you can reach the same tool under Advanced options." />
                     <ItemsControl x:Name="RestoreList">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="svc:RestoreRow">
@@ -36,13 +36,13 @@
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button x:Name="MakeRestore" Content="Make a restore point now" Click="OnMakeRestore" />
                         <Button Content="Open System Restore" Click="OnOpenRestore" />
-                        <Button Content="Open Clarion data folder" Click="OnOpenData" />
+                        <Button Content="Open .Clarion data folder" Click="OnOpenData" />
                     </StackPanel>
                 </StackPanel>
             </Border>
 
             <StackPanel Orientation="Horizontal" Spacing="12">
-                <TextBlock Text="Changes made by Clarion" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"
+                <TextBlock Text="Changes made by .Clarion" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"
                            Foreground="{ThemeResource ClTextPrimaryBrush}" />
                 <Button x:Name="RevertAll" Content="Queue revert for all" Click="OnRevertAll" />
             </StackPanel>

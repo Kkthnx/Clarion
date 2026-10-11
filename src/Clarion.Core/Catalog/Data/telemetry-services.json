@@ -28,7 +28,7 @@
       "DiagTrack is the Connected User Experiences and Telemetry service",
       "dmwappushservice is left alone: it starts only when asked, and Intune needs it",
       "None of the privacy settings turn off Windows Update",
-      "Windows may turn them back on after a big update and Clarion will flag it"
+      "Windows may turn them back on after a big update and .Clarion will flag it"
     ],
     "topic": "Diagnostics"
   },

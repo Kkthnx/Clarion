@@ -39,7 +39,7 @@ public sealed partial class WhatsNewPage : Page
         if (newer.Count > 0)
         {
             var latest = newer[0];
-            UpdateSubtitle.Text = $"Clarion {latest.Version}";
+            UpdateSubtitle.Text = $".Clarion {latest.Version}";
             FromChip.Text = current;
             ToChip.Text = latest.Version;
             ReleaseCount.Text = newer.Count == 1 ? "1 new release" : $"{newer.Count} new releases";
@@ -52,7 +52,7 @@ public sealed partial class WhatsNewPage : Page
         {
             var last = _app.Settings.LastUpdateCheck;
             StatusText.Text = last is null
-                ? "Clarion has not checked for updates. The button asks GitHub, and only when you press it."
+                ? ".Clarion has not checked for updates. The button asks GitHub, and only when you press it."
                 : $"You have the newest version ({current}). Last checked {last.Value.LocalDateTime:MMM d, h:mm tt}.";
         }
 

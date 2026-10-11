@@ -113,7 +113,7 @@ public static class WingetCodes
         unchecked((int)0x8A15000B) or unchecked((int)0x8A15004B) or unchecked((int)0x8A150045) or unchecked((int)0x8A150015) =>
             "winget could not open its package source. Check the internet connection, then try again.",
         unchecked((int)0x8A15005F) => "This app's installer cannot run without an install folder, and none is set for it here.",
-        unchecked((int)0x8A150056) => "This app's installer refuses to run with administrator rights, which Clarion needs for apps.",
+        unchecked((int)0x8A150056) => "This app's installer refuses to run with administrator rights, which .Clarion needs for apps.",
         unchecked((int)0x8A150008) => "The download failed. Check the internet connection, then try again.",
         unchecked((int)0x8A150086) => "The download came back empty. Check the internet connection, then try again.",
         unchecked((int)0x8A150049) => "The Windows Installer part of the setup failed.",

@@ -65,7 +65,7 @@
   {
     "id": "updates-behave",
     "title": "Windows Update waits, skips drivers or does not restart when I expect",
-    "tip": "Clarion never turns Windows Update off. These settings only delay feature updates, skip driver updates or stop automatic restarts.",
+    "tip": ".Clarion never turns Windows Update off. These settings only delay feature updates, skip driver updates or stop automatic restarts.",
     "topics": ["Updates"],
     "tweakIds": ["network.delivery-optimization-http"]
   },
@@ -99,8 +99,8 @@
   },
   {
     "id": "installed-app",
-    "title": "An app I installed with Clarion is missing, out of date or acts differently",
-    "tip": "Apps here come from winget. Turning one off runs its own uninstaller, and Verify shows an app that was removed since. Some installers update themselves, so the version can change without Clarion.",
+    "title": "An app I installed with .Clarion is missing, out of date or acts differently",
+    "tip": "Apps here come from winget. Turning one off runs its own uninstaller, and Verify shows an app that was removed since. Some installers update themselves, so the version can change without .Clarion.",
     "topics": ["Browsers", "Communication", "Development", "Games", "Media", "Security and privacy", "System tools", "Files and cloud", "Office and notes"],
     "tweakIds": []
   },

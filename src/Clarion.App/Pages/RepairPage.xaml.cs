@@ -69,7 +69,7 @@ public sealed partial class RepairPage : Page
         while (true)
         {
             _app.Status = "Creating a restore point";
-            var rp = await Task.Run(() => _app.Runtime.RestorePoints.CreateEnsuring($"Clarion {item.Name}", turnOn, Log.Write));
+            var rp = await Task.Run(() => _app.Runtime.RestorePoints.CreateEnsuring($".Clarion {item.Name}", turnOn, Log.Write));
             if (rp.Success) return true;
 
             var dialog = new ContentDialog
@@ -77,7 +77,7 @@ public sealed partial class RepairPage : Page
                 Title = "No restore point",
                 Content = rp.Error + (turnOn
                     ? "\n\nSystem Protection could not be turned on, or the restore point still failed. A policy on this PC can block it."
-                    : "\n\nSystem Protection is often off on a new Windows install. Clarion can turn it on for your system drive and try again. Restore points keep some disk space."),
+                    : "\n\nSystem Protection is often off on a new Windows install. .Clarion can turn it on for your system drive and try again. Restore points keep some disk space."),
                 PrimaryButtonText = turnOn ? "" : "Turn on System Protection and retry",
                 SecondaryButtonText = "Run without one",
                 CloseButtonText = "Cancel",

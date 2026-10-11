@@ -25,7 +25,7 @@ public sealed class LaunchPreference(string path)
             if (on)
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-                File.WriteAllText(path, "Clarion starts without asking for administrator rights while this file exists.\n");
+                File.WriteAllText(path, ".Clarion starts without asking for administrator rights while this file exists.\n");
             }
             else if (File.Exists(path))
             {

@@ -9,7 +9,7 @@
             <StackPanel Spacing="4">
                 <TextBlock Text="What broke" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                           Text="Pick what stopped working. Clarion lists the changes it made that could explain it, newest first, so you can undo them one at a time." />
+                           Text="Pick what stopped working. .Clarion lists the changes it made that could explain it, newest first, so you can undo them one at a time." />
             </StackPanel>
 
             <ComboBox x:Name="SymptomBox" Width="640" PlaceholderText="What is not working?" AutomationProperties.Name="What is not working" SelectionChanged="OnSymptomChanged" />
@@ -21,7 +21,7 @@
             </StackPanel>
 
             <TextBlock x:Name="HintText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}"
-                       Text="Not sure? Start with the problem you noticed. Clarion only lists changes it made itself, so anything it did not touch will not appear here. The Safety page shows everything Clarion has changed." />
+                       Text="Not sure? Start with the problem you noticed. .Clarion only lists changes it made itself, so anything it did not touch will not appear here. The Safety page shows everything .Clarion has changed." />
 
             <TextBlock x:Name="TipText" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ClTextSecondaryBrush}" />
 

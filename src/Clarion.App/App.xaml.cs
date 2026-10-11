@@ -73,7 +73,7 @@ public partial class App : Application
         if (!TakeInstanceLock())
         {
             // A second launch should show the copy that is already running, not just disappear.
-            Services.Shell.BringExistingToFront("Clarion");
+            Services.Shell.BringExistingToFront(".Clarion");
             Exit();
             return;
         }

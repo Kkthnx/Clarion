@@ -46,7 +46,7 @@ public static class HeadlessRunner
                 Say(CliOptions.HelpText);
                 return o.Error is null ? 0 : 2;
             case CliMode.Version:
-                Say($"Clarion {Version}");
+                Say($".Clarion {Version}");
                 return 0;
             case CliMode.ListPresets:
                 foreach (var (name, ids) in CatalogLoader.LoadPresets()) Say($"{name} ({ids.Count} settings)");
@@ -69,7 +69,7 @@ public static class HeadlessRunner
 
         if (!WindowsMachine.IsElevated())
         {
-            Say("Clarion needs administrator rights. Start it from an elevated terminal.");
+            Say(".Clarion needs administrator rights. Start it from an elevated terminal.");
             return 3;
         }
 

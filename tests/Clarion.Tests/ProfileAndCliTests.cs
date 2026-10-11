@@ -72,8 +72,8 @@ public sealed class ProfileAndCliTests
     }
 
     [Theory]
-    [InlineData(0, "older Clarion")]
-    [InlineData(99, "newer Clarion")]
+    [InlineData(0, "older .Clarion")]
+    [InlineData(99, "newer .Clarion")]
     public void A_setup_file_from_another_format_fails_loudly_and_says_which_way(int format, string expected)
     {
         var json = "{\"format\":" + format + ",\"app\":\"Clarion\",\"version\":\"0.0.1\",\"created\":\"2026-01-01T00:00:00Z\",\"tweaks\":[\"ok.id\"]}";
