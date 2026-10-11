@@ -351,6 +351,45 @@
                     ]
     },
     {
+        "id":  "app.element",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Communication",
+        "name":  "Element",
+        "summary":  "A chat app for the open Matrix network.",
+        "what":  "Installs Element with winget, pinned to the package Element.Element in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Element without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if the people you talk to use it. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: Element",
+                      "Licence: AGPL-3.0-only or GPL-3.0-only, as winget\u0027s package record states it",
+                      "The installer is downloaded from packages.element.io and checked against a checksum",
+                      "Installer type: exe, package ID Element.Element"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Element.Element"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Element.Element"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/Element/Element",
+                        "https://element.io/download",
+                        "https://github.com/element-hq/element-desktop/blob/HEAD/LICENSE-GPL-3.0"
+                    ]
+    },
+    {
         "id":  "app.signal",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -468,6 +507,45 @@
                     ]
     },
     {
+        "id":  "app.thunderbird",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Communication",
+        "name":  "Thunderbird",
+        "summary":  "Mozilla\u0027s email app, with calendar and contacts.",
+        "what":  "Installs Thunderbird with winget, pinned to the package Mozilla.Thunderbird in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Thunderbird without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if the people you talk to use it. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: Mozilla",
+                      "Licence: MPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from download-installer.cdn.mozilla.net and checked against a checksum",
+                      "Installer type: nullsoft, package ID Mozilla.Thunderbird"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Mozilla.Thunderbird"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Mozilla.Thunderbird"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Mozilla/Thunderbird",
+                        "https://www.thunderbird.net/",
+                        "https://www.mozilla.org/MPL/2.0"
+                    ]
+    },
+    {
         "id":  "app.zoom",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -507,6 +585,44 @@
                     ]
     },
     {
+        "id":  "app.dotnet-sdk",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  ".NET 9 SDK",
+        "summary":  "Microsoft\u0027s kit for building .NET 9 apps.",
+        "what":  "Installs .NET 9 SDK with winget, pinned to the package Microsoft.DotNet.SDK.9 in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get .NET 9 SDK without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: Microsoft Corporation",
+                      "Licence: MIT, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.microsoft.com and checked against a checksum",
+                      "Installer type: burn, package ID Microsoft.DotNet.SDK.9"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Microsoft.DotNet.SDK.9"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Microsoft.DotNet.SDK.9"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet/SDK/9",
+                        "https://dotnet.microsoft.com"
+                    ]
+    },
+    {
         "id":  "app.cmake",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -543,6 +659,45 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/k/Kitware/CMake",
                         "https://cmake.org/",
                         "https://github.com/Kitware/CMake/blob/HEAD/LICENSE.rst"
+                    ]
+    },
+    {
+        "id":  "app.dbeaver",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  "DBeaver Community",
+        "summary":  "A client for working with many kinds of databases.",
+        "what":  "Installs DBeaver Community with winget, pinned to the package DBeaver.DBeaver.Community in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get DBeaver Community without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: DBeaver Corp",
+                      "Licence: Apache-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: nullsoft, package ID DBeaver.DBeaver.Community"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "DBeaver.DBeaver.Community"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "DBeaver.DBeaver.Community"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/d/DBeaver/DBeaver/Community",
+                        "https://dbeaver.io/download/",
+                        "https://github.com/dbeaver/dbeaver/blob/HEAD/LICENSE.md"
                     ]
     },
     {
@@ -624,6 +779,45 @@
                     ]
     },
     {
+        "id":  "app.github-cli",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  "GitHub CLI",
+        "summary":  "GitHub pull requests, issues and releases from the command line.",
+        "what":  "Installs GitHub CLI with winget, pinned to the package GitHub.cli in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get GitHub CLI without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: GitHub, Inc.",
+                      "Licence: MIT, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: wix, package ID GitHub.cli"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "GitHub.cli"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "GitHub.cli"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GitHub/cli",
+                        "https://cli.github.com/",
+                        "https://github.com/cli/cli/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
         "id":  "app.github-desktop",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -699,6 +893,84 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GoLang/Go",
                         "https://go.dev/dl/",
                         "https://github.com/golang/go/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.temurin-21",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  "Java 21 (Temurin JDK)",
+        "summary":  "A free build of the Java 21 development kit.",
+        "what":  "Installs Java 21 (Temurin JDK) with winget, pinned to the package EclipseAdoptium.Temurin.21.JDK in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Java 21 (Temurin JDK) without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: Eclipse Adoptium",
+                      "Licence: GPL-2.0 with Classpath Exception, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: wix, package ID EclipseAdoptium.Temurin.21.JDK"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "EclipseAdoptium.Temurin.21.JDK"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "EclipseAdoptium.Temurin.21.JDK"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EclipseAdoptium/Temurin/21/JDK",
+                        "https://adoptium.net/",
+                        "https://github.com/adoptium/jdk/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.jetbrains-toolbox",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  "JetBrains Toolbox",
+        "summary":  "Installs and updates JetBrains code editors such as IntelliJ and PyCharm.",
+        "what":  "Installs JetBrains Toolbox with winget, pinned to the package JetBrains.Toolbox in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get JetBrains Toolbox without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: JetBrains",
+                      "Licence: Freeware, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.jetbrains.com and checked against a checksum",
+                      "Installer type: exe, package ID JetBrains.Toolbox"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "JetBrains.Toolbox"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "JetBrains.Toolbox"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/j/JetBrains/Toolbox",
+                        "https://www.jetbrains.com/toolbox-app/",
+                        "https://www.jetbrains.com/legal/docs/toolbox/user/"
                     ]
     },
     {
@@ -897,6 +1169,84 @@
                     ]
     },
     {
+        "id":  "app.powershell",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  "PowerShell 7",
+        "summary":  "The current cross platform PowerShell, next to the one built into Windows.",
+        "what":  "Installs PowerShell 7 with winget, pinned to the package Microsoft.PowerShell in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get PowerShell 7 without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: Microsoft Corporation",
+                      "Licence: MIT, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: msix, package ID Microsoft.PowerShell"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Microsoft.PowerShell"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Microsoft.PowerShell"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/PowerShell",
+                        "https://microsoft.com/PowerShell",
+                        "https://github.com/PowerShell/PowerShell/blob/master/LICENSE.txt"
+                    ]
+    },
+    {
+        "id":  "app.python",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  "Python 3.13",
+        "summary":  "The Python language and its tools, version 3.13.",
+        "what":  "Installs Python 3.13 with winget, pinned to the package Python.Python.3.13 in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Python 3.13 without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: Python Software Foundation",
+                      "Licence: PSF-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from www.python.org and checked against a checksum",
+                      "Installer type: burn, package ID Python.Python.3.13"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Python.Python.3.13"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Python.Python.3.13"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/Python/Python/3/13",
+                        "https://www.python.org/",
+                        "https://docs.python.org/3/license.html"
+                    ]
+    },
+    {
         "id":  "app.rust",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -933,6 +1283,45 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/r/Rustlang/Rust/MSVC",
                         "https://www.rust-lang.org/",
                         "https://github.com/rust-lang/rust/blob/HEAD/COPYRIGHT"
+                    ]
+    },
+    {
+        "id":  "app.sublime-text",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  "Sublime Text 4",
+        "summary":  "A fast text and code editor, free to try.",
+        "what":  "Installs Sublime Text 4 with winget, pinned to the package SublimeHQ.SublimeText.4 in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Sublime Text 4 without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: Sublime HQ Pty Ltd",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.sublimetext.com and checked against a checksum",
+                      "Installer type: inno, package ID SublimeHQ.SublimeText.4"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "SublimeHQ.SublimeText.4"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "SublimeHQ.SublimeText.4"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/s/SublimeHQ/SublimeText/4",
+                        "https://www.sublimetext.com/",
+                        "https://www.sublimetext.com/eula"
                     ]
     },
     {
@@ -1053,6 +1442,84 @@
                     ]
     },
     {
+        "id":  "app.windows-terminal",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  "Windows Terminal",
+        "summary":  "Microsoft\u0027s tabbed terminal for PowerShell, Command Prompt and more.",
+        "what":  "Installs Windows Terminal with winget, pinned to the package Microsoft.WindowsTerminal in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Windows Terminal without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: Microsoft Corporation",
+                      "Licence: MIT, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: msix, package ID Microsoft.WindowsTerminal"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Microsoft.WindowsTerminal"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Microsoft.WindowsTerminal"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/WindowsTerminal",
+                        "https://docs.microsoft.com/windows/terminal",
+                        "https://github.com/microsoft/terminal/blob/main/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.winscp",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Development",
+        "name":  "WinSCP",
+        "summary":  "Copies files to servers over SFTP and SCP.",
+        "what":  "Installs WinSCP with winget, pinned to the package WinSCP.WinSCP in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get WinSCP without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write code with it. Skip it if you do not.",
+        "facts":  [
+                      "Publisher: Martin Prikryl",
+                      "Licence: GPL-3.0-or-later, as winget\u0027s package record states it",
+                      "The installer is downloaded from sourceforge.net and checked against a checksum",
+                      "Installer type: inno, package ID WinSCP.WinSCP"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "WinSCP.WinSCP"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "WinSCP.WinSCP"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/w/WinSCP/WinSCP",
+                        "https://winscp.net/",
+                        "https://github.com/winscp/winscp/blob/HEAD/license.txt"
+                    ]
+    },
+    {
         "id":  "app.battle-net",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -1070,13 +1537,15 @@
                       "Publisher: Blizzard Entertainment",
                       "Licence: Proprietary, as winget\u0027s package record states it",
                       "The installer is downloaded from downloader.battle.net and checked against a checksum",
-                      "Installer type: exe, package ID Blizzard.BattleNet"
+                      "Installer type: exe, package ID Blizzard.BattleNet",
+                      "Installs into Program Files (x86)\\Battle.net, the folder the winget package names, because its installer cannot run without one"
                   ],
         "scope":  "Machine",
         "apply":  [
                       {
                           "type":  "winget.install",
-                          "id":  "Blizzard.BattleNet"
+                          "id":  "Blizzard.BattleNet",
+                          "location":  "%ProgramFiles(x86)%\\Battle.net"
                       }
                   ],
         "undo":  [
@@ -1206,6 +1675,83 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/n/Nvidia/GeForceNow",
                         "https://www.nvidia.com/en-us/geforce-now",
                         "https://www.nvidia.com/en-us/geforce-now/terms-of-use"
+                    ]
+    },
+    {
+        "id":  "app.gog-galaxy",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Games",
+        "name":  "GOG Galaxy",
+        "summary":  "The GOG store and launcher, for games without copy protection.",
+        "what":  "Installs GOG Galaxy with winget, pinned to the package GOG.Galaxy in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get GOG Galaxy without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you play through it. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: GOG.com",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from content-system.gog.com and checked against a checksum",
+                      "Installer type: inno, package ID GOG.Galaxy"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "GOG.Galaxy"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "GOG.Galaxy"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GOG/Galaxy",
+                        "https://www.gog.com/galaxy"
+                    ]
+    },
+    {
+        "id":  "app.heroic",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Games",
+        "name":  "Heroic Games Launcher",
+        "summary":  "An open source launcher for Epic, GOG and Amazon games.",
+        "what":  "Installs Heroic Games Launcher with winget, pinned to the package HeroicGamesLauncher.HeroicGamesLauncher in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Heroic Games Launcher without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you play through it. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: Heroic Games Launcher",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: nullsoft, package ID HeroicGamesLauncher.HeroicGamesLauncher"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "HeroicGamesLauncher.HeroicGamesLauncher"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "HeroicGamesLauncher.HeroicGamesLauncher"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/h/HeroicGamesLauncher/HeroicGamesLauncher",
+                        "https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher",
+                        "https://raw.githubusercontent.com/Heroic-Games-Launcher/HeroicGamesLauncher/main/COPYING"
                     ]
     },
     {
@@ -1404,6 +1950,45 @@
                     ]
     },
     {
+        "id":  "app.retroarch",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Games",
+        "name":  "RetroArch",
+        "summary":  "One front end for many classic game console emulators.",
+        "what":  "Installs RetroArch with winget, pinned to the package Libretro.RetroArch in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get RetroArch without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you play through it. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: Libretro",
+                      "Licence: GPL-3.0-only, as winget\u0027s package record states it",
+                      "The installer is downloaded from buildbot.libretro.com and checked against a checksum",
+                      "Installer type: nullsoft, package ID Libretro.RetroArch"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Libretro.RetroArch"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Libretro.RetroArch"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/l/Libretro/RetroArch",
+                        "https://www.retroarch.com/?page=platforms",
+                        "https://github.com/libretro/RetroArch/blob/master/COPYING"
+                    ]
+    },
+    {
         "id":  "app.steam",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -1479,6 +2064,45 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/l/LizardByte/Sunshine",
                         "https://github.com/LizardByte/Sunshine",
                         "https://github.com/LizardByte/Sunshine/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.ubisoft-connect",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Games",
+        "name":  "Ubisoft Connect",
+        "summary":  "Ubisoft\u0027s game store and launcher.",
+        "what":  "Installs Ubisoft Connect with winget, pinned to the package Ubisoft.Connect in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Ubisoft Connect without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you play through it. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: Ubisoft",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from static3.cdn.ubi.com and checked against a checksum",
+                      "Installer type: nullsoft, package ID Ubisoft.Connect"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Ubisoft.Connect"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Ubisoft.Connect"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/u/Ubisoft/Connect",
+                        "https://ubisoftconnect.com/",
+                        "https://legal.ubi.com/LegalInfoUbisoftEMEA"
                     ]
     },
     {
@@ -1597,6 +2221,45 @@
                     ]
     },
     {
+        "id":  "app.ffmpeg",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "FFmpeg",
+        "summary":  "The command line tool that converts and processes audio and video.",
+        "what":  "Installs FFmpeg with winget, pinned to the package Gyan.FFmpeg in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get FFmpeg without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Gyan",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: portable, package ID Gyan.FFmpeg"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Gyan.FFmpeg"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Gyan.FFmpeg"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Gyan/FFmpeg",
+                        "https://www.gyan.dev/ffmpeg/builds/",
+                        "https://www.ffmpeg.org/legal.html"
+                    ]
+    },
+    {
         "id":  "app.file-converter",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -1675,6 +2338,201 @@
                     ]
     },
     {
+        "id":  "app.gimp",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "GIMP",
+        "summary":  "A full featured image editor.",
+        "what":  "Installs GIMP with winget, pinned to the package GIMP.GIMP.3 in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get GIMP without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: The GIMP Team",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.gimp.org and checked against a checksum",
+                      "Installer type: inno, package ID GIMP.GIMP.3"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "GIMP.GIMP.3"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "GIMP.GIMP.3"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GIMP/GIMP/3",
+                        "https://www.gimp.org/downloads/",
+                        "https://www.gimp.org/about/COPYING"
+                    ]
+    },
+    {
+        "id":  "app.greenshot",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "Greenshot",
+        "summary":  "Screenshots with quick markup.",
+        "what":  "Installs Greenshot with winget, pinned to the package Greenshot.Greenshot in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Greenshot without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Greenshot",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: inno, package ID Greenshot.Greenshot"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Greenshot.Greenshot"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Greenshot.Greenshot"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Greenshot/Greenshot",
+                        "https://getgreenshot.org/",
+                        "https://github.com/greenshot/greenshot/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.handbrake",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "HandBrake",
+        "summary":  "Converts video between formats.",
+        "what":  "Installs HandBrake with winget, pinned to the package HandBrake.HandBrake in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get HandBrake without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: The HandBrake Team",
+                      "Licence: GPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: nullsoft, package ID HandBrake.HandBrake"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "HandBrake.HandBrake"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "HandBrake.HandBrake"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/h/HandBrake/HandBrake",
+                        "https://handbrake.fr/",
+                        "https://github.com/HandBrake/HandBrake/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.imageglass",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "ImageGlass",
+        "summary":  "A light image viewer.",
+        "what":  "Installs ImageGlass with winget, pinned to the package DuongDieuPhap.ImageGlass in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get ImageGlass without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Duong Dieu Phap",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: msix, package ID DuongDieuPhap.ImageGlass"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "DuongDieuPhap.ImageGlass"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "DuongDieuPhap.ImageGlass"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/d/DuongDieuPhap/ImageGlass",
+                        "https://imageglass.org/",
+                        "https://imageglass.org/license"
+                    ]
+    },
+    {
+        "id":  "app.inkscape",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "Inkscape",
+        "summary":  "A vector graphics editor.",
+        "what":  "Installs Inkscape with winget, pinned to the package Inkscape.Inkscape in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Inkscape without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Inkscape",
+                      "Licence: GPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from media.inkscape.org and checked against a checksum",
+                      "Installer type: wix, package ID Inkscape.Inkscape"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Inkscape.Inkscape"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Inkscape.Inkscape"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/i/Inkscape/Inkscape",
+                        "https://inkscape.org/release/",
+                        "https://inkscape.org/about/license/"
+                    ]
+    },
+    {
         "id":  "app.irfanview",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -1711,6 +2569,162 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/i/IrfanSkiljan/IrfanView",
                         "https://www.irfanview.com/",
                         "https://www.irfanview.com/eula.htm"
+                    ]
+    },
+    {
+        "id":  "app.kdenlive",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "Kdenlive",
+        "summary":  "A video editor with multiple tracks.",
+        "what":  "Installs Kdenlive with winget, pinned to the package KDE.Kdenlive in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Kdenlive without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: KDE e.V.",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.kde.org and checked against a checksum",
+                      "Installer type: nullsoft, package ID KDE.Kdenlive"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "KDE.Kdenlive"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "KDE.Kdenlive"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/k/KDE/Kdenlive",
+                        "https://kdenlive.org/",
+                        "https://invent.kde.org/multimedia/kdenlive/-/blob/HEAD/COPYING"
+                    ]
+    },
+    {
+        "id":  "app.krita",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "Krita",
+        "summary":  "A painting and drawing app.",
+        "what":  "Installs Krita with winget, pinned to the package KDE.Krita in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Krita without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Krita Foundation",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.kde.org and checked against a checksum",
+                      "Installer type: nullsoft, package ID KDE.Krita"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "KDE.Krita"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "KDE.Krita"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/k/KDE/Krita",
+                        "https://krita.org/",
+                        "https://krita.org/en/about/license/"
+                    ]
+    },
+    {
+        "id":  "app.mkvtoolnix",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "MKVToolNix",
+        "summary":  "Edits and combines the parts of MKV video files.",
+        "what":  "Installs MKVToolNix with winget, pinned to the package MoritzBunkus.MKVToolNix in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get MKVToolNix without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Moritz Bunkus",
+                      "Licence: GPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from mkvtoolnix.download and checked against a checksum",
+                      "Installer type: nullsoft, package ID MoritzBunkus.MKVToolNix"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "MoritzBunkus.MKVToolNix"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "MoritzBunkus.MKVToolNix"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/MoritzBunkus/MKVToolNix",
+                        "https://mkvtoolnix.download/",
+                        "https://gitlab.com/mbunkus/mkvtoolnix/-/blob/main/COPYING"
+                    ]
+    },
+    {
+        "id":  "app.mpc-hc",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "MPC-HC",
+        "summary":  "A light video player.",
+        "what":  "Installs MPC-HC with winget, pinned to the package clsid2.mpc-hc in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get MPC-HC without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: MPC-HC Team",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: inno, package ID clsid2.mpc-hc"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "clsid2.mpc-hc"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "clsid2.mpc-hc"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/c/clsid2/mpc-hc",
+                        "https://github.com/clsid2/mpc-hc",
+                        "https://github.com/clsid2/mpc-hc/blob/HEAD/COPYING.txt"
                     ]
     },
     {
@@ -1870,6 +2884,45 @@
                     ]
     },
     {
+        "id":  "app.yt-dlp",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Media",
+        "name":  "yt-dlp",
+        "summary":  "A command line downloader for video and audio from many sites.",
+        "what":  "Installs yt-dlp with winget, pinned to the package yt-dlp.yt-dlp in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get yt-dlp without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for the job it does. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: yt-dlp",
+                      "Licence: Unlicense, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: portable, package ID yt-dlp.yt-dlp"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "yt-dlp.yt-dlp"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "yt-dlp.yt-dlp"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/y/yt-dlp/yt-dlp",
+                        "https://github.com/yt-dlp/yt-dlp",
+                        "https://github.com/yt-dlp/yt-dlp/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
         "id":  "app.bitwarden",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -1909,6 +2962,84 @@
                     ]
     },
     {
+        "id":  "app.cryptomator",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Security and privacy",
+        "name":  "Cryptomator",
+        "summary":  "Encrypts the files you keep in cloud storage.",
+        "what":  "Installs Cryptomator with winget, pinned to the package Cryptomator.Cryptomator in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Cryptomator without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you use the service or want the tool. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: Skymatic GmbH",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: wix, package ID Cryptomator.Cryptomator"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Cryptomator.Cryptomator"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Cryptomator.Cryptomator"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/c/Cryptomator/Cryptomator",
+                        "https://cryptomator.org/",
+                        "https://github.com/cryptomator/cryptomator/blob/HEAD/LICENSE.txt"
+                    ]
+    },
+    {
+        "id":  "app.keepassxc",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Security and privacy",
+        "name":  "KeePassXC",
+        "summary":  "A password manager that keeps your passwords in a file you own.",
+        "what":  "Installs KeePassXC with winget, pinned to the package KeePassXCTeam.KeePassXC in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get KeePassXC without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you use the service or want the tool. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: KeePassXC Team",
+                      "Licence: GPL-2.0-or-later, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: wix, package ID KeePassXCTeam.KeePassXC"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "KeePassXCTeam.KeePassXC"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "KeePassXCTeam.KeePassXC"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/k/KeePassXCTeam/KeePassXC",
+                        "https://keepassxc.org/",
+                        "https://github.com/keepassxreboot/keepassxc/blob/HEAD/COPYING"
+                    ]
+    },
+    {
         "id":  "app.mullvad-vpn",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -1945,6 +3076,84 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/MullvadVPN/MullvadVPN",
                         "https://mullvad.net/",
                         "https://github.com/mullvad/mullvadvpn-app/blob/HEAD/LICENSE.md"
+                    ]
+    },
+    {
+        "id":  "app.openvpn-connect",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Security and privacy",
+        "name":  "OpenVPN Connect",
+        "summary":  "The official client for OpenVPN servers.",
+        "what":  "Installs OpenVPN Connect with winget, pinned to the package OpenVPNTechnologies.OpenVPNConnect in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get OpenVPN Connect without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you use the service or want the tool. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: OpenVPN Inc.",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from packages.openvpn.net and checked against a checksum",
+                      "Installer type: wix, package ID OpenVPNTechnologies.OpenVPNConnect"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "OpenVPNTechnologies.OpenVPNConnect"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "OpenVPNTechnologies.OpenVPNConnect"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/o/OpenVPNTechnologies/OpenVPNConnect",
+                        "https://openvpn.net/client/",
+                        "https://openvpn.net/legal/"
+                    ]
+    },
+    {
+        "id":  "app.proton-pass",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Security and privacy",
+        "name":  "Proton Pass",
+        "summary":  "The password manager from Proton.",
+        "what":  "Installs Proton Pass with winget, pinned to the package Proton.ProtonPass in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Proton Pass without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you use the service or want the tool. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: Proton AG",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from proton.me and checked against a checksum",
+                      "Installer type: msix, package ID Proton.ProtonPass"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Proton.ProtonPass"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Proton.ProtonPass"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/Proton/ProtonPass",
+                        "https://proton.me/pass",
+                        "https://github.com/protonpass/proton-pass-common/blob/HEAD/LICENSE"
                     ]
     },
     {
@@ -2026,6 +3235,122 @@
                     ]
     },
     {
+        "id":  "app.veracrypt",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Security and privacy",
+        "name":  "VeraCrypt",
+        "summary":  "Encrypts whole drives and creates encrypted file containers.",
+        "what":  "Installs VeraCrypt with winget, pinned to the package IDRIX.VeraCrypt in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get VeraCrypt without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you use the service or want the tool. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: IDRIX",
+                      "Licence: Apache 2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from launchpad.net and checked against a checksum",
+                      "Installer type: wix, package ID IDRIX.VeraCrypt"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "IDRIX.VeraCrypt"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "IDRIX.VeraCrypt"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/i/IDRIX/VeraCrypt",
+                        "https://veracrypt.io/",
+                        "https://veracrypt.io/en/VeraCrypt%20License.html"
+                    ]
+    },
+    {
+        "id":  "app.wireguard",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Security and privacy",
+        "name":  "WireGuard",
+        "summary":  "A small, fast VPN client.",
+        "what":  "Installs WireGuard with winget, pinned to the package WireGuard.WireGuard in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get WireGuard without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you use the service or want the tool. Skip it if you already have it.",
+        "facts":  [
+                      "Publisher: WireGuard LLC",
+                      "Licence: MIT, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.wireguard.com and checked against a checksum",
+                      "Installer type: wix, package ID WireGuard.WireGuard"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "WireGuard.WireGuard"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "WireGuard.WireGuard"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/w/WireGuard/WireGuard",
+                        "https://www.wireguard.com/install/",
+                        "https://git.zx2c4.com/wireguard-windows/tree/COPYING"
+                    ]
+    },
+    {
+        "id":  "app.autohotkey",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "AutoHotkey",
+        "summary":  "A scripting language for keyboard shortcuts and automation.",
+        "what":  "Installs AutoHotkey with winget, pinned to the package AutoHotkey.AutoHotkey in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get AutoHotkey without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: AutoHotkey Foundation LLC",
+                      "Licence: GPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: exe, package ID AutoHotkey.AutoHotkey"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "AutoHotkey.AutoHotkey"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "AutoHotkey.AutoHotkey"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/a/AutoHotkey/AutoHotkey",
+                        "https://github.com/AutoHotkey/AutoHotkey/blob/alpha/license.txt"
+                    ]
+    },
+    {
         "id":  "app.autoruns",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -2065,6 +3390,45 @@
                     ]
     },
     {
+        "id":  "app.balena-etcher",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "balenaEtcher",
+        "summary":  "Writes disk images to USB drives and SD cards.",
+        "what":  "Installs balenaEtcher with winget, pinned to the package Balena.Etcher in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get balenaEtcher without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Balena Ltd. \u003chello@balena.io\u003e",
+                      "Licence: Apache-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: exe, package ID Balena.Etcher"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Balena.Etcher"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Balena.Etcher"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/b/Balena/Etcher",
+                        "https://etcher.balena.io/",
+                        "https://github.com/balena-io/etcher/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
         "id":  "app.bulk-crap-uninstaller",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -2101,6 +3465,123 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/k/Klocman/BulkCrapUninstaller",
                         "https://www.bcuninstaller.com/",
                         "https://github.com/BCUninstaller/Bulk-Crap-Uninstaller/blob/HEAD/Licence.txt"
+                    ]
+    },
+    {
+        "id":  "app.cpu-z",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "CPU-Z",
+        "summary":  "Shows details about the processor, memory and motherboard.",
+        "what":  "Installs CPU-Z with winget, pinned to the package CPUID.CPU-Z in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get CPU-Z without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: CPUID, Inc.",
+                      "Licence: Freeware, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.cpuid.com and checked against a checksum",
+                      "Installer type: inno, package ID CPUID.CPU-Z"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "CPUID.CPU-Z"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "CPUID.CPU-Z"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/c/CPUID/CPU-Z",
+                        "https://www.cpuid.com/softwares/cpu-z.html",
+                        "https://www.cpuid.com/terms-of-service.html"
+                    ]
+    },
+    {
+        "id":  "app.crystaldiskinfo",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "CrystalDiskInfo",
+        "summary":  "Shows the health of hard drives and SSDs.",
+        "what":  "Installs CrystalDiskInfo with winget, pinned to the package CrystalDewWorld.CrystalDiskInfo in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get CrystalDiskInfo without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Crystal Dew World",
+                      "Licence: MIT, as winget\u0027s package record states it",
+                      "The installer is downloaded from sourceforge.net and checked against a checksum",
+                      "Installer type: inno, package ID CrystalDewWorld.CrystalDiskInfo"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "CrystalDewWorld.CrystalDiskInfo"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "CrystalDewWorld.CrystalDiskInfo"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/c/CrystalDewWorld/CrystalDiskInfo",
+                        "https://crystalmark.info/en/software/crystaldiskinfo/",
+                        "https://crystalmark.info/en/software/crystaldiskinfo/crystaldiskinfo-license/"
+                    ]
+    },
+    {
+        "id":  "app.crystaldiskmark",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "CrystalDiskMark",
+        "summary":  "Measures how fast a drive reads and writes.",
+        "what":  "Installs CrystalDiskMark with winget, pinned to the package CrystalDewWorld.CrystalDiskMark in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get CrystalDiskMark without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Crystal Dew World",
+                      "Licence: MIT, as winget\u0027s package record states it",
+                      "The installer is downloaded from sourceforge.net and checked against a checksum",
+                      "Installer type: inno, package ID CrystalDewWorld.CrystalDiskMark"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "CrystalDewWorld.CrystalDiskMark"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "CrystalDewWorld.CrystalDiskMark"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/c/CrystalDewWorld/CrystalDiskMark",
+                        "https://crystalmark.info/en/software/crystaldiskmark/",
+                        "https://crystalmark.info/en/software/crystaldiskmark/crystaldiskmark-license/"
                     ]
     },
     {
@@ -2182,6 +3663,84 @@
                     ]
     },
     {
+        "id":  "app.fancontrol",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "FanControl",
+        "summary":  "Sets fan speeds from temperature curves.",
+        "what":  "Installs FanControl with winget, pinned to the package Rem0o.FanControl in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get FanControl without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Remi Mercier Software Inc",
+                      "Licence: Freeware, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: inno, package ID Rem0o.FanControl"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Rem0o.FanControl"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Rem0o.FanControl"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/r/Rem0o/FanControl",
+                        "https://getfancontrol.com/",
+                        "https://github.com/Rem0o/FanControl.Releases/blob/master/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.flow-launcher",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "Flow Launcher",
+        "summary":  "A keyboard launcher for apps, files and web searches.",
+        "what":  "Installs Flow Launcher with winget, pinned to the package Flow-Launcher.Flow-Launcher in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Flow Launcher without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Flow-Launcher Team",
+                      "Licence: MIT, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: exe, package ID Flow-Launcher.Flow-Launcher"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Flow-Launcher.Flow-Launcher"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Flow-Launcher.Flow-Launcher"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/f/Flow-Launcher/Flow-Launcher",
+                        "https://github.com/Flow-Launcher/Flow.Launcher",
+                        "https://github.com/Flow-Launcher/Flow.Launcher/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
         "id":  "app.gpu-z",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -2217,6 +3776,45 @@
         "sources":  [
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/TechPowerUp/GPU-Z",
                         "https://www.techpowerup.com/gpuz/"
+                    ]
+    },
+    {
+        "id":  "app.hwinfo",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "HWiNFO",
+        "summary":  "Detailed hardware information and live sensor readings.",
+        "what":  "Installs HWiNFO with winget, pinned to the package REALiX.HWiNFO in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get HWiNFO without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Martin Malik, REALiX s.r.o.",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from www.hwinfo.com and checked against a checksum",
+                      "Installer type: inno, package ID REALiX.HWiNFO"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "REALiX.HWiNFO"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "REALiX.HWiNFO"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/r/REALiX/HWiNFO",
+                        "https://www.hwinfo.com/download/",
+                        "https://www.hwinfo.com/files/license.pdf"
                     ]
     },
     {
@@ -2259,6 +3857,45 @@
                     ]
     },
     {
+        "id":  "app.libre-hardware-monitor",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "LibreHardwareMonitor",
+        "summary":  "An open source monitor for temperatures, fan speeds and load.",
+        "what":  "Installs LibreHardwareMonitor with winget, pinned to the package LibreHardwareMonitor.LibreHardwareMonitor in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get LibreHardwareMonitor without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: LibreHardwareMonitor",
+                      "Licence: MPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: portable, package ID LibreHardwareMonitor.LibreHardwareMonitor"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "LibreHardwareMonitor.LibreHardwareMonitor"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "LibreHardwareMonitor.LibreHardwareMonitor"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/l/LibreHardwareMonitor/LibreHardwareMonitor",
+                        "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+                        "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
         "id":  "app.msi-afterburner",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -2293,6 +3930,45 @@
                  ],
         "sources":  [
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Guru3D/Afterburner"
+                    ]
+    },
+    {
+        "id":  "app.nmap",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "Nmap",
+        "summary":  "Scans a network for devices and open ports.",
+        "what":  "Installs Nmap with winget, pinned to the package Insecure.Nmap in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Nmap without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Nmap Project",
+                      "Licence: Modified GNU GPLv2, as winget\u0027s package record states it",
+                      "The installer is downloaded from nmap.org and checked against a checksum",
+                      "Installer type: nullsoft, package ID Insecure.Nmap"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Insecure.Nmap"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Insecure.Nmap"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/i/Insecure/Nmap",
+                        "https://nmap.org",
+                        "https://nmap.org/book/man-legal.html"
                     ]
     },
     {
@@ -2371,6 +4047,84 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/PowerToys",
                         "https://github.com/microsoft/PowerToys",
                         "https://github.com/microsoft/PowerToys/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.process-explorer",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "Process Explorer",
+        "summary":  "A detailed view of running processes, from Microsoft Sysinternals.",
+        "what":  "Installs Process Explorer with winget, pinned to the package Microsoft.Sysinternals.ProcessExplorer in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Process Explorer without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Sysinternals",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.sysinternals.com and checked against a checksum",
+                      "Installer type: portable, package ID Microsoft.Sysinternals.ProcessExplorer"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Microsoft.Sysinternals.ProcessExplorer"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Microsoft.Sysinternals.ProcessExplorer"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/Sysinternals/ProcessExplorer",
+                        "https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer",
+                        "https://learn.microsoft.com/en-us/sysinternals/license-terms"
+                    ]
+    },
+    {
+        "id":  "app.process-monitor",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "Process Monitor",
+        "summary":  "Shows live file, registry and process activity, from Microsoft Sysinternals.",
+        "what":  "Installs Process Monitor with winget, pinned to the package Microsoft.Sysinternals.ProcessMonitor in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Process Monitor without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Sysinternals",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.sysinternals.com and checked against a checksum",
+                      "Installer type: portable, package ID Microsoft.Sysinternals.ProcessMonitor"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Microsoft.Sysinternals.ProcessMonitor"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Microsoft.Sysinternals.ProcessMonitor"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/Sysinternals/ProcessMonitor",
+                        "https://learn.microsoft.com/en-us/sysinternals/downloads/procmon",
+                        "https://learn.microsoft.com/en-us/sysinternals/license-terms"
                     ]
     },
     {
@@ -2490,6 +4244,45 @@
                     ]
     },
     {
+        "id":  "app.treesize-free",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "TreeSize Free",
+        "summary":  "Shows which folders use the most space.",
+        "what":  "Installs TreeSize Free with winget, pinned to the package JAMSoftware.TreeSize.Free in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get TreeSize Free without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: JAM Software",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from downloads.jam-software.de and checked against a checksum",
+                      "Installer type: inno, package ID JAMSoftware.TreeSize.Free"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "JAMSoftware.TreeSize.Free"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "JAMSoftware.TreeSize.Free"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/j/JAMSoftware/TreeSize/Free",
+                        "https://www.jam-software.com/treesize_free",
+                        "https://www.jam-software.com/company/license_agreement.shtml"
+                    ]
+    },
+    {
         "id":  "app.unigetui",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -2529,6 +4322,45 @@
                     ]
     },
     {
+        "id":  "app.ventoy",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "Ventoy",
+        "summary":  "Makes one USB drive boot many different installers.",
+        "what":  "Installs Ventoy with winget, pinned to the package Ventoy.Ventoy in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Ventoy without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Ventoy",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: portable, package ID Ventoy.Ventoy"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Ventoy.Ventoy"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Ventoy.Ventoy"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/v/Ventoy/Ventoy",
+                        "https://www.ventoy.net/",
+                        "https://github.com/ventoy/Ventoy/blob/master/COPYING"
+                    ]
+    },
+    {
         "id":  "app.virtualbox",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -2565,6 +4397,84 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/o/Oracle/VirtualBox",
                         "https://www.virtualbox.org/",
                         "https://www.virtualbox.org/wiki/Licensing_FAQ"
+                    ]
+    },
+    {
+        "id":  "app.windirstat",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "WinDirStat",
+        "summary":  "Shows disk use as a map of coloured blocks.",
+        "what":  "Installs WinDirStat with winget, pinned to the package WinDirStat.WinDirStat in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get WinDirStat without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: The WinDirStat Team",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: wix, package ID WinDirStat.WinDirStat"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "WinDirStat.WinDirStat"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "WinDirStat.WinDirStat"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/w/WinDirStat/WinDirStat",
+                        "https://github.com/windirstat/windirstat/releases/",
+                        "https://github.com/windirstat/windirstat/blob/HEAD/LICENSE.md"
+                    ]
+    },
+    {
+        "id":  "app.winmerge",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "System tools",
+        "name":  "WinMerge",
+        "summary":  "Compares and merges files and folders.",
+        "what":  "Installs WinMerge with winget, pinned to the package WinMerge.WinMerge in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get WinMerge without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you know what it is for. Most people do not need it.",
+        "facts":  [
+                      "Publisher: Thingamahoochie Software",
+                      "Licence: GPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: inno, package ID WinMerge.WinMerge"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "WinMerge.WinMerge"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "WinMerge.WinMerge"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/w/WinMerge/WinMerge",
+                        "https://winmerge.org/",
+                        "https://github.com/WinMerge/winmerge/blob/v2.16.46/LICENSE.md"
                     ]
     },
     {
@@ -2763,6 +4673,84 @@
                     ]
     },
     {
+        "id":  "app.google-drive",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Files and cloud",
+        "name":  "Google Drive",
+        "summary":  "Google\u0027s cloud storage, as a drive in File Explorer.",
+        "what":  "Installs Google Drive with winget, pinned to the package Google.GoogleDrive in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Google Drive without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for files or archives. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Google LLC",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from dl.google.com and checked against a checksum",
+                      "Installer type: exe, package ID Google.GoogleDrive"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Google.GoogleDrive"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Google.GoogleDrive"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Google/GoogleDrive",
+                        "https://workspace.google.com/products/drive/",
+                        "https://www.google.com/drive/terms-of-service/"
+                    ]
+    },
+    {
+        "id":  "app.megasync",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Files and cloud",
+        "name":  "MEGAsync",
+        "summary":  "Syncs files with MEGA cloud storage.",
+        "what":  "Installs MEGAsync with winget, pinned to the package Mega.MEGASync in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get MEGAsync without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for files or archives. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Mega Limited",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from mega.nz and checked against a checksum",
+                      "Installer type: nullsoft, package ID Mega.MEGASync"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Mega.MEGASync"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Mega.MEGASync"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Mega/MEGASync",
+                        "https://mega.nz/sync",
+                        "https://github.com/meganz/MEGAsync/blob/master/LICENCE.md"
+                    ]
+    },
+    {
         "id":  "app.nanazip",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -2802,6 +4790,45 @@
                     ]
     },
     {
+        "id":  "app.nextcloud",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Files and cloud",
+        "name":  "Nextcloud",
+        "summary":  "Syncs files with a Nextcloud server.",
+        "what":  "Installs Nextcloud with winget, pinned to the package Nextcloud.NextcloudDesktop in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Nextcloud without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for files or archives. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Nextcloud GmbH",
+                      "Licence: GPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: wix, package ID Nextcloud.NextcloudDesktop"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Nextcloud.NextcloudDesktop"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Nextcloud.NextcloudDesktop"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/n/Nextcloud/NextcloudDesktop",
+                        "https://nextcloud.com/",
+                        "https://raw.githubusercontent.com/nextcloud/desktop/master/COPYING"
+                    ]
+    },
+    {
         "id":  "app.qbittorrent",
         "lastVerifiedBuild":  26200,
         "category":  "Install",
@@ -2838,6 +4865,45 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/q/qBittorrent/qBittorrent",
                         "https://www.qbittorrent.org/",
                         "https://github.com/qbittorrent/qBittorrent/blob/master/COPYING"
+                    ]
+    },
+    {
+        "id":  "app.syncthing",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Files and cloud",
+        "name":  "Syncthing",
+        "summary":  "Syncs files between your own devices without a cloud service.",
+        "what":  "Installs Syncthing with winget, pinned to the package Syncthing.Syncthing in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Syncthing without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you want it for files or archives. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: The Syncthing Authors",
+                      "Licence: MPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: portable, package ID Syncthing.Syncthing"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Syncthing.Syncthing"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Syncthing.Syncthing"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/s/Syncthing/Syncthing",
+                        "https://github.com/syncthing/syncthing",
+                        "https://github.com/syncthing/syncthing/blob/HEAD/LICENSE"
                     ]
     },
     {
@@ -2916,6 +4982,279 @@
                         "https://github.com/microsoft/winget-pkgs/tree/master/manifests/r/RARLab/WinRAR",
                         "https://www.win-rar.com/",
                         "https://www.win-rar.com/winrarlicense.html"
+                    ]
+    },
+    {
+        "id":  "app.calibre",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Office and notes",
+        "name":  "calibre",
+        "summary":  "Manages and converts an e-book library.",
+        "what":  "Installs calibre with winget, pinned to the package calibre.calibre in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get calibre without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write, read or take notes with it. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Kovid Goyal",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.calibre-ebook.com and checked against a checksum",
+                      "Installer type: wix, package ID calibre.calibre"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "calibre.calibre"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "calibre.calibre"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/c/calibre/calibre",
+                        "https://calibre-ebook.com/",
+                        "https://github.com/kovidgoyal/calibre/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.joplin",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Office and notes",
+        "name":  "Joplin",
+        "summary":  "Notes with sync and end to end encryption.",
+        "what":  "Installs Joplin with winget, pinned to the package Joplin.Joplin in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Joplin without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write, read or take notes with it. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Laurent Cozic",
+                      "Licence: AGPL-3.0-or-later, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: nullsoft, package ID Joplin.Joplin"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Joplin.Joplin"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Joplin.Joplin"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/j/Joplin/Joplin",
+                        "https://joplinapp.org/",
+                        "https://github.com/laurent22/joplin/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.libreoffice",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Office and notes",
+        "name":  "LibreOffice",
+        "summary":  "A free office suite for documents, spreadsheets and slides.",
+        "what":  "Installs LibreOffice with winget, pinned to the package TheDocumentFoundation.LibreOffice in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get LibreOffice without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write, read or take notes with it. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: The Document Foundation",
+                      "Licence: MPL-2.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.documentfoundation.org and checked against a checksum",
+                      "Installer type: msi, package ID TheDocumentFoundation.LibreOffice"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "TheDocumentFoundation.LibreOffice"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "TheDocumentFoundation.LibreOffice"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/TheDocumentFoundation/LibreOffice",
+                        "https://www.libreoffice.org/",
+                        "https://www.libreoffice.org/licenses/"
+                    ]
+    },
+    {
+        "id":  "app.obsidian",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Office and notes",
+        "name":  "Obsidian",
+        "summary":  "Notes kept as plain files, with links between them.",
+        "what":  "Installs Obsidian with winget, pinned to the package Obsidian.Obsidian in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Obsidian without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write, read or take notes with it. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Obsidian",
+                      "Licence: Proprietary, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: nullsoft, package ID Obsidian.Obsidian"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "Obsidian.Obsidian"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "Obsidian.Obsidian"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/o/Obsidian/Obsidian",
+                        "https://obsidian.md/",
+                        "https://obsidian.md/terms"
+                    ]
+    },
+    {
+        "id":  "app.onlyoffice",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Office and notes",
+        "name":  "ONLYOFFICE Desktop Editors",
+        "summary":  "Office editors that open Microsoft Office formats.",
+        "what":  "Installs ONLYOFFICE Desktop Editors with winget, pinned to the package ONLYOFFICE.DesktopEditors in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get ONLYOFFICE Desktop Editors without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write, read or take notes with it. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Ascensio System SIA",
+                      "Licence: AGPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from github.com and checked against a checksum",
+                      "Installer type: inno, package ID ONLYOFFICE.DesktopEditors"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "ONLYOFFICE.DesktopEditors"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "ONLYOFFICE.DesktopEditors"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/o/ONLYOFFICE/DesktopEditors",
+                        "https://www.onlyoffice.com/en/desktop.aspx",
+                        "https://github.com/ONLYOFFICE/DesktopEditors/blob/HEAD/LICENSE"
+                    ]
+    },
+    {
+        "id":  "app.sumatrapdf",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Office and notes",
+        "name":  "SumatraPDF",
+        "summary":  "A very light reader for PDF, ePub and other documents.",
+        "what":  "Installs SumatraPDF with winget, pinned to the package SumatraPDF.SumatraPDF in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get SumatraPDF without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write, read or take notes with it. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Krzysztof Kowalczyk",
+                      "Licence: GPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from www.sumatrapdfreader.org and checked against a checksum",
+                      "Installer type: exe, package ID SumatraPDF.SumatraPDF"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "SumatraPDF.SumatraPDF"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "SumatraPDF.SumatraPDF"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/s/SumatraPDF/SumatraPDF",
+                        "https://github.com/sumatrapdfreader/sumatrapdf",
+                        "https://github.com/sumatrapdfreader/sumatrapdf/blob/3.6rel/COPYING"
+                    ]
+    },
+    {
+        "id":  "app.zotero",
+        "lastVerifiedBuild":  26200,
+        "category":  "Install",
+        "topic":  "Office and notes",
+        "name":  "Zotero",
+        "summary":  "Collects and cites research sources.",
+        "what":  "Installs Zotero with winget, pinned to the package DigitalScholar.Zotero in winget\u0027s community source. Turning it off runs the program\u0027s own uninstaller through winget.",
+        "benefit":  "You get Zotero without hunting for the right download page, and winget checks the installer\u0027s checksum before it runs.",
+        "risk":  "Low. The publisher\u0027s installer runs with administrator rights. Read the licence terms on the review screen before you accept them.",
+        "evidence":  "Proven",
+        "riskLevel":  "Low",
+        "recommendation":  "Optional",
+        "advice":  "Choose it if you write, read or take notes with it. Skip it if you already have something that works.",
+        "facts":  [
+                      "Publisher: Corporation for Digital Scholarship",
+                      "Licence: AGPL-3.0, as winget\u0027s package record states it",
+                      "The installer is downloaded from download.zotero.org and checked against a checksum",
+                      "Installer type: nullsoft, package ID DigitalScholar.Zotero"
+                  ],
+        "scope":  "Machine",
+        "apply":  [
+                      {
+                          "type":  "winget.install",
+                          "id":  "DigitalScholar.Zotero"
+                      }
+                  ],
+        "undo":  [
+                     {
+                         "type":  "winget.uninstall",
+                         "id":  "DigitalScholar.Zotero"
+                     }
+                 ],
+        "sources":  [
+                        "https://github.com/microsoft/winget-pkgs/tree/master/manifests/d/DigitalScholar/Zotero",
+                        "https://www.zotero.org/",
+                        "https://www.zotero.org/support/licensing"
                     ]
     }
 ]

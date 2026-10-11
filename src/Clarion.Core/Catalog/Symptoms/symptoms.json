@@ -101,7 +101,7 @@
     "id": "installed-app",
     "title": "An app I installed with Clarion is missing, out of date or acts differently",
     "tip": "Apps here come from winget. Turning one off runs its own uninstaller, and Verify shows an app that was removed since. Some installers update themselves, so the version can change without Clarion.",
-    "topics": ["Browsers", "Communication", "Development", "Games", "Media", "Security and privacy", "System tools", "Files and cloud"],
+    "topics": ["Browsers", "Communication", "Development", "Games", "Media", "Security and privacy", "System tools", "Files and cloud", "Office and notes"],
     "tweakIds": []
   },
   {
