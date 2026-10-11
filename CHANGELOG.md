@@ -3,7 +3,19 @@
 ## Unreleased
 
 Safer
+- If a history file that another account made is set aside when .Clarion starts, Home now says so, and where the file went. Before, it was only in the log, so a person's own undo history could seem to have vanished.
 - Each release file now carries a build attestation from GitHub, which is free: a signed statement that GitHub's runner built that exact file from this commit. Check one with gh attestation verify. It does not replace a Windows signature, so SmartScreen still warns, and docs/SIGNING.md sets out the options for a real one and what each costs.
+
+Fixed
+- Putting Battle.net back after it was removed, and removing it again after that, now keep its install folder. Before, the second step failed with the same missing-folder code as the first release did.
+- A scripted install with --apply now prints when an installer asks for a restart, as the window already did.
+- Reading an app's icon file can no longer end the program if the file goes missing or cannot be checked.
+- The apps read could be tracked wrongly after Re-check, so a Verify fix queued for an app might not wait for it. It now waits for the read that is really running.
+- Stopping a run no longer fails when Windows will not let .Clarion end a child process, and it waits for the process to go before returning.
+- The install folder is also checked after its variable is filled in, so a stray quote in that value cannot reach the winget command.
+- Icons for per-user installs from 32-bit programs are found too.
+- The Bluetooth, audio, Explorer and clock repairs now say Low risk and what can go wrong, where they began with None. The Bluetooth one warns that a keyboard or mouse that does not reconnect may need switching off and on.
+- Uninstalling .Clarion removes the flag for starting without the administrator prompt, for the account that runs the uninstall.
 
 ## 0.1.0-beta.15
 

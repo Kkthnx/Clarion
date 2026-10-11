@@ -31,7 +31,7 @@ Exact values below are the intended implementation. Each must be re-verified aga
 | Feature | Detail | Ev | Risk |
 |---|---|---|---|
 | Diagnostic data level | Set `AllowTelemetry` under the DataCollection policy key to the lowest value the edition honors. On Home and Pro the floor is Required, and the app says so. | P | Safe |
-| Tracking services | Set DiagTrack (Connected User Experiences and Telemetry) and dmwappushservice to Disabled | P | Low |
+| Tracking services | Set DiagTrack (Connected User Experiences and Telemetry) to Disabled. dmwappushservice is left alone, because it starts only when asked and device management needs it | P | Low |
 | Optional diagnostic data | Turn off, along with feedback frequency and tailored experiences | P | Safe |
 | Diagnostic scheduled tasks | Disable Compatibility Appraiser, ProgramDataUpdater, and Customer Experience tasks | P | Low |
 | Advertising ID | Per user value and policy | P | Safe |
@@ -211,7 +211,7 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 ## 14. Cleanup, repair, DNS, command line
 
 - Cleanup: 23 targets in shader caches, launcher caches, browsers and Windows housekeeping. Scan first, allow listed paths only, links never followed, files in use skipped, locked files queued for restart, last cleanup report.
-- Repair: 10 jobs using only built in Windows tools resolved from System32, with streaming output and Stop.
+- Repair: 14 jobs using only built in Windows tools resolved from System32, with streaming output and Stop.
 - DNS: five providers, plain or encrypted, exact restore of prior servers.
 - Command line and setup files: apply a preset, a saved setup, or run cleanup without the window.
 - Privacy entries carry the policy file and name they come from, and a test checks each against the local definitions.

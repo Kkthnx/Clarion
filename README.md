@@ -64,7 +64,7 @@ Requirements: Windows 10 version 2004 or later, 64-bit. Nothing else needs insta
 
 ### How the apps are chosen
 
-Every app is one exact winget package ID, never a search, and was checked before it went in: its winget record was read for the publisher, licence and installer host, and its installer manifest was read for settings that stop an administrator install. An app whose installer refuses to run as administrator is left out, and so is one that bundles offers in its installer. Where a record needs an install folder, the catalog carries it. The list is a short selection of well known apps, not everything winget has.
+Every app is one exact winget package ID, never a search, and was checked before it went in: its winget record was read for the publisher, licence and installer host, and its installer manifest was read for settings that stop an administrator install. An app whose installer refuses to run as administrator is left out. Apps known to bundle offers in their installers were not added, though that was a judgement made while choosing and is not a check the build repeats. Where a record needs an install folder, the catalog carries it. The list is a short selection of well known apps, not everything winget has.
 
 ## Command line
 
