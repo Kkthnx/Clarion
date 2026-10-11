@@ -153,7 +153,7 @@ Exact values below are the intended implementation. Each must be re-verified aga
 - Primary: Windows 11, current and previous feature releases.
 - Best effort: Windows 10 22H2.
 - Editions: Home, Pro, Enterprise, Education. Tweaks the edition ignores are hidden or labeled.
-- Architectures: x64 and ARM64.
+- Architectures: x64. The projects have ARM64 settings, but no ARM64 download is built or tested yet, so on an ARM64 PC the x64 build runs under emulation.
 
 ## 11. Additions from the research pass
 
@@ -227,11 +227,20 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 - Report a problem page builds a report with version, Windows and hardware details, applied settings and recent log lines. Computer name, user name, user folders, e-mail, IP and MAC addresses, account IDs and serial numbers are removed. The person reads the exact text first and submits it themselves.
 - Applying shows a live panel with a progress bar and one line per setting.
 
-## 17. Not yet included
+## 17. Apps
+
+- 135 programs installed with winget, each pinned to one exact package ID from the winget source, never a search. An app is an ordinary setting, so queue, review, apply, Revert, Verify, setup files and the command line all work for it. Revert runs the app's own uninstaller through winget.
+- The review reads the version, publisher, licence, installer host and SHA-256 from winget while the dialog is open. Apply stays off until the person ticks that they accept the licence terms, and that covers one run. On the command line, apps are skipped unless --accept-package-agreements is given.
+- Winget is found at its fixed per-user path, never by searching PATH, and Clarion does not install it. It is not started until the Apps page is opened or an app is asked for, because it may contact Microsoft's package source.
+- An app whose winget record needs an install folder carries one in the catalog. Apps whose installer refuses to run as administrator are left out.
+- Logos come from Simple Icons and are credited on the About page. An installed app without a usable logo shows the icon Windows lists for it, found by the code its winget record names. Otherwise it gets a letter tile.
+
+## 18. Not yet included
 
 - Microsoft 365 and Office telemetry policies.
 - Per app permission lists.
-- Apps page for installing and updating packages.
+- Updating installed apps (the Apps page installs and removes them).
+- Installing for one account only, and a list of the programs already installed.
 - Startup app manager.
 - Host file blocklists.
 - IPv6 DNS servers.
