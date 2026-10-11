@@ -38,17 +38,36 @@ public sealed partial class AppMark : UserControl
 
     private void OnThemeChanged(FrameworkElement sender, object args) => Refresh();
 
-    private void OnSizeChanged(object sender, SizeChangedEventArgs e) => Letter.FontSize = Math.Max(10, Math.Min(e.NewSize.Width, e.NewSize.Height) * 0.45);
+    private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        var side = Math.Min(e.NewSize.Width, e.NewSize.Height);
+        Letter.FontSize = Math.Max(10, side * 0.45);
+        _padding = side * 0.17;
+        if (_tiled) Glyph.Margin = new Thickness(_padding);
+    }
+
+    private double _padding;
+    private bool _tiled;
 
     private void Refresh()
     {
-        if (Icon is { } icon)
+        // A thin outline is not readable at icon size, so it gives way to the letter tile: a very thin one everywhere, and a wide one
+        // in a small slot. A faded watermark has the room, so it always shows the real outline.
+        var small = (double.IsNaN(Width) ? ActualWidth : Width) < 32;
+        var icon = Icon is { } i && (IsWatermark || i.Shape == LogoShape.Square || (i.Shape == LogoShape.Wide && !small)) ? i : null;
+
+        if (icon is not null)
         {
-            Tile.Visibility = Visibility.Collapsed;
+            // A wide outline sits inside a plain tile so it reads as a mark and not a stray line.
+            _tiled = !IsWatermark && icon.Shape == LogoShape.Wide;
+            Tile.Visibility = _tiled ? Visibility.Visible : Visibility.Collapsed;
+            Letter.Visibility = Visibility.Collapsed;
+            Glyph.Margin = _tiled ? new Thickness(_padding) : new Thickness(0);
             Glyph.Visibility = Visibility.Visible;
             if (_shownPath != icon.Path)
             {
-                Glyph.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), icon.Path);
+                // F1 is the non-zero fill rule, which is what SVG uses and what the outlines were drawn for.
+                Glyph.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "F1" + icon.Path);
                 _shownPath = icon.Path;
             }
             // A dark logo on a dark card, or a pale one on a light card, would disappear, so the text colour stands in.
@@ -65,9 +84,11 @@ public sealed partial class AppMark : UserControl
             return;
         }
 
+        _tiled = false;
         Glyph.Visibility = Visibility.Collapsed;
         _shownPath = null;
         Tile.Visibility = IsWatermark ? Visibility.Collapsed : Visibility.Visible;
+        Letter.Visibility = Visibility.Visible;
         Letter.Text = Label.Length > 0 ? char.ToUpperInvariant(Label[0]).ToString() : "";
     }
 }
