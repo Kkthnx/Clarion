@@ -39,7 +39,8 @@ public sealed partial class AppsPage : Page
             WingetBar.Severity = InfoBarSeverity.Warning;
             WingetBar.Title = "winget was not found for this account";
             WingetBar.Message = "Apps are installed with winget, Microsoft's package manager, which comes with App Installer. It is not at its usual place for this account, so the apps below are dimmed. Install or repair App Installer from Microsoft, then press Re-check. Clarion does not install it for you.";
-            WingetBar.IsClosable = false;
+            WingetLink.Visibility = Visibility.Visible;
+        WingetBar.IsClosable = false;
             WingetBar.IsOpen = true;
             WingetBar.Visibility = Visibility.Visible;
             return;
@@ -54,6 +55,7 @@ public sealed partial class AppsPage : Page
         WingetBar.Severity = InfoBarSeverity.Informational;
         WingetBar.Title = "Installed with winget, one exact package at a time";
         WingetBar.Message = "The review shows who serves each installer and its checksum, and nothing installs until you accept the licence terms yourself. winget stalls unless its own source terms are accepted, so Clarion passes that for you.";
+        WingetLink.Visibility = Visibility.Collapsed;
         WingetBar.IsClosable = true;
         WingetBar.IsOpen = true;
         WingetBar.Visibility = Visibility.Visible;
