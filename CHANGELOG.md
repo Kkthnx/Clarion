@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+New
+- Three more fixes on the Repair page, each one a step Microsoft documents: restart the Windows audio services (for an app that is silent while Windows sounds still play), restart the Bluetooth service (for devices that keep disconnecting), and resync the clock (starts the Windows Time service if it is stopped, then runs w32tm /resync). Each stopped service is started again even if a step fails.
+- Show detailed startup and shutdown messages, on the Tweaks page. It sets the VerboseStatus policy, so Windows names each step instead of saying Please wait, which helps when you are chasing a slow startup or shutdown. It does not make anything faster. Microsoft's page for it names Windows Server 2003, so it was also checked on this build: winlogon.exe and wininit.exe on Windows 11 build 26200 both contain the value name.
+
 ## 0.1.0-beta.13
 
 New
