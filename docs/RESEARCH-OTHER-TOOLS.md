@@ -16,7 +16,7 @@ The two tools are winutil (github.com/ChrisTitusTech/winutil) and Sparkle (githu
 | Tweaks | 67 entries in `config/tweaks.json`, 50 of them change the registry (122 values) | 43 folders under `tweaks/` |
 | Undo | 58 of 67 have an undo script or recorded original values, but the original values are fixed text such as `<RemoveEntry>`, not what was on the PC | 39 of 43 have an `unapply.ps1` |
 | How a tweak is defined | Registry rows, service rows, or a PowerShell script (26 entries have one) | A PowerShell script per tweak, plus `meta.json` |
-| Beyond tweaks | Install apps (236 entries, winget or Chocolatey), Windows features (33), app removal (34), update modes, repair fixes, presets (Minimal 4, Standard 12, Advanced 17), configuration import and export, a command line run mode, a Windows image builder | Per tweak documentation pages, a recommended mark and a risk level per tweak, an NVIDIA profile import, a restore point button |
+| Beyond tweaks | Install apps (236 entries, winget or Chocolatey), Windows features (33), app removal (34), update modes, repair fixes, presets (Minimal 4, Standard 12, Advanced 17), configuration import and export, a command line run mode, a Windows image builder | Install apps (162 entries, winget or Chocolatey), Debloat that lists every installed program and uninstalls the ones picked, Utilities (15 quick fixes), Backup (create and delete restore points), DNS, Clean, a self-updater, per tweak documentation pages, a recommended mark and a risk level per tweak, an NVIDIA profile import |
 | How it is run | `irm https://christitus.com/win \| iex`, a remote script fetched and run each time, from its own README | An installed Electron app |
 
 The Sparkle numbers come from the `v2` branch. Its loader (`src/main/tweakHandler.ts`) reads tweaks only from the folder bundled inside the app. No loader for tweaks a user adds on their own PC was found in `src/` or `tweaks/`, so its "create your own tweaks" page is a guide for contributing a tweak to the project, with a tweak request issue template, not a feature for end users. That is read from file names and the loader, not from running it.
@@ -63,7 +63,11 @@ Sorted by what the evidence allows.
 
 ## What the tools do that Clarion does not
 
-- **Install and update apps.** winutil installs and upgrades from winget or Chocolatey (236 entries). Clarion has no apps page. It is on the "not yet included" list in docs/FEATURES.md.
+- **Install and update apps.** Both tools do it. winutil has 236 entries and Sparkle 162, each with a winget ID and most with a Chocolatey name. Clarion has no apps page. It is on the "not yet included" list in docs/FEATURES.md. The "Installing apps" section below looks at how they do it.
+- **Uninstall any installed program.** Sparkle's Debloat page lists every installed program, Store apps and desktop programs alike, minus an exclusion list, and uninstalls the ones picked. Clarion removes a curated list of 25 Store apps and can put them back.
+- **Quick fixes.** Sparkle has one-click jobs for releasing and renewing the IP address, restarting the audio service, restarting Bluetooth services, restarting the graphics driver and restarting Explorer and Search. Clarion's Repair page has flush DNS, network reset, Windows Update reset, Store reset, system file and DISM repair, disk check and drive optimize, but not these.
+- **Shortcuts to classic Windows tools.** winutil has buttons that open Control Panel items such as Programs and Features, Region, Sound and Power. Clarion has none.
+- **A few extras on winutil's list:** a daily registry backup task (Windows turned automatic registry backup off, and winutil switches it back on), the legacy F8 boot menu, and a PowerShell profile.
 - **A few repair jobs.** winutil's fixes include repairing winget and the Windows time server setting. Clarion has network reset, Windows Update reset, Store reset, system file and DISM repair, disk check and drive optimize, which cover the rest.
 - **Build a custom Windows image.** winutil has a Windows image builder. Clarion should not.
 - **Reach.** winutil has about 64,000 stars on GitHub, Sparkle about 2,100. A tool that is run from one line in PowerShell spreads easily. A signed installer does not.
@@ -76,6 +80,69 @@ Sorted by what the evidence allows.
 - **No scripts for settings.** Every Clarion change is a typed operation (registry, service, task, app, feature, DNS, power) that can be read, checked and undone. 26 winutil tweaks and every Sparkle tweak are PowerShell.
 - **A reason, an evidence grade and a source for each setting.** 92 settings are graded Proven and each has a source, which the catalog loader enforces.
 - **Nothing is run from the internet.** Clarion runs its own files.
+
+## More debloat gaps, package by package
+
+winutil lists 34 Store packages for removal. Clarion removes 18 of them. The other 16, with what was found:
+
+- **Core tools** (Calculator, Notepad, Photos, Paint, Snipping Tool, Clock, Camera, Sound Recorder, Media Player). Clarion leaves them. They could be offered as Expert-only removals with a put-back, but nothing is gained for most people, and this PC cannot reinstall them because it has no Microsoft Store.
+- **Xbox sign-in and overlay pieces** (Xbox Identity Provider, Xbox TCUI, Xbox Speech To Text Overlay). Clarion protects the identity provider on purpose, because removing it breaks Xbox sign-in.
+- **Start Experiences App.** Sparkle's own list excludes it. Clarion protects it.
+- **Dev Home.** Microsoft's own page says it stopped being supported in Windows 11 in May 2025, so it is not worth a setting.
+- **The new Microsoft Teams (`MSTeams`) and Mobile devices (`MicrosoftWindows.CrossDevice`).** These are real gaps. Clarion removes the older Teams and Phone Link packages, which are different names. Neither new package exists on the only PC available here, and no Microsoft page was found that names them, so the names are not confirmed. They need a clean Windows 11 install to check.
+- **Windows AI removal.** winutil removes `MicrosoftWindows.Client.CoreAI`. On this PC (build 26200.9457) Windows marks that package as non-removable, so a script has to work around the block. Clarion does not.
+
+On this PC 82 packages are installed and only one of the packages named above (CoreAI) exists, so this part of the comparison cannot be finished without a second machine.
+
+## Installing apps
+
+### What the tools do, from their own code
+
+| | winutil | Sparkle |
+|---|---|---|
+| Engine | winget or Chocolatey | winget or Chocolatey |
+| Install command | `winget install --id <id> --accept-package-agreements --accept-source-agreements --source <source> --silent` | `winget install <id> --silent --accept-package-agreements --accept-source-agreements`, or `choco install <id> -y` with a retry using `--pre` |
+| Update | `winget upgrade --all --accept-package-agreements --accept-source-agreements --include-unknown --silent`, or per package | Not found in the code that was read |
+| Uninstall | `winget uninstall --id <id> --source <source> --silent` | `winget uninstall <id> --silent`, `choco uninstall <id> -y` |
+| Installed state | A scan of installed packages | `winget list` |
+| Missing winget | Installs the `Microsoft.WinGet.Client` PowerShell module with `-Force`, then runs `Repair-WinGetPackageManager -AllUsers` | A script that checks `winget --version` and installs winget |
+| Missing Chocolatey | Installs it | Installs it by running `winget install --id chocolatey.chocolatey` |
+| Agreements | Accepted for the user on every install | Accepted for the user on every install |
+| Catalog | 236 entries, all with a winget ID | 162 entries, 154 with a winget ID, 145 with a Chocolatey name |
+
+### What was verified about winget
+
+- Microsoft's `install` page: the query is a case-insensitive substring match on name, ID and moniker, unless `--exact` is used, and `--id` with `-e` is the documented way to select exactly one package. Neither tool passes `--exact`. A search for `Mozilla.Firefox` without it returned Firefox Beta, Developer Edition and dozens of language builds on this PC (winget 1.29.380).
+- `--accept-package-agreements` accepts the package's own licence terms only, not optional components or bundled software an installer may offer, and `--accept-source-agreements` covers the source's terms. Microsoft says so on the same page. Both tools accept both on the user's behalf every time.
+- Before anything is installed, `winget show --id <id> -e --source winget` prints the version, publisher, licence, installer type, installer URL and installer SHA-256. On this PC it took 8 seconds for 7-Zip.
+- winget checks the downloaded installer against the manifest's hash, and a mismatch stops the install with return code `0x8A150011`. Other documented codes a screen can explain: `0x8A150010` no applicable installer, `0x8A150041` package agreements not accepted, `0x8A150046` source agreements not accepted, `0x8A150061` already installed, `0x8A15003A` blocked by Group Policy, `0x8A15001B` Microsoft Store blocked by policy (winget-cli repository, `returnCodes.md`).
+- `--ignore-security-hash` exists and Microsoft calls it not recommended. Installing from a local manifest has to be enabled by an administrator.
+- `--include-unknown` upgrades packages whose installed version winget cannot work out. winutil's upgrade-all passes it blindly.
+- About the community repository's checks: maintainers and pull request bots describe an installer hash, static and dynamic scanning, a SmartScreen check and a manual review by a moderator before a package is accepted. That comes from GitHub discussions and bot comments, not an official policy page.
+- On this PC winget 1.29.380 is installed even though the Microsoft Store is not, so a trimmed image can have it. The official `Microsoft.WinGet.Client` module is not installed.
+- winget has a COM API and PowerShell module in the winget-cli repository. A reference page for the COM API was not found, so how well it works from a desktop app is not confirmed.
+
+### How good are their catalogs
+
+Every winget ID in both catalogs was looked up. winutil's 234 winget IDs all exist, and 2 more are Microsoft Store IDs, a separate source. Sparkle has 7 of 154 that do not resolve today with winget's exact match: `hluk.copyq` (the real ID is `hluk.CopyQ`, and exact matching is case-sensitive), `localsend` (`LocalSend.LocalSend`), `ABDownloadManager.ABDownloadManager` (`amir1376.ABDownloadManager`), and `Sublime.Text`, `RustDesk.RustDesk`, `Pursa3D.PursaSlicer` and `Mozilla.Firefox.MSIX.Nightly`, which have no match. 86 winget IDs are in both catalogs, and all 86 exist in Microsoft's winget-pkgs repository. That overlap is a good first list.
+
+### How to do it better
+
+1. **winget only to start.** It is Microsoft's tool, it checks installer hashes, and it needs no extra installer. Chocolatey would mean installing a second package manager from the internet first. No remote script is run.
+2. **Pin every install exactly:** `--id <id> --exact --source winget --silent`, so one named package is installed and nothing else.
+3. **Show before installing.** For each app, the review screen shows the version, publisher, licence, the host the installer comes from and its SHA-256, taken from `winget show`. Agreements are accepted per app by the person, on that screen, with the licence link, not on their behalf.
+4. **Plain results.** The documented return codes become sentences, such as "Windows blocked this by policy" or "The download did not match its checksum and was stopped", with the winget log path.
+5. **A record and a way back.** An install goes in the same journal as a setting: the ID, version, source and time. Revert uninstalls exactly that package. Verify says if it has gone, and What broke includes recent installs.
+6. **A catalog that stays true.** About 100 apps, each with an honest one-line description, licence type, and flags for offers in the installer or needing administrator rights. A monthly check, like the source link check, looks up every ID. Neither tool does that, and 7 of Sparkle's have rotted.
+7. **Per-user installs when the package allows it** (`--scope user`), so a copy running without administrator rights can still install what does not need them. Microsoft lists known scope issues, so this needs testing per app.
+8. **Updates the person picks.** A list of what can be upgraded, with the version change, and nothing is upgraded blind.
+9. **A list that works outside Clarion.** Saving and loading a set of apps uses the same JSON as `winget export` and `winget import`, which Microsoft documents, so the file is not locked to Clarion.
+10. **When winget is missing,** say so and link to Microsoft's own instructions. Do not install a module from the PowerShell Gallery or run a script without being asked.
+11. **Later:** search the whole winget source with the same review screen, an installed-programs list that can uninstall what winget knows (so it can be put back), and the official COM API in place of reading text.
+
+### What is not decided
+
+Whether to include Chocolatey later, whether the installed-programs uninstaller is wanted (Clarion's rule is that every change can be put back, which only holds for packages winget knows), and whether the catalog should carry any app that bundles offers.
 
 ## Custom settings: how to do it better than a script folder
 
