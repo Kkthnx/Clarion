@@ -98,6 +98,13 @@
     "tweakIds": []
   },
   {
+    "id": "installed-app",
+    "title": "An app I installed with Clarion is missing, out of date or acts differently",
+    "tip": "Apps here come from winget. Turning one off runs its own uninstaller, and Verify shows an app that was removed since. Some installers update themselves, so the version can change without Clarion.",
+    "topics": ["Browsers", "Communication", "Development", "Games", "Media", "Security and privacy", "System tools", "Files and cloud"],
+    "tweakIds": []
+  },
+  {
     "id": "brave-different",
     "title": "Brave has lost its rewards, wallet, VPN, news, talk or AI chat",
     "tip": "Brave policies hide these features and lock them, so Brave's own settings cannot bring them back. Reverting removes the policy value.",

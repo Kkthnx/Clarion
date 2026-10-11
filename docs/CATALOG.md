@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-190 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+265 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -1006,6 +1006,1074 @@ Stop the pop-up when Shift is pressed five times.
 - **Changes:**
   - `Set HKCU\Control Panel\Accessibility\StickyKeys\Flags to 506 (String)`
 - **Needs:** signing out
+
+## Install
+
+### Browsers
+
+#### Brave
+
+`app.brave` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A browser that blocks ads and trackers by default.
+
+- **What it does:** Installs Brave with winget, pinned to the package Brave.Brave in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Brave without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Brave.Brave with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/b/Brave/Brave>, <https://brave.com/download>, <https://github.com/brave/brave-browser/blob/master/LICENSE>
+
+#### Firefox
+
+`app.firefox` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Mozilla's open source web browser.
+
+- **What it does:** Installs Firefox with winget, pinned to the package Mozilla.Firefox in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Firefox without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Mozilla.Firefox with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Mozilla/Firefox>, <https://www.mozilla.org/firefox/>, <https://www.mozilla.org/MPL/2.0>
+
+#### Google Chrome
+
+`app.chrome` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Google's web browser.
+
+- **What it does:** Installs Google Chrome with winget, pinned to the package Google.Chrome in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Google Chrome without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Google.Chrome with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Google/Chrome>, <https://www.google.com/chrome/>, <https://www.google.com/chrome/terms/>
+
+#### LibreWolf
+
+`app.librewolf` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A Firefox based browser with privacy hardening already switched on.
+
+- **What it does:** Installs LibreWolf with winget, pinned to the package LibreWolf.LibreWolf in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get LibreWolf without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install LibreWolf.LibreWolf with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/l/LibreWolf/LibreWolf>, <https://librewolf.net/>, <https://librewolf.net/license-disclaimers/>
+
+#### Tor Browser
+
+`app.tor-browser` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A browser that sends its traffic through the Tor network.
+
+- **What it does:** Installs Tor Browser with winget, pinned to the package TorProject.TorBrowser in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Tor Browser without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install TorProject.TorBrowser with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/TorProject/TorBrowser>, <https://www.torproject.org/>, <https://support.torproject.org/about/distribute-tor/>
+
+#### Ungoogled Chromium
+
+`app.ungoogled-chromium` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Chromium with Google's web services taken out.
+
+- **What it does:** Installs Ungoogled Chromium with winget, pinned to the package eloston.ungoogled-chromium in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Ungoogled Chromium without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install eloston.ungoogled-chromium with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/eloston/ungoogled-chromium>, <https://github.com/ungoogled-software/ungoogled-chromium-windows/releases>, <https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/HEAD/LICENSE>
+
+#### Vivaldi
+
+`app.vivaldi` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A Chromium based browser with a lot of layout options.
+
+- **What it does:** Installs Vivaldi with winget, pinned to the package Vivaldi.Vivaldi in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Vivaldi without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Vivaldi.Vivaldi with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/v/Vivaldi/Vivaldi>, <https://vivaldi.com/desktop/>, <https://vivaldi.com/privacy/vivaldi-end-user-license-agreement/>
+
+#### Zen Browser
+
+`app.zen-browser` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A Firefox based browser with a tidy, customisable layout.
+
+- **What it does:** Installs Zen Browser with winget, pinned to the package Zen-Team.Zen-Browser in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Zen Browser without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Zen-Team.Zen-Browser with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/z/Zen-Team/Zen-Browser>, <https://zen-browser.app/>, <https://github.com/zen-browser/desktop/blob/HEAD/LICENSE>
+
+### Communication
+
+#### Discord
+
+`app.discord` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Voice, video and text chat for friends and communities.
+
+- **What it does:** Installs Discord with winget, pinned to the package Discord.Discord in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Discord without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Discord.Discord with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/d/Discord/Discord>, <https://discord.com/download>, <https://discord.com/terms>
+
+#### Signal
+
+`app.signal` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A messenger with end to end encryption.
+
+- **What it does:** Installs Signal with winget, pinned to the package OpenWhisperSystems.Signal in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Signal without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install OpenWhisperSystems.Signal with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/o/OpenWhisperSystems/Signal>, <https://www.signal.org/>, <https://github.com/signalapp/Signal-Desktop/blob/HEAD/LICENSE>
+
+#### Slack
+
+`app.slack` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Team chat for work.
+
+- **What it does:** Installs Slack with winget, pinned to the package SlackTechnologies.Slack in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Slack without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install SlackTechnologies.Slack with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/s/SlackTechnologies/Slack>, <https://slack.com/>, <https://slack.com/terms-of-service/user>
+
+#### Telegram
+
+`app.telegram` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A cloud based messenger.
+
+- **What it does:** Installs Telegram with winget, pinned to the package Telegram.TelegramDesktop in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Telegram without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Telegram.TelegramDesktop with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/Telegram/TelegramDesktop>, <https://desktop.telegram.org/>, <https://raw.githubusercontent.com/telegramdesktop/tdesktop/master/LICENSE>
+
+#### Zoom
+
+`app.zoom` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Video meetings and calls.
+
+- **What it does:** Installs Zoom with winget, pinned to the package Zoom.Zoom in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Zoom without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Zoom.Zoom with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/z/Zoom/Zoom>, <https://zoom.us/>, <https://explore.zoom.us/en/terms/>
+
+### Development
+
+#### CMake
+
+`app.cmake` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A build system generator for C and C++ projects.
+
+- **What it does:** Installs CMake with winget, pinned to the package Kitware.CMake in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get CMake without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Kitware.CMake with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/k/Kitware/CMake>, <https://cmake.org/>, <https://github.com/Kitware/CMake/blob/HEAD/LICENSE.rst>
+
+#### Docker Desktop
+
+`app.docker-desktop` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Runs containers on Windows.
+
+- **What it does:** Installs Docker Desktop with winget, pinned to the package Docker.DockerDesktop in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Docker Desktop without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Docker.DockerDesktop with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/d/Docker/DockerDesktop>, <https://www.docker.com/products/docker-desktop>, <https://www.docker.com/legal/docker-subscription-service-agreement>
+
+#### Git
+
+`app.git` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+The version control system, with Git Bash.
+
+- **What it does:** Installs Git with winget, pinned to the package Git.Git in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Git without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Git.Git with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Git/Git>, <https://gitforwindows.org/>, <https://github.com/git-for-windows/build-extra/blob/HEAD/LICENSE.txt>
+
+#### GitHub Desktop
+
+`app.github-desktop` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A friendly app for working with Git repositories on GitHub.
+
+- **What it does:** Installs GitHub Desktop with winget, pinned to the package GitHub.GitHubDesktop in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get GitHub Desktop without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install GitHub.GitHubDesktop with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GitHub/GitHubDesktop>, <https://github.com/apps/desktop>, <https://github.com/desktop/desktop/blob/HEAD/LICENSE>
+
+#### Go
+
+`app.go` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+The Go programming language and its tools.
+
+- **What it does:** Installs Go with winget, pinned to the package GoLang.Go in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Go without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install GoLang.Go with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/GoLang/Go>, <https://go.dev/dl/>, <https://github.com/golang/go/blob/HEAD/LICENSE>
+
+#### Neovim
+
+`app.neovim` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A modern take on the Vim text editor.
+
+- **What it does:** Installs Neovim with winget, pinned to the package Neovim.Neovim in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Neovim without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Neovim.Neovim with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/n/Neovim/Neovim>, <https://neovim.io/>, <https://github.com/neovim/neovim/blob/HEAD/LICENSE.txt>
+
+#### Node.js
+
+`app.nodejs` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+The JavaScript runtime, with npm.
+
+- **What it does:** Installs Node.js with winget, pinned to the package OpenJS.NodeJS in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Node.js without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install OpenJS.NodeJS with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/o/OpenJS/NodeJS>, <https://nodejs.org/>, <https://github.com/nodejs/node/blob/v26.8.1/LICENSE>
+
+#### Notepad++
+
+`app.notepadpp` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A fast text and code editor.
+
+- **What it does:** Installs Notepad++ with winget, pinned to the package Notepad++.Notepad++ in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Notepad++ without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Notepad++.Notepad++ with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/n/Notepad++/Notepad++>, <https://notepad-plus-plus.org/>, <https://github.com/notepad-plus-plus/notepad-plus-plus/blob/HEAD/LICENSE>
+
+#### Oh My Posh
+
+`app.oh-my-posh` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A prompt theme engine for PowerShell and other shells.
+
+- **What it does:** Installs Oh My Posh with winget, pinned to the package JanDeDobbeleer.OhMyPosh in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Oh My Posh without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install JanDeDobbeleer.OhMyPosh with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/j/JanDeDobbeleer/OhMyPosh>, <https://ohmyposh.dev/>, <https://github.com/JanDeDobbeleer/oh-my-posh/raw/main/COPYING>
+
+#### Postman
+
+`app.postman` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A tool for building and testing web APIs.
+
+- **What it does:** Installs Postman with winget, pinned to the package Postman.Postman in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Postman without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Postman.Postman with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/Postman/Postman>, <https://www.postman.com/downloads/>, <https://www.postman.com/legal/terms/>
+
+#### Rust
+
+`app.rust` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+The Rust toolchain for Windows, built for the MSVC compiler.
+
+- **What it does:** Installs Rust with winget, pinned to the package Rustlang.Rust.MSVC in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Rust without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Rustlang.Rust.MSVC with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/r/Rustlang/Rust/MSVC>, <https://www.rust-lang.org/>, <https://github.com/rust-lang/rust/blob/HEAD/COPYRIGHT>
+
+#### VSCodium
+
+`app.vscodium` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Visual Studio Code built from source, without Microsoft's branding.
+
+- **What it does:** Installs VSCodium with winget, pinned to the package VSCodium.VSCodium in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get VSCodium without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install VSCodium.VSCodium with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/v/VSCodium/VSCodium>, <https://vscodium.com/>, <https://github.com/VSCodium/vscodium/blob/HEAD/LICENSE>
+
+#### Visual Studio Code
+
+`app.vscode` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Microsoft's code editor.
+
+- **What it does:** Installs Visual Studio Code with winget, pinned to the package Microsoft.VisualStudioCode in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Visual Studio Code without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Microsoft.VisualStudioCode with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudioCode>, <https://code.visualstudio.com/>, <https://code.visualstudio.com/license>
+
+#### uv
+
+`app.uv` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A fast Python package and project manager.
+
+- **What it does:** Installs uv with winget, pinned to the package astral-sh.uv in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get uv without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install astral-sh.uv with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/a/astral-sh/uv>, <https://github.com/astral-sh/uv>, <https://github.com/astral-sh/uv/blob/HEAD/README.md#license>
+
+### Files and cloud
+
+#### 7-Zip
+
+`app.7zip` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A file archiver for ZIP, 7z, RAR and more.
+
+- **What it does:** Installs 7-Zip with winget, pinned to the package 7zip.7zip in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get 7-Zip without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install 7zip.7zip with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/7/7zip/7zip>, <https://7-zip.org/download.html>, <https://7-zip.org/license.txt>
+
+#### Dropbox
+
+`app.dropbox` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Cloud file storage and sync.
+
+- **What it does:** Installs Dropbox with winget, pinned to the package Dropbox.Dropbox in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Dropbox without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Dropbox.Dropbox with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/d/Dropbox/Dropbox>, <https://www.dropbox.com/>, <https://www.dropbox.com/terms>
+
+#### Files
+
+`app.files` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A modern file manager with tabs.
+
+- **What it does:** Installs Files with winget, pinned to the package FilesCommunity.Files in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Files without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install FilesCommunity.Files with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/f/FilesCommunity/Files>, <https://github.com/files-community/Files>, <https://github.com/files-community/Files/blob/main/LICENSE-MPL>
+
+#### NanaZip
+
+`app.nanazip` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A 7-Zip fork made for Windows 11.
+
+- **What it does:** Installs NanaZip with winget, pinned to the package M2Team.NanaZip in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get NanaZip without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install M2Team.NanaZip with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/M2Team/NanaZip>, <https://github.com/M2Team/NanaZip>, <https://github.com/M2Team/NanaZip/blob/HEAD/License.md>
+
+#### Total Commander
+
+`app.total-commander` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A two pane file manager.
+
+- **What it does:** Installs Total Commander with winget, pinned to the package Ghisler.TotalCommander in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Total Commander without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Ghisler.TotalCommander with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Ghisler/TotalCommander>, <https://www.ghisler.com/>, <https://www.ghisler.com/order.htm>
+
+#### WinRAR
+
+`app.winrar` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A file archiver for RAR and ZIP, as a trial.
+
+- **What it does:** Installs WinRAR with winget, pinned to the package RARLab.WinRAR in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get WinRAR without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install RARLab.WinRAR with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/r/RARLab/WinRAR>, <https://www.win-rar.com/>, <https://www.win-rar.com/winrarlicense.html>
+
+#### qBittorrent
+
+`app.qbittorrent` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A BitTorrent client.
+
+- **What it does:** Installs qBittorrent with winget, pinned to the package qBittorrent.qBittorrent in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get qBittorrent without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install qBittorrent.qBittorrent with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/q/qBittorrent/qBittorrent>, <https://www.qbittorrent.org/>, <https://github.com/qbittorrent/qBittorrent/blob/master/COPYING>
+
+### Games
+
+#### Battle.net
+
+`app.battle-net` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Blizzard's game launcher.
+
+- **What it does:** Installs Battle.net with winget, pinned to the package Blizzard.BattleNet in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Battle.net without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Blizzard.BattleNet with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/b/Blizzard/BattleNet>, <https://download.battle.net/en-us/desktop>, <https://www.blizzard.com/legal/fba4d00f-c7e4-4883-b8b9-1b4500a402ea/blizzard-end-user-license-agreement>
+
+#### EA app
+
+`app.ea-app` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Electronic Arts' game launcher.
+
+- **What it does:** Installs EA app with winget, pinned to the package ElectronicArts.EADesktop in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get EA app without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install ElectronicArts.EADesktop with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/ElectronicArts/EADesktop>, <https://www.ea.com/ea-app>, <https://tos.ea.com/legalapp/WEBTERMS/US/en/PC/>
+
+#### Epic Games Launcher
+
+`app.epic-games` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+The Epic Games store and launcher.
+
+- **What it does:** Installs Epic Games Launcher with winget, pinned to the package EpicGames.EpicGamesLauncher in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Epic Games Launcher without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install EpicGames.EpicGamesLauncher with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EpicGames/EpicGamesLauncher>, <https://epicgames.com/download>, <https://epicgames.com/eula>
+
+#### GeForce NOW
+
+`app.geforce-now` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+NVIDIA's cloud game streaming client.
+
+- **What it does:** Installs GeForce NOW with winget, pinned to the package Nvidia.GeForceNow in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get GeForce NOW without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Nvidia.GeForceNow with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/n/Nvidia/GeForceNow>, <https://www.nvidia.com/en-us/geforce-now>, <https://www.nvidia.com/en-us/geforce-now/terms-of-use>
+
+#### Modrinth App
+
+`app.modrinth` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A Minecraft launcher and mod manager.
+
+- **What it does:** Installs Modrinth App with winget, pinned to the package Modrinth.ModrinthApp in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Modrinth App without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Modrinth.ModrinthApp with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Modrinth/ModrinthApp>, <https://modrinth.com/app>, <https://github.com/modrinth/code/blob/main/apps/app/LICENSE>
+
+#### Moonlight
+
+`app.moonlight` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Plays games streamed from another PC.
+
+- **What it does:** Installs Moonlight with winget, pinned to the package MoonlightGameStreamingProject.Moonlight in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Moonlight without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install MoonlightGameStreamingProject.Moonlight with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/MoonlightGameStreamingProject/Moonlight>, <https://moonlight-stream.org/>, <https://github.com/moonlight-stream/moonlight-qt/blob/HEAD/LICENSE>
+
+#### Playnite
+
+`app.playnite` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+One library for the games from all your launchers.
+
+- **What it does:** Installs Playnite with winget, pinned to the package Playnite.Playnite in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Playnite without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Playnite.Playnite with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/Playnite/Playnite>, <https://playnite.link/>, <https://github.com/JosefNemec/Playnite/blob/HEAD/LICENSE.md>
+
+#### Prism Launcher
+
+`app.prism-launcher` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A launcher that manages several Minecraft installs.
+
+- **What it does:** Installs Prism Launcher with winget, pinned to the package PrismLauncher.PrismLauncher in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Prism Launcher without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install PrismLauncher.PrismLauncher with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/PrismLauncher/PrismLauncher>, <https://github.com/PrismLauncher/PrismLauncher>, <https://github.com/PrismLauncher/PrismLauncher/blob/HEAD/LICENSE>
+
+#### Steam
+
+`app.steam` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Valve's game store and launcher.
+
+- **What it does:** Installs Steam with winget, pinned to the package Valve.Steam in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Steam without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Valve.Steam with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/v/Valve/Steam>, <https://store.steampowered.com/about/>, <https://store.steampowered.com/subscriber_agreement/>
+
+#### Sunshine
+
+`app.sunshine` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Streams games from this PC to other devices with Moonlight.
+
+- **What it does:** Installs Sunshine with winget, pinned to the package LizardByte.Sunshine in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Sunshine without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install LizardByte.Sunshine with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/l/LizardByte/Sunshine>, <https://github.com/LizardByte/Sunshine>, <https://github.com/LizardByte/Sunshine/blob/HEAD/LICENSE>
+
+#### itch.io
+
+`app.itch` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+The itch.io app for indie games.
+
+- **What it does:** Installs itch.io with winget, pinned to the package ItchIo.Itch in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get itch.io without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install ItchIo.Itch with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/i/ItchIo/Itch>, <https://itch.io/app>, <https://github.com/itchio/itch/blob/HEAD/LICENSE>
+
+### Media
+
+#### AIMP
+
+`app.aimp` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A music player.
+
+- **What it does:** Installs AIMP with winget, pinned to the package AIMP.AIMP in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get AIMP without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install AIMP.AIMP with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/a/AIMP/AIMP>, <https://www.aimp.ru>, <https://www.aimp.ru/?do=eula&os=windows>
+
+#### Audacity
+
+`app.audacity` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+An audio recorder and editor.
+
+- **What it does:** Installs Audacity with winget, pinned to the package Audacity.Audacity in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Audacity without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Audacity.Audacity with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/a/Audacity/Audacity>, <https://www.audacityteam.org/>, <https://github.com/audacity/audacity/blob/HEAD/LICENSE.txt>
+
+#### Blender
+
+`app.blender` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A 3D modelling, animation and video tool.
+
+- **What it does:** Installs Blender with winget, pinned to the package BlenderFoundation.Blender in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Blender without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install BlenderFoundation.Blender with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/b/BlenderFoundation/Blender>
+
+#### File Converter
+
+`app.file-converter` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Converts files from the right click menu.
+
+- **What it does:** Installs File Converter with winget, pinned to the package AdrienAllard.FileConverter in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get File Converter without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install AdrienAllard.FileConverter with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/a/AdrienAllard/FileConverter>, <https://file-converter.io/>, <https://github.com/Tichau/FileConverter/blob/HEAD/LICENSE.md>
+
+#### IrfanView
+
+`app.irfanview` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A small, fast image viewer.
+
+- **What it does:** Installs IrfanView with winget, pinned to the package IrfanSkiljan.IrfanView in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get IrfanView without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install IrfanSkiljan.IrfanView with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/i/IrfanSkiljan/IrfanView>, <https://www.irfanview.com/>, <https://www.irfanview.com/eula.htm>
+
+#### OBS Studio
+
+`app.obs-studio` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Records and live streams video.
+
+- **What it does:** Installs OBS Studio with winget, pinned to the package OBSProject.OBSStudio in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get OBS Studio without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install OBSProject.OBSStudio with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/o/OBSProject/OBSStudio>, <https://obsproject.com/>, <https://github.com/obsproject/obs-studio/blob/HEAD/COPYING>
+
+#### Paint.NET
+
+`app.paint-net` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+An image editor with layers.
+
+- **What it does:** Installs Paint.NET with winget, pinned to the package dotPDN.PaintDotNet in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Paint.NET without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install dotPDN.PaintDotNet with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/d/dotPDN/PaintDotNet>, <https://getpaint.net/>, <https://getpaint.net/license.html>
+
+#### ShareX
+
+`app.sharex` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Screenshots and screen recording with upload options.
+
+- **What it does:** Installs ShareX with winget, pinned to the package ShareX.ShareX in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get ShareX without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install ShareX.ShareX with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/s/ShareX/ShareX>, <https://getsharex.com/>, <https://github.com/ShareX/ShareX/blob/HEAD/LICENSE.txt>
+
+#### VLC media player
+
+`app.vlc` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Plays almost any video or audio file.
+
+- **What it does:** Installs VLC media player with winget, pinned to the package VideoLAN.VLC in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get VLC media player without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install VideoLAN.VLC with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/v/VideoLAN/VLC>, <https://www.videolan.org/vlc/>, <https://code.videolan.org/videolan/vlc/-/blob/HEAD/COPYING>
+
+#### foobar2000
+
+`app.foobar2000` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A customisable music player.
+
+- **What it does:** Installs foobar2000 with winget, pinned to the package PeterPawlowski.foobar2000 in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get foobar2000 without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install PeterPawlowski.foobar2000 with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/PeterPawlowski/foobar2000>, <https://www.foobar2000.org/>, <https://www.foobar2000.org/license>
+
+### Security and privacy
+
+#### Bitwarden
+
+`app.bitwarden` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A password manager.
+
+- **What it does:** Installs Bitwarden with winget, pinned to the package Bitwarden.Bitwarden in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Bitwarden without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Bitwarden.Bitwarden with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/b/Bitwarden/Bitwarden>, <https://bitwarden.com/>, <https://github.com/bitwarden/clients/blob/HEAD/LICENSE.txt>
+
+#### Mullvad VPN
+
+`app.mullvad-vpn` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+The client for the Mullvad VPN service.
+
+- **What it does:** Installs Mullvad VPN with winget, pinned to the package MullvadVPN.MullvadVPN in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Mullvad VPN without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install MullvadVPN.MullvadVPN with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/MullvadVPN/MullvadVPN>, <https://mullvad.net/>, <https://github.com/mullvad/mullvadvpn-app/blob/HEAD/LICENSE.md>
+
+#### Proton VPN
+
+`app.proton-vpn` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+The client for the Proton VPN service.
+
+- **What it does:** Installs Proton VPN with winget, pinned to the package Proton.ProtonVPN in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Proton VPN without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Proton.ProtonVPN with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/Proton/ProtonVPN>, <https://protonvpn.com/>, <https://github.com/ProtonVPN/win-app/blob/HEAD/LICENSE>
+
+#### Tailscale
+
+`app.tailscale` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A private network between your own devices.
+
+- **What it does:** Installs Tailscale with winget, pinned to the package Tailscale.Tailscale in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Tailscale without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Tailscale.Tailscale with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/Tailscale/Tailscale>, <https://tailscale.com/download>, <https://github.com/tailscale/tailscale/blob/HEAD/LICENSE>
+
+### System tools
+
+#### Autoruns
+
+`app.autoruns` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Shows everything that starts with Windows.
+
+- **What it does:** Installs Autoruns with winget, pinned to the package Microsoft.Sysinternals.Autoruns in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Autoruns without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Microsoft.Sysinternals.Autoruns with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/Sysinternals/Autoruns>, <https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns>, <https://learn.microsoft.com/en-us/sysinternals/license-terms>
+
+#### Bulk Crap Uninstaller
+
+`app.bulk-crap-uninstaller` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Uninstalls several programs at once and cleans up leftovers.
+
+- **What it does:** Installs Bulk Crap Uninstaller with winget, pinned to the package Klocman.BulkCrapUninstaller in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Bulk Crap Uninstaller without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Klocman.BulkCrapUninstaller with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/k/Klocman/BulkCrapUninstaller>, <https://www.bcuninstaller.com/>, <https://github.com/BCUninstaller/Bulk-Crap-Uninstaller/blob/HEAD/Licence.txt>
+
+#### Display Driver Uninstaller
+
+`app.ddu` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Removes graphics drivers completely before a clean install.
+
+- **What it does:** Installs Display Driver Uninstaller with winget, pinned to the package Wagnardsoft.DisplayDriverUninstaller in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Display Driver Uninstaller without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Wagnardsoft.DisplayDriverUninstaller with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/w/Wagnardsoft/DisplayDriverUninstaller>, <https://www.wagnardsoft.com/display-driver-uninstaller-ddu>, <https://github.com/Wagnard/display-drivers-uninstaller/blob/WPF/LICENSE>
+
+#### Everything
+
+`app.everything` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Finds files on NTFS drives instantly by name.
+
+- **What it does:** Installs Everything with winget, pinned to the package voidtools.Everything in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Everything without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install voidtools.Everything with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/v/voidtools/Everything>, <https://www.voidtools.com/>, <https://www.voidtools.com/License.txt>
+
+#### GPU-Z
+
+`app.gpu-z` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Shows details and live readings of the graphics card.
+
+- **What it does:** Installs GPU-Z with winget, pinned to the package TechPowerUp.GPU-Z in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get GPU-Z without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install TechPowerUp.GPU-Z with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/TechPowerUp/GPU-Z>, <https://www.techpowerup.com/gpuz/>
+
+#### HWMonitor
+
+`app.hwmonitor` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Shows temperatures, voltages and fan speeds.
+
+- **What it does:** Installs HWMonitor with winget, pinned to the package CPUID.HWMonitor in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get HWMonitor without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install CPUID.HWMonitor with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/c/CPUID/HWMonitor>, <https://www.cpuid.com/softwares/hwmonitor.html>, <https://www.cpuid.com/softwares/hwmonitor-pro/eula.html>
+
+#### MSI Afterburner
+
+`app.msi-afterburner` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Graphics card monitoring and overclocking.
+
+- **What it does:** Installs MSI Afterburner with winget, pinned to the package Guru3D.Afterburner in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get MSI Afterburner without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Guru3D.Afterburner with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Guru3D/Afterburner>
+
+#### OpenRGB
+
+`app.openrgb` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Controls RGB lighting from many brands in one app.
+
+- **What it does:** Installs OpenRGB with winget, pinned to the package OpenRGB.OpenRGB in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get OpenRGB without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install OpenRGB.OpenRGB with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/o/OpenRGB/OpenRGB>, <https://openrgb.org/>, <https://github.com/CalcProgrammer1/OpenRGB/blob/HEAD/LICENSE>
+
+#### PowerToys
+
+`app.powertoys` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Microsoft's set of Windows power user tools.
+
+- **What it does:** Installs PowerToys with winget, pinned to the package Microsoft.PowerToys in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get PowerToys without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Microsoft.PowerToys with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/PowerToys>, <https://github.com/microsoft/PowerToys>, <https://github.com/microsoft/PowerToys/blob/HEAD/LICENSE>
+
+#### PuTTY
+
+`app.putty` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+An SSH and telnet client.
+
+- **What it does:** Installs PuTTY with winget, pinned to the package PuTTY.PuTTY in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get PuTTY without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install PuTTY.PuTTY with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/PuTTY/PuTTY>, <https://www.chiark.greenend.org.uk/~sgtatham/putty/>, <https://www.chiark.greenend.org.uk/~sgtatham/putty/licence.html>
+
+#### Revo Uninstaller
+
+`app.revo-uninstaller` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Uninstalls programs and scans for leftovers.
+
+- **What it does:** Installs Revo Uninstaller with winget, pinned to the package RevoUninstaller.RevoUninstaller in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Revo Uninstaller without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install RevoUninstaller.RevoUninstaller with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/r/RevoUninstaller/RevoUninstaller>, <https://www.revouninstaller.com/products/revo-uninstaller-free/>
+
+#### Rufus
+
+`app.rufus` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Makes bootable USB drives.
+
+- **What it does:** Installs Rufus with winget, pinned to the package Rufus.Rufus in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Rufus without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Rufus.Rufus with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/r/Rufus/Rufus>, <https://rufus.ie/>, <https://github.com/pbatard/rufus/blob/HEAD/LICENSE.txt>
+
+#### UniGetUI
+
+`app.unigetui` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+A graphical front end for winget and other package managers.
+
+- **What it does:** Installs UniGetUI with winget, pinned to the package Devolutions.UniGetUI in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get UniGetUI without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Devolutions.UniGetUI with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/d/Devolutions/UniGetUI>, <https://devolutions.net/unigetui/>, <https://github.com/Devolutions/UniGetUI/blob/HEAD/LICENSE>
+
+#### VirtualBox
+
+`app.virtualbox` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Runs other operating systems in virtual machines.
+
+- **What it does:** Installs VirtualBox with winget, pinned to the package Oracle.VirtualBox in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get VirtualBox without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install Oracle.VirtualBox with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/o/Oracle/VirtualBox>, <https://www.virtualbox.org/>, <https://www.virtualbox.org/wiki/Licensing_FAQ>
+
+#### Wireshark
+
+`app.wireshark` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Captures and inspects network traffic.
+
+- **What it does:** Installs Wireshark with winget, pinned to the package WiresharkFoundation.Wireshark in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get Wireshark without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install WiresharkFoundation.Wireshark with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/w/WiresharkFoundation/Wireshark>, <https://www.wireshark.org/>, <https://gitlab.com/wireshark/wireshark/-/blob/HEAD/COPYING>
+
+#### WizTree
+
+`app.wiztree` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Shows what is using the space on a disk.
+
+- **What it does:** Installs WizTree with winget, pinned to the package AntibodySoftware.WizTree in winget's community source. Turning it off runs the program's own uninstaller through winget.
+- **Benefit:** You get WizTree without hunting for the right download page, and winget checks the installer's checksum before it runs.
+- **Risk:** Low. The publisher's installer runs with administrator rights. Read the licence terms on the review screen before you accept them.
+- **Changes:**
+  - `Install AntibodySoftware.WizTree with winget`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/microsoft/winget-pkgs/tree/master/manifests/a/AntibodySoftware/WizTree>, <https://diskanalyzer.com/>, <https://diskanalyzer.com/eula>
 
 ## Network
 
