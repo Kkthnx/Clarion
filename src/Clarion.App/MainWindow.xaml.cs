@@ -211,8 +211,10 @@ public sealed partial class MainWindow : Window
     private void OnStopRun(object sender, RoutedEventArgs e)
     {
         _runStop?.Cancel();
+        // An app install can run for many minutes, so it is stopped too, with the installer winget started.
+        _app.Runtime.Winget.CancelRunning();
         ActivityStop.IsEnabled = false;
-        Activity.Info("Stopping after the setting in progress. The rest stay queued.");
+        Activity.Info("Stopping. A setting in progress is finished or, for an app install, stopped. The rest stay queued.");
     }
 
     private void ScrollActivity()
