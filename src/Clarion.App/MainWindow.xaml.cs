@@ -232,6 +232,10 @@ public sealed partial class MainWindow : Window
     private async Task StartupAsync()
     {
         await _app.RefreshStatesAsync();
+        // A queue carried across the restart for administrator rights comes back first. Its owner has already made the first choice,
+        // so the welcome is not shown again.
+        try { if (await _app.RestoreCarriedQueueAsync()) return; }
+        catch (Exception ex) { Log.Write($"The carried queue could not be restored: {ex.Message}"); }
         try { await ShowWelcomeAsync(); }
         catch (Exception ex) { Log.Write($"Welcome could not be shown: {ex.Message}"); }
     }
@@ -356,7 +360,7 @@ public sealed partial class MainWindow : Window
             var ask = new ContentDialog
             {
                 Title = "Administrator rights are needed to make changes",
-                Content = ".Clarion keeps its history in a folder only administrators can write to, and it will not change anything it cannot record. Restart it as administrator to continue. The queue you built is not carried over.",
+                Content = ".Clarion keeps its history in a folder only administrators can write to, and it will not change anything it cannot record. Restart it as administrator to continue. The queue you built comes back in the new window, and the review opens again.",
                 PrimaryButtonText = "Restart as administrator",
                 CloseButtonText = "Not now",
                 DefaultButton = ContentDialogButton.Primary,

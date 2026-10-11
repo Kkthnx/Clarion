@@ -56,7 +56,7 @@ public sealed partial class HomePage : Page
 
     private void OnRestartAsAdmin(object sender, RoutedEventArgs e)
     {
-        // A run in progress must finish first. A queue that has not been applied is not carried over to the new window.
+        // A run in progress must finish first. A queue that has not been applied is written down first and queued again in the new window.
         if (_app.IsBusy) return;
         // Asking for the rights is a clear wish for them, so a remembered "start without asking" is let go. If the prompt is refused, it comes back.
         var hadChoice = App.Launch.StartLimited;

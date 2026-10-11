@@ -102,6 +102,8 @@ public partial class App : Application
     {
         _instanceLock?.Dispose();
         _instanceLock = null;
+        // The queue is written down first, since this window is about to close and the new one starts empty.
+        Services.AppServices.Instance.CarryQueue();
         var outcome = Services.Elevation.RestartAsAdministrator();
         Services.Log.Write($"Restart as administrator: {outcome}");
         if (outcome == Services.ElevationOutcome.Started)
@@ -109,6 +111,7 @@ public partial class App : Application
             Exit();
             return true;
         }
+        Services.AppServices.Instance.DiscardCarriedQueue();
         TakeInstanceLock();
         return false;
     }

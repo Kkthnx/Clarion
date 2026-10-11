@@ -7,6 +7,7 @@ Safer
 - Each release file now carries a build attestation from GitHub, which is free: a signed statement that GitHub's runner built that exact file from this commit. Check one with gh attestation verify. It does not replace a Windows signature, so SmartScreen still warns, and docs/SIGNING.md sets out the options for a real one and what each costs.
 
 Fixed
+- Restarting as administrator no longer throws away the queue. Someone who picked a starting point, pressed Review and was asked to restart used to land on an empty window and a second welcome. The queue is now written down just before the restart and comes back in the new window with the review open. It is only read by the account that restarts, it is ignored after ten minutes, and it is removed if the prompt is refused.
 - Putting Battle.net back after it was removed, and removing it again after that, now keep its install folder. Before, the second step failed with the same missing-folder code as the first release did.
 - A scripted install with --apply now prints when an installer asks for a restart, as the window already did.
 - Reading an app's icon file can no longer end the program if the file goes missing or cannot be checked.
@@ -38,7 +39,7 @@ Fixed
 - Winget's output is read as UTF-8, so a publisher or licence name with an accented letter or a registered sign no longer shows as garbage in the review. A failed install now also names the installer's own exit code when winget prints one, and when winget cannot be read, the log says so once with a count instead of once for every app.
 - Uninstalling Clarion removes the Monthly check scheduled task if you had turned it on. It used to stay behind and try to start a program that was no longer there.
 - When Clarion was started from a different account than the one you are signed in as, the Apps page now says so and does not run winget, instead of listing and installing apps for the other account. When winget is there but does not answer, for example with no connection, the page and the details pane say that, and no longer say the app is not on this PC.
-- If an installer or uninstaller asks for a restart, the summary after the run now says so. The code for it was read and then dropped. The licence box in the review stays off until winget has shown the details it is accepting, and an app whose record names no homepage or licence page links to its package record. The same page listed as both http and https shows once.
+- If an installer or uninstaller asks for a restart, the summary after the run now says so. Nothing reported it, so the notice never appeared. The licence box in the review stays off until winget has shown the details it is accepting, and an app whose record names no homepage or licence page links to its package record. The same page listed as both http and https shows once.
 - The Prefetch row is gone from Clean up. Microsoft's own engineers say clearing that folder only makes Windows rebuild it, and the sources found say boot and app starts are slower until it has. The row said it made nothing faster, so there was no reason left to offer it. Stop the diagnostic tracking services now stops DiagTrack only. The other service it touched, dmwappushservice, starts only when asked and device management such as Intune needs it, so it is left alone.
 
 Safer

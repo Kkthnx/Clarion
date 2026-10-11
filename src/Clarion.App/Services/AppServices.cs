@@ -637,6 +637,31 @@ public sealed partial class AppServices : UiObservableObject
         return QueueIds(list);
     }
 
+    private readonly Clarion.Core.Profiles.QueueCarry _carry = new(Clarion.Core.Profiles.QueueCarry.DefaultPath);
+
+    /// <summary>Writes the queue down before the restart that asks for administrator rights, so the new window can queue it again.</summary>
+    public void CarryQueue() => _carry.Save(Pending.Where(p => p.IsOn).Select(p => p.Id));
+
+    /// <summary>The restart did not happen, so the written queue is not needed.</summary>
+    public void DiscardCarriedQueue() => _carry.Discard();
+
+    /// <summary>
+    /// Queues what was carried across the restart and opens the review again. Only a copy with administrator rights does it, since only
+    /// that copy can apply anything. True when a queue came back, which also means the person has already made their first choice.
+    /// </summary>
+    public async Task<bool> RestoreCarriedQueueAsync()
+    {
+        if (!IsElevated) return false;
+        var ids = _carry.Take();
+        if (ids.Count == 0) return false;
+        var (queued, _, _) = await QueueIdsAsync(ids);
+        if (queued == 0) return false;
+        UpdateSettings(s => s with { FirstRunDone = true });
+        Status = $"{queued} setting{(queued == 1 ? "" : "s")} from before the restart {(queued == 1 ? "is" : "are")} queued again.";
+        ReviewRequested?.Invoke(this, EventArgs.Empty);
+        return true;
+    }
+
     public IReadOnlyList<string> AppliedIds() => Items.Where(i => i.IsApplied && i.IsSupported).Select(i => i.Id).ToList();
 
     public async Task<BatchResult> ApplyPendingAsync(bool restorePoint, Action<string> log, Action<BatchStep>? step = null, bool turnOnProtection = false, CancellationToken stop = default)
