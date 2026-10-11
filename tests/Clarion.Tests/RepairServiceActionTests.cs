@@ -26,6 +26,17 @@ public sealed class RepairServiceActionTests
     }
 
     [Fact]
+    public void Restarting_explorer_only_ends_the_process_and_lets_windows_start_it_again()
+    {
+        var steps = CatalogLoader.LoadActions().Single(a => a.Id == "repair.restart-explorer").Steps.OfType<RunProcess>().ToList();
+        var step = Assert.Single(steps);
+        Assert.Equal("taskkill.exe", step.File);
+        Assert.Equal("/F /IM explorer.exe", step.Args);
+        // Starting explorer.exe from Clarion would run it with administrator rights, so Windows is left to restart the shell.
+        Assert.Contains(128, step.OkExitCodes!);
+    }
+
+    [Fact]
     public void Every_repair_action_names_a_source()
     {
         foreach (var a in CatalogLoader.LoadActions().Where(a => a.Id.StartsWith("repair.restart-", StringComparison.Ordinal) || a.Id == "repair.resync-clock"))

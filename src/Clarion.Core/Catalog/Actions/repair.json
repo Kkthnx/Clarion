@@ -467,6 +467,38 @@
     ]
   },
   {
+    "id": "repair.restart-explorer",
+    "category": "System",
+    "name": "Restart Windows Explorer",
+    "summary": "Bring back a taskbar, Start menu or desktop that has frozen.",
+    "what": "Ends the Windows Explorer process. Windows starts it again by itself a moment later, which reloads the taskbar, Start menu and desktop without restarting the PC.",
+    "benefit": "Often fixes a frozen or blank taskbar, a Start menu that will not open, or a desktop that has stopped responding.",
+    "risk": "None. Open File Explorer windows close, and a file copy that was running in one may be interrupted. Other programs are not touched.",
+    "riskLevel": "Safe",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when the taskbar or Start menu is frozen. It is the first thing to try, before a restart.",
+    "facts": [
+      "Takes a few seconds",
+      "Changes no setting",
+      "The taskbar and desktop icons disappear for a moment, then come back"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "run",
+        "file": "taskkill.exe",
+        "args": "/F /IM explorer.exe",
+        "okExitCodes": [
+          0,
+          128
+        ]
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/taskkill"
+    ]
+  },
+  {
     "id": "repair.resync-clock",
     "category": "System",
     "name": "Resync the clock",
