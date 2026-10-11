@@ -202,6 +202,7 @@ public static class CatalogLoader
                     case InstallWingetPackage install:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: app installs need Machine scope.");
                         if (!Apps.WingetIds.IsValid(install.Id)) errors.Add($"{t.Id}: not a valid winget package ID: {install.Id}");
+                        if (install.Location is not null && !Apps.WingetLocations.IsValid(install.Location)) errors.Add($"{t.Id}: not an allowed install folder: {install.Location}");
                         break;
                     case UninstallWingetPackage uninstall:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: app removals need Machine scope.");

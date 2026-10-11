@@ -14,6 +14,29 @@ public static partial class WingetIds
 }
 
 /// <summary>
+/// The install folders a catalog entry may give winget. Only a folder under Program Files or the person's own local app folder, written
+/// with its variable, is accepted, so a quote, a dot-dot or another drive can never reach the command line.
+/// </summary>
+public static partial class WingetLocations
+{
+    [GeneratedRegex(@"^%(ProgramFiles|ProgramFiles\(x86\)|LocalAppData)%(\\[A-Za-z0-9][A-Za-z0-9 ._()\-]{0,60}){1,3}\z")]
+    private static partial Regex Pattern();
+
+    public static bool IsValid(string location) => location.Length <= 200 && Pattern().IsMatch(location);
+
+    /// <summary>The folder with its variable filled in, for this PC and account.</summary>
+    public static string Expand(string location, Func<string, string?>? variable = null)
+    {
+        if (!IsValid(location)) throw new ArgumentException($"Not an allowed install folder: {location}");
+        variable ??= Environment.GetEnvironmentVariable;
+        var name = location[1..location.IndexOf('%', 1)];
+        var root = variable(name);
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException($"{name} is not set on this PC.");
+        return root.TrimEnd('\\') + location[(name.Length + 2)..];
+    }
+}
+
+/// <summary>
 /// The exact winget command lines Clarion runs. Every install is pinned by ID with --exact and the winget source, because without --exact
 /// winget matches the text anywhere in a name, ID or moniker. Nothing else is ever built from user text.
 /// </summary>
@@ -21,8 +44,12 @@ public static class WingetCommands
 {
     private const string Common = "--source winget --accept-source-agreements --disable-interactivity";
 
-    public static string Install(string id) =>
-        $"install --id {Checked(id)} --exact {Common} --silent --accept-package-agreements";
+    public static string Install(string id, string? location = null) =>
+        $"install --id {Checked(id)} --exact {Common} --silent --accept-package-agreements{LocationArgument(location)}";
+
+    // A package whose manifest says InstallLocationRequired fails with 0x8A15005F unless --location is given.
+    private static string LocationArgument(string? location) =>
+        location is null ? "" : $" --location \"{WingetLocations.Expand(location)}\"";
 
     public static string Uninstall(string id) =>
         $"uninstall --id {Checked(id)} --exact {Common} --silent";
@@ -85,6 +112,13 @@ public static class WingetCodes
         unchecked((int)0x8A150030) => "Its uninstaller did not finish.",
         unchecked((int)0x8A15000B) or unchecked((int)0x8A15004B) or unchecked((int)0x8A150045) or unchecked((int)0x8A150015) =>
             "winget could not open its package source. Check the internet connection, then try again.",
+        unchecked((int)0x8A15005F) => "This app's installer cannot run without an install folder, and none is set for it here.",
+        unchecked((int)0x8A150056) => "This app's installer refuses to run with administrator rights, which Clarion needs for apps.",
+        unchecked((int)0x8A150008) => "The download failed. Check the internet connection, then try again.",
+        unchecked((int)0x8A150086) => "The download came back empty. Check the internet connection, then try again.",
+        unchecked((int)0x8A150049) => "The Windows Installer part of the setup failed.",
+        unchecked((int)0x8A150052) => "winget could not set up this portable app.",
+        unchecked((int)0x8A15006D) => "A service winget needs is busy. Try again in a few minutes.",
         unchecked((int)0x8A150005) => "It was stopped.",
         -1 => "winget took too long, so it was stopped.",
         _ => $"winget stopped with code 0x{code:X8}. Its log has the detail.",
@@ -191,7 +225,8 @@ public interface IWingetStore
     /// <summary>Forgets the installed list, so the next read asks winget again.</summary>
     void Invalidate();
 
-    WingetOutcome Install(string id);
+    /// <summary>Installs the package. The location is passed only when the package's manifest requires one.</summary>
+    WingetOutcome Install(string id, string? location = null);
     WingetOutcome Uninstall(string id);
 
     /// <summary>The version, publisher, licence and installer details winget holds for a package, or null when it cannot be read.</summary>

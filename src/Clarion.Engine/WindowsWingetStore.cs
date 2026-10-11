@@ -62,7 +62,7 @@ public sealed class WindowsWingetStore(IProcessRunner runner, string? wingetPath
         }
     }
 
-    public WingetOutcome Install(string id) => Run(WingetCommands.Install(id), InstallTimeout);
+    public WingetOutcome Install(string id, string? location = null) => Run(WingetCommands.Install(id, location), InstallTimeout);
 
     public WingetOutcome Uninstall(string id) => Run(WingetCommands.Uninstall(id), InstallTimeout);
 

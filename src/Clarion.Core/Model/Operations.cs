@@ -91,10 +91,10 @@ public sealed record RestoreDns(IReadOnlyList<Dns.AdapterDns> Adapters, IReadOnl
 {
     public override string Describe() => "Put the previous DNS servers back";
 }
-/// <summary>Installs one package from winget's community source, pinned by its exact ID.</summary>
-public sealed record InstallWingetPackage(string Id) : Operation
+/// <summary>Installs one package from winget's community source, pinned by its exact ID. Location is only for packages whose manifest requires an install folder.</summary>
+public sealed record InstallWingetPackage(string Id, string? Location = null) : Operation
 {
-    public override string Describe() => $"Install {Id} with winget";
+    public override string Describe() => Location is null ? $"Install {Id} with winget" : $"Install {Id} with winget into {Location}";
 }
 
 /// <summary>Uninstalls one package that winget installed or knows, pinned by its exact ID.</summary>

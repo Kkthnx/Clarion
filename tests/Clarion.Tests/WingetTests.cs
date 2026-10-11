@@ -27,9 +27,9 @@ public sealed class FakeWingetStore : IWingetStore
 
     public void Invalidate() => _cache = null;
 
-    public WingetOutcome Install(string id)
+    public WingetOutcome Install(string id, string? location = null)
     {
-        Calls.Add("install " + id);
+        Calls.Add(location is null ? "install " + id : $"install {id} at {location}");
         if (WingetCodes.IsSuccess(InstallCode)) Installed.Add(id);
         return new WingetOutcome(InstallCode, "");
     }

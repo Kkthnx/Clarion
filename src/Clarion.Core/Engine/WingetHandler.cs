@@ -44,7 +44,7 @@ public sealed class WingetHandler(IWingetStore store) : IOperationHandler
                 // The licence terms are accepted by a person on the review screen, never here on their behalf.
                 if (!store.AcceptPackageAgreements)
                     throw new InvalidOperationException("The licence terms were not accepted, so nothing was installed.");
-                Finish(store.Install(install.Id));
+                Finish(store.Install(install.Id, install.Location));
                 break;
             case UninstallWingetPackage uninstall:
                 var outcome = store.Uninstall(uninstall.Id);
