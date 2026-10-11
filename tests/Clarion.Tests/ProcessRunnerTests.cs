@@ -17,6 +17,29 @@ public sealed class ProcessRunnerTests
     }
 
     [Fact]
+    public async Task Output_is_returned_even_when_every_thread_pool_thread_is_busy()
+    {
+        // A small CI machine has few pool threads, and other work can hold them all. The pipes must be read on threads of their own.
+        using var release = new ManualResetEventSlim();
+        var busy = Enumerable.Range(0, Environment.ProcessorCount * 4 + 8)
+            .Select(_ => Task.Run(() => release.Wait(TimeSpan.FromSeconds(20))))
+            .ToList();
+        try
+        {
+            Thread.Sleep(300);
+            var result = new WindowsProcessRunner().Run("cmd.exe", "/c echo hello", TimeSpan.FromSeconds(10));
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.Contains("hello", result.Output);
+        }
+        finally
+        {
+            release.Set();
+            await Task.WhenAll(busy);
+        }
+    }
+
+    [Fact]
     public void A_program_that_runs_too_long_is_stopped_and_reported()
     {
         var watch = Stopwatch.StartNew();

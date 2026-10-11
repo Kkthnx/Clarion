@@ -45,20 +45,23 @@ public sealed class WindowsProcessRunner : IProcessRunner
 
     private static readonly TimeSpan PipeGrace = TimeSpan.FromSeconds(2);
 
-    private static async Task Pump(StreamReader reader, StringBuilder into)
-    {
-        var buffer = new char[4096];
-        try
+    // The pipes Windows gives a child process are synchronous, so a read holds its thread until data arrives. Each pipe gets a thread of
+    // its own: on a busy or small machine the shared pool can be full, and the read would then not even start before the grace period ran out.
+    private static Task Pump(StreamReader reader, StringBuilder into) =>
+        Task.Factory.StartNew(() =>
         {
-            int count;
-            while ((count = await reader.ReadAsync(buffer).ConfigureAwait(false)) > 0)
+            var buffer = new char[4096];
+            try
             {
-                lock (into) into.Append(buffer, 0, count);
+                int count;
+                while ((count = reader.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    lock (into) into.Append(buffer, 0, count);
+                }
             }
-        }
-        catch (ObjectDisposedException) { }
-        catch (IOException) { }
-    }
+            catch (ObjectDisposedException) { }
+            catch (IOException) { }
+        }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
     private static string Read(StringBuilder text)
     {
