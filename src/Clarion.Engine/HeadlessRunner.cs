@@ -126,11 +126,21 @@ public static class HeadlessRunner
         runtime.Engine.WarmUp(catalog);
         var plan = CliPlanner.Plan(ids, catalog, runtime.Profile, runtime.Engine.Detect);
 
+        // Apps are installed only when the person has said, on the command line, that they accept the publishers' licence terms.
+        var skippedApps = new List<Tweak>();
+        if (!o.AcceptPackageAgreements)
+        {
+            skippedApps = plan.ToApply.Where(t => t.Apply.OfType<InstallWingetPackage>().Any()).ToList();
+            plan = plan with { ToApply = plan.ToApply.Except(skippedApps).ToList() };
+        }
+        runtime.Winget.AcceptPackageAgreements = o.AcceptPackageAgreements;
+
         say($"{plan.ToApply.Count} to turn on, {plan.AlreadyOn.Count} already on, {plan.NotSupported.Count} not available here, {plan.Unknown.Count} unknown.");
         foreach (var id in plan.Unknown) say($"  unknown setting: {id}");
         foreach (var id in plan.NotSupported) say($"  not available here: {id}");
         foreach (var t in plan.ToApply) say($"  {(o.Preview ? "would turn on" : "turning on")}: {t.Name}");
-        if (o.Preview || plan.ToApply.Count == 0) return 0;
+        foreach (var t in skippedApps) say($"  skipped app: {t.Name}. Add --accept-package-agreements to install it, which accepts the publisher's licence terms for you.");
+        if (o.Preview || plan.ToApply.Count == 0) return skippedApps.Count > 0 ? 1 : 0;
 
         var result = runtime.Runner.Apply(plan.ToApply, runtime.Profile,
             new BatchOptions { CreateRestorePoint = !o.NoRestorePoint, ContinueWithoutRestorePoint = o.NoRestorePoint, TurnOnSystemProtection = o.EnableProtection }, say);
@@ -141,8 +151,9 @@ public static class HeadlessRunner
             return 1;
         }
         foreach (var item in result.Items.Where(i => !i.Result.Success)) say($"  failed: {item.TweakId}: {item.Result.Error}");
-        say(result.AllSucceeded ? "Done." : "Some settings did not finish.");
-        return result.AllSucceeded ? 0 : 1;
+        var complete = result.AllSucceeded && skippedApps.Count == 0;
+        say(complete ? "Done." : "Some settings did not finish.");
+        return complete ? 0 : 1;
     }
 
     private static int RunClean(CliOptions o, Action<string> say)

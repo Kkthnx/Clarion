@@ -14,6 +14,7 @@ public sealed record CliOptions(
     string? Symptom = null,
     DateTimeOffset? Since = null,
     bool SaveReport = false,
+    bool AcceptPackageAgreements = false,
     string? Error = null)
 {
     public bool IsCli => Mode != CliMode.None;
@@ -32,6 +33,7 @@ public sealed record CliOptions(
         string? symptom = null;
         DateTimeOffset? since = null;
         var saveReport = false;
+        var acceptPackages = false;
 
         for (var i = 0; i < args.Count; i++)
         {
@@ -63,6 +65,7 @@ public sealed record CliOptions(
                 case "--enable-protection": enableProtection = true; break;
                 case "--verify": mode = CliMode.Verify; break;
                 case "--save": saveReport = true; break;
+                case "--accept-package-agreements": acceptPackages = true; break;
                 case "--history": mode = CliMode.History; break;
                 case "--list-symptoms": mode = CliMode.ListSymptoms; break;
                 case "--list-settings": mode = CliMode.ListSettings; break;
@@ -83,7 +86,7 @@ public sealed record CliOptions(
                     return a.StartsWith('-') || a.StartsWith('/') ? Fail($"Unknown option {a}. Use --help.") : new CliOptions(CliMode.None);
             }
         }
-        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection, symptom, since, saveReport);
+        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection, symptom, since, saveReport, acceptPackages);
     }
 
     private static IEnumerable<string> Split(string? value) =>
@@ -109,6 +112,7 @@ public sealed record CliOptions(
 
         --preview           show what would change and change nothing
         --no-restore-point  skip the System Restore point
+        --accept-package-agreements  with --apply, install the apps in the setup. You are accepting the publishers licence terms yourself, so read them first. Without it apps are skipped
         --enable-protection turn on System Protection if it is off, so the restore point can be made
         --only / --include  cleanup row names, such as shaders.nvidia,windows.temp. --list-cleanups shows them all
         --list-settings     list every setting with the name a setup file uses for it
