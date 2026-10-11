@@ -1,0 +1,342 @@
+[
+  {
+    "id": "edge.recommendations-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Stop Edge feature tips and suggestions",
+    "summary": "No pop-ups that suggest Edge features.",
+    "what": "Applies the Edge policy that turns off feature recommendations and browser assistance notifications.",
+    "benefit": "No dialogs, flyouts or banners nudging you to try Edge features, such as vertical tabs when many tabs are open.",
+    "risk": "None. Every feature is still in Edge settings. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who finds the prompts distracting.",
+    "facts": [
+      "Covers dialogs, flyouts, coach marks and banners inside Edge",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "ShowRecommendationsEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/showrecommendationsenabled" ]
+  },
+  {
+    "id": "edge.rewards-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Hide Microsoft Rewards in Edge",
+    "summary": "No Rewards points, icon or notifications in Edge.",
+    "what": "Applies the Edge policy that hides the Microsoft Rewards experience and switches its setting off.",
+    "benefit": "No Rewards prompts or notifications on the new tab page and in search while you use Edge.",
+    "risk": "Low. You stop collecting Rewards points through Edge. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not collect Microsoft Rewards points. Skip it if you do.",
+    "facts": [
+      "Affects Microsoft account users in markets where Rewards is offered",
+      "Takes effect after Edge restarts",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "ShowMicrosoftRewards" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/showmicrosoftrewards" ]
+  },
+  {
+    "id": "edge.first-run-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Skip Edge's welcome screens",
+    "summary": "No first-run tour or splash screen for a new Edge profile.",
+    "what": "Applies the Edge policy that hides the first-run experience and the splash screen.",
+    "benefit": "A new Edge profile opens straight to the browser, with no tour or sign-in and sync pitch.",
+    "risk": "Low. Sync stays off until you turn it on, and Edge asks about it when it starts.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Handy if you set up Edge on several accounts or PCs. Skip it if you want the guided setup.",
+    "facts": [
+      "The new tab page uses the MSN News feed and the Inspirational layout",
+      "A Windows account that is a work, school or Microsoft account still signs in to Edge",
+      "Takes effect after Edge restarts",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "HideFirstRunExperience" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/hidefirstrunexperience" ]
+  },
+  {
+    "id": "edge.feedback-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Turn off Edge feedback and surveys",
+    "summary": "Edge can no longer open its feedback tool.",
+    "what": "Applies the Edge policy that disables Edge Feedback, which Edge uses for suggestions, issue reports and customer surveys.",
+    "benefit": "No feedback or survey requests from inside Edge.",
+    "risk": "None. You can still report an Edge problem through Windows Feedback Hub. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you never send feedback to Microsoft from Edge.",
+    "facts": [
+      "Without the policy, Edge Feedback is on and cannot be turned off in Edge",
+      "Takes effect after Edge restarts",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "UserFeedbackAllowed" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/userfeedbackallowed" ]
+  },
+  {
+    "id": "edge.insider-promo-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Hide the Edge Insider promotion",
+    "summary": "No Edge Insider ad on Edge's About page.",
+    "what": "Applies the Edge policy that stops the About Microsoft Edge page from promoting the Edge Insider preview channels.",
+    "benefit": "A cleaner About page. It changes nothing else in Edge.",
+    "risk": "None. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "A small tidy-up. Skip it if you do not mind the promotion.",
+    "facts": [
+      "Only the About Microsoft Edge page is affected",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "MicrosoftEdgeInsiderPromotionEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/microsoftedgeinsiderpromotionenabled" ]
+  },
+  {
+    "id": "edge.default-browser-prompt-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Stop Edge asking to be your default",
+    "summary": "No prompts to make Edge the default browser and Bing the default search.",
+    "what": "Applies the Edge policy that turns off the default browser settings campaign.",
+    "benefit": "Edge stops asking to become your default browser and to make Bing your default search engine.",
+    "risk": "None. Your current default browser and search engine are not changed. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested if Edge is not your main browser.",
+    "facts": [
+      "Without the policy, Edge prompts when it is not the default or Bing is not the search",
+      "Edge 113 or later on Windows",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "DefaultBrowserSettingsCampaignEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/defaultbrowsersettingscampaignenabled" ]
+  },
+  {
+    "id": "edge.diagnostic-data-required",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Send Microsoft only the required Edge data",
+    "summary": "Optional browsing and crash data stays on your PC.",
+    "what": "Applies the Edge policy that sets diagnostic data to required data only, which turns off the optional data.",
+    "benefit": "Edge stops sending the optional data about how you use the browser, the sites you visit and crash reports.",
+    "risk": "None for security. Required data is what Microsoft says keeps Edge secure, up to date and performing. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who uses Edge. It leaves the required data on on purpose.",
+    "facts": [
+      "Microsoft marks the Off value as not recommended, so Off is not used here",
+      "Edge 122 or later controls this on Windows 10 separately from Windows data",
+      "Takes effect after Edge restarts",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "DiagnosticData" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/diagnosticdata" ]
+  },
+  {
+    "id": "brave.rewards-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Brave",
+    "name": "Turn off Brave Rewards",
+    "summary": "No Brave Rewards icon, ads or tokens.",
+    "what": "Applies the Brave policy that disables Brave Rewards, the feature that pays users for ads they see.",
+    "benefit": "Removes the Rewards icon and its ad notifications from Brave.",
+    "risk": "Low. You cannot turn Rewards back on from inside Brave until you revert. Brave may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not use Brave Rewards. Skip it if you earn or give tokens.",
+    "facts": [
+      "Brave's policy text says users cannot change or override it once set",
+      "Applies to every Brave profile on this PC",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\BraveSoftware\\Brave", "name": "BraveRewardsDisabled" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveRewardsDisabled.yaml" ]
+  },
+  {
+    "id": "brave.wallet-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Brave",
+    "name": "Turn off Brave Wallet",
+    "summary": "No built-in crypto wallet in Brave.",
+    "what": "Applies the Brave policy that disables Brave Wallet, the built-in crypto wallet.",
+    "benefit": "Removes the wallet button and its code paths from Brave.",
+    "risk": "Low. Do not use it if you keep crypto in Brave Wallet, since you could not open it until you revert. Brave may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not use Brave Wallet. Skip it if you do.",
+    "facts": [
+      "Brave's policy text says users cannot change or override it once set",
+      "Applies to every Brave profile on this PC",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\BraveSoftware\\Brave", "name": "BraveWalletDisabled" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveWalletDisabled.yaml" ]
+  },
+  {
+    "id": "brave.vpn-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Brave",
+    "name": "Turn off Brave VPN",
+    "summary": "No Brave VPN offer or button in Brave.",
+    "what": "Applies the Brave policy that disables Brave VPN, the paid VPN built into the browser.",
+    "benefit": "Removes the VPN button and its upsell from Brave.",
+    "risk": "Low. Do not use it if you subscribe to Brave VPN. Brave may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not use Brave VPN. Skip it if you pay for it.",
+    "facts": [
+      "Brave's policy text says users cannot change or override it once set",
+      "Applies to every Brave profile on this PC",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\BraveSoftware\\Brave", "name": "BraveVPNDisabled" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveVPNDisabled.yaml" ]
+  },
+  {
+    "id": "brave.ai-chat-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Brave",
+    "name": "Turn off Brave AI Chat",
+    "summary": "No built-in AI assistant in Brave.",
+    "what": "Applies the Brave policy that turns Brave's AI Chat assistant off.",
+    "benefit": "Removes the assistant from the sidebar and the page summary prompts in Brave.",
+    "risk": "Low. You cannot use AI Chat until you revert. Brave may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not use the assistant in Brave. Skip it if you do.",
+    "facts": [
+      "Brave's policy text says users cannot change or override it once set",
+      "Applies to every Brave profile on this PC",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\BraveSoftware\\Brave", "name": "BraveAIChatEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveAIChatEnabled.yaml" ]
+  },
+  {
+    "id": "brave.news-talk-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Brave",
+    "name": "Turn off Brave News and Brave Talk",
+    "summary": "No news feed on the new tab page and no video call feature.",
+    "what": "Applies the two Brave policies that disable Brave News and Brave Talk and hide their interface.",
+    "benefit": "A plain new tab page with no curated news feed, and no Talk video call button.",
+    "risk": "Low. You cannot use either until you revert. Brave may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not read the Brave News feed or make Brave Talk calls.",
+    "facts": [
+      "Brave's policy text says all related interface elements are hidden",
+      "Two policy values are set, one for News and one for Talk",
+      "Applies to every Brave profile on this PC",
+      "Revert removes both policy values"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\BraveSoftware\\Brave", "name": "BraveNewsDisabled" }, "data": { "kind": "DWord", "value": "1" } },
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\BraveSoftware\\Brave", "name": "BraveTalkDisabled" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [
+      "https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveNewsDisabled.yaml",
+      "https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveTalkDisabled.yaml"
+    ]
+  },
+  {
+    "id": "brave.usage-reports-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Brave",
+    "name": "Stop Brave's usage pings",
+    "summary": "No anonymous usage ping and no product analytics from Brave.",
+    "what": "Applies the two Brave policies that turn off the anonymous stats usage ping and Privacy Preserving Product Analytics (P3A).",
+    "benefit": "Brave stops sending the usage ping it uses to count active users and the product analytics answers it collects.",
+    "risk": "None. Brave's own text calls both anonymous. Brave may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who uses Brave and wants less data leaving the PC.",
+    "facts": [
+      "Brave describes both as anonymous and opt-in features it enables by default",
+      "Brave's policy text says users cannot change or override it once set",
+      "Applies to every Brave profile on this PC",
+      "Revert removes both policy values"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\BraveSoftware\\Brave", "name": "BraveStatsPingEnabled" }, "data": { "kind": "DWord", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\BraveSoftware\\Brave", "name": "BraveP3AEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [
+      "https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveStatsPingEnabled.yaml",
+      "https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveP3AEnabled.yaml"
+    ]
+  }
+]

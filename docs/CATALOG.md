@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-177 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+190 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -419,7 +419,123 @@ Uninstall Xbox app for your account.
 - **Changes:**
   - `Remove app Microsoft.GamingApp for this account`
 
+### Brave
+
+#### Stop Brave's usage pings
+
+`brave.usage-reports-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+No anonymous usage ping and no product analytics from Brave.
+
+- **What it does:** Applies the two Brave policies that turn off the anonymous stats usage ping and Privacy Preserving Product Analytics (P3A).
+- **Benefit:** Brave stops sending the usage ping it uses to count active users and the product analytics answers it collects.
+- **Risk:** None. Brave's own text calls both anonymous. Brave may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\BraveSoftware\Brave\BraveStatsPingEnabled to 0 (DWord)`
+  - `Set HKLM\SOFTWARE\Policies\BraveSoftware\Brave\BraveP3AEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveStatsPingEnabled.yaml>, <https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveP3AEnabled.yaml>
+
+#### Turn off Brave AI Chat
+
+`brave.ai-chat-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+No built-in AI assistant in Brave.
+
+- **What it does:** Applies the Brave policy that turns Brave's AI Chat assistant off.
+- **Benefit:** Removes the assistant from the sidebar and the page summary prompts in Brave.
+- **Risk:** Low. You cannot use AI Chat until you revert. Brave may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\BraveSoftware\Brave\BraveAIChatEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveAIChatEnabled.yaml>
+
+#### Turn off Brave News and Brave Talk
+
+`brave.news-talk-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+No news feed on the new tab page and no video call feature.
+
+- **What it does:** Applies the two Brave policies that disable Brave News and Brave Talk and hide their interface.
+- **Benefit:** A plain new tab page with no curated news feed, and no Talk video call button.
+- **Risk:** Low. You cannot use either until you revert. Brave may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\BraveSoftware\Brave\BraveNewsDisabled to 1 (DWord)`
+  - `Set HKLM\SOFTWARE\Policies\BraveSoftware\Brave\BraveTalkDisabled to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveNewsDisabled.yaml>, <https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveTalkDisabled.yaml>
+
+#### Turn off Brave Rewards
+
+`brave.rewards-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+No Brave Rewards icon, ads or tokens.
+
+- **What it does:** Applies the Brave policy that disables Brave Rewards, the feature that pays users for ads they see.
+- **Benefit:** Removes the Rewards icon and its ad notifications from Brave.
+- **Risk:** Low. You cannot turn Rewards back on from inside Brave until you revert. Brave may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\BraveSoftware\Brave\BraveRewardsDisabled to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveRewardsDisabled.yaml>
+
+#### Turn off Brave VPN
+
+`brave.vpn-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+No Brave VPN offer or button in Brave.
+
+- **What it does:** Applies the Brave policy that disables Brave VPN, the paid VPN built into the browser.
+- **Benefit:** Removes the VPN button and its upsell from Brave.
+- **Risk:** Low. Do not use it if you subscribe to Brave VPN. Brave may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\BraveSoftware\Brave\BraveVPNDisabled to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveVPNDisabled.yaml>
+
+#### Turn off Brave Wallet
+
+`brave.wallet-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+No built-in crypto wallet in Brave.
+
+- **What it does:** Applies the Brave policy that disables Brave Wallet, the built-in crypto wallet.
+- **Benefit:** Removes the wallet button and its code paths from Brave.
+- **Risk:** Low. Do not use it if you keep crypto in Brave Wallet, since you could not open it until you revert. Brave may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\BraveSoftware\Brave\BraveWalletDisabled to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveWalletDisabled.yaml>
+
 ### Microsoft Edge
+
+#### Hide Microsoft Rewards in Edge
+
+`edge.rewards-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+No Rewards points, icon or notifications in Edge.
+
+- **What it does:** Applies the Edge policy that hides the Microsoft Rewards experience and switches its setting off.
+- **Benefit:** No Rewards prompts or notifications on the new tab page and in search while you use Edge.
+- **Risk:** Low. You stop collecting Rewards points through Edge. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\ShowMicrosoftRewards to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/showmicrosoftrewards>
+
+#### Hide the Edge Insider promotion
+
+`edge.insider-promo-off` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+No Edge Insider ad on Edge's About page.
+
+- **What it does:** Applies the Edge policy that stops the About Microsoft Edge page from promoting the Edge Insider preview channels.
+- **Benefit:** A cleaner About page. It changes nothing else in Edge.
+- **Risk:** None. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\MicrosoftEdgeInsiderPromotionEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/microsoftedgeinsiderpromotionenabled>
 
 #### Hide the Edge sidebar
 
@@ -434,6 +550,62 @@ Remove the launcher bar on the right side of Edge.
   - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\HubsSidebarEnabled to 0 (DWord)`
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/hubssidebarenabled>
+
+#### Send Microsoft only the required Edge data
+
+`edge.diagnostic-data-required` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Optional browsing and crash data stays on your PC.
+
+- **What it does:** Applies the Edge policy that sets diagnostic data to required data only, which turns off the optional data.
+- **Benefit:** Edge stops sending the optional data about how you use the browser, the sites you visit and crash reports.
+- **Risk:** None for security. Required data is what Microsoft says keeps Edge secure, up to date and performing. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\DiagnosticData to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/diagnosticdata>
+
+#### Skip Edge's welcome screens
+
+`edge.first-run-off` · Low · Look and feel only · Optional: your choice · checked on build 26200
+
+No first-run tour or splash screen for a new Edge profile.
+
+- **What it does:** Applies the Edge policy that hides the first-run experience and the splash screen.
+- **Benefit:** A new Edge profile opens straight to the browser, with no tour or sign-in and sync pitch.
+- **Risk:** Low. Sync stays off until you turn it on, and Edge asks about it when it starts.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\HideFirstRunExperience to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/hidefirstrunexperience>
+
+#### Stop Edge asking to be your default
+
+`edge.default-browser-prompt-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+No prompts to make Edge the default browser and Bing the default search.
+
+- **What it does:** Applies the Edge policy that turns off the default browser settings campaign.
+- **Benefit:** Edge stops asking to become your default browser and to make Bing your default search engine.
+- **Risk:** None. Your current default browser and search engine are not changed. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\DefaultBrowserSettingsCampaignEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/defaultbrowsersettingscampaignenabled>
+
+#### Stop Edge feature tips and suggestions
+
+`edge.recommendations-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+No pop-ups that suggest Edge features.
+
+- **What it does:** Applies the Edge policy that turns off feature recommendations and browser assistance notifications.
+- **Benefit:** No dialogs, flyouts or banners nudging you to try Edge features, such as vertical tabs when many tabs are open.
+- **Risk:** None. Every feature is still in Edge settings. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\ShowRecommendationsEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/showrecommendationsenabled>
 
 #### Stop Edge from personalizing ads with your browsing
 
@@ -476,6 +648,20 @@ Edge will fully quit when you close the last window.
   - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\BackgroundModeEnabled to 0 (DWord)`
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/backgroundmodeenabled>
+
+#### Turn off Edge feedback and surveys
+
+`edge.feedback-off` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Edge can no longer open its feedback tool.
+
+- **What it does:** Applies the Edge policy that disables Edge Feedback, which Edge uses for suggestions, issue reports and customer surveys.
+- **Benefit:** No feedback or survey requests from inside Edge.
+- **Risk:** None. You can still report an Edge problem through Windows Feedback Hub. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\UserFeedbackAllowed to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/userfeedbackallowed>
 
 #### Turn off Edge shopping features
 

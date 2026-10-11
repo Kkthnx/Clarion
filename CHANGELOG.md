@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+New
+- Brave settings on the Debloat page: turn off Brave Rewards, Wallet, VPN, AI Chat, News and Talk, and Brave's usage pings. Each is a Brave policy value, taken from Brave's own policy definitions, so the names and meaning are the vendor's. Brave locks a policy setting, so it cannot be switched back inside Brave until you revert here.
+- Seven more Edge settings, each from Microsoft's Edge policy reference: stop feature tips and suggestions, hide Microsoft Rewards, skip the welcome screens, turn off Edge feedback and surveys, hide the Edge Insider promotion, stop Edge asking to be your default browser, and send Microsoft only the required Edge diagnostic data. Microsoft marks "off" for that last one as not recommended, so it sets required data only. Three Edge policies that other tools set are left out because Microsoft lists them as obsolete or deprecated, so setting them does nothing.
+
 Polish
 - Tweaks, Power, Network, Windows features and Updates are now tabs of one Windows page. With the old group open in the sidebar, Verify, What broke, Safety, System and Report a problem were pushed out of sight at the normal window size and had to be scrolled to. Every sidebar entry now fits, down to the smallest window, which is a little taller than before (640 instead of 580 device independent pixels) so the sidebar is never cut off.
 - The Storage tile on Home shows the disk Windows starts from, and the System page marks it "Windows drive". Windows lists disks in no fixed order, so the tile used to show whichever came first, which could be a USB stick or a data drive. Internal disks follow, largest first, and plug-in drives come last.
