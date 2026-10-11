@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.11
 
 Polish
 - Starting Clarion read the system report twice, because Home and the image notes both asked for it before the first read finished. Each read took about six seconds on a test PC, so the second only added load. They now share the read that is running, and a failed read is tried again the next time it is asked for.
