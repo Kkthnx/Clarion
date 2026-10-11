@@ -491,28 +491,6 @@
     ]
   },
   {
-    "id": "windows.prefetch",
-    "group": "Windows",
-    "name": "Prefetch",
-    "summary": "Startup hints Windows keeps for apps.",
-    "advice": "Optional and rarely useful. Clearing it does not make games or Windows faster.",
-    "recommendation": "Optional",
-    "facts": [
-      "Windows rebuilds the hints as you launch apps",
-      "Does not make anything faster",
-      "Apps may start slightly slower once"
-    ],
-    "benefit": "Frees a little space.",
-    "risk": "None.",
-    "riskLevel": "Safe",
-    "rules": [
-      {
-        "type": "folder",
-        "path": "%SystemRoot%\\Prefetch"
-      }
-    ]
-  },
-  {
     "id": "windows.error-reports",
     "group": "Windows",
     "name": "Error reports and crash dumps",

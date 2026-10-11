@@ -3911,12 +3911,11 @@ Windows will not fetch configuration and experiment settings from Microsoft.
 
 Turn off the services that collect and forward diagnostic data.
 
-- **What it does:** Sets the Connected User Experiences and Telemetry service (DiagTrack) and the WAP push message routing service (dmwappushservice) to Disabled and stops them.
+- **What it does:** Sets the Connected User Experiences and Telemetry service (DiagTrack) to Disabled and stops it.
 - **Benefit:** Removes the background process that gathers and uploads diagnostic data.
 - **Risk:** Low. Some feedback and diagnostic features report less. Windows Update is not affected.
 - **Changes:**
   - `Set service DiagTrack start type to Disabled`
-  - `Set service dmwappushservice start type to Disabled`
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization>
 

@@ -22,7 +22,7 @@ public sealed class CatalogDisciplineTests
     ];
 
     // The only services Clarion is allowed to change. Adding one means adding it here deliberately.
-    private static readonly string[] ServiceAllowlist = ["DiagTrack", "dmwappushservice"];
+    private static readonly string[] ServiceAllowlist = ["DiagTrack"];
 
     [Fact]
     public void No_tweak_touches_a_denylisted_service_in_apply_or_undo()
