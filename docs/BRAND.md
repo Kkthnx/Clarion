@@ -18,6 +18,24 @@ The dot stays out of anything a computer reads, because a name that starts with 
 
 Before this name, the project was called Clarion, and old releases and their notes still say so. The earlier name was chosen from the candidates below.
 
+## Brand files
+
+The mark is a blue dot followed by a C, so the full name reads as `.Clarion`. The wordmark is set in Space Grotesk Bold and the tagline in Inter Medium, both under the SIL Open Font License, so they are free to use. Brand blue is `#5C8BCF` on the dark background `#0F141B`, the same values as the app's theme.
+
+The files are in `docs/brand`. Use the light versions on dark backgrounds and the dark versions on light ones.
+
+| File | What it is |
+|---|---|
+| `wordmark-light-2048.png`, `wordmark-dark-2048.png` | The `.Clarion` wordmark on a transparent background. Actually 782 by 263 pixels. |
+| `c-mark-light-1024.png`, `c-mark-dark-1024.png` | The `.C` monogram on a transparent background. Actually 486 by 518 pixels. |
+| `app-icon-1024.png` | The app icon tile, a rounded square on a transparent background. |
+| `avatar-1024.png` | The square avatar for GitHub and social profiles. |
+| `banner-1280x640.png` | The banner, which is also the right size for the GitHub social preview. |
+
+What the app and the repository use from this set: `docs/images/banner.png` (the banner), and three files that `scripts/make-icon.ps1` builds from `app-icon-1024.png`: `src/Clarion.App/Assets/Clarion.ico` (sizes 16, 20, 24, 32, 40, 48, 64, 128 and 256), `src/Clarion.App/Assets/Clarion.png` and `docs/images/logo.png` (the app icon at 512 pixels). The icon is rebuilt, and not copied from the pack, because the pack's own icon stores every size as a PNG and has no 20 or 40 pixel size. The script writes sizes under 256 as classic bitmaps, which every Windows tool reads, as the earlier icon did. The GitHub social preview and the profile avatar are set by hand in the repository and account settings, since GitHub has no way to set them from code.
+
+The old `scripts/make-brand-assets.ps1` drew the previous mark and was removed so it cannot overwrite these files. Run `scripts/make-icon.ps1` again if `app-icon-1024.png` changes.
+
 ## Voice
 
 Plain, short, honest. Say what a change does, what it gives, and what it risks. No hype, no scare words, no jargon without a one line explanation.
