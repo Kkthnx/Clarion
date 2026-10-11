@@ -361,5 +361,146 @@
     "sources": [
       "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/defrag"
     ]
+  },
+  {
+    "id": "repair.restart-audio",
+    "category": "Devices",
+    "name": "Restart the Windows audio services",
+    "summary": "Bring sound back in an app that is silent while Windows sounds still play.",
+    "what": "Stops the Windows Audio and Windows Audio Endpoint Builder services and starts them again, the same as restarting each one in the Services window. The services are always started again, even if a step fails.",
+    "benefit": "Clears a temporary audio fault where one app has no sound but system sounds still work.",
+    "risk": "None. Sound cuts out for a few seconds, and an app that was playing may need to be reopened.",
+    "riskLevel": "Safe",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when an app is silent while Windows sounds still play. Check the app's volume and output device first.",
+    "facts": [
+      "Takes a few seconds",
+      "Changes no setting",
+      "Microsoft lists this as a fix for app audio that fails while system sounds work"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "stop audiosrv",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      },
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "stop AudioEndpointBuilder /y",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      }
+    ],
+    "always": [
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "start AudioEndpointBuilder",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      },
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "start audiosrv",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      }
+    ],
+    "sources": [
+      "https://support.microsoft.com/en-au/windows/fix-app-audio-not-working-while-system-sounds-work-in-windows-c2ebf6ed-4768-4ce5-8cb0-4cf195f5c431"
+    ]
+  },
+  {
+    "id": "repair.restart-bluetooth",
+    "category": "Devices",
+    "name": "Restart the Bluetooth service",
+    "summary": "Reconnect Bluetooth devices that keep dropping.",
+    "what": "Stops the Bluetooth Support Service and starts it again, the same as restarting it in the Services window. The service is always started again, even if the stop fails.",
+    "benefit": "Clears a stuck Bluetooth stack that keeps disconnecting devices.",
+    "risk": "None. Paired devices disconnect for a moment and then reconnect.",
+    "riskLevel": "Safe",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when Bluetooth devices keep disconnecting. If it comes back after every restart, check the adapter's power saving setting and the driver.",
+    "facts": [
+      "Takes a few seconds",
+      "Changes no setting and removes no pairing",
+      "The fix does not last across a restart of the PC if the cause is a power saving setting or a driver"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "stop bthserv",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      }
+    ],
+    "always": [
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "start bthserv",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      }
+    ],
+    "sources": [
+      "https://support.microsoft.com/windows/bluetooth-keeps-disconnecting-in-windows-81a9cb1e-d15c-4e72-b025-cc0d992dca9f"
+    ]
+  },
+  {
+    "id": "repair.resync-clock",
+    "category": "System",
+    "name": "Resync the clock",
+    "summary": "Ask Windows to set the clock from its time source right now.",
+    "what": "Starts the Windows Time service if it is stopped, then runs w32tm /resync, which tells the PC to resynchronize its clock as soon as possible and waits for it to finish.",
+    "benefit": "Fixes a clock that has drifted, which can break secure websites, sign-in and Store downloads.",
+    "risk": "None. The clock may jump by the amount it was off.",
+    "riskLevel": "Safe",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when the clock is wrong or sites report a certificate or time error. Make sure Set time automatically and the time zone are right in Settings first.",
+    "facts": [
+      "Takes a few seconds and needs an internet connection",
+      "Changes no setting",
+      "If the clock is wrong again after every restart, the battery on the motherboard may be dead"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "run",
+        "file": "net.exe",
+        "args": "start w32time",
+        "okExitCodes": [
+          0,
+          2
+        ]
+      },
+      {
+        "type": "run",
+        "file": "w32tm.exe",
+        "args": "/resync"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-server/networking/windows-time-service/windows-time-service-tools-and-settings"
+    ]
   }
 ]
