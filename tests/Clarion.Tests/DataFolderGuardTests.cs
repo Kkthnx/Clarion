@@ -89,8 +89,12 @@ public sealed class DataFolderGuardTests : IDisposable
         Assert.DoesNotContain(Rules(folder), r => r.IdentityReference.Equals(Users) && r.AccessControlType == AccessControlType.Allow && CanWrite(r.FileSystemRights));
     }
 
+    private static string[] Quarantined(string folder) =>
+        Directory.Exists(Path.Combine(folder, DataFolderGuard.QuarantineFolder))
+            ? Directory.GetFiles(Path.Combine(folder, DataFolderGuard.QuarantineFolder)) : [];
+
     [Fact]
-    public void A_file_someone_gave_themselves_rights_on_is_reset_to_the_folders_permissions()
+    public void A_journal_someone_gave_themselves_rights_on_is_set_aside_and_not_used()
     {
         var folder = NewFolder();
         var journal = Path.Combine(folder, "journal.jsonl");
@@ -101,18 +105,20 @@ public sealed class DataFolderGuardTests : IDisposable
 
         var notes = DataFolderGuard.Secure(folder);
 
-        var after = new FileInfo(journal).GetAccessControl(AccessControlSections.Access);
+        // Its bytes would still be replayed as administrator if it stayed under its own name, so it is moved, not just reset.
+        Assert.False(File.Exists(journal));
+        var kept = Assert.Single(Quarantined(folder));
+        Assert.StartsWith("journal.jsonl.", Path.GetFileName(kept), StringComparison.Ordinal);
+        Assert.Equal("{}\n", File.ReadAllText(kept));
+        var after = new FileInfo(kept).GetAccessControl(AccessControlSections.Access);
         Assert.Empty(after.GetAccessRules(true, false, typeof(SecurityIdentifier)));
-        var effective = after.GetAccessRules(true, true, typeof(SecurityIdentifier)).Cast<FileSystemAccessRule>().ToList();
-        Assert.DoesNotContain(effective, r => r.IdentityReference.Equals(Users) && r.AccessControlType == AccessControlType.Allow && CanWrite(r.FileSystemRights));
-        Assert.Contains(notes, n => n.Contains("journal.jsonl", StringComparison.Ordinal));
-        Assert.Equal("{}\n", File.ReadAllText(journal));
+        Assert.Contains(notes, n => n.Contains("journal.jsonl", StringComparison.Ordinal) && n.Contains("Nothing was deleted", StringComparison.Ordinal));
     }
 
     [Fact]
-    public void A_file_owned_by_another_account_is_taken_over_when_running_with_administrator_rights()
+    public void A_journal_owned_by_an_ordinary_account_is_set_aside()
     {
-        // Changing an owner to an account other than your own needs administrator rights, so this checks nothing on a limited run.
+        // A journal made by the signed-in account itself cannot be told from one planted by a program running as that account.
         if (!WindowsMachine.IsElevated()) return;
         var folder = NewFolder();
         var journal = Path.Combine(folder, "journal.jsonl");
@@ -120,15 +126,53 @@ public sealed class DataFolderGuardTests : IDisposable
         var theirs = new FileSecurity();
         theirs.SetOwner(Users);
         try { new FileInfo(journal).SetAccessControl(theirs); }
-        catch (InvalidOperationException) { return; } // some machines do not allow handing a file to another owner, so there is nothing to set up
-        Assert.Equal(Users, new FileInfo(journal).GetAccessControl(AccessControlSections.Owner).GetOwner(typeof(SecurityIdentifier)));
+        catch (InvalidOperationException) { return; } // some machines do not allow handing a file to another owner
 
         DataFolderGuard.Secure(folder);
 
-        var owner = new FileInfo(journal).GetAccessControl(AccessControlSections.Owner).GetOwner(typeof(SecurityIdentifier)) as SecurityIdentifier;
+        Assert.False(File.Exists(journal));
+        var kept = Assert.Single(Quarantined(folder));
+        var owner = new FileInfo(kept).GetAccessControl(AccessControlSections.Owner).GetOwner(typeof(SecurityIdentifier)) as SecurityIdentifier;
         Assert.True(DataFolderGuard.IsTrustedOwner(owner), $"owner is {owner}");
     }
 
+    [Fact]
+    public void A_journal_clarion_wrote_with_administrator_rights_stays_where_it_is()
+    {
+        // Needs administrator rights to write into the locked folder, as Clarion itself does.
+        if (!WindowsMachine.IsElevated()) return;
+        var folder = NewFolder();
+        DataFolderGuard.Secure(folder);
+        var journal = Path.Combine(folder, "journal.jsonl");
+        File.WriteAllText(journal, "{}\n");
+        var owner = new FileInfo(journal).GetAccessControl(AccessControlSections.Owner).GetOwner(typeof(SecurityIdentifier)) as SecurityIdentifier;
+        // On a PC set to make the creator the owner instead of Administrators, the file is not told from a planted one and this does not apply.
+        if (owner is null || !owner.Equals(Administrators)) return;
+
+        var notes = DataFolderGuard.Secure(folder);
+
+        Assert.True(File.Exists(journal));
+        Assert.Empty(Quarantined(folder));
+        Assert.Empty(notes);
+    }
+
+    [Fact]
+    public void A_crowd_of_other_files_cannot_hide_a_planted_journal()
+    {
+        var folder = NewFolder();
+        for (var i = 0; i < 5100; i++) File.WriteAllBytes(Path.Combine(folder, $"decoy-{i:D5}.tmp"), []);
+        var journal = Path.Combine(folder, "journal.jsonl");
+        File.WriteAllText(journal, "{}\n");
+        var planted = new FileSecurity();
+        planted.AddAccessRule(new FileSystemAccessRule(Users, FileSystemRights.FullControl, AccessControlType.Allow));
+        new FileInfo(journal).SetAccessControl(planted);
+
+        var notes = DataFolderGuard.Secure(folder);
+
+        Assert.False(File.Exists(journal));
+        Assert.Single(Quarantined(folder));
+        Assert.Contains(notes, n => n.Contains("more than 5000", StringComparison.Ordinal));
+    }
     [Fact]
     public void A_folder_that_is_a_link_is_renamed_and_replaced_without_touching_where_it_pointed()
     {

@@ -18,6 +18,7 @@ Fixed
 Safer
 - Web links, such as the winget, licence and GitHub links, now open in your browser with your normal rights. Clarion runs as administrator, and a browser started from it could run as administrator too, with its protections weakened, just to show a page. Clarion now starts it with the token of your desktop. If your desktop itself runs as administrator, which some setups do, the browser does as well.
 - Clarion no longer runs winget when it starts. Which apps are installed is read the first time you open the Apps page, or when you load a setup that lists apps. Winget may contact Microsoft's package source, and a person who never uses apps should not have that started for them every time, nor pay for it in start-up work. The readme, contributing page and Settings page say what the Apps page does on the network.
+- The change journal and the restart queue are no longer trusted just because their permissions were tightened. If one of them was made by an ordinary account, or has permissions of its own, or is a link, Clarion moves it to a quarantine folder inside its data folder and starts a fresh one, and says so. Before, only its permissions were reset, so its content survived, and a later Revert would have replayed it with administrator rights. Nothing is deleted, so a file that was fine all along can be put back by hand. These files are now checked first and by name, so a crowd of other files cannot push them past the 5000 entry limit, and going past it is reported.
 
 ## 0.1.0-beta.13
 

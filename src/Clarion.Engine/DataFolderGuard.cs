@@ -16,6 +16,11 @@ public static class DataFolderGuard
 {
     private const int MaxEntries = 5000;
 
+    /// <summary>Files Clarion reads back and acts on with administrator rights: the change journal, which Revert replays, and the restart queue.</summary>
+    private static readonly string[] Replayed = ["journal.jsonl", "restart-queue.json"];
+
+    public const string QuarantineFolder = "quarantine";
+
     private static readonly SecurityIdentifier LocalSystem = new(WellKnownSidType.LocalSystemSid, null);
     private static readonly SecurityIdentifier Administrators = new(WellKnownSidType.BuiltinAdministratorsSid, null);
     private static readonly SecurityIdentifier Users = new(WellKnownSidType.BuiltinUsersSid, null);
@@ -57,11 +62,19 @@ public static class DataFolderGuard
                 notes.Add("The data folder allowed ordinary accounts to add files. Only administrators can write to it now.");
             }
 
+            // The files that are acted on come first and by name, so a crowd of other files cannot push them past the cap below.
+            var now = (clock ?? TimeProvider.System).GetUtcNow();
+            foreach (var name in Replayed) SetAsideIfUntrusted(root, name, now, notes);
+
             var seen = 0;
             var options = new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true, AttributesToSkip = FileAttributes.ReparsePoint };
             foreach (var entry in root.EnumerateFileSystemInfos("*", options))
             {
-                if (++seen > MaxEntries) break;
+                if (++seen > MaxEntries)
+                {
+                    notes.Add($"The data folder holds more than {MaxEntries} entries, so the permissions of the rest were not checked.");
+                    break;
+                }
                 try
                 {
                     if (ResetEntry(entry)) notes.Add($"Reset the permissions of {entry.Name}, which did not follow the folder's.");
@@ -77,6 +90,52 @@ public static class DataFolderGuard
             notes.Add($"Could not lock the data folder: {ex.Message}");
         }
         return notes;
+    }
+
+    /// <summary>
+    /// A replayed file that another account made, or gave itself rights on, or that is a link, is moved aside and not used. Resetting its
+    /// permissions would leave its content, and that content would then run as administrator. It is moved and not deleted, so a file that
+    /// was fine all along is still there to be put back by hand.
+    /// </summary>
+    private static void SetAsideIfUntrusted(DirectoryInfo root, string name, DateTimeOffset now, List<string> notes)
+    {
+        var path = Path.Combine(root.FullName, name);
+        try
+        {
+            var file = new FileInfo(path);
+            // A file that is not there reports attributes of -1, which would read as every flag including link, so it is ruled out first.
+            if ((int)file.Attributes == -1) return;
+            var link = file.Attributes.HasFlag(FileAttributes.ReparsePoint);
+            var security = file.GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner);
+            var owner = security.GetOwner(typeof(SecurityIdentifier)) as SecurityIdentifier;
+            var ownRules = security.GetAccessRules(true, false, typeof(SecurityIdentifier)).Count;
+            // Only the system and administrators count here. The signed-in person's own account is no proof, because a program running
+            // at normal rights under that account could have made the file. Clarion with administrator rights owns what it writes as Administrators.
+            var administrative = owner is not null && (owner.Equals(LocalSystem) || owner.Equals(Administrators));
+            if (!link && administrative && ownRules == 0 && !security.AreAccessRulesProtected) return;
+
+            var stamp = now.ToString("yyyyMMdd-HHmmss");
+            var aside = Path.Combine(root.FullName, QuarantineFolder);
+            string target;
+            try
+            {
+                Directory.CreateDirectory(aside);
+                target = Path.Combine(aside, $"{name}.{stamp}");
+                File.Move(path, target);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                // If the folder for it cannot be used, it is at least renamed where it is, so it is no longer read under its own name.
+                target = path + ".untrusted-" + stamp;
+                File.Move(path, target);
+            }
+            if (!link) ResetEntry(new FileInfo(target));
+            notes.Add($"{name} was made by another account or had permissions of its own, so it was moved to {target} and is not used. Nothing was deleted.");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+        {
+            notes.Add($"Could not check {name}: {ex.Message}");
+        }
     }
 
     private static DirectorySecurity Locked()
