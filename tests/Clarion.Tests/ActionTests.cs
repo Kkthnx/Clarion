@@ -219,6 +219,20 @@ public sealed class ActionTests : IDisposable
 
     [Fact]
     [SupportedOSPlatform("windows")]
+    public async Task Real_runner_returns_when_the_tool_exits_even_if_it_left_a_helper_running()
+    {
+        // A tool that starts a helper and exits leaves the helper holding the output pipes. The job is over when the tool is.
+        if (!OperatingSystem.IsWindows()) return;
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+
+        var code = await new WindowsStreamingRunner().RunAsync("cmd.exe", "/c start /b ping.exe -n 25 127.0.0.1", false, _ => { }, default);
+
+        Assert.Equal(0, code);
+        Assert.True(watch.Elapsed < TimeSpan.FromSeconds(10), $"took {watch.Elapsed}");
+    }
+
+    [Fact]
+    [SupportedOSPlatform("windows")]
     public async Task Real_runner_can_be_cancelled()
     {
         if (!OperatingSystem.IsWindows()) return;

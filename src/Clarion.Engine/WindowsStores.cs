@@ -80,6 +80,8 @@ public sealed class WindowsServiceStore(IProcessRunner runner) : IServiceStore
 
     public ServiceStartType? GetStartType(string name)
     {
+        // A name with a backslash would open some other key under CurrentControlSet, so it is not a service.
+        if (!ServiceNames.IsValid(name)) return null;
         using var key = Registry.LocalMachine.OpenSubKey(Root + name);
         if (key?.GetValue("Start") is not int start) return null;
         var type = key.GetValue("Type") is int t ? t : 0;
@@ -95,6 +97,8 @@ public sealed class WindowsServiceStore(IProcessRunner runner) : IServiceStore
 
     public void SetStartType(string name, ServiceStartType startType)
     {
+        // The name goes onto the sc.exe command line, where a space would add arguments such as a different program to run.
+        if (!ServiceNames.IsValid(name)) throw new ArgumentException($"Not a valid service name: {name}");
         var mode = startType switch
         {
             ServiceStartType.Automatic => "auto",
@@ -356,9 +360,11 @@ public sealed class WindowsStreamingRunner : Clarion.Core.Actions.IStreamingRunn
             try { process.Kill(entireProcessTree: true); } catch (InvalidOperationException) { }
         });
 
-        var readers = new[] { Pump(process.StandardOutput, onLine), Pump(process.StandardError, onLine) };
+        var readers = Task.WhenAll(Pump(process.StandardOutput, onLine), Pump(process.StandardError, onLine));
         await process.WaitForExitAsync(CancellationToken.None);
-        await Task.WhenAll(readers);
+        // A tool can start a helper and exit, and the helper then keeps both pipes open. The job is over when the tool is, so the
+        // rest of its output gets a short grace period instead of holding the screen on "Running" until the helper ends.
+        await Task.WhenAny(readers, Task.Delay(TimeSpan.FromSeconds(2), CancellationToken.None));
         cancel.ThrowIfCancellationRequested();
         return process.ExitCode;
     }
