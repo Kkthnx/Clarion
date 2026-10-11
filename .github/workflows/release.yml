@@ -99,9 +99,9 @@ jobs:
             artifacts/*.sha256
 
       # A signed statement from GitHub that these exact files were built by this workflow from this commit. It is free, and anyone can check
-      # it with `gh attestation verify`. It is not a Windows signature, so SmartScreen does not use it.
+      # it with `gh attestation verify`. It is not a Windows signature, so SmartScreen does not use it. It runs on a manual run too, so it can be tried
+      # without tagging a release.
       - name: Vouch for the release files
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/attest-build-provenance@v4.2.2
         with:
           subject-path: |
