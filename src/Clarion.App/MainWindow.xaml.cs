@@ -134,7 +134,8 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private static readonly Dictionary<string, PageArgs> Sections = new()
+    /// <summary>The lists of settings. The first two are pages of their own, and the rest are the tabs of the Windows page.</summary>
+    internal static readonly Dictionary<string, PageArgs> Sections = new()
     {
         ["privacy"] = new("Privacy", "Stop Windows from collecting and sharing more than it needs to.", ["Privacy", "Security"]),
         ["debloat"] = new("Debloat", "Remove apps you do not use. Every removal can be reverted.", ["Debloat"]),
@@ -159,13 +160,10 @@ public sealed partial class MainWindow : Window
         var tag = (args.SelectedItem as NavigationViewItem)?.Tag as string;
         _pageTag = tag;
         UpdateBar();
-        // The Windows group holds five rows. Left open it pushes Verify, Safety and the rest out of sight on a normal screen.
-        // Done after the selection has settled. Collapsing inside the handler leaves the selection bar on the Windows row.
-        if (tag is not (null or "tweaks" or "power" or "network" or "features" or "updates") && WindowsGroup.IsExpanded)
-            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => WindowsGroup.IsExpanded = false);
         switch (tag)
         {
             case "home": ContentFrame.Navigate(typeof(HomePage)); break;
+            case "windows": ContentFrame.Navigate(typeof(WindowsPage)); break;
             case "feedback": ContentFrame.Navigate(typeof(FeedbackPage)); break;
             case "system": ContentFrame.Navigate(typeof(SystemPage)); break;
             case "troubleshoot": ContentFrame.Navigate(typeof(TroubleshootPage)); break;
@@ -317,12 +315,16 @@ public sealed partial class MainWindow : Window
 
     private void GoTo(string tag)
     {
+        // The five Windows lists are tabs of one page, so asking for one selects that page and the tab.
+        var windowsTab = WindowsPage.IsTab(tag);
+        if (windowsTab) { WindowsPage.Tab = tag; tag = "windows"; }
+
         var target = Nav.MenuItems.Concat(Nav.FooterMenuItems).OfType<NavigationViewItem>()
-            .SelectMany(i => new[] { i }.Concat(i.MenuItems.OfType<NavigationViewItem>()))
             .FirstOrDefault(i => i.Tag as string == tag);
         if (target is null) return;
-        if (WindowsGroup.MenuItems.Contains(target)) WindowsGroup.IsExpanded = true;
-        Nav.SelectedItem = target;
+        // Already on the page: the selection does not change, so the tab is shown directly.
+        if (windowsTab && ReferenceEquals(Nav.SelectedItem, target)) ContentFrame.Navigate(typeof(WindowsPage));
+        else Nav.SelectedItem = target;
     }
 
     private void OnClear(object sender, RoutedEventArgs e) => _app.ClearPending();

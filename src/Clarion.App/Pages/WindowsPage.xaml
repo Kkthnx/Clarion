@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.WindowsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- One page for the five Windows lists. They were five sidebar rows under a group, which pushed Verify, Safety and the rest out of
+         sight at the normal window size. -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <SelectorBar x:Name="Tabs" Margin="26,10,32,0" SelectionChanged="OnTabChanged"
+                     AutomationProperties.Name="Windows settings">
+            <SelectorBarItem Text="Tweaks" Tag="tweaks" />
+            <SelectorBarItem Text="Power" Tag="power" />
+            <SelectorBarItem Text="Network" Tag="network" />
+            <SelectorBarItem Text="Windows features" Tag="features" />
+            <SelectorBarItem Text="Updates" Tag="updates" />
+        </SelectorBar>
+        <Frame x:Name="Inner" Grid.Row="1" />
+    </Grid>
+</Page>

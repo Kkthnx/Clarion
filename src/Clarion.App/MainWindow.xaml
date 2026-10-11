@@ -66,25 +66,8 @@
                 <NavigationViewItem Content="Repair" Tag="repair">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE90F;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Name="WindowsGroup" Content="Windows" SelectsOnInvoked="False">
+                <NavigationViewItem x:Name="WindowsItem" Content="Windows" Tag="windows">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE71D;" /></NavigationViewItem.Icon>
-                    <NavigationViewItem.MenuItems>
-                        <NavigationViewItem Content="Tweaks" Tag="tweaks">
-                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE713;" /></NavigationViewItem.Icon>
-                        </NavigationViewItem>
-                        <NavigationViewItem Content="Power" Tag="power">
-                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE945;" /></NavigationViewItem.Icon>
-                        </NavigationViewItem>
-                        <NavigationViewItem Content="Network" Tag="network">
-                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE774;" /></NavigationViewItem.Icon>
-                        </NavigationViewItem>
-                        <NavigationViewItem Content="Windows features" Tag="features">
-                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE9D9;" /></NavigationViewItem.Icon>
-                        </NavigationViewItem>
-                        <NavigationViewItem Content="Updates" Tag="updates">
-                            <NavigationViewItem.Icon><FontIcon Glyph="&#xE895;" /></NavigationViewItem.Icon>
-                        </NavigationViewItem>
-                    </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
                 <NavigationViewItemSeparator />
                 <NavigationViewItem x:Name="VerifyItem" Content="Verify" Tag="verify">

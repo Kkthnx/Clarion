@@ -43,6 +43,8 @@ public sealed partial class TweakListPage : Page
     {
         if (e.Parameter is PageArgs args) _args = args;
         TitleText.Text = _args.Title;
+        // Inside the Windows page the selected tab already names the list, so the title is left out and the line under it stays.
+        TitleText.Visibility = _args.Title.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         SubtitleText.Text = _args.Subtitle;
         _query = _args.Query;
         SearchBox.Text = _query;
