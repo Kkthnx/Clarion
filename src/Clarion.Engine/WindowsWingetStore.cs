@@ -16,6 +16,8 @@ public sealed class WindowsWingetStore(IProcessRunner runner, string? wingetPath
 
     private readonly string _path = wingetPath ?? DefaultPath;
     private readonly object _gate = new();
+    private readonly object _stopGate = new();
+    private CancellationTokenSource? _stop;
     private IReadOnlySet<string>? _installed;
     private string? _failure;
 
@@ -77,9 +79,18 @@ public sealed class WindowsWingetStore(IProcessRunner runner, string? wingetPath
         catch (InvalidOperationException) { return null; }
     }
 
+    public void CancelRunning()
+    {
+        lock (_stopGate) _stop?.Cancel();
+    }
+
     private WingetOutcome Run(string arguments, TimeSpan timeout)
     {
-        var result = runner.Run(_path, arguments, timeout);
+        using var stop = new CancellationTokenSource();
+        lock (_stopGate) _stop = stop;
+        ProcessResult result;
+        try { result = runner.Run(_path, arguments, timeout, stop.Token); }
+        finally { lock (_stopGate) _stop = null; }
         return new WingetOutcome(result.ExitCode, string.IsNullOrWhiteSpace(result.Error) ? result.Output : result.Output + Environment.NewLine + result.Error);
     }
 }

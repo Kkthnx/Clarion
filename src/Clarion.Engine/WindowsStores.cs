@@ -18,7 +18,9 @@ namespace Clarion.Engine;
 [SupportedOSPlatform("windows")]
 public sealed class WindowsProcessRunner : IProcessRunner
 {
-    public ProcessResult Run(string fileName, string arguments, TimeSpan timeout)
+    public ProcessResult Run(string fileName, string arguments, TimeSpan timeout) => Run(fileName, arguments, timeout, CancellationToken.None);
+
+    public ProcessResult Run(string fileName, string arguments, TimeSpan timeout, CancellationToken cancel)
     {
         // By full path, so a program of the same name beside Clarion or in the current folder is never the one that runs.
         var psi = new ProcessStartInfo(Clarion.Core.Engine.SystemTools.Resolve(fileName, Environment.SystemDirectory), arguments)
@@ -28,14 +30,25 @@ public sealed class WindowsProcessRunner : IProcessRunner
             UseShellExecute = false,
             CreateNoWindow = true,
         };
+        // winget writes UTF-8 to a pipe (a registered sign shows as the bytes C2 AE), and a program with no console has no code page to
+        // fall back on, so a publisher name such as HWiNFO with a registered sign would come back garbled.
+        if (Path.GetFileName(fileName).Equals("winget.exe", StringComparison.OrdinalIgnoreCase))
+        {
+            psi.StandardOutputEncoding = new UTF8Encoding(false);
+            psi.StandardErrorEncoding = new UTF8Encoding(false);
+        }
         using var p = Process.Start(psi) ?? throw new InvalidOperationException($"Could not start {fileName}");
         var stdout = new StringBuilder();
         var stderr = new StringBuilder();
         var pumps = new[] { Pump(p.StandardOutput, stdout), Pump(p.StandardError, stderr) };
-        if (!p.WaitForExit(timeout))
+        // Waited for in short steps, so a stop request is noticed within a fifth of a second.
+        var clock = Stopwatch.StartNew();
+        while (!p.WaitForExit(200))
         {
+            var stopped = cancel.IsCancellationRequested;
+            if (!stopped && clock.Elapsed < timeout) continue;
             try { p.Kill(entireProcessTree: true); } catch (InvalidOperationException) { }
-            return new ProcessResult(-1, "", $"{fileName} timed out");
+            return stopped ? new ProcessResult(-2, "", $"{fileName} was stopped") : new ProcessResult(-1, "", $"{fileName} timed out");
         }
         // A helper the program left running keeps both pipes open after the program itself has exited. Waiting for the pipes to close
         // would then block until that helper ends, so the output gathered so far is taken after a short grace period instead.

@@ -335,15 +335,19 @@ public sealed partial class AppServices : UiObservableObject
     private Dictionary<string, TweakState> DetectAll(IEnumerable<TweakItem> items)
     {
         var map = new Dictionary<string, TweakState>();
+        // One cause can fail every setting of a kind, such as winget not answering for 135 apps, so each reason is logged once with a count.
+        var failures = new Dictionary<string, (string First, int Count)>();
         foreach (var item in items)
         {
             try { map[item.Id] = Runtime.Engine.Detect(item.EffectiveTweak); }
             catch (Exception ex)
             {
-                Log.Write($"Could not read {item.Id}: {ex.Message}");
+                failures[ex.Message] = failures.TryGetValue(ex.Message, out var seen) ? (seen.First, seen.Count + 1) : (item.Id, 1);
                 map[item.Id] = TweakState.Unavailable;
             }
         }
+        foreach (var (message, (first, count)) in failures)
+            Log.Write(count == 1 ? $"Could not read {first}: {message}" : $"Could not read {count} settings, the first being {first}: {message}");
         return map;
     }
 

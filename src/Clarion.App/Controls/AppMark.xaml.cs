@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+using Clarion.App.Services;
 using Clarion.Core.Apps;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -83,9 +83,11 @@ public sealed partial class AppMark : UserControl
                         if (request == _photoRequest) Photo.Source = image;
                     }
                 }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or COMException)
+                catch (Exception ex) when (ex is not OutOfMemoryException)
                 {
-                    // A file that is gone or cannot be read leaves the letter tile.
+                    // A file that is gone, cannot be read or has no usable icon leaves the letter tile. This runs in an async void method,
+                    // where an exception that escapes would end the app, and a missing picture is never worth that.
+                    Log.Write($"Icon {path} could not be read: {ex.Message}");
                 }
             }
         }

@@ -21,4 +21,10 @@ public sealed record ProcessResult(int ExitCode, string Output, string Error);
 public interface IProcessRunner
 {
     ProcessResult Run(string fileName, string arguments, TimeSpan timeout);
+
+    /// <summary>
+    /// Runs the program and stops it, with the programs it started, when the token is cancelled. Exit code -2 means it was stopped that way,
+    /// and -1 means it ran out of time. A runner that cannot stop a program runs it to the end.
+    /// </summary>
+    ProcessResult Run(string fileName, string arguments, TimeSpan timeout, CancellationToken cancel) => Run(fileName, arguments, timeout);
 }

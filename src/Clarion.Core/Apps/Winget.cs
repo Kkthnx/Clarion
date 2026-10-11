@@ -121,6 +121,7 @@ public static class WingetCodes
         unchecked((int)0x8A15006D) => "A service winget needs is busy. Try again in a few minutes.",
         unchecked((int)0x8A150005) => "It was stopped.",
         -1 => "winget took too long, so it was stopped.",
+        -2 => "Stopped before it finished.",
         _ => $"winget stopped with code 0x{code:X8}. Its log has the detail.",
     };
 }
@@ -229,12 +230,29 @@ public interface IWingetStore
     WingetOutcome Install(string id, string? location = null);
     WingetOutcome Uninstall(string id);
 
+    /// <summary>Stops the install or uninstall that is running now, with the installer winget started. Does nothing when none is running.</summary>
+    void CancelRunning();
+
     /// <summary>The version, publisher, licence and installer details winget holds for a package, or null when it cannot be read.</summary>
     WingetPackageInfo? Show(string id);
 }
 
-public sealed record WingetOutcome(int ExitCode, string Output)
+public sealed partial record WingetOutcome(int ExitCode, string Output)
 {
+    // winget prints this line when the installer itself failed. Only the English wording is known, so in another language nothing is added.
+    [GeneratedRegex(@"Installer failed with exit code:\s*(-?\d{1,10})(?!\d)")]
+    private static partial Regex InstallerCode();
+
     public bool Succeeded => WingetCodes.IsSuccess(ExitCode);
-    public string Message => WingetCodes.Explain(ExitCode);
+
+    /// <summary>What happened, in a sentence, with the installer's own exit code when winget printed one, which is what a search for the error needs.</summary>
+    public string Message
+    {
+        get
+        {
+            var sentence = WingetCodes.Explain(ExitCode);
+            var match = Succeeded ? Match.Empty : InstallerCode().Match(Output);
+            return match.Success ? $"{sentence} The installer reported exit code {match.Groups[1].Value}." : sentence;
+        }
+    }
 }
