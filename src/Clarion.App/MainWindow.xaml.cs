@@ -381,7 +381,7 @@ public sealed partial class MainWindow : Window
                     var details = new TextBlock { Text = "Asking winget for the version, licence and checksum...", FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8, IsTextSelectionEnabled = true };
                     block.Children.Add(details);
                     var links = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
-                    foreach (var link in item.SourceLinks.Where(l => !l.Link.AbsoluteUri.Contains("winget-pkgs", StringComparison.Ordinal)))
+                    foreach (var link in item.SourceLinks.Where(l => !l.Link.AbsoluteUri.Contains("winget-pkgs", StringComparison.Ordinal)).DistinctBy(l => l.Link.AbsoluteUri.TrimEnd('/').ToLowerInvariant()))
                         links.Children.Add(new HyperlinkButton { Content = link.Text, NavigateUri = link.Link, Padding = new Thickness(4, 0, 4, 0), FontSize = 12 });
                     block.Children.Add(links);
                     installs.Add((item, details));
