@@ -76,7 +76,9 @@ public sealed class InstalledIconTests
             using (var key = Registry.CurrentUser.CreateSubKey(path))
                 key.SetValue("DisplayIcon", "\"" + file + "\",0");
 
-            Assert.Equal(file, WindowsInstalledIcons.FindIconFile(["Not-a-real-key", code]));
+            Assert.Equal(file, WindowsInstalledIcons.FindIconFile(["Not-a-real-key", code], includeUserKeys: true));
+            // The current user's keys can be written by any program, so an elevated Clarion does not trust them.
+            Assert.Null(WindowsInstalledIcons.FindIconFile([code], includeUserKeys: false));
             Assert.Null(WindowsInstalledIcons.FindIconFile(["Not-a-real-key"]));
             Assert.Null(WindowsInstalledIcons.FindIconFile([@"..\" + code, code.Replace("-", "/", StringComparison.Ordinal)]));
         }
@@ -97,7 +99,7 @@ public sealed class InstalledIconTests
         {
             using (var key = Registry.CurrentUser.CreateSubKey(path))
                 key.SetValue("DisplayIcon", @"C:\Definitely\Not\Here\" + code + ".exe");
-            Assert.Null(WindowsInstalledIcons.FindIconFile([code]));
+            Assert.Null(WindowsInstalledIcons.FindIconFile([code], includeUserKeys: true));
         }
         finally
         {

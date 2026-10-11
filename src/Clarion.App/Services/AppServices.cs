@@ -275,7 +275,7 @@ public sealed partial class AppServices : UiObservableObject
             Apply(fast, fastStates);
             AppliedCount = Items.Count(i => i.IsApplied && !i.InstallsApps);
 
-            _featureRead = Task.CompletedTask;
+            _featureRead = _appsRead;
             if (slow.Count > 0)
             {
                 // Windows features go through DISM, which takes about 15 seconds and nothing else depends on it, so it
@@ -284,7 +284,7 @@ public sealed partial class AppServices : UiObservableObject
                 var apps = slow.Where(i => i.Tweak.Apply.Any(o => o is InstallWingetPackage or UninstallWingetPackage)).ToList();
                 var features = slow.Where(i => i.Tweak.Apply.Any(o => o is SetWindowsFeature or SetWindowsCapability)).ToList();
                 var others = slow.Except(features).Except(apps).ToList();
-                _featureRead = Task.WhenAll(ReadGroupAsync(features), ReadGroupAsync(apps));
+                _featureRead = Task.WhenAll(ReadGroupAsync(features), ReadGroupAsync(apps), _appsRead);
                 await ReadGroupAsync(others);
             }
 

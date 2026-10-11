@@ -20,13 +20,20 @@ public static class WindowsInstalledIcons
         (RegistryHive.CurrentUser, RegistryView.Registry64),
     ];
 
-    public static string? FindIconFile(IEnumerable<string> productCodes)
+    /// <summary>
+    /// Any program running at normal rights can write the current user's keys, and Clarion runs elevated, so while elevated only the machine
+    /// wide keys, which need administrator rights to change, are trusted. Otherwise a crafted icon file could be handed to the icon reader
+    /// in the elevated process. Pass includeUserKeys to choose; by default they are used only when Clarion is not elevated.
+    /// </summary>
+    public static string? FindIconFile(IEnumerable<string> productCodes, bool? includeUserKeys = null)
     {
+        var user = includeUserKeys ?? !WindowsMachine.IsElevated();
         foreach (var code in productCodes)
         {
             if (code.Length is 0 or > 120 || code.Contains('\\') || code.Contains('/')) continue;
             foreach (var (hive, view) in Places)
             {
+                if (hive == RegistryHive.CurrentUser && !user) continue;
                 try
                 {
                     using var root = RegistryKey.OpenBaseKey(hive, view);

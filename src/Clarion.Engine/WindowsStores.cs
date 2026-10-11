@@ -46,7 +46,7 @@ public sealed class WindowsProcessRunner : IProcessRunner
         while (!p.WaitForExit(200))
         {
             var stopped = cancel.IsCancellationRequested;
-            if (!stopped && clock.Elapsed < timeout) continue;
+            if (!stopped && (timeout < TimeSpan.Zero || clock.Elapsed < timeout)) continue;
             try { p.Kill(entireProcessTree: true); } catch (InvalidOperationException) { }
             return stopped ? new ProcessResult(-2, "", $"{fileName} was stopped") : new ProcessResult(-1, "", $"{fileName} timed out");
         }
