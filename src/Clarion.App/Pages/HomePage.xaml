@@ -10,13 +10,7 @@
             <StackPanel Orientation="Horizontal" Spacing="18">
                 <Image Source="ms-appx:///Assets/Clarion.png" Width="72" Height="72" VerticalAlignment="Center" />
                 <StackPanel Spacing="4" VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <TextBlock Text="Clarion" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                        <Border VerticalAlignment="Center" Padding="8,2,8,2" CornerRadius="10" BorderThickness="1"
-                                Background="{ThemeResource ClAccentTintBrush}" BorderBrush="{ThemeResource ClAccentBrush}">
-                            <TextBlock Text="{x:Bind svc:AppServices.Version}" FontSize="12" Foreground="{ThemeResource ClAccentTextBrush}" />
-                        </Border>
-                    </StackPanel>
+                    <TextBlock Text="Clarion" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock Text="See it. Set it. Done." FontSize="16" Foreground="{ThemeResource ClAccentTextBrush}" />
                 </StackPanel>
             </StackPanel>

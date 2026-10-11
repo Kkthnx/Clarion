@@ -43,8 +43,9 @@
             </Border>
             <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
                 <TextBlock x:Name="TitleText" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
-                <TextBlock x:Name="ValueText" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                <TextBlock x:Name="DetailText" FontSize="12" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                <!-- A processor or graphics card name is the most identifying fact on the page, so it wraps to a second line before it is cut. -->
+                <TextBlock x:Name="ValueText" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock x:Name="DetailText" FontSize="12" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextSecondaryBrush}" />
             </StackPanel>
         </Grid>
     </Border>

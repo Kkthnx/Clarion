@@ -5,6 +5,11 @@
 New
 - When a setting has been changed back twice or more, Verify now says what is worth trying. It compares the Windows version at each time the setting came back. If it came back on the same version every time, an update did not do it, so something running on this PC did, such as a workplace or school policy, another tweak tool or a scheduled task. If Windows was on a newer version each time, putting it back again is the right fix. It does not name a program, because Clarion cannot tell which one it is.
 
+Polish
+- On Home, the processor and graphics names wrap onto a second line instead of being cut off with dots, and so does the storage detail. The version number that sat next to the big title is gone, since it is already in the title bar.
+- Review and apply and Clear queue only show on pages where something can be queued, or when something is already queued. System, Settings, About, What's new, Report a problem, Clean up and Repair show just Re-check.
+- Clarion starts with the page list focused, not the search box, so there is no caret in a field you did not click. The first key press shows the usual focus outline.
+
 Fixed
 - Pressing "Make a restore point now" on Safety without administrator rights did nothing visible: the message stayed on "Making a restore point" for good and the error only reached the crash log. It now says that administrator rights are needed, and the button explains it before trying.
 - If reading the system or applying changes failed part way, for example on an unreadable journal, the app stayed on "Reading your system" or "Applying changes" with its buttons locked. The read now always finishes, and a failed run reads your settings again and tells you.

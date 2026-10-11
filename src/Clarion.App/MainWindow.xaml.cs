@@ -51,6 +51,10 @@ public sealed partial class MainWindow : Window
         ContentFrame.Navigated += (_, _) => ContentFrame.BackStack.Clear();
         Nav.SelectedItem = Nav.MenuItems[0];
         UpdateBar();
+        // Left alone, focus lands on the first control that can take it, which is the search box in the title bar, so a caret sits in a
+        // field nobody asked for. It starts on the page list instead. Pointer focus draws no focus rectangle, and the first key press does.
+        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+            (Nav.ContainerFromMenuItem(Nav.SelectedItem) as Control)?.Focus(FocusState.Pointer));
         _ = StartupAsync();
         _ = _app.LoadImageNotesAsync();
         _ = _app.StartupUpdateCheckAsync();
@@ -146,11 +150,15 @@ public sealed partial class MainWindow : Window
 
         if (args.IsSettingsSelected)
         {
+            _pageTag = "settings";
             ContentFrame.Navigate(typeof(SettingsPage));
+            UpdateBar();
             return;
         }
 
         var tag = (args.SelectedItem as NavigationViewItem)?.Tag as string;
+        _pageTag = tag;
+        UpdateBar();
         // The Windows group holds five rows. Left open it pushes Verify, Safety and the rest out of sight on a normal screen.
         // Done after the selection has settled. Collapsing inside the handler leaves the selection bar on the Windows row.
         if (tag is not (null or "tweaks" or "power" or "network" or "features" or "updates") && WindowsGroup.IsExpanded)
@@ -274,9 +282,17 @@ public sealed partial class MainWindow : Window
         if (_app.QueuePreset(key) > 0) _app.RequestReview();
     }
 
+    private string? _pageTag;
+
+    // Pages that cannot add to the queue. Review and apply and Clear queue have nothing to do there, so they stay out of sight until
+    // something is queued from another page, and then they show everywhere so the queue can still be reviewed.
+    private static readonly HashSet<string> PagesWithoutQueue = ["system", "feedback", "whatsnew", "about", "cleanup", "repair", "settings"];
+
     private void UpdateBar()
     {
         var count = _app.PendingCount;
+        var showQueue = count > 0 || _pageTag is null || !PagesWithoutQueue.Contains(_pageTag);
+        ClearButton.Visibility = ReviewButton.Visibility = showQueue ? Visibility.Visible : Visibility.Collapsed;
         BusyRing.IsActive = _app.IsBusy;
         StatusText.Text = _app.IsBusy ? _app.Status
             : count == 0 ? _app.Status
