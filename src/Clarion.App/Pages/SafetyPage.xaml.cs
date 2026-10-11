@@ -44,6 +44,11 @@ public sealed partial class SafetyPage : Page
 
     private async void OnMakeRestore(object sender, RoutedEventArgs e)
     {
+        if (!_app.IsElevated)
+        {
+            RestoreStatus.Text = "Making a restore point needs administrator rights. Use Restart as administrator on Home, then try again.";
+            return;
+        }
         MakeRestore.IsEnabled = false;
         RestoreStatus.Text = "Making a restore point. This can take a little while.";
         Clarion.Core.Engine.TweakResult made;

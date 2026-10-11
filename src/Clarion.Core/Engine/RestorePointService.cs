@@ -32,9 +32,11 @@ public sealed class RestorePointService(IRegistryStore registry, IProcessRunner 
     {
         var safe = Sanitize(description);
         var prior = registry.Read(Frequency);
+        var changed = false;
         try
         {
             registry.Write(Frequency, new RegistryData(RegistryKind.DWord, "0"));
+            changed = true;
             var result = runner.Run("powershell.exe", PowerShellHost.ToArguments($"Checkpoint-Computer -Description '{safe}' -RestorePointType MODIFY_SETTINGS -ErrorAction Stop"), Timeout);
             return result.ExitCode == 0
                 ? TweakResult.Ok()
@@ -45,10 +47,19 @@ public sealed class RestorePointService(IRegistryStore registry, IProcessRunner 
             // PowerShell could not be started, which is a failure to report, not a crash.
             return TweakResult.Fail($"PowerShell could not be started. {ex.Message}");
         }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException)
+        {
+            // Without administrator rights Windows will not let the registry value be changed, so nothing was tried.
+            return TweakResult.Fail("Making a restore point needs administrator rights. Use Restart as administrator on Home, then try again.");
+        }
         finally
         {
-            if (prior.Exists && prior.Data is not null) registry.Write(Frequency, prior.Data);
-            else registry.DeleteValue(Frequency);
+            // Only a value that was really changed is put back. When the first write was refused there is nothing to undo.
+            if (changed)
+            {
+                if (prior.Exists && prior.Data is not null) registry.Write(Frequency, prior.Data);
+                else registry.DeleteValue(Frequency);
+            }
         }
     }
 
