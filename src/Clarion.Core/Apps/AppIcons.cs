@@ -13,7 +13,7 @@ public sealed record AppIcon(string Title, string Hex, string Source, string Pat
     /// How the outline sits in a square slot. A wide outline such as a wordmark is drawn inside a tile so it is not a thin sliver,
     /// and a very thin one is not readable at icon size at all.
     /// </summary>
-    public LogoShape Shape => Aspect >= 3 ? LogoShape.Wordmark : Aspect >= 1.5 ? LogoShape.Wide : LogoShape.Square;
+    public LogoShape Shape => Aspect >= 2.2 ? LogoShape.Wordmark : Aspect >= 1.5 ? LogoShape.Wide : LogoShape.Square;
 
     /// <summary>Red, green and blue as 0 to 255, from the brand's six digit hex colour.</summary>
     public (byte R, byte G, byte B) Rgb

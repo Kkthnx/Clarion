@@ -71,7 +71,8 @@ public sealed class AppIconTests
         foreach (var (id, icon) in AppIcons.Default.All)
             Assert.InRange(icon.Aspect, 0.3, 6.0);
         Assert.Equal(LogoShape.Square, AppIcons.Default.For("app.chrome")!.Shape);
-        Assert.Equal(LogoShape.Wide, AppIcons.Default.For("app.go")!.Shape);
+        Assert.Equal(LogoShape.Wide, AppIcons.Default.For("app.ea-app")!.Shape);
+        Assert.Equal(LogoShape.Wordmark, AppIcons.Default.For("app.go")!.Shape);
         Assert.Equal(LogoShape.Wordmark, AppIcons.Default.For("app.zoom")!.Shape);
     }
 
@@ -79,8 +80,8 @@ public sealed class AppIconTests
     [InlineData(1.0, LogoShape.Square)]
     [InlineData(1.49, LogoShape.Square)]
     [InlineData(1.5, LogoShape.Wide)]
-    [InlineData(2.99, LogoShape.Wide)]
-    [InlineData(3.0, LogoShape.Wordmark)]
+    [InlineData(2.19, LogoShape.Wide)]
+    [InlineData(2.2, LogoShape.Wordmark)]
     public void The_shape_follows_the_aspect(double aspect, LogoShape expected) =>
         Assert.Equal(expected, new AppIcon("x", "000000", "https://example.com", "M0 0", aspect).Shape);
 }
