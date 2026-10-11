@@ -36,7 +36,7 @@
             <NavigationView.Resources>
                 <ResourceDictionary>
                     <!-- Shorter menu rows, so every page fits in the sidebar even on a small screen. -->
-                    <x:Double x:Key="NavigationViewItemOnLeftMinHeight">34</x:Double>
+                    <x:Double x:Key="NavigationViewItemOnLeftMinHeight">28</x:Double>
                     <ResourceDictionary.ThemeDictionaries>
                         <ResourceDictionary x:Key="Default">
                             <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="#121820" />

@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+Polish
+- Tweaks, Power, Network, Windows features and Updates are now tabs of one Windows page. With the old group open in the sidebar, Verify, What broke, Safety, System and Report a problem were pushed out of sight at the normal window size and had to be scrolled to. Every sidebar entry now fits, down to the smallest window, which is a little taller than before (640 instead of 580 device independent pixels) so the sidebar is never cut off.
+- The Storage tile on Home shows the disk Windows starts from, and the System page marks it "Windows drive". Windows lists disks in no fixed order, so the tile used to show whichever came first, which could be a USB stick or a data drive. Internal disks follow, largest first, and plug-in drives come last.
+
+Fixed
+- Cleaning a report of personal details missed three things: a user folder with a space in the name kept everything after the first space (C:\Users\Jane Doe became C:\Users\[user] Doe), IPv6 addresses written in the short form with :: were left in, and the name of another PC in a network path was kept. It also replaced an account called Administrator everywhere, which turned "Running as administrator" into "Running as [user]". All of that is fixed, and a name is now replaced only as a whole word.
+- A repair job could stay on "Running" after its tool had finished, when the tool left a helper process behind that kept the output open. The job now ends when the tool does, after a two second wait for the last lines.
+
+Safer
+- Service names are checked before they are put on the sc.exe command line or into a registry path, so a name could not carry extra arguments. Every name the catalog uses passes.
+
 ## 0.1.0-beta.12
 
 New
