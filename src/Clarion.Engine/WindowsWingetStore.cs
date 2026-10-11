@@ -79,6 +79,10 @@ public sealed class WindowsWingetStore(IProcessRunner runner, string? wingetPath
         catch (InvalidOperationException) { return null; }
     }
 
+    private int _restartNeeded;
+
+    public bool TakeRestartNeeded() => Interlocked.Exchange(ref _restartNeeded, 0) != 0;
+
     public void CancelRunning()
     {
         lock (_stopGate) _stop?.Cancel();
@@ -91,6 +95,7 @@ public sealed class WindowsWingetStore(IProcessRunner runner, string? wingetPath
         ProcessResult result;
         try { result = runner.Run(_path, arguments, timeout, stop.Token); }
         finally { lock (_stopGate) _stop = null; }
+        if (WingetCodes.NeedsRestart(result.ExitCode)) Interlocked.Exchange(ref _restartNeeded, 1);
         return new WingetOutcome(result.ExitCode, string.IsNullOrWhiteSpace(result.Error) ? result.Output : result.Output + Environment.NewLine + result.Error);
     }
 }

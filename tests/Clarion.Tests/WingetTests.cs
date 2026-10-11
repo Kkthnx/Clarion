@@ -31,6 +31,10 @@ public sealed class FakeWingetStore : IWingetStore
 
     public void CancelRunning() => Cancels++;
 
+    public bool RestartNeeded { get; set; }
+
+    public bool TakeRestartNeeded() { var was = RestartNeeded; RestartNeeded = false; return was; }
+
     public WingetOutcome Install(string id, string? location = null)
     {
         Calls.Add(location is null ? "install " + id : $"install {id} at {location}");

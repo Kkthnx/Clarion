@@ -391,8 +391,13 @@ public sealed partial class MainWindow : Window
                     var details = new TextBlock { Text = "Asking winget for the version, licence and checksum...", FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8, IsTextSelectionEnabled = true };
                     block.Children.Add(details);
                     var links = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
-                    foreach (var link in item.SourceLinks.Where(l => !l.Link.AbsoluteUri.Contains("winget-pkgs", StringComparison.Ordinal)).DistinctBy(l => l.Link.AbsoluteUri.TrimEnd('/').ToLowerInvariant()))
-                        links.Children.Add(MakeLink(link));
+                    var shown = item.SourceLinks.Where(l => !l.Link.AbsoluteUri.Contains("winget-pkgs", StringComparison.Ordinal))
+                        
+                        // The same page is often listed once as http and once as https, so the scheme is left out of the comparison.
+                        .DistinctBy(l => (l.Link.Host + l.Link.PathAndQuery).TrimEnd('/').ToLowerInvariant()).ToList();
+                    // Some records name no homepage or licence page. The package record on GitHub is then the one place to read from.
+                    if (shown.Count == 0) shown = item.SourceLinks.Take(1).ToList();
+                    foreach (var link in shown) links.Children.Add(MakeLink(link));
                     block.Children.Add(links);
                     installs.Add((item, details));
                 }
@@ -418,7 +423,9 @@ public sealed partial class MainWindow : Window
         CheckBox? agree = null;
         if (installs.Count > 0)
         {
-            agree = new CheckBox { Content = "I have read the licence terms of the apps being installed and I accept them", IsChecked = false };
+            // Off until winget has shown what is being agreed to, so nothing can be accepted while every row still says it is asking.
+            agree = new CheckBox { Content = "I have read the licence terms of the apps being installed and I accept them", IsChecked = false, IsEnabled = false };
+            ToolTipService.SetToolTip(agree, "Available when winget has shown the details above.");
             body.Children.Add(agree);
         }
         body.Children.Add(restore);
@@ -440,7 +447,7 @@ public sealed partial class MainWindow : Window
         }
 
         using var stopReading = new CancellationTokenSource();
-        if (installs.Count > 0) _ = ReadAppDetailsAsync(installs, stopReading.Token);
+        if (installs.Count > 0) _ = ReadAppDetailsAsync(installs, agree!, stopReading.Token);
         var answer = await dialog.ShowAsync();
         stopReading.Cancel();
         if (answer != ContentDialogResult.Primary) return;
@@ -452,7 +459,7 @@ public sealed partial class MainWindow : Window
     }
 
     /// <summary>Fills in each install's details from winget, one after another, while the review dialog is open.</summary>
-    private async Task ReadAppDetailsAsync(List<(TweakItem Item, TextBlock Details)> installs, CancellationToken stop)
+    private async Task ReadAppDetailsAsync(List<(TweakItem Item, TextBlock Details)> installs, CheckBox agree, CancellationToken stop)
     {
         foreach (var (item, details) in installs)
         {
@@ -465,6 +472,9 @@ public sealed partial class MainWindow : Window
                 : $"Version {info.Version}, from {info.Publisher}\nLicence: {(info.License.Length > 0 ? info.License : "see the link below")}\nInstaller from {info.InstallerHost} ({info.InstallerType})\nChecksum (SHA-256): {info.Sha256}\nwinget refuses to run the installer if its checksum differs.";
             details.Opacity = 1;
         }
+        // Every row has either its details or the note that they could not be read, so the terms can be accepted now.
+        agree.IsEnabled = true;
+        ToolTipService.SetToolTip(agree, null);
     }
 
     private async Task RunAsync(bool restorePoint, bool turnOnProtection = false)
@@ -516,6 +526,8 @@ public sealed partial class MainWindow : Window
             return;
         }
 
+        // An installer can ask for a restart even though the setting itself does not need one.
+        needsReboot |= _app.Runtime.Winget.TakeRestartNeeded();
         var anyFailed = result.Items.Any(i => !i.Result.Success);
         if (anyFailed || restartsExplorer || needsReboot || needsSignOut)
             await ShowSummaryAsync(result, restartsExplorer, needsReboot, needsSignOut);

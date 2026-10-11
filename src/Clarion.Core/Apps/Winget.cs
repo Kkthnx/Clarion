@@ -233,6 +233,9 @@ public interface IWingetStore
     /// <summary>Stops the install or uninstall that is running now, with the installer winget started. Does nothing when none is running.</summary>
     void CancelRunning();
 
+    /// <summary>True when an install or uninstall since the last call said the PC must restart to finish. Reading it clears it.</summary>
+    bool TakeRestartNeeded();
+
     /// <summary>The version, publisher, licence and installer details winget holds for a package, or null when it cannot be read.</summary>
     WingetPackageInfo? Show(string id);
 }
