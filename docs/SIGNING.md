@@ -9,8 +9,10 @@ is the biggest trust problem it has. Signing is part of the 1.0 gate, next to fi
 - `scripts/build-installer.ps1` can package an already published folder (`-PublishDir`), which is
   what a signing step needs.
 - `.github/workflows/release.yml` builds the setup program and zip on a version tag. Its signing
-  steps run only when the repository variable `SIGNPATH_ORGANIZATION_ID` exists. The workflow passed
-  `actionlint` but has not been run on GitHub yet.
+  steps run only when the repository variable `SIGNPATH_ORGANIZATION_ID` exists. It has run on GitHub for
+  the beta tags, unsigned, and passes `actionlint`. The signing steps themselves have never run. On a version
+  tag it also drafts the GitHub release, as a draft and marked a pre-release when the version has a dash,
+  with the matching changelog section as the notes and the four release files attached.
 - Two things are signed when it is switched on: the app files (before they go into the installer and
   zip), then the setup program. A zip itself cannot be signed.
 
