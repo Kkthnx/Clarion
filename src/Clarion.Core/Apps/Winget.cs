@@ -32,7 +32,11 @@ public static partial class WingetLocations
         var name = location[1..location.IndexOf('%', 1)];
         var root = variable(name);
         if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException($"{name} is not set on this PC.");
-        return root.TrimEnd('\\') + location[(name.Length + 2)..];
+        var path = root.TrimEnd('\\') + location[(name.Length + 2)..];
+        // The catalog's text was checked, but the variable's value comes from this PC, and a quote in it would end the argument.
+        if (path.IndexOfAny(['"', '<', '>', '|', '*', '?']) >= 0 || path.Any(char.IsControl) || !Path.IsPathRooted(path))
+            throw new ArgumentException($"{name} does not hold a usable folder on this PC.");
+        return path;
     }
 }
 

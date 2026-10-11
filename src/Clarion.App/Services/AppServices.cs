@@ -289,7 +289,9 @@ public sealed partial class AppServices : UiObservableObject
                 var apps = slow.Where(i => i.Tweak.Apply.Any(o => o is InstallWingetPackage or UninstallWingetPackage)).ToList();
                 var features = slow.Where(i => i.Tweak.Apply.Any(o => o is SetWindowsFeature or SetWindowsCapability)).ToList();
                 var others = slow.Except(features).Except(apps).ToList();
-                _featureRead = Task.WhenAll(ReadGroupAsync(features), apps.Count > 0 ? ReadAppsAsync(apps) : Task.CompletedTask, _appsRead);
+                // The apps read started here replaces the tracked one, so QueueFix and QueueRevert wait for the read that is really running.
+                if (apps.Count > 0) _appsRead = ReadAppsAsync(apps);
+                _featureRead = Task.WhenAll(ReadGroupAsync(features), _appsRead);
                 await ReadGroupAsync(others);
             }
 

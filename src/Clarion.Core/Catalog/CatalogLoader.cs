@@ -207,6 +207,7 @@ public static class CatalogLoader
                     case UninstallWingetPackage uninstall:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: app removals need Machine scope.");
                         if (!Apps.WingetIds.IsValid(uninstall.Id)) errors.Add($"{t.Id}: not a valid winget package ID: {uninstall.Id}");
+                        if (uninstall.Location is not null && !Apps.WingetLocations.IsValid(uninstall.Location)) errors.Add($"{t.Id}: not an allowed install folder: {uninstall.Location}");
                         break;
                     case SetDnsProvider dns:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: DNS changes need Machine scope.");

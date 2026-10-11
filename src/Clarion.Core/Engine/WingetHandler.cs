@@ -31,8 +31,9 @@ public sealed class WingetHandler(IWingetStore store) : IOperationHandler
 
     public Operation CaptureUndo(Operation op) => op switch
     {
-        InstallWingetPackage i => new UninstallWingetPackage(i.Id),
-        UninstallWingetPackage u => new InstallWingetPackage(u.Id),
+        // The folder travels with the pair, because reinstalling a package whose record requires one fails without it.
+        InstallWingetPackage i => new UninstallWingetPackage(i.Id, i.Location),
+        UninstallWingetPackage u => new InstallWingetPackage(u.Id, u.Location),
         _ => throw new InvalidOperationException("Not a winget operation"),
     };
 

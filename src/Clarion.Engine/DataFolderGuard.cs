@@ -120,7 +120,7 @@ public static class DataFolderGuard
             try
             {
                 Directory.CreateDirectory(aside);
-                target = Path.Combine(aside, $"{name}.{stamp}");
+                target = Path.Combine(aside, $"{name}.{stamp}-{Guid.NewGuid().ToString("N")[..8]}");
                 File.Move(path, target);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

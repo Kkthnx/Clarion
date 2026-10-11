@@ -19,6 +19,15 @@ public sealed partial class HomePage : Page
             if (PresetList.Items.Count == 0) BuildPresets();
             Refresh();
             _ = FillTilesAsync();
+            // A history or restart queue file that another account made is moved aside when .Clarion starts with administrator rights.
+            // Without this it would only be in the log, and the person's undo history would seem to have vanished.
+            var aside = EngineFactory.DataFolderNotes.Where(n => n.Contains("moved to", StringComparison.Ordinal)).ToList();
+            if (aside.Count > 0)
+            {
+                DataBar.Message = string.Join(" ", aside) + " If this was your own history, it is in that folder and can be put back by hand.";
+                DataBar.IsOpen = true;
+                DataBar.Visibility = Visibility.Visible;
+            }
             var account = await Task.Run(AccountCheck.Detect);
             if (account.Differs)
             {

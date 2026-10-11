@@ -55,6 +55,11 @@ Type: files; Name: "{autodesktop}\Clarion.lnk"
 [Run]
 Filename: "{app}\Clarion.exe"; Description: "Start .Clarion"; Flags: nowait postinstall skipifsilent runascurrentuser
 
+[UninstallDelete]
+; The one-file flag for starting without the administrator prompt lives in the account's own folder. This reaches the account that runs the uninstall.
+Type: files; Name: "{localappdata}\Clarion\start-limited.flag"
+Type: dirifempty; Name: "{localappdata}\Clarion"
+
 [UninstallRun]
 ; The optional monthly check is a scheduled task Clarion made. Left behind it would start a program that is no longer there.
 Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""\Clarion\Monthly check"" /F"; Flags: runhidden; RunOnceId: "RemoveMonthlyCheck"

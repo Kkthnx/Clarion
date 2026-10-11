@@ -74,10 +74,16 @@ public sealed partial class AppMark : UserControl
         Photo.Source = null;
         if (!string.IsNullOrEmpty(path))
         {
-            // The file's write time is part of the key, so an app that was updated and changed its icon is read again.
-            var key = path + "|" + File.GetLastWriteTimeUtc(path).Ticks;
-            if (Photos.TryGetValue(key, out var cached)) Photo.Source = cached;
-            else
+            // The file's write time is part of the key, so an app that was updated and changed its icon is read again. Any trouble
+            // reading it means no picture, and must never end the app, since this runs in an async void method.
+            string? key = null;
+            try { key = path + "|" + File.GetLastWriteTimeUtc(path).Ticks; }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
+            {
+                Log.Write($"Icon {path} could not be checked: {ex.Message}");
+            }
+            if (key is not null && Photos.TryGetValue(key, out var cached)) Photo.Source = cached;
+            else if (key is not null)
             {
                 try
                 {

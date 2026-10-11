@@ -98,7 +98,7 @@ public sealed record InstallWingetPackage(string Id, string? Location = null) : 
 }
 
 /// <summary>Uninstalls one package that winget installed or knows, pinned by its exact ID.</summary>
-public sealed record UninstallWingetPackage(string Id) : Operation
+public sealed record UninstallWingetPackage(string Id, string? Location = null) : Operation
 {
     public override string Describe() => $"Uninstall {Id} with winget";
 }

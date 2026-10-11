@@ -18,6 +18,7 @@ public static class WindowsInstalledIcons
         (RegistryHive.LocalMachine, RegistryView.Registry64),
         (RegistryHive.LocalMachine, RegistryView.Registry32),
         (RegistryHive.CurrentUser, RegistryView.Registry64),
+        (RegistryHive.CurrentUser, RegistryView.Registry32),
     ];
 
     /// <summary>

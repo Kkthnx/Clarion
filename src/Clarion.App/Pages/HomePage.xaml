@@ -18,6 +18,9 @@
             <InfoBar x:Name="AccountBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
                      Title=".Clarion is running as a different account" />
 
+            <InfoBar x:Name="DataBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="True"
+                     Title="A file in the data folder was set aside" />
+
             <InfoBar x:Name="LimitedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
                      Title=".Clarion is running without administrator rights"
                      Message="You can look at your settings and run Verify. Changing anything needs administrator rights, because .Clarion keeps its history in a folder only administrators can write to.">

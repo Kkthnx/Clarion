@@ -47,7 +47,9 @@ public sealed class WindowsProcessRunner : IProcessRunner
         {
             var stopped = cancel.IsCancellationRequested;
             if (!stopped && (timeout < TimeSpan.Zero || clock.Elapsed < timeout)) continue;
-            try { p.Kill(entireProcessTree: true); } catch (InvalidOperationException) { }
+            // A child that Windows will not let Clarion end must not turn a stop into a crash. The tree is given a moment to go, so a retry
+            // right away does not collide with it.
+            try { p.Kill(entireProcessTree: true); p.WaitForExit(3000); } catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception) { }
             return stopped ? new ProcessResult(-2, "", $"{fileName} was stopped") : new ProcessResult(-1, "", $"{fileName} timed out");
         }
         // A helper the program left running keeps both pipes open after the program itself has exited. Waiting for the pipes to close

@@ -151,6 +151,8 @@ public static class HeadlessRunner
             return 1;
         }
         foreach (var item in result.Items.Where(i => !i.Result.Success)) say($"  failed: {item.TweakId}: {item.Result.Error}");
+        // An installer can ask for a restart even though the setting itself does not need one.
+        if (runtime.Winget.TakeRestartNeeded()) say("Restart Windows to finish some of these.");
         var complete = result.AllSucceeded && skippedApps.Count == 0;
         say(complete ? "Done." : "Some settings did not finish.");
         return complete ? 0 : 1;

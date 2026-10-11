@@ -11,7 +11,7 @@ namespace Clarion.Engine;
 public static class UnelevatedLauncher
 {
     private const uint TokenDuplicate = 0x0002;
-    private const uint TokenAllAccess = 0x000F01FF;
+    private const uint MaximumAllowed = 0x02000000;
     private const uint ProcessQueryLimitedInformation = 0x1000;
     private const int SecurityImpersonation = 2;
     private const int TokenPrimary = 1;
@@ -76,7 +76,7 @@ public static class UnelevatedLauncher
         {
             process = OpenProcess(ProcessQueryLimitedInformation, false, shellProcessId);
             if (process == IntPtr.Zero || !OpenProcessToken(process, TokenDuplicate, out shellToken)) return 0;
-            if (!DuplicateTokenEx(shellToken, TokenAllAccess, IntPtr.Zero, SecurityImpersonation, TokenPrimary, out token)) return 0;
+            if (!DuplicateTokenEx(shellToken, MaximumAllowed, IntPtr.Zero, SecurityImpersonation, TokenPrimary, out token)) return 0;
 
             var startup = new StartupInfo { cb = Marshal.SizeOf<StartupInfo>() };
             var commandLine = $"\"{fullPath}\" {arguments}";

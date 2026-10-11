@@ -369,8 +369,8 @@
     "summary": "Bring sound back in an app that is silent while Windows sounds still play.",
     "what": "Stops the Windows Audio and Windows Audio Endpoint Builder services and starts them again, the same as restarting each one in the Services window. The services are always started again, even if a step fails.",
     "benefit": "Clears a temporary audio fault where one app has no sound but system sounds still work.",
-    "risk": "None. Sound cuts out for a few seconds, and an app that was playing may need to be reopened.",
-    "riskLevel": "Safe",
+    "risk": "Low. Sound cuts out for a few seconds, and an app that was playing may need to be reopened.",
+    "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested when an app is silent while Windows sounds still play. Check the app's volume and output device first.",
     "facts": [
@@ -430,8 +430,8 @@
     "summary": "Reconnect Bluetooth devices that keep dropping.",
     "what": "Stops the Bluetooth Support Service and starts it again, the same as restarting it in the Services window. The service is always started again, even if the stop fails.",
     "benefit": "Clears a stuck Bluetooth stack that keeps disconnecting devices.",
-    "risk": "None. Paired devices disconnect for a moment and then reconnect.",
-    "riskLevel": "Safe",
+    "risk": "Low. Paired devices disconnect for a moment and should reconnect by themselves. A Bluetooth keyboard or mouse that does not may need to be switched off and on, so keep another way to type nearby.",
+    "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested when Bluetooth devices keep disconnecting. If it comes back after every restart, check the adapter's power saving setting and the driver.",
     "facts": [
@@ -473,8 +473,8 @@
     "summary": "Bring back a taskbar, Start menu or desktop that has frozen.",
     "what": "Ends the Windows Explorer process. Windows starts it again by itself a moment later, which reloads the taskbar, Start menu and desktop without restarting the PC.",
     "benefit": "Often fixes a frozen or blank taskbar, a Start menu that will not open, or a desktop that has stopped responding.",
-    "risk": "None. Open File Explorer windows close, and a file copy that was running in one may be interrupted. Other programs are not touched.",
-    "riskLevel": "Safe",
+    "risk": "Low. Open File Explorer windows close, and a file copy that was running in one may be interrupted. Other programs are not touched.",
+    "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested when the taskbar or Start menu is frozen. It is the first thing to try, before a restart.",
     "facts": [
@@ -505,8 +505,8 @@
     "summary": "Ask Windows to set the clock from its time source right now.",
     "what": "Starts the Windows Time service if it is stopped, then runs w32tm /resync, which tells the PC to resynchronize its clock as soon as possible and waits for it to finish.",
     "benefit": "Fixes a clock that has drifted, which can break secure websites, sign-in and Store downloads.",
-    "risk": "None. The clock may jump by the amount it was off.",
-    "riskLevel": "Safe",
+    "risk": "Low. The clock may jump by the amount it was off, which can confuse a program that was timing something.",
+    "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested when the clock is wrong or sites report a certificate or time error. Make sure Set time automatically and the time zone are right in Settings first.",
     "facts": [

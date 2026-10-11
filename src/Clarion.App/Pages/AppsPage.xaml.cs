@@ -42,7 +42,7 @@ public sealed partial class AppsPage : Page
             WingetBar.Title = "winget was not found for this account";
             WingetBar.Message = "Apps are installed with winget, Microsoft's package manager, which comes with App Installer. It is not at its usual place for this account, so the apps below are dimmed. Install or repair App Installer from Microsoft, then press Re-check. .Clarion does not install it for you.";
             WingetLink.Visibility = Visibility.Visible;
-        WingetBar.IsClosable = false;
+            WingetBar.IsClosable = false;
             WingetBar.IsOpen = true;
             WingetBar.Visibility = Visibility.Visible;
             return;

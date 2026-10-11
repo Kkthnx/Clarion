@@ -72,6 +72,24 @@ public sealed class WingetLocationTests
     }
 
     [Fact]
+    public void The_undo_of_an_install_and_of_an_uninstall_keep_the_install_folder()
+    {
+        var handler = new WingetHandler(new FakeWingetStore());
+        var undo = Assert.IsType<UninstallWingetPackage>(handler.CaptureUndo(new InstallWingetPackage("Blizzard.BattleNet", @"%ProgramFiles(x86)%\Battle.net")));
+        Assert.Equal(@"%ProgramFiles(x86)%\Battle.net", undo.Location);
+        var redo = Assert.IsType<InstallWingetPackage>(handler.CaptureUndo(undo));
+        Assert.Equal(@"%ProgramFiles(x86)%\Battle.net", redo.Location);
+        Assert.Contains("--location", WingetCommands.Install(redo.Id, redo.Location), StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("C:\\Program Files\" --force")]
+    [InlineData("C:\\Program<Files")]
+    [InlineData("relative")]
+    public void A_variable_that_holds_something_unusable_is_refused(string value) =>
+        Assert.Throws<ArgumentException>(() => WingetLocations.Expand(@"%ProgramFiles%\App", _ => value));
+
+    [Fact]
     public void The_install_location_code_has_a_plain_sentence() =>
         Assert.Contains("install folder", WingetCodes.Explain(unchecked((int)0x8A15005F)), StringComparison.Ordinal);
 }
