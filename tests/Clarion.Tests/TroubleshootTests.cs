@@ -17,7 +17,7 @@ public sealed class TroubleshootTests : IDisposable
 
     // Topics where no one would describe the result as something that stopped working.
     private static readonly string[] SilentTopics = ["Diagnostics", "Suggestions and ads", "Defender sharing"];
-    private static readonly string[] SilentTweaks = ["system.long-paths"];
+    private static readonly string[] SilentTweaks = ["system.long-paths", "system.verbose-status"];
 
     public TroubleshootTests()
     {

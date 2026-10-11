@@ -484,5 +484,58 @@
       "Sign out to apply"
     ],
     "topic": "Mouse and keyboard"
+  },
+  {
+    "id": "system.verbose-status",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "name": "Show detailed startup and shutdown messages",
+    "summary": "See what Windows is doing while it starts, shuts down, signs in and signs out.",
+    "what": "Turns on the policy that replaces messages like Please wait with a message for each step, such as which service is starting.",
+    "benefit": "Shows what a slow or stuck startup, shutdown or sign-in is waiting for.",
+    "risk": "None. It only changes the text shown. Windows ignores it if the policy that removes these status messages is turned on.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "scope": "Machine",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+          "name": "VerboseStatus"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "undo": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+          "name": "VerboseStatus"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/enable-verbose-startup-shutdown-logon-logoff-status-messages"
+    ],
+    "recommendation": "Optional",
+    "advice": "Suggested only when you are tracking down a slow startup or shutdown. It does not make anything faster.",
+    "facts": [
+      "Shows steps such as a service starting or Windows waiting for group policy",
+      "The text is also shown on a PC that starts fine, and adds nothing to speed",
+      "Microsoft's page for it names Windows Server 2003. winlogon.exe and wininit.exe on build 26200 both contain the VerboseStatus value name",
+      "Applies at the next startup"
+    ],
+    "topic": "System"
   }
 ]

@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-265 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+266 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -3596,6 +3596,20 @@ Let apps use paths longer than 260 characters.
   - `Set HKLM\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled to 1 (DWord)`
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation>
+
+#### Show detailed startup and shutdown messages
+
+`system.verbose-status` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+See what Windows is doing while it starts, shuts down, signs in and signs out.
+
+- **What it does:** Turns on the policy that replaces messages like Please wait with a message for each step, such as which service is starting.
+- **Benefit:** Shows what a slow or stuck startup, shutdown or sign-in is waiting for.
+- **Risk:** None. It only changes the text shown. Windows ignores it if the policy that removes these status messages is turned on.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\VerboseStatus to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/enable-verbose-startup-shutdown-logon-logoff-status-messages>
 
 #### Turn off Fast Startup
 
