@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.12
 
 New
 - When a setting has been changed back twice or more, Verify now says what is worth trying. It compares the Windows version at each time the setting came back. If it came back on the same version every time, an update did not do it, so something running on this PC did, such as a workplace or school policy, another tweak tool or a scheduled task. If Windows was on a newer version each time, putting it back again is the right fix. It does not name a program, because Clarion cannot tell which one it is.
