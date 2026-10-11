@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/images/banner.png" alt=".Clarion. Take back your PC." width="800" />
+<img src="docs/images/banner.png" alt=".Clarion. See it. Set it. Done." width="800" />
 
 A native Windows app to remove bloat, cut tracking, clean up, repair and tune your PC.
 Every change is explained, graded by evidence, backed up and reversible.
