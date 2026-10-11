@@ -35,7 +35,9 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
         $busNames = @{ 1 = 'SCSI'; 2 = 'ATAPI'; 3 = 'ATA'; 4 = '1394'; 5 = 'SSA'; 6 = 'Fibre Channel'; 7 = 'USB'; 8 = 'RAID'; 9 = 'iSCSI'; 10 = 'SAS'; 11 = 'SATA'; 12 = 'SD'; 13 = 'MMC'; 15 = 'File Backed Virtual'; 16 = 'Storage Spaces'; 17 = 'NVMe' }
         $mediaNames = @{ 3 = 'HDD'; 4 = 'SSD'; 5 = 'SCM' }
         function Disk-Name($v, $map, $fallback) { if ($v -is [string]) { return $v }; if ($null -ne $v -and $map.ContainsKey([int]$v)) { return [string]$map[[int]$v] }; return $fallback }
-        $disks = @(Get-CimInstance -Namespace root\Microsoft\Windows\Storage -ClassName MSFT_PhysicalDisk -Property FriendlyName,Size,MediaType,BusType | ForEach-Object { [pscustomobject]@{ Name = $_.FriendlyName; Bytes = [int64]$_.Size; Media = (Disk-Name $_.MediaType $mediaNames 'Unspecified'); Bus = (Disk-Name $_.BusType $busNames 'Unknown') } })
+        # The disk Windows starts from, so the report can put it first. The physical disk number is the disk number on a PC without storage pools.
+        $bootDisk = Try-Get { (Get-CimInstance -Namespace root\Microsoft\Windows\Storage -ClassName MSFT_Disk -Filter "IsBoot=True" -Property Number | Select-Object -First 1).Number }
+        $disks = @(Get-CimInstance -Namespace root\Microsoft\Windows\Storage -ClassName MSFT_PhysicalDisk -Property DeviceId,FriendlyName,Size,MediaType,BusType | ForEach-Object { [pscustomobject]@{ Name = $_.FriendlyName; Bytes = [int64]$_.Size; Media = (Disk-Name $_.MediaType $mediaNames 'Unspecified'); Bus = (Disk-Name $_.BusType $busNames 'Unknown'); Boot = ($null -ne $bootDisk -and [string]$_.DeviceId -eq [string]$bootDisk) } })
         $tpm = Try-Get { Get-Tpm }
         $secure = Try-Get { Confirm-SecureBootUEFI }
         $vbs = Try-Get { (Get-CimInstance -Namespace root\Microsoft\Windows\DeviceGuard -ClassName Win32_DeviceGuard).VirtualizationBasedSecurityStatus }
@@ -97,8 +99,18 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
         };
         foreach (var g in List(j, "gpus"))
             hardware.Add(new("Graphics", $"{Str(g, "Name")}, driver {Str(g, "Driver")}"));
-        foreach (var d in List(j, "disks"))
-            hardware.Add(new("Storage", $"{Str(d, "Name")}, {ByteSize.Format(Long(d, "Bytes"))}, {Str(d, "Media")} on {Str(d, "Bus")}"));
+        // The disk Windows starts from comes first, since it is the one that matters most and the Home tile shows the first. Then the
+        // disks inside the PC, larger first, and plug-in drives last. Windows lists them in no fixed order, so a USB stick could otherwise
+        // be the headline disk.
+        var disks = List(j, "disks")
+            .OrderByDescending(d => d.TryGetProperty("Boot", out var boot) && boot.ValueKind == JsonValueKind.True)
+            .ThenBy(d => Str(d, "Bus").Equals("USB", StringComparison.OrdinalIgnoreCase) ? 1 : 0)
+            .ThenByDescending(d => Long(d, "Bytes"));
+        foreach (var d in disks)
+        {
+            var holdsWindows = d.TryGetProperty("Boot", out var isBoot) && isBoot.ValueKind == JsonValueKind.True;
+            hardware.Add(new("Storage", $"{Str(d, "Name")}, {ByteSize.Format(Long(d, "Bytes"))}, {Str(d, "Media")} on {Str(d, "Bus")}{(holdsWindows ? ", Windows drive" : "")}"));
+        }
 
         var antivirus = string.Join(", ", List(j, "av").Select(a => a.GetString() ?? "").Where(a => a.Length > 0));
         var security = new List<Fact>
