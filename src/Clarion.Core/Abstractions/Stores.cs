@@ -24,7 +24,7 @@ public interface IProcessRunner
 
     /// <summary>
     /// Runs the program and stops it, with the programs it started, when the token is cancelled. Exit code -2 means it was stopped that way,
-    /// and -1 means it ran out of time. A runner that cannot stop a program runs it to the end.
+    /// and -1 means it ran out of time. Every runner has to say how it stops a program, so a runner that cannot is a visible choice.
     /// </summary>
-    ProcessResult Run(string fileName, string arguments, TimeSpan timeout, CancellationToken cancel) => Run(fileName, arguments, timeout);
+    ProcessResult Run(string fileName, string arguments, TimeSpan timeout, CancellationToken cancel);
 }

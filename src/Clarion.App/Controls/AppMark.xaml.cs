@@ -27,8 +27,12 @@ public sealed partial class AppMark : UserControl
     // Icons already read, so a row that scrolls out and back does not read its file again. Used on the UI thread only.
     private static readonly Dictionary<string, BitmapImage> Photos = new(StringComparer.OrdinalIgnoreCase);
 
+    // One shared reader of the High Contrast setting, since making one for every refresh of every mark is wasted work.
+    private static readonly Windows.UI.ViewManagement.AccessibilitySettings Accessibility = new();
+
     private string? _shownPath;
     private int _photoRequest;
+    private bool _loaded;
 
     public AppMark()
     {
@@ -36,8 +40,8 @@ public sealed partial class AppMark : UserControl
         // The name sits beside it in the row, so a screen reader has nothing to add by announcing a picture or a letter.
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetAccessibilityView(this, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView.Raw);
         // The colour depends on the theme, so it is worked out again when the theme changes.
-        Loaded += (_, _) => { ActualThemeChanged += OnThemeChanged; Refresh(); };
-        Unloaded += (_, _) => ActualThemeChanged -= OnThemeChanged;
+        Loaded += (_, _) => { _loaded = true; ActualThemeChanged += OnThemeChanged; Refresh(); };
+        Unloaded += (_, _) => { _loaded = false; ActualThemeChanged -= OnThemeChanged; };
     }
 
     public AppIcon? Icon { get => (AppIcon?)GetValue(IconProperty); set => SetValue(IconProperty, value); }
@@ -70,7 +74,9 @@ public sealed partial class AppMark : UserControl
         Photo.Source = null;
         if (!string.IsNullOrEmpty(path))
         {
-            if (Photos.TryGetValue(path, out var cached)) Photo.Source = cached;
+            // The file's write time is part of the key, so an app that was updated and changed its icon is read again.
+            var key = path + "|" + File.GetLastWriteTimeUtc(path).Ticks;
+            if (Photos.TryGetValue(key, out var cached)) Photo.Source = cached;
             else
             {
                 try
@@ -81,7 +87,8 @@ public sealed partial class AppMark : UserControl
                     {
                         var image = new BitmapImage();
                         await image.SetSourceAsync(thumbnail);
-                        Photos[path] = image;
+                        if (Photos.Count > 400) Photos.Clear();
+                        Photos[key] = image;
                         if (request == _photoRequest) Photo.Source = image;
                     }
                 }
@@ -97,6 +104,8 @@ public sealed partial class AppMark : UserControl
     }
     private void Refresh()
     {
+        // Drawing waits for the control to be in the tree, where the theme is known. Loaded draws it once with every property already set.
+        if (!_loaded) return;
         // A thin outline is not readable at icon size, so it gives way to the letter tile: a very thin one everywhere, and a wide one
         // in a small slot. A faded watermark has the room, so it always shows the real outline.
         var small = (double.IsNaN(Width) ? ActualWidth : Width) < 32;
@@ -120,7 +129,7 @@ public sealed partial class AppMark : UserControl
             // A dark logo on a dark card, or a pale one on a light card, would disappear, so the text colour stands in.
             var dark = ActualTheme != ElementTheme.Light;
             // In a High Contrast theme the colours are the person's own choice, so a brand colour is not used at all.
-            var highContrast = new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast;
+            var highContrast = Accessibility.HighContrast;
             Glyph.Visibility = IsWatermark && highContrast ? Visibility.Collapsed : Visibility.Visible;
             if (!highContrast && icon.ReadableOn(dark))
             {

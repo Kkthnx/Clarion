@@ -33,6 +33,8 @@ public sealed class WindowsWingetStoreTests : IDisposable
             Calls.Add((fileName, arguments));
             return respond(arguments);
         }
+
+        public ProcessResult Run(string fileName, string arguments, TimeSpan timeout, CancellationToken cancel) => Run(fileName, arguments, timeout);
     }
 
     private static ProcessResult WriteExport(string arguments, string json)

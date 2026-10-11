@@ -336,8 +336,16 @@ public sealed partial class AppServices : UiObservableObject
 
     private async Task ReadAppsThenAsync(Action then)
     {
-        await EnsureAppsReadAsync();
-        then();
+        try
+        {
+            await EnsureAppsReadAsync();
+            then();
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            // Started with its task thrown away, so a failure would otherwise vanish and the person would see nothing happen.
+            Log.Write($"Queueing an app after reading the apps failed: {ex.Message}");
+        }
     }
 
     private async Task ReadAppsAsync(List<TweakItem> apps)
@@ -503,7 +511,7 @@ public sealed partial class AppServices : UiObservableObject
     {
         var wanted = ids.ToHashSet(StringComparer.OrdinalIgnoreCase);
         // An app cannot be queued until the apps have been read, so that is done first and the queueing follows.
-        if (!_appsWanted && Items.Any(i => i.InstallsApps && wanted.Contains(i.Id)))
+        if ((!_appsWanted || !_appsRead.IsCompleted) && Items.Any(i => i.InstallsApps && wanted.Contains(i.Id)))
         {
             _ = ReadAppsThenAsync(() => QueueFix(wanted));
             return;
@@ -516,7 +524,7 @@ public sealed partial class AppServices : UiObservableObject
     public void QueueRevert(string id)
     {
         var item = Items.FirstOrDefault(i => i.Id == id);
-        if (item is { InstallsApps: true } && !_appsWanted)
+        if (item is { InstallsApps: true } && (!_appsWanted || !_appsRead.IsCompleted))
         {
             _ = ReadAppsThenAsync(() => QueueRevert(id));
             return;

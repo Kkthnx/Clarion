@@ -29,4 +29,6 @@ public sealed class FakeProcessRunner : IProcessRunner
         Calls.Add($"{fileName} {arguments}");
         return Respond(arguments);
     }
+
+    public ProcessResult Run(string fileName, string arguments, TimeSpan timeout, CancellationToken cancel) => Run(fileName, arguments, timeout);
 }

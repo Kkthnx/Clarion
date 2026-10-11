@@ -40,7 +40,8 @@ public sealed class ReadmeTests
     {
         // Apps start winget, which makes network requests of its own, so the privacy lines must say so.
         var text = Readme();
-        Assert.Contains("winget", text, StringComparison.Ordinal);
+        Assert.Contains("The Apps page runs winget", text, StringComparison.Ordinal);
         Assert.DoesNotContain("The only request Clarion can make is an update check", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("sends nothing anywhere. The only network request", text, StringComparison.Ordinal);
     }
 }
