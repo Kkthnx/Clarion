@@ -1,4 +1,4 @@
-# Clarion Design and Approach
+# .Clarion Design and Approach
 
 > **Status.** This is the original design. Where it differs from what ships, the README and CHANGELOG are right. Not built yet: registry `.reg` exports before a change (the journal records the previous value instead), ARM64 builds, an MSIX build, localization, and code signing. Administrator rights are asked for when the window opens, not through the manifest.
 
@@ -180,7 +180,7 @@ Most tweaks are data only. Scripts exist only for operations with no clean nativ
 
 Zip portable build and installer from the GitHub release page. `scripts/make-package-manifests.ps1` writes winget and Scoop manifests. The update check reads the GitHub release list and is off until the user turns it on.
 
-### Telemetry in Clarion itself
+### Telemetry in .Clarion itself
 
 None. No analytics, no crash upload. Logs stay on disk and the user can export them.
 

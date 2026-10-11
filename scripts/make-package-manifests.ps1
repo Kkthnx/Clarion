@@ -64,7 +64,7 @@ PackageVersion: $Version
 PackageLocale: en-US
 Publisher: Kkthnx
 PublisherUrl: https://github.com/Kkthnx
-PackageName: Clarion
+PackageName: .Clarion
 PackageUrl: https://github.com/$repo
 License: $License
 ${licenseUrlLine}ShortDescription: See what Windows is doing, change only what you choose, and undo any of it.
@@ -105,9 +105,9 @@ $scoop = [ordered]@{
     description  = 'See what Windows is doing, change only what you choose, and undo any of it.'
     homepage     = "https://github.com/$repo"
     license      = $License
-    notes        = 'Clarion asks for administrator rights when it opens, because most of what it changes belongs to the whole PC.'
+    notes        = '.Clarion asks for administrator rights when it opens, because most of what it changes belongs to the whole PC.'
     architecture = [ordered]@{ '64bit' = [ordered]@{ url = "$base/$zipName"; hash = $zipHash } }
-    shortcuts    = @(, @('Clarion.exe', 'Clarion'))
+    shortcuts    = @(, @('Clarion.exe', '.Clarion'))
     checkver     = [ordered]@{ url = "https://api.github.com/repos/$repo/releases"; jsonpath = '$[0].tag_name'; regex = 'v([\w.\-]+)' }
     autoupdate   = [ordered]@{ architecture = [ordered]@{ '64bit' = [ordered]@{ url = "https://github.com/$repo/releases/download/v`$version/Clarion-`$version-win-x64.zip" } } }
 }

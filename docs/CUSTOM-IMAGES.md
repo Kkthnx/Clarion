@@ -1,8 +1,8 @@
 # Customized Windows images: what they leave behind
 
-Notes for how Clarion recognizes a trimmed or rebranded Windows install (Ghost Spectre, tiny11, Atlas, ReviOS and similar), and how it should deal with the way they handle Windows Update. Written 10 October 2026. Facts marked "seen" were read from a real Ghost Spectre PC. Facts marked "script" come from the builder's own source. Everything else is marked as a claim.
+Notes for how .Clarion recognizes a trimmed or rebranded Windows install (Ghost Spectre, tiny11, Atlas, ReviOS and similar), and how it should deal with the way they handle Windows Update. Written 10 October 2026. Facts marked "seen" were read from a real Ghost Spectre PC. Facts marked "script" come from the builder's own source. Everything else is marked as a claim.
 
-## What Clarion checks today
+## What .Clarion checks today
 
 `InstallCheck` weighs signs: the system caption naming a known image, setup hardware checks skipped (`HKLM\SYSTEM\Setup\LabConfig`), missing Update, Defender or other core services, no Store, no Edge, a volume licence on a PC that is not on a domain. It names an image only when the Windows caption contains the name.
 
@@ -10,7 +10,7 @@ That never fires. Seen on a Ghost Spectre PC: the caption is a plain "Windows 11
 
 ## Seen on a Ghost Spectre PC (Windows 11 25H2, build 26200.9457)
 
-- Folder `C:\Ghost Toolbox` holding `toolbox.updater.x64.exe` and downloaders (wget, aria2c, 7-Zip), and a desktop shortcut `Ghost Toolbox.lnk` that points at that program. This is the clearest marker and is not in Clarion's checks.
+- Folder `C:\Ghost Toolbox` holding `toolbox.updater.x64.exe` and downloaders (wget, aria2c, 7-Zip), and a desktop shortcut `Ghost Toolbox.lnk` that points at that program. This is the clearest marker and is not in .Clarion's checks.
 - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings`: `PauseUpdatesExpiryTime`, `PauseFeatureUpdatesEndTime` and `PauseQualityUpdatesEndTime` all `2077-01-01T10:38:56Z`. The start times are dated 2019, long before this Windows build existed, so the values were baked into the image. A stock Windows allows a pause of at most 35 days (Microsoft Learn, "Configure Windows Update client policies").
 - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState`: `QualityUpdatesPaused=1`, `FeatureUpdatesPaused=1`, pause periods of 20977 days.
 - Yet `UpdatePolicy\Settings`: `PausedFeatureStatus=2` and `PausedQualityStatus=2`. Microsoft documents 2 as "auto-resumed after being paused".
@@ -43,7 +43,7 @@ Core `tiny11Coremaker.ps1` (the maintainer calls it not for production):
 - ReviOS: its comparison page lists Windows Update as "Fully compatible, Paused". It removes components at the WinSxS level using an empty update package, which keeps the original files so uninstalling that package restores them. The Revision Tool is its settings app, GPL v3, made only for ReviOS.
 - Added later, read from their repositories (Atlas-OS/Atlas and meetrevision/playbook): see "Atlas and ReviOS, from their playbooks" below.
 
-## What Clarion does now
+## What .Clarion does now
 
 Built after this research: items 1 and 2 below. The System page names Ghost Spectre from the Toolbox marker and words tiny11 as a guess. A "Windows Update right now" card reports working, limited or held, from the services, policies, scan task, stored pause, Windows' own pause status and the last check and install dates. Items 3 and 4 are not built. See "Why the undo is not built" at the end.
 
@@ -61,18 +61,18 @@ Read from the two projects' own source on GitHub in October 2026.
 - The Revision Tool in `%ProgramFiles%Revision Tool`.
 - Windows Update: pauses updates to 19 January 2038 through its own tool (`revitool tweaks updates wu-pause-updates enable`, with `FlightSettingsMaxPauseDays`), the same kind of long stored pause as Ghost Spectre's 2077. Its `NoAutoUpdate` line is commented out.
 
-Clarion now recognizes both from these markers. Atlas was already caught by the discord address; the others needed the new checks.
+.Clarion now recognizes both from these markers. Atlas was already caught by the discord address; the others needed the new checks.
 
-## What this means for Clarion
+## What this means for .Clarion
 
 1. Name the image from evidence, not the caption. Ghost Spectre has a solid marker (the Toolbox folder and shortcut). tiny11 has only a pattern (all five bypass values with `BypassNRO`; Core adds the localhost update server and removed services). Atlas and ReviOS need a read of their playbooks first. Every sign stays listed with its reason, and the result stays a hint.
 2. Report the real state of Windows Update, separate from the image name, because it is what the user acts on. Gather: pause dates and whether they run past the 35 day limit, `PausedFeatureStatus` and `PausedQualityStatus`, the policy keys above (`NoAutoUpdate`, `WUServer`, `DisableWindowsUpdateAccess`), service start types, the orchestrator tasks, and the Settings page hiding. Then say in plain words: held, not held, or unclear. The Ghost Spectre PC shows why: a pause to 2077 is stored but updates still run.
-3. Offer to undo it, as ordinary Clarion settings with a recorded previous value so Revert puts the image's choice back: clear the stored pause, remove the policy overrides, set the services and tasks to normal. This matches the rule that Clarion never weakens security; it only strengthens.
+3. Offer to undo it, as ordinary .Clarion settings with a recorded previous value so Revert puts the image's choice back: clear the stored pause, remove the policy overrides, set the services and tasks to normal. This matches the rule that .Clarion never weakens security; it only strengthens.
 4. Do not touch the image builder's own tools (the Toolbox), and expect them to re-apply their choices.
 
 ## Why the undo is not built
 
-No source documents what the Settings "Resume updates" button changes. Community guides say to delete the six pause values under `UXSettings` and some also reset `PausedFeatureStatus` and `PausedQualityStatus`, and one forum thread says deleting them unpauses but nothing downloads until Resume is pressed. On the Ghost Spectre PC the stored pause is already ignored by Windows, so clearing it would change nothing observable here. A setting that edits update state should be shipped only after a before and after export of both keys around a real Resume on a PC where the pause is in effect. Until then Clarion reports the state and leaves it alone.
+No source documents what the Settings "Resume updates" button changes. Community guides say to delete the six pause values under `UXSettings` and some also reset `PausedFeatureStatus` and `PausedQualityStatus`, and one forum thread says deleting them unpauses but nothing downloads until Resume is pressed. On the Ghost Spectre PC the stored pause is already ignored by Windows, so clearing it would change nothing observable here. A setting that edits update state should be shipped only after a before and after export of both keys around a real Resume on a PC where the pause is in effect. Until then .Clarion reports the state and leaves it alone.
 
 ## Sources
 

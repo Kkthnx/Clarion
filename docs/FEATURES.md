@@ -1,4 +1,4 @@
-# Clarion Feature Matrix
+# .Clarion Feature Matrix
 
 Legend. Evidence: **P** Proven, **S** Situational, **C** Cosmetic, **U** Unproven (Expert only). Risk: Safe, Low, Med, High.
 
@@ -133,8 +133,8 @@ Exact values below are the intended implementation. Each must be re-verified aga
 |---|---|
 | Restore point per batch | See Design section 5 |
 | Change history | Browsable journal, per entry Revert |
-| Troubleshooter | Symptom list maps what stopped working to the settings Clarion changed that could cause it |
-| Drift check | Verify page scans everything Clarion applied, lists what Windows changed back and which removed apps returned, and puts them back in one step or leaves them as they are |
+| Troubleshooter | Symptom list maps what stopped working to the settings .Clarion changed that could cause it |
+| Drift check | Verify page scans everything .Clarion applied, lists what Windows changed back and which removed apps returned, and puts them back in one step or leaves them as they are |
 | Profiles | Recommended, Gaming, Privacy Max, Minimal, Custom. Exportable. |
 | Dry run | Shows exact operations |
 | Logs | Local, exportable, no upload |
@@ -201,10 +201,10 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 
 ## 13. Findings that shaped the catalog
 
-- Some policies are only honored on certain editions. The consumer experiences policy works on Enterprise and Education only, so Clarion hides it elsewhere and offers per account values instead.
-- The lowest diagnostic level is honored only on Enterprise and Education. Home and Pro treat it as Required. Clarion says so on the card.
-- Blanket service disabling is where most breakage comes from. Clarion keeps a protected list and refuses those changes.
-- Debloat that cannot be undone erodes trust. Every removal in Clarion records what it removed so it can be restored.
+- Some policies are only honored on certain editions. The consumer experiences policy works on Enterprise and Education only, so .Clarion hides it elsewhere and offers per account values instead.
+- The lowest diagnostic level is honored only on Enterprise and Education. Home and Pro treat it as Required. .Clarion says so on the card.
+- Blanket service disabling is where most breakage comes from. .Clarion keeps a protected list and refuses those changes.
+- Debloat that cannot be undone erodes trust. Every removal in .Clarion records what it removed so it can be restored.
 - Security feature switches (memory integrity, Defender real time protection, BitLocker) are not offered.
 - Network and scheduler tweaks without published measurements are held back as Unproven.
 
@@ -231,7 +231,7 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 
 - 135 programs installed with winget, each pinned to one exact package ID from the winget source, never a search. An app is an ordinary setting, so queue, review, apply, Revert, Verify, setup files and the command line all work for it. Revert runs the app's own uninstaller through winget.
 - The review reads the version, publisher, licence, installer host and SHA-256 from winget while the dialog is open. Apply stays off until the person ticks that they accept the licence terms, and that covers one run. On the command line, apps are skipped unless --accept-package-agreements is given.
-- Winget is found at its fixed per-user path, never by searching PATH, and Clarion does not install it. It is not started until the Apps page is opened or an app is asked for, because it may contact Microsoft's package source.
+- Winget is found at its fixed per-user path, never by searching PATH, and .Clarion does not install it. It is not started until the Apps page is opened or an app is asked for, because it may contact Microsoft's package source.
 - An app whose winget record needs an install folder carries one in the catalog. Apps whose installer refuses to run as administrator are left out.
 - Logos come from Simple Icons and are credited on the About page. An installed app without a usable logo shows the icon Windows lists for it, found by the code its winget record names. Otherwise it gets a letter tile.
 

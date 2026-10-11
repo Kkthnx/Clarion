@@ -1,4 +1,4 @@
-; Builds the Clarion setup program. Run scripts\build-installer.ps1 rather than calling this directly.
+; Builds the .Clarion setup program. Run scripts\build-installer.ps1 rather than calling this directly.
 #ifndef AppVersion
   #define AppVersion "0.0.0"
 #endif
@@ -8,18 +8,18 @@
 
 [Setup]
 AppId={{6F0B2C1E-4D7A-4B9E-9C55-2E1A7C0D8F31}
-AppName=Clarion
+AppName=.Clarion
 AppVersion={#AppVersion}
-AppVerName=Clarion {#AppVersion}
+AppVerName=.Clarion {#AppVersion}
 AppPublisher=Kkthnx
 AppPublisherURL=https://github.com/Kkthnx/Clarion
 AppSupportURL=https://github.com/Kkthnx/Clarion/issues
 AppUpdatesURL=https://github.com/Kkthnx/Clarion/releases
 DefaultDirName={autopf}\Clarion
-DefaultGroupName=Clarion
+DefaultGroupName=.Clarion
 DisableProgramGroupPage=yes
 UninstallDisplayIcon={app}\Clarion.exe
-UninstallDisplayName=Clarion
+UninstallDisplayName=.Clarion
 SetupIconFile=..\src\Clarion.App\Assets\Clarion.ico
 LicenseFile=..\LICENSE
 OutputDir=..\artifacts
@@ -44,11 +44,16 @@ Name: "desktopicon"; Description: "Create a desktop shortcut"; Flags: unchecked
 Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autoprograms}\Clarion"; Filename: "{app}\Clarion.exe"
-Name: "{autodesktop}\Clarion"; Filename: "{app}\Clarion.exe"; Tasks: desktopicon
+Name: "{autoprograms}\.Clarion"; Filename: "{app}\Clarion.exe"
+Name: "{autodesktop}\.Clarion"; Filename: "{app}\Clarion.exe"; Tasks: desktopicon
+
+[InstallDelete]
+; The program was called Clarion before it was called .Clarion, so the shortcuts made under the old name are removed on upgrade.
+Type: files; Name: "{autoprograms}\Clarion.lnk"
+Type: files; Name: "{autodesktop}\Clarion.lnk"
 
 [Run]
-Filename: "{app}\Clarion.exe"; Description: "Start Clarion"; Flags: nowait postinstall skipifsilent runascurrentuser
+Filename: "{app}\Clarion.exe"; Description: "Start .Clarion"; Flags: nowait postinstall skipifsilent runascurrentuser
 
 [UninstallRun]
 ; The optional monthly check is a scheduled task Clarion made. Left behind it would start a program that is no longer there.
@@ -63,7 +68,7 @@ begin
   begin
     DataDir := ExpandConstant('{commonappdata}\Clarion');
     if DirExists(DataDir) and (not UninstallSilent) then
-      if MsgBox('Also delete Clarion history and logs?' + #13#10 + #13#10 +
+      if MsgBox('Also delete .Clarion history and logs?' + #13#10 + #13#10 +
                 'The history is what lets you undo past changes. Keep it if you might reinstall.',
                 mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES then
         DelTree(DataDir, True, True, True);

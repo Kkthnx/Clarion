@@ -1,14 +1,14 @@
-# Contributing to Clarion
+# Contributing to .Clarion
 
 Thank you for looking. This page says how the project is kept honest, and how to add a setting.
 
-Clarion is all rights reserved with public source (see [LICENSE](LICENSE)). Please open an issue before sending a large change, so nothing is built that cannot be used. By sending a change you give permission to use it in Clarion, as the licence says.
+.Clarion is all rights reserved with public source (see [LICENSE](LICENSE)). Please open an issue before sending a large change, so nothing is built that cannot be used. By sending a change you give permission to use it in .Clarion, as the licence says.
 
 ## What stays true
 
 - Every setting is explained, can be reverted, and has a source. A setting without all three does not go in.
-- Clarion never turns off Defender, SmartScreen, security updates or exploit protection.
-- Clarion itself sends nothing anywhere. Its only network request is the update check, which is off until you turn it on. The Apps page runs winget, which makes its own requests to Microsoft's package source and the publishers' download sites, so nothing may start winget until that page is opened or an install is asked for.
+- .Clarion never turns off Defender, SmartScreen, security updates or exploit protection.
+- .Clarion itself sends nothing anywhere. Its only network request is the update check, which is off until you turn it on. The Apps page runs winget, which makes its own requests to Microsoft's package source and the publishers' download sites, so nothing may start winget until that page is opened or an install is asked for.
 - A change is recorded before it is made, and the value it replaced is kept, so Revert puts back what was really there.
 
 The voice is in [docs/BRAND.md](docs/BRAND.md): plain, short, honest. No hype, no scare words.
@@ -24,7 +24,7 @@ dotnet test Clarion.sln -c Release
 
 The build treats warnings as errors. Some tests touch the real system (registry, services, DNS, Task Scheduler) and are skipped unless you opt in from an elevated shell with `CLARION_REAL_TESTS=1`. Read a test before you run it that way.
 
-`CLARION_DATA_DIR` points Clarion at another data folder, which is how to try it on a clean slate without touching your own history.
+`CLARION_DATA_DIR` points .Clarion at another data folder, which is how to try it on a clean slate without touching your own history.
 
 ## Adding a setting
 

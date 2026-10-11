@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/images/banner.png" alt="Clarion. See it. Set it. Done." width="800" />
+<img src="docs/images/banner.png" alt=".Clarion. See it. Set it. Done." width="800" />
 
 A native Windows app to remove bloat, cut tracking, clean up, repair and tune your PC.
 Every change is explained, graded by evidence, backed up and reversible.
@@ -14,16 +14,16 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 </div>
 
-> **Beta.** Clarion is in public beta. Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
+> **Beta.** .Clarion is in public beta. Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
 
-![Clarion home screen](docs/images/home.png)
+![.Clarion home screen](docs/images/home.png)
 
-## Why Clarion
+## Why .Clarion
 
 - **Every setting explained.** Hover any setting for what it does, what you gain, what could go wrong and whether it is suggested. No research needed.
 - **Evidence graded.** Each setting says how well it is backed, and privacy settings carry the Windows policy they come from, checked against the policy files on your PC.
 - **Safe by design.** A restore point before every batch, a journal that records the real previous value, and one click revert.
-- **Honest.** No telemetry in the app and no account. Clarion's own only request is an update check, and that is off unless you ask for it. The Apps page runs winget, Microsoft's package manager, which talks to Microsoft's package source and the publishers' download sites, and it does so only when you open that page or install an app. Weak or unproven tweaks are hidden unless you turn on Expert mode.
+- **Honest.** No telemetry in the app and no account. .Clarion's own only request is an update check, and that is off unless you ask for it. The Apps page runs winget, Microsoft's package manager, which talks to Microsoft's package source and the publishers' download sites, and it does so only when you open that page or install an app. Weak or unproven tweaks are hidden unless you turn on Expert mode.
 
 ![Privacy settings with the detail pane](docs/images/privacy.png)
 
@@ -39,9 +39,9 @@ Every change is explained, graded by evidence, backed up and reversible.
 | **DNS** | Pick a public provider from a dropdown, with optional encrypted lookups, or press a button to time each one from your PC and see which is nearest. Revert restores exactly what you had. |
 | **Home** | Windows, processor, memory, graphics, storage and how many settings are in effect, at a glance. |
 | **System** | Windows edition, build, hardware and security state, plus a check for customized Windows images (it names Ghost Spectre and can guess tiny11, and explains every sign it finds) and a "Windows Update right now" card that says whether updates are working, limited or held back and why. Settings that depend on something the image removed carry a note. |
-| **Verify** | Checks everything Clarion applied against Windows now. Lists removed apps that came back and settings that were changed back, usually after a feature update. Put them back in one step, or leave them as they are. |
-| **What's new** | What changed in each version, grouped as New, Safer, Fixed and Polish. When a newer version exists it lists everything you missed and links to the release page. Clarion never downloads or installs the update itself. |
-| **Monthly check** | Optional. A scheduled task checks the settings Clarion applied on the second Wednesday of each month, the day after Windows' monthly updates, and tells you the next time you open Clarion what changed back. |
+| **Verify** | Checks everything .Clarion applied against Windows now. Lists removed apps that came back and settings that were changed back, usually after a feature update. Put them back in one step, or leave them as they are. |
+| **What's new** | What changed in each version, grouped as New, Safer, Fixed and Polish. When a newer version exists it lists everything you missed and links to the release page. .Clarion never downloads or installs the update itself. |
+| **Monthly check** | Optional. A scheduled task checks the settings .Clarion applied on the second Wednesday of each month, the day after Windows' monthly updates, and tells you the next time you open .Clarion what changed back. |
 | **What broke** | Pick what stopped working and see which of your changes could explain it, newest first, with a revert button on each. |
 | **Live progress** | A panel with a progress bar and one line per setting while changes apply. A Stop button ends the run before the next setting, never in the middle of one. |
 | **Safety** | Lists the restore points Windows has and can make one on demand. Revert one setting, everything, or everything changed after a day you pick. You review the revert before anything changes. |
@@ -55,12 +55,12 @@ Every change is explained, graded by evidence, backed up and reversible.
 ## Install
 
 1. Download `Clarion-<version>-setup.exe` from the [latest release](https://github.com/Kkthnx/Clarion/releases/latest). A portable zip is there too.
-2. Run it. Clarion installs to Program Files with a Start menu entry and a clean uninstaller.
-3. Open Clarion. It asks for administrator rights when it opens, because most settings are machine wide. If you say no, it opens in a read only mode that can look and verify but changes nothing, with a button to restart as administrator.
+2. Run it. .Clarion installs to Program Files with a Start menu entry and a clean uninstaller.
+3. Open .Clarion. It asks for administrator rights when it opens, because most settings are machine wide. If you say no, it opens in a read only mode that can look and verify but changes nothing, with a button to restart as administrator.
 
 The files are not code signed yet, so Windows SmartScreen shows its "Windows protected your PC" screen on first run, with Don't run as the default, and the administrator prompt names the publisher as Unknown. Choose More info, then Run anyway if you trust this download. Signing is planned before 1.0. Each download has a SHA256 file next to it so you can verify it.
 
-Requirements: Windows 10 version 2004 or later, 64-bit. Nothing else needs installing, because the .NET runtime is included. The one exception is the Apps page, which needs winget, Microsoft's package manager. It comes with App Installer on Windows 11 and on current Windows 10. Clarion does not install it, and without it the apps are shown as unavailable.
+Requirements: Windows 10 version 2004 or later, 64-bit. Nothing else needs installing, because the .NET runtime is included. The one exception is the Apps page, which needs winget, Microsoft's package manager. It comes with App Installer on Windows 11 and on current Windows 10. .Clarion does not install it, and without it the apps are shown as unavailable.
 
 ### How the apps are chosen
 
@@ -114,4 +114,4 @@ To build the installer and zip, install Inno Setup 6 and run `scripts/build-inst
 
 ## License
 
-All rights reserved. The source is public so you can read it and check what Clarion does, but it is not open source and you may not reuse or redistribute it. You are welcome to run the releases and to report problems. The full terms are in [LICENSE](LICENSE).
+All rights reserved. The source is public so you can read it and check what .Clarion does, but it is not open source and you may not reuse or redistribute it. You are welcome to run the releases and to report problems. The full terms are in [LICENSE](LICENSE).

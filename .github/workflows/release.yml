@@ -110,7 +110,7 @@ jobs:
           $section = [regex]::Match($changelog, "(?ms)^## $([regex]::Escape($version))\s*\r?\n(.*?)(?=^## |\z)")
           if (-not $section.Success) { throw "CHANGELOG.md has no section for $version." }
           Set-Content release-notes.md $section.Groups[1].Value.Trim()
-          $title = 'Clarion ' + ($version -replace '-alpha\.', ' Alpha ' -replace '-beta\.', ' Beta ' -replace '-rc\.', ' RC ')
+          $title = '.Clarion ' + ($version -replace '-alpha\.', ' Alpha ' -replace '-beta\.', ' Beta ' -replace '-rc\.', ' RC ')
           $files = @(Get-ChildItem artifacts -File | Where-Object { $_.Name -match '^Clarion-.*(setup\.exe|win-x64\.zip|\.sha256)$' } | ForEach-Object FullName)
           if ($files.Count -ne 4) { throw "Expected 4 release files and found $($files.Count)." }
           gh release view $tag *> $null

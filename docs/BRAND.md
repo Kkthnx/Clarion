@@ -1,16 +1,22 @@
-# Clarion Brand Identity
+# .Clarion Brand Identity
 
 ## Name candidates
 
 | Name | Slogan | Why it works |
 |---|---|---|
-| **Clarion** (chosen) | See it. Set it. Done. | A clarion call is clear and carries far. Says clarity first, speed second. |
+| **.Clarion** (chosen) | See it. Set it. Done. | A clarion call is clear and carries far. Says clarity first, speed second. |
 | Kestrel | Sharp eyes on every setting. | A hovering raptor. Precision and control. |
 | Lucent | Windows, made clear. | Means shining through. Fits the explain everything goal. |
 | Tessera | Every piece in its place. | One tile of a mosaic. Fits a catalog of small, exact changes. |
 | Ballast | Drop the weight. | Direct and memorable. Leans on the debloat side only. |
 
-Clarion is the working name and the repository name.
+## The name
+
+The name is **.Clarion**, with the leading dot, in the way .NET is. It is written that way in the app, the readme, the installer and the release titles, and in sentences (".Clarion keeps a record of every change").
+
+The dot stays out of anything a computer reads, because a name that starts with a dot is hidden or refused in many places. So these keep the plain spelling **Clarion**: the program file Clarion.exe, the install and data folders, the code namespaces, the scheduled task folder, the winget package id Kkthnx.Clarion, the setup file marker, the release file names, and the GitHub repository name. A person who types the name into a search box can use either spelling.
+
+Before this name, the project was called Clarion, and old releases and their notes still say so. The earlier name was chosen from the candidates below.
 
 ## Voice
 

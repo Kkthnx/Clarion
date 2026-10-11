@@ -1,6 +1,6 @@
 # Code signing
 
-Clarion asks for administrator rights, so an unsigned download that triggers a SmartScreen warning
+.Clarion asks for administrator rights, so an unsigned download that triggers a SmartScreen warning
 is the biggest trust problem it has. Signing is part of the 1.0 gate, next to finishing the beta.
 
 ## State today
@@ -26,16 +26,16 @@ is the biggest trust problem it has. Signing is part of the 1.0 gate, next to fi
 
 ## The free route is closed
 
-Clarion is all rights reserved with public source (see LICENSE). SignPath Foundation needs an OSI
+.Clarion is all rights reserved with public source (see LICENSE). SignPath Foundation needs an OSI
 approved license, so it is not available. Azure Artifact Signing or a commercial certificate is the
 way, and the workflow only needs its two signing steps swapped. If the licence ever changes to an OSI
 one, the SignPath steps below apply.
 
 ## Steps for SignPath Foundation (only if the licence changes)
 
-1. Apply at [signpath.org](https://signpath.org). Describe what Clarion does on the download page.
+1. Apply at [signpath.org](https://signpath.org). Describe what .Clarion does on the download page.
 2. In SignPath, create the project and two artifact configurations named `app` and `setup`.
-   `app` signs `Clarion.exe` and Clarion's own `.dll` files inside the uploaded zip. `setup` signs
+   `app` signs `Clarion.exe` and .Clarion's own `.dll` files inside the uploaded zip. `setup` signs
    `Clarion-*-setup.exe`. Add the predefined GitHub trusted build system to the project.
 3. In the GitHub repository settings add:
    - secret `SIGNPATH_API_TOKEN` (a token for a user who can submit signing requests)
