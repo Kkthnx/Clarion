@@ -77,6 +77,13 @@
                            Text="Donations will never be a requirement. The full app is free either way." />
             </StackPanel>
 
+            <StackPanel Spacing="8">
+                <TextBlock Text="Logos" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           Text="The app logos on the Apps page come from the Simple Icons project, which releases them under CC0. The names and logos belong to their owners. Clarion shows them only so you can tell which app is which, and it does not mean the owners endorse Clarion." />
+                <HyperlinkButton Content="Simple Icons on GitHub" Click="OnSimpleIcons" Padding="0" />
+            </StackPanel>
+
         </StackPanel>
     </ScrollViewer>
 </Page>

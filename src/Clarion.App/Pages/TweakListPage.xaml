@@ -8,13 +8,21 @@
         <!-- The roomy row: the summary is shown under the name. -->
         <DataTemplate x:Key="RoomyRow" x:DataType="svc:TweakItem">
                         <Border Padding="18,14,16,14" Opacity="{x:Bind RowOpacity, Mode=OneWay}">
-                            <Grid ColumnSpacing="16">
+                          <Grid>
+                            <!-- For an app, its logo faded far back behind the card, behind the switch, so it never sits under the text. -->
+                            <controls:AppMark Icon="{x:Bind Icon}" Label="{x:Bind Name}" IsWatermark="True" Width="84" Height="84"
+                                              Opacity="0.07" IsHitTestVisible="False" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                              Margin="0,0,6,0" Visibility="{x:Bind IsApp}" />
+                            <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <!-- A fixed width, so the state text changing from "Checking" to "On" cannot change how the name wraps. -->
                                     <ColumnDefinition Width="84" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Spacing="6">
+                                <controls:AppMark Icon="{x:Bind Icon}" Label="{x:Bind Name}" Width="36" Height="36" Margin="0,0,16,0"
+                                                  VerticalAlignment="Top" Visibility="{x:Bind IsApp}" />
+                                <StackPanel Grid.Column="1" Spacing="6" Margin="0,0,16,0">
                                     <TextBlock Text="{x:Bind Name}" FontSize="15" FontWeight="SemiBold"
                                                TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                                     <TextBlock Text="{x:Bind Summary}" TextWrapping="Wrap"
@@ -41,7 +49,7 @@
                                                    Foreground="{ThemeResource ClTextMutedBrush}" />
                                     </StackPanel>
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4" HorizontalAlignment="Right">
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="4" HorizontalAlignment="Right">
                                     <ToggleSwitch IsOn="{x:Bind IsOn, Mode=TwoWay}" IsEnabled="{x:Bind CanToggle, Mode=OneWay}"
                                                   AutomationProperties.Name="{x:Bind Name}"
                                                   OnContent="" OffContent="" MinWidth="0" HorizontalAlignment="Right" />
@@ -50,20 +58,24 @@
                                                Foreground="{ThemeResource ClTextMutedBrush}" />
                                 </StackPanel>
                             </Grid>
+                          </Grid>
                         </Border>
                     </DataTemplate>
         <!-- One line per setting, for scanning a long list. The summary and the detail stay in the pane on the right. -->
         <DataTemplate x:Key="CompactRow" x:DataType="svc:TweakItem">
             <Border Padding="14,5,10,5" Opacity="{x:Bind RowOpacity, Mode=OneWay}">
-                <Grid ColumnSpacing="10">
+                <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{x:Bind Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"
+                    <controls:AppMark Icon="{x:Bind Icon}" Label="{x:Bind Name}" Width="22" Height="22" Margin="0,0,10,0"
+                                      VerticalAlignment="Center" Visibility="{x:Bind IsApp}" />
+                    <TextBlock Grid.Column="1" Text="{x:Bind Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" Margin="10,0,10,0" VerticalAlignment="Center">
                         <controls:Chip Text="{x:Bind RecommendationShort}" Kind="{x:Bind RecommendationKind}" Visibility="{x:Bind ShowRecommendation}" ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
                         <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" Visibility="{x:Bind RiskIsNotable}"
                                   ToolTipService.ToolTip="{x:Bind RiskHint}" />
@@ -75,7 +87,7 @@
                         <FontIcon Glyph="&#xE72E;" FontSize="13" Foreground="{ThemeResource ClTextMutedBrush}"
                                   Visibility="{x:Bind IsLocked}" ToolTipService.ToolTip="{x:Bind LockReason}" />
                     </StackPanel>
-                    <ToggleSwitch Grid.Column="2" IsOn="{x:Bind IsOn, Mode=TwoWay}" IsEnabled="{x:Bind CanToggle, Mode=OneWay}"
+                    <ToggleSwitch Grid.Column="3" IsOn="{x:Bind IsOn, Mode=TwoWay}" IsEnabled="{x:Bind CanToggle, Mode=OneWay}"
                                   AutomationProperties.Name="{x:Bind Name}" OnContent="" OffContent="" MinWidth="0" MinHeight="0" Margin="0,-6,0,-6" VerticalAlignment="Center" />
                 </Grid>
             </Border>

@@ -24,6 +24,11 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     /// <summary>False for apps, where every row would say the same "Optional" and that tells nothing.</summary>
     public bool ShowRecommendation => !InstallsApps;
 
+    public bool IsApp => InstallsApps;
+
+    /// <summary>The logo for an app, or null for an app without one and for every other kind of setting.</summary>
+    public Clarion.Core.Apps.AppIcon? Icon => InstallsApps ? Clarion.Core.Apps.AppIcons.Default.For(Id) : null;
+
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Tweak.RiskLevel);
     public string RecommendationHint => DetailHelpers.RecommendationHint(Tweak.Recommendation);

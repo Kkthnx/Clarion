@@ -16,5 +16,6 @@ public sealed partial class AboutPage : Page
     private void OnGitHub(object sender, RoutedEventArgs e) => Shell.Open("https://github.com/Kkthnx");
     private void OnSource(object sender, RoutedEventArgs e) => Shell.Open("https://github.com/Kkthnx/Clarion");
     private void OnTwitch(object sender, RoutedEventArgs e) => Shell.Open("https://twitch.tv/kkthnxtv");
+    private void OnSimpleIcons(object sender, RoutedEventArgs e) => Shell.Open(Clarion.Core.Apps.AppIcons.Default.SetUrl);
     private void OnPayPal(object sender, RoutedEventArgs e) => Shell.Open("https://www.paypal.me/kkthnxTV");
 }
