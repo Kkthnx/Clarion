@@ -31,6 +31,55 @@ public sealed class FeedbackTests
     public void Very_short_names_are_not_replaced_so_the_text_stays_readable() =>
         Assert.Equal("a b c", Sanitizer.Clean("a b c", "a", "b"));
 
+    [Theory]
+    [InlineData(@"C:\Users\Jane Doe\AppData\x", @"C:\Users\<user>\AppData\x")]
+    [InlineData(@"C:\Users\Mary Ann Smith\Documents", @"C:\Users\<user>\Documents")]
+    [InlineData(@"opened ""C:\Users\Jane Doe\a.txt""", @"opened ""C:\Users\<user>\a.txt""")]
+    public void A_user_folder_with_spaces_goes_whole(string input, string expected) =>
+        Assert.Equal(expected, Sanitizer.Clean(input, User, Machine));
+
+    [Theory]
+    [InlineData("addr fe80::1ff:fe23:4567:890a up", "addr <ip address> up")]
+    [InlineData("addr 2001:db8::1 up", "addr <ip address> up")]
+    [InlineData("loopback ::1 here", "loopback <ip address> here")]
+    [InlineData("link-local fe80::a%12 here", "link-local <ip address>%12 here")]
+    public void Short_form_ipv6_addresses_are_removed_too(string input, string expected) =>
+        Assert.Equal(expected, Sanitizer.Clean(input, User, Machine));
+
+    [Theory]
+    [InlineData("at 12:30:45 today")]
+    [InlineData("ratio 3:1 and 16:9")]
+    [InlineData("Step 1: done")]
+    public void Times_and_ratios_are_not_mistaken_for_addresses(string input) =>
+        Assert.Equal(input, Sanitizer.Clean(input, User, Machine));
+
+    [Theory]
+    [InlineData(@"copied from \\FILESERVER01\share\x.txt", @"copied from \\<server>\share\x.txt")]
+    [InlineData(@"to \\nas.home.lan\backup", @"to \\<server>\backup")]
+    public void The_name_of_another_pc_in_a_network_path_is_removed(string input, string expected) =>
+        Assert.Equal(expected, Sanitizer.Clean(input, User, Machine));
+
+    [Fact]
+    public void An_escaped_path_with_doubled_backslashes_is_not_taken_for_a_network_path() =>
+        Assert.Equal(@"C:\\Windows\\System32", Sanitizer.Clean(@"C:\\Windows\\System32", User, Machine));
+
+    [Theory]
+    [InlineData("Administrator")]
+    [InlineData("admin")]
+    [InlineData("Guest")]
+    public void A_generic_account_name_does_not_tear_ordinary_text_apart(string account)
+    {
+        const string text = @"Running as administrator. Needs administrator rights. BUILTIN\Administrators group. Guest network.";
+        Assert.Equal(text, Sanitizer.Clean(text, account, Machine));
+    }
+
+    [Fact]
+    public void A_name_is_replaced_only_as_a_whole_word()
+    {
+        Assert.Equal("signed in as <user>.", Sanitizer.Clean("signed in as jsmith.", "jsmith", Machine));
+        Assert.Equal("the jsmithereens folder", Sanitizer.Clean("the jsmithereens folder", "jsmith", Machine));
+    }
+
     private static FeedbackInput Input(bool system = true, bool log = true, SystemReport? report = null, string desc = "It crashed") => new(
         FeedbackKind.Bug, "Crash on apply", desc, "0.1.0-beta.2", system, log, report,
         ["privacy.a", "input.b"], [@"2026-10-08 12:00:00 error at C:\Users\jsmith\x", "second line"]);
