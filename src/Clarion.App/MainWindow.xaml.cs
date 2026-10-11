@@ -398,6 +398,12 @@ public sealed partial class MainWindow : Window
                 step => DispatcherQueue.TryEnqueue(() => Activity.Step(step)),
                 turnOnProtection, stop.Token);
         }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or System.ComponentModel.Win32Exception)
+        {
+            Activity.Close();
+            await Dialogs.Say(Content.XamlRoot, "The run did not finish", $"Some changes may have been made. Clarion has read your settings again, so what you see is what Windows has now. {ex.Message}");
+            return;
+        }
         finally { _runStop = null; }
         if (result.Blocked is not null) Activity.Close();
         else Activity.Finish(result.Items.Count(i => i.Result.Success && !i.Skipped), result.Items.Count(i => !i.Result.Success), result.Items.Count(i => i.Skipped && i.Result.Success), result.NotStarted);

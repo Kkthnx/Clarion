@@ -257,35 +257,48 @@ public sealed partial class AppServices : UiObservableObject
         IsBusy = true;
         Status = "Reading your system";
         var started = Stopwatch.StartNew();
+        var waitingOnFeatures = false;
 
-        var fast = Items.Where(i => i.IsSupported && i.ReadsQuickly).ToList();
-        var slow = Items.Where(i => i.IsSupported && !i.ReadsQuickly).ToList();
-        foreach (var item in Items.Where(i => !i.IsSupported)) item.SyncToState(TweakState.Unavailable);
-        foreach (var item in slow) item.MarkChecking();
-
-        var fastStates = await Task.Run(() => DetectAll(fast));
-        Apply(fast, fastStates);
-        AppliedCount = Items.Count(i => i.IsApplied);
-
-        _featureRead = Task.CompletedTask;
-        if (slow.Count > 0)
+        // Whatever goes wrong in the middle, the app must not stay on "Reading your system" with its buttons locked.
+        try
         {
-            // Windows features go through DISM, which takes about 15 seconds and nothing else depends on it, so it
-            // does not hold up the rest. Those rows stay on "Checking" and cannot be toggled until DISM answers.
-            var features = slow.Where(i => i.Tweak.Apply.Any(o => o is SetWindowsFeature or SetWindowsCapability)).ToList();
-            var others = slow.Except(features).ToList();
-            _featureRead = ReadGroupAsync(features);
-            await ReadGroupAsync(others);
-        }
+            var fast = Items.Where(i => i.IsSupported && i.ReadsQuickly).ToList();
+            var slow = Items.Where(i => i.IsSupported && !i.ReadsQuickly).ToList();
+            foreach (var item in Items.Where(i => !i.IsSupported)) item.SyncToState(TweakState.Unavailable);
+            foreach (var item in slow) item.MarkChecking();
 
-        AppliedCount = Items.Count(i => i.IsApplied);
-        RefreshPending();
-        await VerifyQuietlyAsync();
-        var waitingOnFeatures = !_featureRead.IsCompleted;
-        Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings{(waitingOnFeatures ? ", Windows features still reading" : "")}");
-        Status = !IsElevated ? "Not running as administrator. Machine wide changes are locked."
-            : waitingOnFeatures ? "Ready. Windows features are still being read." : "Ready";
-        IsBusy = false;
+            var fastStates = await Task.Run(() => DetectAll(fast));
+            Apply(fast, fastStates);
+            AppliedCount = Items.Count(i => i.IsApplied);
+
+            _featureRead = Task.CompletedTask;
+            if (slow.Count > 0)
+            {
+                // Windows features go through DISM, which takes about 15 seconds and nothing else depends on it, so it
+                // does not hold up the rest. Those rows stay on "Checking" and cannot be toggled until DISM answers.
+                var features = slow.Where(i => i.Tweak.Apply.Any(o => o is SetWindowsFeature or SetWindowsCapability)).ToList();
+                var others = slow.Except(features).ToList();
+                _featureRead = ReadGroupAsync(features);
+                await ReadGroupAsync(others);
+            }
+
+            AppliedCount = Items.Count(i => i.IsApplied);
+            RefreshPending();
+            await VerifyQuietlyAsync();
+            waitingOnFeatures = !_featureRead.IsCompleted;
+            Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings{(waitingOnFeatures ? ", Windows features still reading" : "")}");
+            Status = !IsElevated ? "Not running as administrator. Machine wide changes are locked."
+                : waitingOnFeatures ? "Ready. Windows features are still being read." : "Ready";
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            Log.Write($"Reading the system failed: {ex.Message}");
+            Status = "Reading your system did not finish. See the log for details.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
         StatesRefreshed?.Invoke(this, EventArgs.Empty);
         if (waitingOnFeatures) _ = FinishFeaturesAsync(_featureRead);
     }
@@ -544,7 +557,19 @@ public sealed partial class AppServices : UiObservableObject
 
         Action<string> both = msg => { Log.Write(msg); log(msg); };
         Log.Write($"Run started: {toApply.Count} to apply, {toRevert.Count} to revert, restore point {(restorePoint ? "on" : "off")}");
-        var result = await Task.Run(() => Runtime.Runner.Execute(toApply, toRevert, Profile, options, both));
+        BatchResult result;
+        try
+        {
+            result = await Task.Run(() => Runtime.Runner.Execute(toApply, toRevert, Profile, options, both));
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            // Some changes may already be made, so the real state is read again, and the app must not stay busy for good.
+            Log.Write($"Run failed: {ex.Message}");
+            IsBusy = false;
+            await RefreshStatesAsync();
+            throw;
+        }
         foreach (var entry in result.Items)
             Log.Write($"{entry.TweakId}: {(entry.Result.Success ? (entry.Skipped ? "skipped" : "ok") : "failed " + entry.Result.Error)}");
         if (result.Blocked is not null) Log.Write($"Blocked: {result.Blocked}");
