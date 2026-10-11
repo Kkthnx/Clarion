@@ -482,7 +482,9 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
 
     public void UpsertDoh(DohRegistration r)
     {
-        if (!DnsProviders.IsIpv4(r.Address) || !Uri.TryCreate(r.Template, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
+        // The template goes inside single quotes in a PowerShell command, and a web address may legally contain a quote, so one is refused.
+        // No real encrypted DNS template needs it.
+        if (!DnsProviders.IsIpv4(r.Address) || r.Template.Contains('\'') || !Uri.TryCreate(r.Template, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
             throw new ArgumentException("Not a valid encrypted DNS entry.");
         var known = GetDohRegistrations().Any(x => x.Address == r.Address);
         var verb = known ? "Set" : "Add";

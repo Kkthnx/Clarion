@@ -43,10 +43,12 @@ public static partial class DnsProviders
 
     public static DnsProvider? Find(string key) => All.FirstOrDefault(p => p.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
 
-    [GeneratedRegex(@"^\d{1,3}(\.\d{1,3}){3}$")]
+    // Plain ASCII digits only, and \z so a trailing line break is not allowed. In .NET \d also matches digits of other scripts, which
+    // int.Parse then refuses, and $ matches before a final line break. The address ends up inside a PowerShell command, so it must be exact.
+    [GeneratedRegex(@"^[0-9]{1,3}(\.[0-9]{1,3}){3}\z")]
     private static partial Regex Ipv4();
 
-    public static bool IsIpv4(string s) => Ipv4().IsMatch(s) && s.Split('.').All(p => int.Parse(p) <= 255);
+    public static bool IsIpv4(string s) => Ipv4().IsMatch(s) && s.Split('.').All(p => int.Parse(p, System.Globalization.CultureInfo.InvariantCulture) <= 255);
 
     public static bool SameServers(IReadOnlyList<string> a, IReadOnlyList<string> b) =>
         a.Count == b.Count && a.Order().SequenceEqual(b.Order(), StringComparer.OrdinalIgnoreCase);
