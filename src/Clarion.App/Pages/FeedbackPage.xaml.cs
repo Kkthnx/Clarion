@@ -70,7 +70,7 @@ public sealed partial class FeedbackPage : Page
         if (needsPaste) CopyToClipboard(_body);
         try
         {
-            Process.Start(new ProcessStartInfo(url.AbsoluteUri) { UseShellExecute = true });
+            if (!Shell.Open(url.AbsoluteUri)) throw new InvalidOperationException("The browser could not be started.");
             StatusLabel.Text = needsPaste ? "Opened. The full report is on your clipboard, paste it into the box." : "Opened in your browser.";
         }
         catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)

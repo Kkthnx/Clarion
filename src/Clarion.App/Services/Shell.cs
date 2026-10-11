@@ -24,6 +24,8 @@ public static class Shell
     /// <summary>Opens a file, folder, address or program. Returns false, and logs why, when Windows cannot.</summary>
     public static bool Open(string target, string? arguments = null)
     {
+        // A web page is opened for the signed-in user, not with Clarion's administrator rights, so the browser is not elevated.
+        if (arguments is null && Uri.TryCreate(target, UriKind.Absolute, out var link) && link.Scheme is "http" or "https" && OpenUnelevated(link)) return true;
         try
         {
             // A program named without a folder (notepad.exe, rstrui.exe) is looked for beside Clarion first, and Clarion runs with
@@ -40,6 +42,21 @@ public static class Shell
         catch (Exception ex) when (ex is Win32Exception or InvalidOperationException or FileNotFoundException)
         {
             Log.Write($"Could not open {target}: {ex.Message}");
+            return false;
+        }
+    }
+
+    private static bool OpenUnelevated(Uri link)
+    {
+        try
+        {
+            // rundll32 with url.dll hands the address to whatever is registered for it, which then runs with the shell's token.
+            var rundll = Path.Combine(Environment.SystemDirectory, "rundll32.exe");
+            return Clarion.Engine.UnelevatedLauncher.Start(rundll, $"url.dll,FileProtocolHandler {link.AbsoluteUri}") != 0;
+        }
+        catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException or InvalidOperationException)
+        {
+            Log.Write($"Could not open {link.Host} without elevation: {ex.Message}");
             return false;
         }
     }

@@ -338,6 +338,14 @@ public sealed partial class MainWindow : Window
         if (!_app.IsBusy) await _app.RefreshStatesAsync(fresh: true);
     }
 
+    /// <summary>A link that opens in the user's browser without Clarion's administrator rights. A NavigateUri would open it with them.</summary>
+    private static HyperlinkButton MakeLink(SourceLink link)
+    {
+        var button = new HyperlinkButton { Content = link.Text, Padding = new Thickness(4, 0, 4, 0), FontSize = 12 };
+        button.Click += (_, _) => Shell.Open(link.Link.AbsoluteUri);
+        return button;
+    }
+
     private async void OnReview(object sender, RoutedEventArgs e)
     {
         if (_app.PendingCount == 0) return;
@@ -384,7 +392,7 @@ public sealed partial class MainWindow : Window
                     block.Children.Add(details);
                     var links = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
                     foreach (var link in item.SourceLinks.Where(l => !l.Link.AbsoluteUri.Contains("winget-pkgs", StringComparison.Ordinal)).DistinctBy(l => l.Link.AbsoluteUri.TrimEnd('/').ToLowerInvariant()))
-                        links.Children.Add(new HyperlinkButton { Content = link.Text, NavigateUri = link.Link, Padding = new Thickness(4, 0, 4, 0), FontSize = 12 });
+                        links.Children.Add(MakeLink(link));
                     block.Children.Add(links);
                     installs.Add((item, details));
                 }

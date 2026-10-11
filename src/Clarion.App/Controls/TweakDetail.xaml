@@ -92,7 +92,7 @@
             <ItemsControl ItemsSource="{x:Bind Item.SourceLinks, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="svc:SourceLink">
-                        <HyperlinkButton Content="{x:Bind Text}" NavigateUri="{x:Bind Link}" Padding="0" FontSize="12" />
+                        <HyperlinkButton Content="{x:Bind Text}" Tag="{x:Bind Link}" Click="OnSourceLink" Padding="0" FontSize="12" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

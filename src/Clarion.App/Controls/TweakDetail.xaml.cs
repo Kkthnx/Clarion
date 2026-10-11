@@ -28,6 +28,12 @@ public sealed partial class TweakDetail : UserControl
         InitializeComponent();
     }
 
+    // Opened for the signed-in user, not with Clarion's administrator rights, which a NavigateUri would use.
+    private void OnSourceLink(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: Uri link }) Shell.Open(link.AbsoluteUri);
+    }
+
     public IDetailSource? Item { get => (IDetailSource?)GetValue(ItemProperty); set => SetValue(ItemProperty, value); }
     public bool ShowTechnical { get => (bool)GetValue(ShowTechnicalProperty); set => SetValue(ShowTechnicalProperty, value); }
 }
