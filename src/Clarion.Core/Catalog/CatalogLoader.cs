@@ -199,6 +199,14 @@ public static class CatalogLoader
                     case SetHibernation:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: power changes need Machine scope.");
                         break;
+                    case InstallWingetPackage install:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: app installs need Machine scope.");
+                        if (!Apps.WingetIds.IsValid(install.Id)) errors.Add($"{t.Id}: not a valid winget package ID: {install.Id}");
+                        break;
+                    case UninstallWingetPackage uninstall:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: app removals need Machine scope.");
+                        if (!Apps.WingetIds.IsValid(uninstall.Id)) errors.Add($"{t.Id}: not a valid winget package ID: {uninstall.Id}");
+                        break;
                     case SetDnsProvider dns:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: DNS changes need Machine scope.");
                         if (Dns.DnsProviders.Find(dns.Provider) is null) errors.Add($"{t.Id}: unknown DNS provider {dns.Provider}.");

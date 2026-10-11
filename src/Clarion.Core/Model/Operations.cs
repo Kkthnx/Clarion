@@ -17,6 +17,8 @@ public enum ServiceStartType { Automatic, AutomaticDelayed, Manual, Disabled }
 [JsonDerivedType(typeof(SetHibernation), "power.hibernation")]
 [JsonDerivedType(typeof(SetDnsProvider), "dns.provider")]
 [JsonDerivedType(typeof(RestoreDns), "dns.restore")]
+[JsonDerivedType(typeof(InstallWingetPackage), "winget.install")]
+[JsonDerivedType(typeof(UninstallWingetPackage), "winget.uninstall")]
 public abstract record Operation
 {
     public abstract string Describe();
@@ -88,4 +90,15 @@ public sealed record SetDnsProvider(string Provider, bool Encrypted = false) : O
 public sealed record RestoreDns(IReadOnlyList<Dns.AdapterDns> Adapters, IReadOnlyList<string> RemoveDohFor, IReadOnlyList<Dns.DohRegistration> RestoreDoh) : Operation
 {
     public override string Describe() => "Put the previous DNS servers back";
+}
+/// <summary>Installs one package from winget's community source, pinned by its exact ID.</summary>
+public sealed record InstallWingetPackage(string Id) : Operation
+{
+    public override string Describe() => $"Install {Id} with winget";
+}
+
+/// <summary>Uninstalls one package that winget installed or knows, pinned by its exact ID.</summary>
+public sealed record UninstallWingetPackage(string Id) : Operation
+{
+    public override string Describe() => $"Uninstall {Id} with winget";
 }

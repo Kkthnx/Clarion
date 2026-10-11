@@ -35,6 +35,7 @@ public static class EngineFactory
             DataFolderNotes = DataFolderGuard.Secure(dir);
         var registry = new WindowsRegistryStore();
         var runner = new WindowsProcessRunner();
+        var winget = new WindowsWingetStore(runner);
         var handlers = new Core.Abstractions.IOperationHandler[]
         {
             new RegistryHandler(registry),
@@ -44,6 +45,7 @@ public static class EngineFactory
             new FeatureHandler(new WindowsFeatureStore(runner)),
             new PowerHandler(new WindowsPowerStore(runner)),
             new DnsHandler(new WindowsDnsStore(runner)),
+            new WingetHandler(winget),
         };
         var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"), System.Security.Principal.WindowsIdentity.GetCurrent().User?.Value);
         var engine = new TweakEngine(handlers, journal);
@@ -51,10 +53,11 @@ public static class EngineFactory
         var batch = new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);
         var restorePoints = new RestorePointService(registry, runner);
         return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect(), restorePoints, new Core.Actions.ActionRunner(new WindowsStreamingRunner()),
-            new Core.SystemInfo.SystemProbe(registry, new WindowsServiceStore(runner), runner, new WindowsTaskStore()), drift);
+            new Core.SystemInfo.SystemProbe(registry, new WindowsServiceStore(runner), runner, new WindowsTaskStore()), drift, winget);
     }
 }
 
 public sealed record ClarionRuntime(
     BatchRunner Runner, TweakEngine Engine, ChangeJournal Journal, Clarion.Core.Model.MachineProfile Profile,
-    IRestorePointService RestorePoints, Core.Actions.ActionRunner Actions, Core.SystemInfo.SystemProbe System, Core.Drift.DriftScanner Drift);
+    IRestorePointService RestorePoints, Core.Actions.ActionRunner Actions, Core.SystemInfo.SystemProbe System, Core.Drift.DriftScanner Drift,
+    Clarion.Core.Apps.IWingetStore Winget);
