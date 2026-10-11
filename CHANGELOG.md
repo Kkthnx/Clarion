@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.13
 
 New
 - An Apps page installs programs with winget: 75 browsers, chat apps, developer tools, game launchers, media tools, privacy tools, system utilities and file tools. Each one is a single exact winget package, never a search, so the same entry always installs the same program. It works like every other setting: queue it, review it, apply it, and Revert uninstalls it. Verify tells you when an app you installed has been removed since.
