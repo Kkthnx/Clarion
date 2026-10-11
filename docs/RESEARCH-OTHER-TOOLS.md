@@ -63,15 +63,15 @@ Sorted by what the evidence allows.
 
 ## What the tools do that Clarion does not
 
-- **Install and update apps.** Both tools do it. winutil has 236 entries and Sparkle 162, each with a winget ID and most with a Chocolatey name. Clarion has no apps page. It is on the "not yet included" list in docs/FEATURES.md. The "Installing apps" section below looks at how they do it.
+- **Install and update apps.** Both tools do it. winutil has 236 entries and Sparkle 162, each with a winget ID and most with a Chocolatey name. Clarion now has an Apps page (added in beta 12, 135 apps in the next release), with winget only, one exact package ID each, a licence step and no Chocolatey. It does not update installed apps yet. The "Installing apps" section below looks at how they do it.
 - **Uninstall any installed program.** Sparkle's Debloat page lists every installed program, Store apps and desktop programs alike, minus an exclusion list, and uninstalls the ones picked. Clarion removes a curated list of 25 Store apps and can put them back.
-- **Quick fixes.** Sparkle has one-click jobs for releasing and renewing the IP address, restarting the audio service, restarting Bluetooth services, restarting the graphics driver and restarting Explorer and Search. Clarion's Repair page has flush DNS, network reset, Windows Update reset, Store reset, system file and DISM repair, disk check and drive optimize, but not these.
+- **Quick fixes.** Sparkle has one-click jobs for releasing and renewing the IP address, restarting the audio service, restarting Bluetooth services, restarting the graphics driver and restarting Explorer and Search. Clarion's Repair page has flush DNS, network reset, Windows Update reset, Store reset, system file and DISM repair, disk check and drive optimize, and in the next release it also restarts the audio services and the Bluetooth service and resyncs the clock. It still has no one-click graphics driver or Explorer restart.
 - **Shortcuts to classic Windows tools.** winutil has buttons that open Control Panel items such as Programs and Features, Region, Sound and Power. Clarion has none.
 - **A few extras on winutil's list:** a daily registry backup task (Windows turned automatic registry backup off, and winutil switches it back on), the legacy F8 boot menu, and a PowerShell profile.
 - **A few repair jobs.** winutil's fixes include repairing winget and the Windows time server setting. Clarion has network reset, Windows Update reset, Store reset, system file and DISM repair, disk check and drive optimize, which cover the rest.
 - **Build a custom Windows image.** winutil has a Windows image builder. Clarion should not.
 - **Reach.** winutil has about 64,000 stars on GitHub, Sparkle about 2,100. A tool that is run from one line in PowerShell spreads easily. A signed installer does not.
-- **A low-effort way to contribute a tweak.** Sparkle's folder format (apply, unapply, `meta.json`) is simple, and it has a request template. Clarion's catalog format is stricter, and nothing says how to propose one.
+- **A low-effort way to contribute a tweak.** Sparkle's folder format (apply, unapply, `meta.json`) is simple, and it has a request template. Clarion's catalog format is stricter. CONTRIBUTING.md has an "Adding a setting" section that says what a setting needs, but there is no request template like Sparkle's.
 
 ## What Clarion does that they do not
 

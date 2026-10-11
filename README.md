@@ -58,9 +58,13 @@ Every change is explained, graded by evidence, backed up and reversible.
 2. Run it. Clarion installs to Program Files with a Start menu entry and a clean uninstaller.
 3. Open Clarion. It asks for administrator rights when it opens, because most settings are machine wide. If you say no, it opens in a read only mode that can look and verify but changes nothing, with a button to restart as administrator.
 
-The files are not code signed yet, so Windows SmartScreen may warn on first run. Signing is planned before 1.0. Each download has a SHA256 file next to it so you can verify it.
+The files are not code signed yet, so Windows SmartScreen shows its "Windows protected your PC" screen on first run, with Don't run as the default, and the administrator prompt names the publisher as Unknown. Choose More info, then Run anyway if you trust this download. Signing is planned before 1.0. Each download has a SHA256 file next to it so you can verify it.
 
-Requirements: Windows 10 version 2004 or later, 64-bit. Nothing else needs installing, because the .NET runtime is included.
+Requirements: Windows 10 version 2004 or later, 64-bit. Nothing else needs installing, because the .NET runtime is included. The one exception is the Apps page, which needs winget, Microsoft's package manager. It comes with App Installer on Windows 11 and on current Windows 10. Clarion does not install it, and without it the apps are shown as unavailable.
+
+### How the apps are chosen
+
+Every app is one exact winget package ID, never a search, and was checked before it went in: its winget record was read for the publisher, licence and installer host, and its installer manifest was read for settings that stop an administrator install. An app whose installer refuses to run as administrator is left out, and so is one that bundles offers in its installer. Where a record needs an install folder, the catalog carries it. The list is a short selection of well known apps, not everything winget has.
 
 ## Command line
 
