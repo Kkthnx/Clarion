@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.14
 
 New
 - Three more fixes on the Repair page, each one a step Microsoft documents: restart the Windows audio services (for an app that is silent while Windows sounds still play), restart the Bluetooth service (for devices that keep disconnecting), and resync the clock (starts the Windows Time service if it is stopped, then runs w32tm /resync). Each stopped service is started again even if a step fails.
