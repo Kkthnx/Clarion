@@ -33,6 +33,8 @@ public sealed partial class AppMark : UserControl
     public AppMark()
     {
         InitializeComponent();
+        // The name sits beside it in the row, so a screen reader has nothing to add by announcing a picture or a letter.
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAccessibilityView(this, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView.Raw);
         // The colour depends on the theme, so it is worked out again when the theme changes.
         Loaded += (_, _) => { ActualThemeChanged += OnThemeChanged; Refresh(); };
         Unloaded += (_, _) => ActualThemeChanged -= OnThemeChanged;
@@ -117,7 +119,10 @@ public sealed partial class AppMark : UserControl
             }
             // A dark logo on a dark card, or a pale one on a light card, would disappear, so the text colour stands in.
             var dark = ActualTheme != ElementTheme.Light;
-            if (icon.ReadableOn(dark))
+            // In a High Contrast theme the colours are the person's own choice, so a brand colour is not used at all.
+            var highContrast = new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast;
+            Glyph.Visibility = IsWatermark && highContrast ? Visibility.Collapsed : Visibility.Visible;
+            if (!highContrast && icon.ReadableOn(dark))
             {
                 var (r, g, b) = icon.Rgb;
                 Glyph.Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(255, r, g, b));
