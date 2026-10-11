@@ -31,7 +31,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 | | |
 |---|---|
-| **Privacy and debloat** | 177 settings across privacy, app removal, tweaks, power, network, Windows features and updates. A Compact switch fits about three times as many on screen, and topic pills narrow a long list in one click. |
+| **Privacy and debloat** | 190 settings across privacy, app removal, tweaks, power, network, Windows features and updates. A Compact switch fits about three times as many on screen, and topic pills narrow a long list in one click. |
 | **Clean up** | Shader caches, launcher caches, browser and Windows leftovers. Scans first, shows exact folders and sizes, skips files in use and queues locked files for the next restart. |
 | **Repair** | System file check, component repair, network and update resets. Output streams live and any job can be stopped. |
 | **Presets** | Minimal, Standard, Advanced, Gaming and Privacy. Each lists the settings it holds and marks the ones already on. Queue one, review it, apply it. |
