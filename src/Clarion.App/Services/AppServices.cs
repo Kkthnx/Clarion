@@ -270,26 +270,28 @@ public sealed partial class AppServices : UiObservableObject
 
             var fastStates = await Task.Run(() => DetectAll(fast));
             Apply(fast, fastStates);
-            AppliedCount = Items.Count(i => i.IsApplied);
+            AppliedCount = Items.Count(i => i.IsApplied && !i.InstallsApps);
 
             _featureRead = Task.CompletedTask;
             if (slow.Count > 0)
             {
                 // Windows features go through DISM, which takes about 15 seconds and nothing else depends on it, so it
                 // does not hold up the rest. Those rows stay on "Checking" and cannot be toggled until DISM answers.
+                // Apps are read in the background too, from one winget export that takes several seconds, and at the same time as the features.
+                var apps = slow.Where(i => i.Tweak.Apply.Any(o => o is InstallWingetPackage or UninstallWingetPackage)).ToList();
                 var features = slow.Where(i => i.Tweak.Apply.Any(o => o is SetWindowsFeature or SetWindowsCapability)).ToList();
-                var others = slow.Except(features).ToList();
-                _featureRead = ReadGroupAsync(features);
+                var others = slow.Except(features).Except(apps).ToList();
+                _featureRead = Task.WhenAll(ReadGroupAsync(features), ReadGroupAsync(apps));
                 await ReadGroupAsync(others);
             }
 
-            AppliedCount = Items.Count(i => i.IsApplied);
+            AppliedCount = Items.Count(i => i.IsApplied && !i.InstallsApps);
             RefreshPending();
             await VerifyQuietlyAsync();
             waitingOnFeatures = !_featureRead.IsCompleted;
-            Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings{(waitingOnFeatures ? ", Windows features still reading" : "")}");
+            Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings{(waitingOnFeatures ? ", slower settings still reading" : "")}");
             Status = !IsElevated ? "Not running as administrator. Machine wide changes are locked."
-                : waitingOnFeatures ? "Ready. Windows features are still being read." : "Ready";
+                : waitingOnFeatures ? "Ready. Windows features and apps are still being read." : "Ready";
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {
@@ -312,7 +314,7 @@ public sealed partial class AppServices : UiObservableObject
         try { await read; }
         catch (Exception ex) { Log.Write($"Windows features could not be read: {ex.Message}"); }
         if (!ReferenceEquals(read, _featureRead) || IsBusy) return;
-        AppliedCount = Items.Count(i => i.IsApplied);
+        AppliedCount = Items.Count(i => i.IsApplied && !i.InstallsApps);
         RefreshPending();
         if (IsElevated) Status = "Ready";
         StatesRefreshed?.Invoke(this, EventArgs.Empty);
@@ -327,7 +329,7 @@ public sealed partial class AppServices : UiObservableObject
             return DetectAll(group);
         });
         Apply(group, states);
-        AppliedCount = Items.Count(i => i.IsApplied);
+        AppliedCount = Items.Count(i => i.IsApplied && !i.InstallsApps);
     }
 
     private Dictionary<string, TweakState> DetectAll(IEnumerable<TweakItem> items)

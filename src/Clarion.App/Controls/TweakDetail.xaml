@@ -12,7 +12,7 @@
                    Foreground="{ThemeResource ClTextSecondaryBrush}" />
 
         <StackPanel Orientation="Horizontal" Spacing="6">
-            <controls:Chip Text="{x:Bind Item.RecommendationText, Mode=OneWay}" Kind="{x:Bind Item.RecommendationKind, Mode=OneWay}" />
+            <controls:Chip Text="{x:Bind Item.RecommendationText, Mode=OneWay}" Kind="{x:Bind Item.RecommendationKind, Mode=OneWay}" Visibility="{x:Bind Item.ShowRecommendation, Mode=OneWay}" />
             <controls:Chip Text="{x:Bind Item.RiskText, Mode=OneWay}" Kind="{x:Bind Item.RiskKind, Mode=OneWay}" />
         </StackPanel>
 

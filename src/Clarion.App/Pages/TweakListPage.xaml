@@ -20,7 +20,7 @@
                                     <TextBlock Text="{x:Bind Summary}" TextWrapping="Wrap"
                                                Foreground="{ThemeResource ClTextSecondaryBrush}" />
                                     <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-                                        <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}"
+                                        <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}" Visibility="{x:Bind ShowRecommendation}"
                                                        ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
                                         <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}"
                                                        ToolTipService.ToolTip="{x:Bind RiskHint}" />
@@ -64,7 +64,7 @@
                     <TextBlock Text="{x:Bind Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-                        <controls:Chip Text="{x:Bind RecommendationShort}" Kind="{x:Bind RecommendationKind}" ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
+                        <controls:Chip Text="{x:Bind RecommendationShort}" Kind="{x:Bind RecommendationKind}" Visibility="{x:Bind ShowRecommendation}" ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
                         <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" Visibility="{x:Bind RiskIsNotable}"
                                   ToolTipService.ToolTip="{x:Bind RiskHint}" />
                         <controls:Chip Text="{x:Bind PendingText, Mode=OneWay}" Kind="Accent" Visibility="{x:Bind IsPending, Mode=OneWay}" />

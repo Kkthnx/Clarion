@@ -35,6 +35,7 @@ public sealed class ActionItem : IDetailSource
     public IReadOnlyList<SourceLink> SourceLinks => DetailHelpers.Links(Def.Sources);
 
     public ChipKind RecommendationKind => DetailHelpers.RecommendationKind(Def.Recommendation);
+    public bool ShowRecommendation => true;
     public ChipKind RiskKind => DetailHelpers.RiskKind(Def.RiskLevel);
 
     private static IReadOnlyList<string> BuildNotes(ActionDef d)

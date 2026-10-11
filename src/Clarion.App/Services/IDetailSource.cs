@@ -10,6 +10,7 @@ public interface IDetailSource
     string Summary { get; }
     string RecommendationText { get; }
     ChipKind RecommendationKind { get; }
+    bool ShowRecommendation { get; }
     string RiskText { get; }
     ChipKind RiskKind { get; }
     string EvidenceText { get; }

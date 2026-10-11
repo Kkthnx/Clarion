@@ -64,7 +64,7 @@ public sealed partial class HomePage : Page
             WindowsTile.Value = $"Build {_app.Profile.Build}";
             WindowsTile.Detail = _app.Profile.Edition;
         }
-        ClarionTile.Value = _app.IsBusy ? "Reading" : $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported)}";
+        ClarionTile.Value = _app.IsBusy ? "Reading" : $"{_app.AppliedCount} of {_app.Items.Count(i => i.IsSupported && !i.InstallsApps)}";
         ClarionTile.Detail = _app.IsElevated ? "Running as administrator" : "Not running as administrator";
         MovedBar.IsOpen = _app.MonthlyCheckMoved;
         MovedBar.Visibility = MovedBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;

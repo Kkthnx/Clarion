@@ -43,6 +43,7 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
     public IReadOnlyList<SourceLink> SourceLinks => DetailHelpers.Links(Target.Sources);
 
     public ChipKind RecommendationKind => DetailHelpers.RecommendationKind(Target.Recommendation);
+    public bool ShowRecommendation => true;
     public ChipKind RiskKind => DetailHelpers.RiskKind(Target.RiskLevel);
 
     /// <summary>The folders a scan found, so people can see exactly what will be touched.</summary>

@@ -139,6 +139,7 @@ public sealed partial class MainWindow : Window
     {
         ["privacy"] = new("Privacy", "Stop Windows from collecting and sharing more than it needs to.", ["Privacy", "Security"]),
         ["debloat"] = new("Debloat", "Remove apps you do not use. Every removal can be reverted.", ["Debloat"]),
+        ["apps"] = new("Apps", "Install the programs you want with winget. Each is pinned to one exact package.", ["Install"]),
         ["tweaks"] = new("Tweaks", "Look, feel and everyday behavior of Windows.", ["Appearance", "Explorer", "Input", "System"]),
         ["power"] = new("Power", "Pick how the PC trades speed for energy. Only one power plan is active at a time.", ["Power"]),
         ["network"] = new("Network", "Update sharing, public DNS providers and encrypted DNS.", ["Network"]),
@@ -164,6 +165,7 @@ public sealed partial class MainWindow : Window
         {
             case "home": ContentFrame.Navigate(typeof(HomePage)); break;
             case "windows": ContentFrame.Navigate(typeof(WindowsPage)); break;
+            case "apps": ContentFrame.Navigate(typeof(AppsPage)); break;
             case "feedback": ContentFrame.Navigate(typeof(FeedbackPage)); break;
             case "system": ContentFrame.Navigate(typeof(SystemPage)); break;
             case "troubleshoot": ContentFrame.Navigate(typeof(TroubleshootPage)); break;
@@ -355,12 +357,14 @@ public sealed partial class MainWindow : Window
         }
 
         var list = new StackPanel { Spacing = 12 };
+        var installs = new List<(TweakItem Item, TextBlock Details)>();
         foreach (var item in _app.Pending)
         {
             var block = new StackPanel { Spacing = 2 };
+            var verb = item.InstallsApps ? (item.IsOn ? "install" : "uninstall") : item.IsOn ? "turn on" : "revert";
             block.Children.Add(new TextBlock
             {
-                Text = $"{item.Name}  ({(item.IsOn ? "turn on" : "revert")})",
+                Text = $"{item.Name}  ({verb})",
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
                 TextWrapping = TextWrapping.Wrap,
             });
@@ -370,6 +374,22 @@ public sealed partial class MainWindow : Window
                     block.Children.Add(new TextBlock { Text = step, FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"), FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
                 if (item.RemovesApps)
                     block.Children.Add(new TextBlock { Text = Clarion.Core.Appx.AppRemovalNotice.Text, FontSize = 12, TextWrapping = TextWrapping.Wrap, Foreground = Clarion.App.Controls.ThemeBrushes.Get("ClWarnText", Root.ActualTheme) });
+                if (item.InstallsApps)
+                {
+                    // What winget itself says about this package, read when the dialog opens, so the person sees who serves the installer
+                    // and the checksum winget will hold it to before they accept anything.
+                    var details = new TextBlock { Text = "Asking winget for the version, licence and checksum...", FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8, IsTextSelectionEnabled = true };
+                    block.Children.Add(details);
+                    var links = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
+                    foreach (var link in item.SourceLinks.Where(l => !l.Link.AbsoluteUri.Contains("winget-pkgs", StringComparison.Ordinal)))
+                        links.Children.Add(new HyperlinkButton { Content = link.Text, NavigateUri = link.Link, Padding = new Thickness(4, 0, 4, 0), FontSize = 12 });
+                    block.Children.Add(links);
+                    installs.Add((item, details));
+                }
+            }
+            else if (item.InstallsApps)
+            {
+                block.Children.Add(new TextBlock { Text = "Runs the program's own uninstaller through winget. If you did not install it with Clarion, this removes the copy you already have.", FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
             }
             else
             {
@@ -378,9 +398,19 @@ public sealed partial class MainWindow : Window
             list.Children.Add(block);
         }
 
-        var restore = new CheckBox { Content = "Create a restore point first (recommended)", IsChecked = true };
+        // A restore point before a few installs costs minutes, so it starts unticked when nothing in the queue changes Windows settings.
+        var onlyApps = _app.Pending.All(p => p.InstallsApps);
+        var restore = new CheckBox { Content = onlyApps ? "Create a restore point first" : "Create a restore point first (recommended)", IsChecked = !onlyApps };
         var body = new StackPanel { Spacing = 14 };
         body.Children.Add(new ScrollViewer { MaxHeight = 380, Content = list });
+
+        // The licence terms are the publishers', and they are accepted here by the person, never on their behalf.
+        CheckBox? agree = null;
+        if (installs.Count > 0)
+        {
+            agree = new CheckBox { Content = "I have read the licence terms of the apps being installed and I accept them", IsChecked = false };
+            body.Children.Add(agree);
+        }
         body.Children.Add(restore);
 
         var dialog = new ContentDialog
@@ -390,11 +420,41 @@ public sealed partial class MainWindow : Window
             PrimaryButtonText = "Apply",
             CloseButtonText = "Cancel",
             DefaultButton = ContentDialogButton.Primary,
+            IsPrimaryButtonEnabled = agree is null,
             XamlRoot = Content.XamlRoot,
         };
-        if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
+        if (agree is not null)
+        {
+            agree.Checked += (_, _) => dialog.IsPrimaryButtonEnabled = true;
+            agree.Unchecked += (_, _) => dialog.IsPrimaryButtonEnabled = false;
+        }
 
-        await RunAsync(restore.IsChecked == true);
+        using var stopReading = new CancellationTokenSource();
+        if (installs.Count > 0) _ = ReadAppDetailsAsync(installs, stopReading.Token);
+        var answer = await dialog.ShowAsync();
+        stopReading.Cancel();
+        if (answer != ContentDialogResult.Primary) return;
+
+        // Consent holds for this run only.
+        _app.Runtime.Winget.AcceptPackageAgreements = agree?.IsChecked == true;
+        try { await RunAsync(restore.IsChecked == true); }
+        finally { _app.Runtime.Winget.AcceptPackageAgreements = false; }
+    }
+
+    /// <summary>Fills in each install's details from winget, one after another, while the review dialog is open.</summary>
+    private async Task ReadAppDetailsAsync(List<(TweakItem Item, TextBlock Details)> installs, CancellationToken stop)
+    {
+        foreach (var (item, details) in installs)
+        {
+            if (stop.IsCancellationRequested) return;
+            var id = item.Tweak.Apply.OfType<Clarion.Core.Model.InstallWingetPackage>().Select(o => o.Id).FirstOrDefault();
+            var info = id is null ? null : await Task.Run(() => _app.Runtime.Winget.Show(id));
+            if (stop.IsCancellationRequested) return;
+            details.Text = info is null
+                ? "winget could not read this package's details just now. Installing still checks the installer's checksum, but you cannot see it here first."
+                : $"Version {info.Version}, from {info.Publisher}\nLicence: {(info.License.Length > 0 ? info.License : "see the link below")}\nInstaller from {info.InstallerHost} ({info.InstallerType})\nChecksum (SHA-256): {info.Sha256}\nwinget refuses to run the installer if its checksum differs.";
+            details.Opacity = 1;
+        }
     }
 
     private async Task RunAsync(bool restorePoint, bool turnOnProtection = false)

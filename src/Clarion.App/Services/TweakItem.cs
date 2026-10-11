@@ -21,6 +21,9 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     public bool IsSupported { get; }
     public string LockReason { get; }
 
+    /// <summary>False for apps, where every row would say the same "Optional" and that tells nothing.</summary>
+    public bool ShowRecommendation => !InstallsApps;
+
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Tweak.RiskLevel);
     public string RecommendationHint => DetailHelpers.RecommendationHint(Tweak.Recommendation);
@@ -152,6 +155,9 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     /// <summary>True when this setting only removes apps, so "nothing to change" means the app is not installed.</summary>
     public bool RemovesApps => Tweak.Apply.Count > 0 && Tweak.Apply.All(o => o is RemoveAppxPackage);
 
+    /// <summary>True when this setting installs an app with winget, so on means installed and off means not installed.</summary>
+    public bool InstallsApps => Tweak.Apply.Count > 0 && Tweak.Apply.All(o => o is InstallWingetPackage);
+
     /// <summary>Rows that do not apply on this PC are dimmed, so they read as inactive and not as a switch that is simply off.</summary>
     public double RowOpacity => !IsSupported || IsUnavailable ? 0.6 : 1.0;
     public bool CanToggle => IsSupported && !IsChecking && State != TweakState.Unavailable;
@@ -164,17 +170,19 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
 
     public string StateText => !IsSupported ? "Not on this PC"
         : IsChecking ? "Checking"
-        : IsDrifted ? "Changed back by Windows"
+        : IsDrifted ? (InstallsApps ? "Removed since" : "Changed back by Windows")
         : State switch
         {
-            TweakState.Applied => "On",
+            TweakState.Applied => InstallsApps ? "Installed" : "On",
             TweakState.Partial => "Partly on",
-            TweakState.Unavailable => RemovesApps ? "Not installed" : "Nothing to change",
-            _ => "Off",
+            TweakState.Unavailable => InstallsApps ? "winget not found" : RemovesApps ? "Not installed" : "Nothing to change",
+            _ => InstallsApps ? "Not installed" : "Off",
         };
 
     /// <summary>What happens when the pending change is run.</summary>
-    public string PendingText => IsPending ? (IsOn ? "Will be turned on" : "Will be reverted") : "";
+    public string PendingText => IsPending
+        ? (InstallsApps ? (IsOn ? "Will be installed" : "Will be uninstalled") : IsOn ? "Will be turned on" : "Will be reverted")
+        : "";
 
 
     public event EventHandler? PendingChanged;
