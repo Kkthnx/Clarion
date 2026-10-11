@@ -5,6 +5,15 @@
 New
 - When a setting has been changed back twice or more, Verify now says what is worth trying. It compares the Windows version at each time the setting came back. If it came back on the same version every time, an update did not do it, so something running on this PC did, such as a workplace or school policy, another tweak tool or a scheduled task. If Windows was on a newer version each time, putting it back again is the right fix. It does not name a program, because Clarion cannot tell which one it is.
 
+Fixed
+- Pressing "Make a restore point now" on Safety without administrator rights did nothing visible: the message stayed on "Making a restore point" for good and the error only reached the crash log. It now says that administrator rights are needed, and the button explains it before trying.
+- If reading the system or applying changes failed part way, for example on an unreadable journal, the app stayed on "Reading your system" or "Applying changes" with its buttons locked. The read now always finishes, and a failed run reads your settings again and tells you.
+- The check for a DNS server address accepted a trailing line break, and an address written with digits from another script made it fail with an error instead of being refused. It now takes plain digits only. An encrypted DNS address that contains an apostrophe is refused.
+
+Safer
+- Notepad and System Restore are started from the Windows folder, like the other tools, instead of by name alone.
+- The crash log rolls over at 1 MB like the main log, so an error that repeats cannot fill the disk.
+
 ## 0.1.0-beta.11
 
 Polish
