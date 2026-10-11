@@ -28,6 +28,8 @@ public sealed partial class AppsPage : Page
         Inner.Navigate(typeof(TweakListPage), MainWindow.Sections["apps"]);
         Inner.BackStack.Clear();
         ShowBanner();
+        // Which apps are installed is read now, the first time this page opens, and not when Clarion starts.
+        _ = _app.EnsureAppsReadAsync();
     }
 
     private void OnAppChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(ShowBanner);

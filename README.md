@@ -23,7 +23,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 - **Every setting explained.** Hover any setting for what it does, what you gain, what could go wrong and whether it is suggested. No research needed.
 - **Evidence graded.** Each setting says how well it is backed, and privacy settings carry the Windows policy they come from, checked against the policy files on your PC.
 - **Safe by design.** A restore point before every batch, a journal that records the real previous value, and one click revert.
-- **Honest.** No telemetry in the app and no account. The only request Clarion can make is an update check, and that is off unless you ask for it. Weak or unproven tweaks are hidden unless you turn on Expert mode.
+- **Honest.** No telemetry in the app and no account. Clarion's own only request is an update check, and that is off unless you ask for it. The Apps page runs winget, Microsoft's package manager, which talks to Microsoft's package source and the publishers' download sites, and it does so only when you open that page or install an app. Weak or unproven tweaks are hidden unless you turn on Expert mode.
 
 ![Privacy settings with the detail pane](docs/images/privacy.png)
 
@@ -31,7 +31,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 | | |
 |---|---|
-| **Privacy and debloat** | 190 settings across privacy, app removal, tweaks, power, network, Windows features and updates. A Compact switch fits about three times as many on screen, and topic pills narrow a long list in one click. |
+| **Privacy and debloat** | 191 settings across privacy, app removal, tweaks, power, network, Windows features and updates. A Compact switch fits about three times as many on screen, and topic pills narrow a long list in one click. |
 | **Apps** | 135 programs installed with winget, each one an exact package. The review shows the publisher, licence, installer host and checksum, and nothing installs until you accept the licence terms. Revert uninstalls. |
 | **Clean up** | Shader caches, launcher caches, browser and Windows leftovers. Scans first, shows exact folders and sizes, skips files in use and queues locked files for the next restart. |
 | **Repair** | System file check, component repair, network and update resets. Output streams live and any job can be stopped. |

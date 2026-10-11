@@ -16,6 +16,7 @@ Fixed
 
 Safer
 - Web links, such as the winget, licence and GitHub links, now open in your browser with your normal rights. Clarion runs as administrator, and a browser started from it could run as administrator too, with its protections weakened, just to show a page. Clarion now starts it with the token of your desktop. If your desktop itself runs as administrator, which some setups do, the browser does as well.
+- Clarion no longer runs winget when it starts. Which apps are installed is read the first time you open the Apps page, or when you load a setup that lists apps. Winget may contact Microsoft's package source, and a person who never uses apps should not have that started for them every time, nor pay for it in start-up work. The readme, contributing page and Settings page say what the Apps page does on the network.
 
 ## 0.1.0-beta.13
 

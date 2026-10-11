@@ -264,7 +264,10 @@ public sealed partial class AppServices : UiObservableObject
         try
         {
             var fast = Items.Where(i => i.IsSupported && i.ReadsQuickly).ToList();
-            var slow = Items.Where(i => i.IsSupported && !i.ReadsQuickly).ToList();
+            // Apps are read when the Apps page is first opened, not at start-up. The read runs winget, which may contact Microsoft's package
+            // source, and Clarion should not start that for someone who never uses apps. Without winget there is nothing to run, so they read now.
+            var readApps = _appsWanted || !Runtime.Winget.IsAvailable;
+            var slow = Items.Where(i => i.IsSupported && !i.ReadsQuickly && (readApps || !i.InstallsApps)).ToList();
             foreach (var item in Items.Where(i => !i.IsSupported)) item.SyncToState(TweakState.Unavailable);
             foreach (var item in slow) item.MarkChecking();
 
@@ -291,7 +294,7 @@ public sealed partial class AppServices : UiObservableObject
             waitingOnFeatures = !_featureRead.IsCompleted;
             Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings{(waitingOnFeatures ? ", slower settings still reading" : "")}");
             Status = !IsElevated ? "Not running as administrator. Machine wide changes are locked."
-                : waitingOnFeatures ? "Ready. Windows features and apps are still being read." : "Ready";
+                : waitingOnFeatures ? (_appsWanted ? "Ready. Windows features and apps are still being read." : "Ready. Windows features are still being read.") : "Ready";
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {
@@ -307,6 +310,38 @@ public sealed partial class AppServices : UiObservableObject
     }
 
     private Task _featureRead = Task.CompletedTask;
+    private Task _appsRead = Task.CompletedTask;
+    private bool _appsWanted;
+
+    /// <summary>
+    /// Reads which apps are installed, the first time it is asked for. The Apps page asks when it opens, and so does loading a setup that
+    /// lists apps. Until then the apps show as being checked. It runs winget, which may contact Microsoft's package source.
+    /// </summary>
+    public Task EnsureAppsReadAsync()
+    {
+        if (_appsWanted) return _appsRead;
+        _appsWanted = true;
+        var apps = Items.Where(i => i.IsSupported && i.InstallsApps).ToList();
+        if (apps.Count == 0) return _appsRead;
+        foreach (var app in apps) app.MarkChecking();
+        _appsRead = ReadAppsAsync(apps);
+        _featureRead = Task.WhenAll(_featureRead, _appsRead);
+        return _appsRead;
+    }
+
+    private async Task ReadAppsThenAsync(Action then)
+    {
+        await EnsureAppsReadAsync();
+        then();
+    }
+
+    private async Task ReadAppsAsync(List<TweakItem> apps)
+    {
+        try { await ReadGroupAsync(apps); }
+        catch (Exception ex) when (ex is not OutOfMemoryException) { Log.Write($"Apps could not be read: {ex.Message}"); }
+        RefreshPending();
+        StatesRefreshed?.Invoke(this, EventArgs.Empty);
+    }
 
     /// <summary>When the slow features read ends, brings the counts and the status up to date.</summary>
     private async Task FinishFeaturesAsync(Task read)
@@ -444,6 +479,12 @@ public sealed partial class AppServices : UiObservableObject
     public void QueueFix(IEnumerable<string> ids)
     {
         var wanted = ids.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        // An app cannot be queued until the apps have been read, so that is done first and the queueing follows.
+        if (!_appsWanted && Items.Any(i => i.InstallsApps && wanted.Contains(i.Id)))
+        {
+            _ = ReadAppsThenAsync(() => QueueFix(wanted));
+            return;
+        }
         foreach (var item in Items.Where(i => wanted.Contains(i.Id) && i.CanToggle && !i.IsApplied)) item.IsOn = true;
         if (PendingCount > 0) ReviewRequested?.Invoke(this, EventArgs.Empty);
     }
@@ -452,6 +493,11 @@ public sealed partial class AppServices : UiObservableObject
     public void QueueRevert(string id)
     {
         var item = Items.FirstOrDefault(i => i.Id == id);
+        if (item is { InstallsApps: true } && !_appsWanted)
+        {
+            _ = ReadAppsThenAsync(() => QueueRevert(id));
+            return;
+        }
         if (item is not { CanToggle: true, IsApplied: true }) return;
         item.IsOn = false;
         ReviewRequested?.Invoke(this, EventArgs.Empty);
@@ -548,6 +594,14 @@ public sealed partial class AppServices : UiObservableObject
         }
         var unknown = wanted.Where(id => Items.All(i => !i.Id.Equals(id, StringComparison.OrdinalIgnoreCase))).Order().ToList();
         return (queued, unknown, notAvailable);
+    }
+
+    /// <summary>Like <see cref="QueueIds"/>, but first reads which apps are installed when the list has any, since that is not known until then.</summary>
+    public async Task<(int Queued, IReadOnlyList<string> Unknown, int NotAvailable)> QueueIdsAsync(IEnumerable<string> ids)
+    {
+        var list = ids.ToList();
+        if (Items.Any(i => i.InstallsApps && list.Contains(i.Id, StringComparer.OrdinalIgnoreCase))) await EnsureAppsReadAsync();
+        return QueueIds(list);
     }
 
     public IReadOnlyList<string> AppliedIds() => Items.Where(i => i.IsApplied && i.IsSupported).Select(i => i.Id).ToList();

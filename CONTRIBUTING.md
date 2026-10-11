@@ -8,7 +8,7 @@ Clarion is all rights reserved with public source (see [LICENSE](LICENSE)). Plea
 
 - Every setting is explained, can be reverted, and has a source. A setting without all three does not go in.
 - Clarion never turns off Defender, SmartScreen, security updates or exploit protection.
-- Clarion sends nothing anywhere. The only network request it can make is the update check, which is off until you turn it on.
+- Clarion itself sends nothing anywhere. Its only network request is the update check, which is off until you turn it on. The Apps page runs winget, which makes its own requests to Microsoft's package source and the publishers' download sites, so nothing may start winget until that page is opened or an install is asked for.
 - A change is recorded before it is made, and the value it replaced is kept, so Revert puts back what was really there.
 
 The voice is in [docs/BRAND.md](docs/BRAND.md): plain, short, honest. No hype, no scare words.
