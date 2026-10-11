@@ -100,6 +100,7 @@ public sealed partial class VerifyPage : Page
         var detail = item.IsReturnedApp || item.Changed.Any(c => c.Contains("installed", StringComparison.OrdinalIgnoreCase)) ? steps
             : AppServices.Instance.ExpertMode ? "No longer in effect. Windows or another program put it back.\n" + steps
             : "No longer in effect. Windows or another program put it back.";
+        if (report.AdviceFor(item.Tweak.Id) is { } advice) detail += "\n" + advice;
         var when = item.AppliedAt == DateTimeOffset.MinValue ? "" : $"Applied {item.AppliedAt.LocalDateTime:g}";
         // One time is news. A setting Windows keeps undoing is worth knowing about, and fixing it again may not last.
         if (report.TimesChangedBack.TryGetValue(item.Tweak.Id, out var times) && times >= 2)

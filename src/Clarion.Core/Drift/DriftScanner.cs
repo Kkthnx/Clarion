@@ -56,7 +56,13 @@ public sealed class DriftScanner(TweakEngine engine, ChangeJournal journal, Drif
         var now = _clock.GetUtcNow();
         state?.Save(profile.Build, now);
         history?.Record(now, profile.Build, items.Select(i => i.Tweak.Id));
-        return new DriftReport(now, profile.Build, previous, read, items, unreadable) { Holding = holding, TimesChangedBack = history?.TimesChangedBack() ?? new Dictionary<string, int>() };
+        var builds = history?.BuildsWhenChangedBack() ?? new Dictionary<string, IReadOnlyList<int>>();
+        return new DriftReport(now, profile.Build, previous, read, items, unreadable)
+        {
+            Holding = holding,
+            TimesChangedBack = builds.ToDictionary(p => p.Key, p => p.Value.Count, StringComparer.OrdinalIgnoreCase),
+            BuildsWhenChangedBack = builds,
+        };
     }
 
     // Picking another choice in an exclusive group (a power plan, a DNS provider) inside Clarion replaces this one on

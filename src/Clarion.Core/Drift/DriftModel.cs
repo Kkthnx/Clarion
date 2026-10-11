@@ -34,6 +34,13 @@ public sealed record DriftReport(
     /// <summary>How many separate times each setting has been found changed back, from this PC's own scan history. See <see cref="DriftHistory"/>.</summary>
     public IReadOnlyDictionary<string, int> TimesChangedBack { get; init; } = new Dictionary<string, int>();
 
+    /// <summary>The Windows build at each time a setting was found changed back, oldest first. See <see cref="RepeatAdvice"/>.</summary>
+    public IReadOnlyDictionary<string, IReadOnlyList<int>> BuildsWhenChangedBack { get; init; } = new Dictionary<string, IReadOnlyList<int>>();
+
+    /// <summary>What is worth trying for a setting that keeps being changed back, or null when it has not happened twice.</summary>
+    public string? AdviceFor(string tweakId) =>
+        BuildsWhenChangedBack.TryGetValue(tweakId, out var builds) ? RepeatAdvice.For(builds) : null;
+
     public IReadOnlyList<DriftItem> ReturnedApps => Items.Where(i => i.IsReturnedApp).ToList();
     public IReadOnlyList<DriftItem> ChangedBack => Items.Where(i => !i.IsReturnedApp).ToList();
     public bool HasDrift => Items.Count > 0;

@@ -41,18 +41,28 @@ public sealed class DriftHistory(string path)
     /// How many separate times each setting was found changed back. A setting that stays changed back across many scans counts once,
     /// until a scan finds it holding again and it is undone a second time. Only settings found changed back at least once appear.
     /// </summary>
-    public IReadOnlyDictionary<string, int> TimesChangedBack()
+    public IReadOnlyDictionary<string, int> TimesChangedBack() =>
+        BuildsWhenChangedBack().ToDictionary(p => p.Key, p => p.Value.Count, StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// For each setting, the Windows build at each separate time it was found changed back, oldest first. Comparing them says whether
+    /// a Windows version change came between the times, which is what decides what is worth trying.
+    /// </summary>
+    public IReadOnlyDictionary<string, IReadOnlyList<int>> BuildsWhenChangedBack()
     {
-        var counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var builds = new Dictionary<string, List<int>>(StringComparer.OrdinalIgnoreCase);
         var before = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var scan in ReadScans().OrderBy(s => s.At))
         {
             var now = new HashSet<string>(scan.Ids, StringComparer.OrdinalIgnoreCase);
             foreach (var id in now.Where(id => !before.Contains(id)))
-                counts[id] = counts.GetValueOrDefault(id) + 1;
+            {
+                if (!builds.TryGetValue(id, out var list)) builds[id] = list = [];
+                list.Add(scan.Build);
+            }
             before = now;
         }
-        return counts;
+        return builds.ToDictionary(p => p.Key, p => (IReadOnlyList<int>)p.Value, StringComparer.OrdinalIgnoreCase);
     }
 
     private List<Scan> ReadScans()
