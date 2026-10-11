@@ -12,6 +12,7 @@ public interface IDetailSource
     ChipKind RecommendationKind { get; }
     bool ShowRecommendation { get; }
     bool IsApp { get; }
+    string? InstalledIconPath { get; }
     Clarion.Core.Apps.AppIcon? Icon { get; }
     string RiskText { get; }
     ChipKind RiskKind { get; }

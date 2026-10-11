@@ -26,6 +26,15 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
 
     public bool IsApp => InstallsApps;
 
+    private string? _installedIconPath;
+
+    /// <summary>The icon file of the installed app, or null when it is not installed or Windows lists no icon for it.</summary>
+    public string? InstalledIconPath
+    {
+        get => _installedIconPath;
+        private set => SetProperty(ref _installedIconPath, value);
+    }
+
     /// <summary>The logo for an app, or null for an app without one and for every other kind of setting.</summary>
     public Clarion.Core.Apps.AppIcon? Icon => InstallsApps ? Clarion.Core.Apps.AppIcons.Default.For(Id) : null;
 
@@ -104,6 +113,9 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
         set
         {
             if (!SetProperty(ref _state, value)) return;
+            // An installed app shows the icon Windows itself lists for it, found by the code its winget record names.
+            if (InstallsApps)
+                InstalledIconPath = value == TweakState.Applied ? Clarion.Engine.WindowsInstalledIcons.FindIconFile(Clarion.Core.Apps.AppProducts.Default.For(Id)) : null;
             OnPropertyChanged(nameof(CanToggle));
             OnPropertyChanged(nameof(IsPending));
             OnPropertyChanged(nameof(StateText));

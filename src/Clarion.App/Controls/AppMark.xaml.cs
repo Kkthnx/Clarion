@@ -1,8 +1,12 @@
+using System.Runtime.InteropServices;
 using Clarion.Core.Apps;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Storage;
+using Windows.Storage.FileProperties;
 
 namespace Clarion.App.Controls;
 
@@ -18,7 +22,13 @@ public sealed partial class AppMark : UserControl
     public static readonly DependencyProperty IsWatermarkProperty =
         DependencyProperty.Register(nameof(IsWatermark), typeof(bool), typeof(AppMark), new PropertyMetadata(false, (d, _) => ((AppMark)d).Refresh()));
 
+    public static readonly DependencyProperty ImagePathProperty =
+        DependencyProperty.Register(nameof(ImagePath), typeof(string), typeof(AppMark), new PropertyMetadata(null, (d, _) => ((AppMark)d).OnImagePathChanged()));
+    // Icons already read, so a row that scrolls out and back does not read its file again. Used on the UI thread only.
+    private static readonly Dictionary<string, BitmapImage> Photos = new(StringComparer.OrdinalIgnoreCase);
+
     private string? _shownPath;
+    private int _photoRequest;
 
     public AppMark()
     {
@@ -36,6 +46,8 @@ public sealed partial class AppMark : UserControl
     /// <summary>A faded mark behind other content. With no logo nothing is drawn, since a lone letter would only be noise.</summary>
     public bool IsWatermark { get => (bool)GetValue(IsWatermarkProperty); set => SetValue(IsWatermarkProperty, value); }
 
+    /// <summary>The icon file of the installed app. It stands in for the letter tile when there is no logo.</summary>
+    public string? ImagePath { get => (string?)GetValue(ImagePathProperty); set => SetValue(ImagePathProperty, value); }
     private void OnThemeChanged(FrameworkElement sender, object args) => Refresh();
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
@@ -49,6 +61,36 @@ public sealed partial class AppMark : UserControl
     private double _padding;
     private bool _tiled;
 
+    private async void OnImagePathChanged()
+    {
+        var path = ImagePath;
+        var request = ++_photoRequest;
+        Photo.Source = null;
+        if (!string.IsNullOrEmpty(path))
+        {
+            if (Photos.TryGetValue(path, out var cached)) Photo.Source = cached;
+            else
+            {
+                try
+                {
+                    var file = await StorageFile.GetFileFromPathAsync(path);
+                    using var thumbnail = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, 64, ThumbnailOptions.UseCurrentScale);
+                    if (thumbnail is { Size: > 0 } && request == _photoRequest)
+                    {
+                        var image = new BitmapImage();
+                        await image.SetSourceAsync(thumbnail);
+                        Photos[path] = image;
+                        if (request == _photoRequest) Photo.Source = image;
+                    }
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or COMException)
+                {
+                    // A file that is gone or cannot be read leaves the letter tile.
+                }
+            }
+        }
+        if (request == _photoRequest) Refresh();
+    }
     private void Refresh()
     {
         // A thin outline is not readable at icon size, so it gives way to the letter tile: a very thin one everywhere, and a wide one
@@ -64,6 +106,7 @@ public sealed partial class AppMark : UserControl
             Letter.Visibility = Visibility.Collapsed;
             Glyph.Margin = _tiled ? new Thickness(_padding) : new Thickness(0);
             Glyph.Visibility = Visibility.Visible;
+            Photo.Visibility = Visibility.Collapsed;
             if (_shownPath != icon.Path)
             {
                 // F1 is the non-zero fill rule, which is what SVG uses and what the outlines were drawn for.
@@ -87,7 +130,10 @@ public sealed partial class AppMark : UserControl
         _tiled = false;
         Glyph.Visibility = Visibility.Collapsed;
         _shownPath = null;
-        Tile.Visibility = IsWatermark ? Visibility.Collapsed : Visibility.Visible;
+        // No logo: the real icon of the installed app if Windows lists one, otherwise the letter tile.
+        var photo = !IsWatermark && Photo.Source is not null;
+        Photo.Visibility = photo ? Visibility.Visible : Visibility.Collapsed;
+        Tile.Visibility = IsWatermark || photo ? Visibility.Collapsed : Visibility.Visible;
         Letter.Visibility = Visibility.Visible;
         Letter.Text = Label.Length > 0 ? char.ToUpperInvariant(Label[0]).ToString() : "";
     }

@@ -37,6 +37,7 @@ public sealed class ActionItem : IDetailSource
     public ChipKind RecommendationKind => DetailHelpers.RecommendationKind(Def.Recommendation);
     public bool ShowRecommendation => true;
     public bool IsApp => false;
+    public string? InstalledIconPath => null;
     public Clarion.Core.Apps.AppIcon? Icon => null;
     public ChipKind RiskKind => DetailHelpers.RiskKind(Def.RiskLevel);
 
