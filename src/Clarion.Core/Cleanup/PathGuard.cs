@@ -17,14 +17,33 @@ public static class PathGuard
         if (Path.GetPathRoot(full)?.TrimEnd('\\', '/').Equals(full, StringComparison.OrdinalIgnoreCase) == true) return false;
 
         if (IsReparsePoint(full)) return false;
-        if (trustedDerived) return true;
+        if (trustedDerived)
+        {
+            // A library folder may legitimately sit behind a link the person made, so only the folder Clarion derived from it
+            // and its parent are checked.
+            var parent = Path.GetDirectoryName(full);
+            return parent is null || !IsReparsePoint(parent);
+        }
 
         if (platform.AllowedExact.Any(e => Normalize(e).Equals(full, StringComparison.OrdinalIgnoreCase))) return true;
         return platform.AllowedBases.Any(b =>
         {
             var baseFull = Normalize(b);
-            return baseFull.Length > 3 && full.StartsWith(baseFull + "\\", StringComparison.OrdinalIgnoreCase);
+            return baseFull.Length > 3 && full.StartsWith(baseFull + "\\", StringComparison.OrdinalIgnoreCase) && NoLinkBetween(baseFull, full);
         });
+    }
+
+    /// <summary>
+    /// True when no folder below the base on the way to the path is a link. A link in the middle would send the clean to a folder
+    /// that is not on the allow list, even though the last folder of the path is an ordinary one.
+    /// </summary>
+    private static bool NoLinkBetween(string baseFull, string full)
+    {
+        for (var dir = Path.GetDirectoryName(full); dir is not null && dir.Length > baseFull.Length; dir = Path.GetDirectoryName(dir))
+        {
+            if (IsReparsePoint(dir)) return false;
+        }
+        return true;
     }
 
     public static bool IsReparsePoint(string path)

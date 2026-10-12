@@ -295,6 +295,62 @@ public sealed class CleanupTests : IDisposable
         Assert.False(Directory.Exists(link));
     }
 
+    private static bool Junction(string link, string target)
+    {
+        var psi = new ProcessStartInfo("cmd.exe", $"/c mklink /J \"{link}\" \"{target}\"") { CreateNoWindow = true, UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
+        using var proc = Process.Start(psi)!;
+        proc.WaitForExit();
+        return proc.ExitCode == 0;
+    }
+
+    [Fact]
+    public void Empty_folders_behind_a_link_inside_a_cache_are_not_removed()
+    {
+        var outside = Path.Combine(_root, "outside3");
+        var emptyBehind = Path.Combine(outside, "empty");
+        Directory.CreateDirectory(emptyBehind);
+        Make("Cache\\a.bin", 100);
+        if (!Junction(Path.Combine(_p.Local, "Cache", "linked"), outside)) return;
+
+        _engine.Clean(Target("c", rules: [new FolderRule("%LOCALAPPDATA%\\Cache")]), false, false, null, default);
+
+        Assert.True(Directory.Exists(emptyBehind));
+        Assert.False(Directory.Exists(Path.Combine(_p.Local, "Cache", "linked")));
+    }
+
+    [Fact]
+    public void A_link_in_the_middle_of_a_path_is_refused_even_when_the_last_folder_is_ordinary()
+    {
+        var outside = Path.Combine(_root, "outside4");
+        Directory.CreateDirectory(Path.Combine(outside, "Cache"));
+        File.WriteAllText(Path.Combine(outside, "Cache", "precious.txt"), "keep me");
+        if (!Junction(Path.Combine(_p.Local, "Middle"), outside)) return;
+
+        var path = Path.Combine(_p.Local, "Middle", "Cache");
+        Assert.False(PathGuard.IsSafe(path, _p));
+        var result = _engine.Clean(Target("c", rules: [new FolderRule("%LOCALAPPDATA%\\Middle\\Cache")]), false, false, null, default);
+
+        Assert.Equal(0, result.FilesDeleted);
+        Assert.True(File.Exists(Path.Combine(outside, "Cache", "precious.txt")));
+    }
+
+    [Fact]
+    public void Deleting_a_tree_counts_only_what_is_inside_it()
+    {
+        var outside = Path.Combine(_root, "outside5");
+        Directory.CreateDirectory(outside);
+        File.WriteAllBytes(Path.Combine(outside, "big.bin"), new byte[5000]);
+        var tree = Path.Combine(_root, "tree");
+        Directory.CreateDirectory(tree);
+        File.WriteAllBytes(Path.Combine(tree, "a.bin"), new byte[100]);
+        if (!Junction(Path.Combine(tree, "linked"), outside)) return;
+
+        var freed = Clarion.Core.Actions.FolderCleaner.DeleteTree(tree, _ => { });
+
+        Assert.Equal(100, freed);
+        Assert.True(File.Exists(Path.Combine(outside, "big.bin")));
+    }
+
     [Fact]
     public void A_cache_folder_that_is_itself_a_link_is_refused()
     {

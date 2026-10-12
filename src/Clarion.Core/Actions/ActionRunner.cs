@@ -134,11 +134,30 @@ public static class FolderCleaner
         log($"Renamed to {target}");
     }
 
+    private static void RemoveLinks(string dir)
+    {
+        foreach (var sub in Directory.EnumerateDirectories(dir).ToList())
+        {
+            if ((File.GetAttributes(sub) & FileAttributes.ReparsePoint) != 0) Directory.Delete(sub, recursive: false);
+            else RemoveLinks(sub);
+        }
+    }
+
     public static long DeleteTree(string folder, Action<string> log)
     {
         if (!Directory.Exists(folder)) { log($"{folder} does not exist, nothing to do."); return 0; }
-        var size = Directory.EnumerateFiles(folder, "*", new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true })
+        if (Cleanup.PathGuard.IsReparsePoint(folder))
+        {
+            Directory.Delete(folder, recursive: false);
+            log($"Removed the link {folder} without opening it");
+            return 0;
+        }
+        // Links are not followed: the delete removes a link without opening it, so what is behind it is not freed.
+        var size = Directory.EnumerateFiles(folder, "*", new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true, AttributesToSkip = FileAttributes.ReparsePoint })
             .Sum(f => { try { return new FileInfo(f).Length; } catch (IOException) { return 0L; } });
+        // A recursive delete fails with "The parameter is incorrect" on a junction inside the tree (seen on Windows 11 build 26200),
+        // so links are taken out first. Each one is removed without opening it.
+        RemoveLinks(folder);
         Directory.Delete(folder, recursive: true);
         log($"Deleted {folder} and freed {ByteSize.Format(size)}");
         return size;

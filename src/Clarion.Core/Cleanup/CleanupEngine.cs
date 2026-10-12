@@ -15,8 +15,9 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
             switch (rule)
             {
                 case RecycleBinRule:
-                    bytes += platform.RecycleBinBytes();
-                    folders.Add(new RuleScan("Recycle Bin", platform.RecycleBinBytes(), 0, true));
+                    var binBytes = platform.RecycleBinBytes();
+                    bytes += binBytes;
+                    folders.Add(new RuleScan("Recycle Bin", binBytes, 0, true));
                     break;
                 case EventLogsRule:
                     var count = platform.EventLogNames().Count(n => !IsSecurityLog(n));
@@ -229,23 +230,28 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
     }
 
     /// <summary>Links inside a cache are removed without opening them. Empty folders go, the root stays.</summary>
-    private static void RemoveLinksAndEmptyFolders(string root)
+    private static void RemoveLinksAndEmptyFolders(string root) => Sweep(root, isRoot: true);
+
+    // Walks by hand because a recursive listing goes into a junction and would list, and then remove, empty folders in its target.
+    private static bool Sweep(string dir, bool isRoot)
     {
-        foreach (var dir in Directory.EnumerateDirectories(root, "*", new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true, ReturnSpecialDirectories = false })
-                     .OrderByDescending(d => d.Length).ToList())
+        try
         {
-            try
+            foreach (var sub in Directory.EnumerateDirectories(dir).ToList())
             {
-                var attrs = File.GetAttributes(dir);
-                if ((attrs & FileAttributes.ReparsePoint) != 0)
+                try
                 {
-                    Directory.Delete(dir, recursive: false);
-                    continue;
+                    if ((File.GetAttributes(sub) & FileAttributes.ReparsePoint) != 0) Directory.Delete(sub, recursive: false);
+                    else Sweep(sub, isRoot: false);
                 }
-                if (!Directory.EnumerateFileSystemEntries(dir).Any()) Directory.Delete(dir);
+                catch (IOException) { }
+                catch (UnauthorizedAccessException) { }
             }
-            catch (IOException) { }
-            catch (UnauthorizedAccessException) { }
+            if (isRoot || Directory.EnumerateFileSystemEntries(dir).Any()) return false;
+            Directory.Delete(dir);
+            return true;
         }
+        catch (IOException) { return false; }
+        catch (UnauthorizedAccessException) { return false; }
     }
 }
