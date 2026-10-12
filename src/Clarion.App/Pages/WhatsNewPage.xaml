@@ -19,7 +19,7 @@
                 <StackPanel>
                     <Border Background="{ThemeResource ClAccentTintBrush}" CornerRadius="10,10,0,0" Padding="20,16,20,16">
                         <StackPanel Orientation="Horizontal" Spacing="16">
-                            <Image Source="ms-appx:///Assets/Clarion.png" Width="48" Height="48" VerticalAlignment="Center" />
+                            <Image Source="ms-appx:///Assets/Clarion.png" AutomationProperties.AccessibilityView="Raw" Width="48" Height="48" VerticalAlignment="Center" />
                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                 <TextBlock Text="An update is available" FontSize="22" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                                 <TextBlock x:Name="UpdateSubtitle" Foreground="{ThemeResource ClTextSecondaryBrush}" />

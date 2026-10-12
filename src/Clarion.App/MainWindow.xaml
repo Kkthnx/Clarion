@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Spacing="10" Padding="16,0,0,0" VerticalAlignment="Center">
-                <Image Source="ms-appx:///Assets/Clarion.png" Width="22" Height="22" VerticalAlignment="Center" />
+                <Image Source="ms-appx:///Assets/Clarion.png" AutomationProperties.AccessibilityView="Raw" Width="22" Height="22" VerticalAlignment="Center" />
                 <TextBlock Text=".Clarion" FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" VerticalAlignment="Center" />
                 <TextBlock Text="{x:Bind svc:AppServices.Version}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" VerticalAlignment="Center" />
             </StackPanel>

@@ -45,6 +45,25 @@ public sealed class XamlAccessibilityTests
     }
 
     [Fact]
+    public void Every_picture_is_either_named_or_hidden_from_a_screen_reader()
+    {
+        var bare = new List<string>();
+        // AppMark hides itself as a whole in its constructor, so the picture inside it needs nothing of its own.
+        foreach (var file in PageFiles().Where(f => !f.EndsWith("AppMark.xaml", StringComparison.Ordinal)))
+        {
+            var doc = XDocument.Load(file, LoadOptions.SetLineInfo);
+            foreach (var e in doc.Descendants().Where(e => e.Name.LocalName == "Image"))
+            {
+                bool Has(string attribute, string? value = null) =>
+                    e.Attributes().Any(a => a.Name.LocalName == attribute && (value is null ? a.Value.Trim().Length > 0 : a.Value == value));
+                if (Has("AutomationProperties.Name") || Has("AutomationProperties.AccessibilityView", "Raw")) continue;
+                bare.Add($"{Path.GetRelativePath(AppFolder(), file)}:{((System.Xml.IXmlLineInfo)e).LineNumber}");
+            }
+        }
+        Assert.True(bare.Count == 0, "Pictures a screen reader would announce as just \"image\" (add a name, or AccessibilityView=\"Raw\" if decorative):\n" + string.Join("\n", bare));
+    }
+
+    [Fact]
     public void Every_input_control_has_a_name_a_screen_reader_can_read()
     {
         var unnamed = new List<string>();

@@ -8,7 +8,7 @@
         <StackPanel Padding="32,24,32,24" Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
 
             <StackPanel Orientation="Horizontal" Spacing="18">
-                <Image Source="ms-appx:///Assets/Clarion.png" Width="72" Height="72" VerticalAlignment="Center" />
+                <Image Source="ms-appx:///Assets/Clarion.png" AutomationProperties.AccessibilityView="Raw" Width="72" Height="72" VerticalAlignment="Center" />
                 <StackPanel Spacing="4" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text=".Clarion" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
