@@ -234,7 +234,7 @@ public sealed partial class HomePage : Page
 
     private void BuildPresets()
     {
-        foreach (var (key, title, text) in Services.PresetInfo.All)
+        foreach (var (key, title, text) in Clarion.Core.Catalog.PresetInfo.All)
         {
             var queue = new Button { Content = "Queue this preset" };
             // One filled button, on the preset most people want. Five equally loud buttons made the choice harder, not easier.

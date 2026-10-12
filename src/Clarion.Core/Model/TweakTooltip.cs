@@ -63,6 +63,26 @@ public static class TweakTooltip
         _ => "",
     };
 
+    public static string RiskText(RiskLevel r) => r == RiskLevel.Safe ? "Safe" : $"{Label(r)} risk";
+
+    /// <summary>What a recommendation label means. The window shows it as a tooltip and the documentation site prints it, so both say the same.</summary>
+    public static string RecommendationHint(Recommendation r) => r switch
+    {
+        Recommendation.Recommended => "Suggested for most people. The details say who it is for.",
+        Recommendation.OnlyIf => "Helps in some situations and not in others. Read the details before you turn it on.",
+        Recommendation.Avoid => "Not suggested for most people. Leave it alone unless you know you need it.",
+        _ => "Your choice. It is safe either way, so turn it on only if you want the effect.",
+    };
+
+    /// <summary>What a risk label means.</summary>
+    public static string RiskHint(RiskLevel r) => r switch
+    {
+        RiskLevel.Safe => "Nothing is known to go wrong, and Revert puts it back.",
+        RiskLevel.Low => "A small chance of a side effect, described in the details. Revert puts it back.",
+        RiskLevel.Medium => "Can change how Windows or your programs behave. Read what could go wrong first.",
+        _ => "Can break things that are hard to notice. Read what could go wrong, and make a restore point first.",
+    };
+
     public static TooltipContent Build(Tweak t)
     {
         var notes = new List<string>();

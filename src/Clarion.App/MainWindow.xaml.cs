@@ -254,7 +254,7 @@ public sealed partial class MainWindow : Window
         }
 
         var choices = new RadioButtons { SelectedIndex = 1 };
-        foreach (var (_, title, text) in PresetInfo.All)
+        foreach (var (_, title, text) in Clarion.Core.Catalog.PresetInfo.All)
         {
             var row = new StackPanel { Spacing = 2, Margin = new Thickness(0, 2, 0, 6) };
             row.Children.Add(new TextBlock { Text = title + (title == "Standard" ? "  (suggested)" : ""), FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
@@ -284,7 +284,7 @@ public sealed partial class MainWindow : Window
         _app.UpdateSettings(s => s with { FirstRunDone = true });
 
         if (result != ContentDialogResult.Primary) return;
-        var key = PresetInfo.All[Math.Max(0, choices.SelectedIndex)].Key;
+        var key = Clarion.Core.Catalog.PresetInfo.All[Math.Max(0, choices.SelectedIndex)].Key;
         if (_app.QueuePreset(key) > 0) _app.RequestReview();
     }
 

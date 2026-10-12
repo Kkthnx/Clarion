@@ -1,6 +1,6 @@
-namespace Clarion.App.Services;
+namespace Clarion.Core.Catalog;
 
-/// <summary>The names and plain descriptions of the presets, used on Home and in the first run welcome.</summary>
+/// <summary>The names and plain descriptions of the presets, used on Home, in the first run welcome and on the documentation site.</summary>
 public static class PresetInfo
 {
     public static readonly (string Key, string Title, string Text)[] All =
