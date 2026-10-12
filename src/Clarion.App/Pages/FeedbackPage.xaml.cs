@@ -17,6 +17,10 @@ public sealed partial class FeedbackPage : Page
     private string _title = "";
     private bool _ready;
 
+    // The preview is rebuilt on every keystroke, and neither of these changes while the person types, so they are read once per visit.
+    private IReadOnlyList<string>? _logTail;
+    private List<string>? _outstanding;
+
     public FeedbackPage()
     {
         InitializeComponent();
@@ -25,6 +29,8 @@ public sealed partial class FeedbackPage : Page
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
+        _logTail = null;
+        _outstanding = null;
         Rebuild();
         if (_app.CachedSystemReport is not null) return;
         try
@@ -51,8 +57,8 @@ public sealed partial class FeedbackPage : Page
         var input = new FeedbackInput(
             Kind, TitleBox.Text, DescriptionBox.Text, AppServices.Version,
             includeSystem, LogBox.IsChecked == true, _app.CachedSystemReport,
-            _app.Runtime.Journal.TweakIdsWithOutstanding().ToList(),
-            LogBox.IsChecked == true ? Log.Tail(LogLines) : [],
+            _outstanding ??= _app.Runtime.Journal.TweakIdsWithOutstanding().ToList(),
+            LogBox.IsChecked == true ? _logTail ??= Log.Tail(LogLines) : [],
             OutcomeBox.IsChecked == true && _app.Drift is { } drift ? Clarion.Core.Drift.OutcomeReport.Lines(drift) : null);
 
         var user = Environment.UserName;

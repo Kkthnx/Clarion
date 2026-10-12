@@ -16,7 +16,6 @@ public sealed record CleanupGroup(string Name, IReadOnlyList<CleanupItem> Items)
 public sealed partial class CleanupPage : Page
 {
     private readonly CleanupService _svc = CleanupService.Instance;
-    private bool _timerRunning;
 
     public CleanupPage()
     {
@@ -195,24 +194,9 @@ public sealed partial class CleanupPage : Page
         }
 
         ResultBar.IsOpen = false;
-        _ = PumpAsync();
         var summary = await _svc.CleanAsync(preview, queueDriverFiles: true);
         ShowSummary(summary, chosen);
         ShowQueue();
-    }
-
-    /// <summary>Keeps the live counters moving while a clean runs.</summary>
-    private async Task PumpAsync()
-    {
-        if (_timerRunning) return;
-        _timerRunning = true;
-        while (_svc.IsBusy)
-        {
-            Refresh();
-            await Task.Delay(150);
-        }
-        _timerRunning = false;
-        Refresh();
     }
 
     private void ShowSummary(CleanupSummary s, List<CleanupItem> rows)
