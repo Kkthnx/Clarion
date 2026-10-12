@@ -16,14 +16,14 @@ The two tools are winutil (github.com/ChrisTitusTech/winutil) and Sparkle (githu
 | Tweaks | 67 entries in `config/tweaks.json`, 50 of them change the registry (122 values) | 43 folders under `tweaks/` |
 | Undo | 58 of 67 have an undo script or recorded original values, but the original values are fixed text such as `<RemoveEntry>`, not what was on the PC | 39 of 43 have an `unapply.ps1` |
 | How a tweak is defined | Registry rows, service rows, or a PowerShell script (26 entries have one) | A PowerShell script per tweak, plus `meta.json` |
-| Beyond tweaks | Install apps (236 entries, winget or Chocolatey), Windows features (33), app removal (34), update modes, repair fixes, presets (Minimal 4, Standard 12, Advanced 17), configuration import and export, a command line run mode, a Windows image builder | Install apps (162 entries, winget or Chocolatey), Debloat that lists every installed program and uninstalls the ones picked, Utilities (15 quick fixes), Backup (create and delete restore points), DNS, Clean, a self-updater, per tweak documentation pages, a recommended mark and a risk level per tweak, an NVIDIA profile import |
+| Beyond tweaks | Install apps (236 entries, winget or Chocolatey), Windows features (7, and .Clarion has all seven; the other entries in `config/feature.json` are fixes and shortcut buttons), app removal (34), update modes, repair fixes, presets (Minimal 4, Standard 12, Advanced 17), configuration import and export, a command line run mode, a Windows image builder | Install apps (162 entries, winget or Chocolatey), Debloat that lists every installed program and uninstalls the ones picked, Utilities (15 quick fixes), Backup (create and delete restore points), DNS, Clean, a self-updater, per tweak documentation pages, a recommended mark and a risk level per tweak, an NVIDIA profile import |
 | How it is run | `irm https://christitus.com/win \| iex`, a remote script fetched and run each time, from its own README | An installed Electron app |
 
 The Sparkle numbers come from the `v2` branch. Its loader (`src/main/tweakHandler.ts`) reads tweaks only from the folder bundled inside the app. No loader for tweaks a user adds on their own PC was found in `src/` or `tweaks/`, so its "create your own tweaks" page is a guide for contributing a tweak to the project, with a tweak request issue template, not a feature for end users. That is read from file names and the loader, not from running it.
 
 ## How much of winutil .Clarion already covers
 
-By registry value (path and name), .Clarion sets 55 of the 122 values winutil sets, 45 percent. Before the browser settings added with this document it was 40 of 122, 33 percent. Fifteen winutil tweaks are covered completely.
+By registry value (path and name), .Clarion sets 62 of the 122 values winutil sets in its 50 registry tweaks, 51 percent, and 21 of those tweaks are covered completely. The count was 40 (33 percent) before the browser settings and 56 (46 percent) before the settings of 2026-10-11 listed below. winutil's current file has only 5 service entries, so the older figure of a long service list no longer applies to it.
 
 .Clarion is broader in other places: 41 app permission settings, 25 app removals, 10 DNS entries, power plans, and Verify, History and What broke, which neither tool has.
 
@@ -38,9 +38,15 @@ Sorted by what the evidence allows.
 - **Edge.** winutil sets 17 Edge values. .Clarion had 5 Edge settings and now has 12. Each new one is checked against Microsoft's policy page: feature tips (`ShowRecommendationsEnabled`), Rewards (`ShowMicrosoftRewards`), welcome screens (`HideFirstRunExperience`), feedback (`UserFeedbackAllowed`), the Insider promotion (`MicrosoftEdgeInsiderPromotionEnabled`), the default browser prompt (`DefaultBrowserSettingsCampaignEnabled`) and diagnostic data (`DiagnosticData`). For diagnostic data winutil sets 0, which Microsoft calls "Off (Not recommended)", so .Clarion sets 1, required data only.
 - **winutil sets policies Microsoft marks dead.** Microsoft's Edge policy list marks `EdgeCollectionsEnabled` as obsolete, and `WebWidgetAllowed` and `WalletDonationEnabled` as deprecated. winutil still sets all three. Setting them does nothing.
 
+### Added on 2026-10-11, each applied and reverted on a real PC (Windows 11 Professional, build 26200)
+
+- **Prefer IPv4 over IPv6.** Microsoft's "Configure IPv6 for advanced users" does not recommend disabling IPv6 or unbinding it, and gives `DisabledComponents` = 32 (0x20) as the supported way to prefer IPv4. winutil offers both a disable and a prefer IPv4 tweak. Only the second matches Microsoft's guidance, and only that one is built.
+- **Stop other computers printing through this PC.** Microsoft's advisory for CVE-2021-34527 (PrintNightmare) gives two workarounds: disable the Print Spooler service, which stops all printing, or disable the policy Allow Print Spooler to accept client connections, which keeps local printing. The policy is documented in the ADMX_Printing2 policy reference (Pro, Enterprise and Education), and its disabled value of 2 is in `Printing2.admx` on the test PC. Both are built: the policy as a Low risk setting, the service as a Medium risk one for people who never print.
+- **Skip the lock screen** (policy Do not display the lock screen), **show a clear sign-in background** (Show clear logon background), **turn off the Program Compatibility Assistant** (policy `DisablePCA`) and **stop Edge suggesting pages for failed addresses** (Edge policy `AlternateErrorPagesEnabled`). Each is on a Microsoft policy reference page, and the first three are checked against the ADMX files on the test PC by the policy check in the tests.
+- **Seven service settings**, from Microsoft's own table of default start types and recommendations for Windows IoT Enterprise (see "Services" below).
+
 ### Worth doing, documented by Microsoft, not built yet
 
-- **Prefer IPv4 over IPv6.** Microsoft's "Configure IPv6 for advanced users" says it does not recommend disabling IPv6 or unbinding it, and gives `DisabledComponents` = 32 (0x20) as the supported way to prefer IPv4. winutil offers both a disable and a prefer IPv4 tweak. Only the second matches Microsoft's guidance. Small value, low risk.
 - **Reserved storage off.** Microsoft documents `DISM /Online /Set-ReservedStorageState /State:Disabled` and warns it is refused while reserved storage is in use. winutil has it. It needs a typed operation in the engine, and a read of the current state.
 
 ### Not confirmed, so not added
@@ -56,10 +62,42 @@ Sorted by what the evidence allows.
 - **Defender real-time protection off, BitLocker off, core isolation off** (Sparkle and winutil). They weaken security.
 - **Disable IPv6.** Microsoft advises against it, as above.
 - **Remove Edge, remove OneDrive, remove Widgets** by script. Scripted removals with no put-back. .Clarion has a Widgets policy and OneDrive sync policy, both reversible.
-- **Set most services to manual.** .Clarion changes two services. No Microsoft source says the long lists help.
+- **Set most services to manual, as one tweak.** The measurements and Microsoft's own table below show it would mostly change nothing, so each service is offered on its own, with what stops working. See "Services".
+- **Hardware clock as UTC** (`RealTimeIsUniversal`, for dual boot with Linux). winutil and Sparkle both set it. Microsoft's own support answers call it an undocumented and unsupported registry key, and a Windows 7 support article describes a hang at the daylight saving changeover with it set. Not built.
 - **Hosts file blocklists from a third party.** winutil's Adobe block downloads a list from another GitHub repository and applies it, which is a runtime download of data .Clarion cannot review.
 - **Wi-Fi Sense** (Sparkle). Microsoft removed the contact sharing part during Windows 10 development. What remains, connecting to open hotspots, has a Group Policy.
 - **Network tuning, `Win32PrioritySeparation`, dynamic tick and the NVIDIA profile.** Performance claims with no Microsoft source or measurement.
+
+## Services
+
+Read and measured on 2026-10-11, because both tools offer to "set services to manual" and .Clarion changed only one service before this.
+
+### What Microsoft says
+
+Microsoft's page "Guidance on configuring system services" for Windows IoT Enterprise (dated 2026-06-24) lists 252 services with their default start type and one of five recommendations. 188 are Manual by default, 57 Automatic and 7 Disabled. 133 are marked OK to disable, 89 Don't disable, 19 No guidance, 7 Already disabled and 4 Should be disabled. The page is written for fixed function devices. It defines OK to disable as useful to some but not all organisations, which can disable it if they do not use it. It does not say that disabling any of them makes a PC faster. Microsoft also says each default was chosen to balance performance, functionality and security for a typical user.
+
+Two things follow from the table. A tweak that sets services to Manual is mostly a no-op, because 188 of 252 already are. Only 20 services are Automatic by default and marked OK to disable: CDPSvc, CDPUserSvc, DiagTrack, iphlpsvc, LanmanServer, MapsBroker, MSDTC, NlaSvc, OneSyncSvc, PcaSvc, RetailDemo, shpamsvc, ShellHWDetection, Spooler, Themes, TrkWks, Wcmsvc, Wcncsvc, wlpasvc and workfolderssvc. Several of those, such as Themes, NlaSvc, ShellHWDetection and LanmanServer, are on .Clarion's protected list on purpose.
+
+### What it costs on a real PC
+
+On the test PC (Windows 11 Professional, build 26200, 15 GB of memory) 99 of 293 services were running, in 67 service host processes. Microsoft's service host page says that with more than 3.5 GB of memory each service runs in its own host process, so the memory of one service can be read directly. Of the 20 services above, the ones that were running used between 1 and 7 MB each: CDPUserSvc 4.2, CDPSvc 3.4, TrkWks 1.0, iphlpsvc 2.7, PcaSvc 7.4, LanmanServer 4.1, ShellHWDetection 1.9, Themes 1.8 and Wcmsvc 3.4 MB. That is about 30 MB in all. The test PC is a trimmed image where several of the others were already disabled, so a stock PC may save somewhat more. The honest benefit of switching a service off is mostly fewer things listening and fewer features that can start, not speed.
+
+### What the two tools do
+
+- **winutil** now has five service entries: CscService, DiagTrack, MapsBroker, StorSvc and SharedAccess, plus a change to `SvcHostSplitThresholdInKB`. Microsoft's service host page names a per service switch (`SvcHostSplitDisable`) but not that threshold, so the threshold is only documented by community posts and is not built here.
+- **Sparkle** has a 292 line script that sets a start type for 282 services (207 Manual, 56 Automatic, 6 Automatic delayed start and 13 Disabled). Compared with Microsoft's table, 7 of the 13 Disabled are already Disabled by default, 3 are marked OK to disable (AJRouter, DiagTrack, shpamsvc), 2 are marked Don't disable (AssignedAccessManagerSvc and RemoteRegistry) and 1 is not in the table. Most of the script restates Windows' own defaults.
+
+### What .Clarion now does
+
+Seven settings, each on its own, each naming what stops working, each with a source and a real revert (the start type that was there is recorded first, including the delayed start flag). Each was applied and reverted on the test PC, and the services that were running were started again afterward:
+
+- **Turn off printing support** (Spooler), Medium risk, for people who never print. The Low risk alternative is the print server policy above.
+- **Downloaded Maps Manager** (MapsBroker), **distributed link tracking** (TrkWks), **Connected Devices Platform** (CDPSvc).
+- **UPnP and SSDP device discovery** (SSDPSRV, upnphost), **Xbox Live services** (XblAuthManager, XblGameSave, XboxNetApiSvc), **smart card services** (SCardSvr, ScDeviceEnum, SCPolicySvc). These start only on demand, so the gain is a smaller attack surface, not memory, and the text says so.
+
+The change is allowed only for the services named in the allowlist test, so adding one is a deliberate step, and the runtime guard still refuses the protected ones.
+
+Left out on purpose: every service Microsoft marks Don't disable (SysMain, DoSvc, DPS, WerSvc, RemoteRegistry and others); the Xbox accessory service (XboxGipSvc), which supports controllers and accessories; Windows Search; and the peer networking group (PNRPsvc, p2psvc, p2pimsvc, PNRPAutoReg). Microsoft's table lists those four, but on build 26200 the service control manager reports them as not installed (error 1060), leaving only registry keys behind, so a setting for them could not be applied or checked.
 
 ## What the tools do that .Clarion does not
 
