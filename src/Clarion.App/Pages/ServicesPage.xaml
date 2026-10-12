@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.ServicesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Clarion.App.Controls"
+    xmlns:pages="using:Clarion.App.Pages">
+    <Page.Resources>
+        <DataTemplate x:Key="ServiceRowTemplate" x:DataType="pages:ServiceRowItem">
+            <Grid Padding="16,12,16,12" ColumnSpacing="16" AutomationProperties.Name="{x:Bind Title}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="{x:Bind Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock Text="{x:Bind Code}" FontFamily="Cascadia Mono" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
+                    <controls:WrapPanel HorizontalSpacing="6" VerticalSpacing="6" Margin="0,8,0,0">
+                        <controls:Chip Text="{x:Bind StartText}" Kind="Neutral" ToolTipService.ToolTip="How Windows starts this service on this PC" />
+                        <controls:Chip Text="{x:Bind RunText}" Kind="{x:Bind RunKind}" ToolTipService.ToolTip="{x:Bind RunTip}" />
+                        <controls:Chip Text="{x:Bind AdviceText}" Kind="{x:Bind AdviceKind}" ToolTipService.ToolTip="{x:Bind AdviceTip}" />
+                        <controls:Chip Text="{x:Bind GuideText}" Kind="Accent" Visibility="{x:Bind GuideVisible}" ToolTipService.ToolTip="{x:Bind GuideTip}" />
+                        <controls:Chip Text="Starts when needed" Kind="Neutral" Visibility="{x:Bind DemandVisible}"
+                                       ToolTipService.ToolTip="Windows has events that can start this service, so Manual does not mean it never runs" />
+                        <controls:Chip Text="Protected by .Clarion" Kind="Accent" Visibility="{x:Bind ProtectedVisible}"
+                                       ToolTipService.ToolTip=".Clarion will never change this service" />
+                    </controls:WrapPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="{x:Bind SettingVisible}" MaxWidth="260">
+                    <TextBlock Text="{x:Bind SettingText}" FontSize="12" TextWrapping="Wrap" TextAlignment="Right" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                    <Button Content="Open the setting" HorizontalAlignment="Right" Click="OnOpenSetting" Tag="{x:Bind SettingName}"
+                            AutomationProperties.Name="{x:Bind SettingButtonName}" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Padding="32,24,32,0" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Services" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+            <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                       Text="Every Windows service on this PC, next to what Microsoft says about it. This page only reads: nothing here changes a service. Where .Clarion has a setting for one, the row says so and takes you to it." />
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBlock x:Name="Summary" FontSize="12" VerticalAlignment="Center" Foreground="{ThemeResource ClTextMutedBrush}" />
+                <HyperlinkButton x:Name="SourceLink" Padding="0" FontSize="12" Click="OnSource" Content="Read Microsoft&apos;s table" />
+            </StackPanel>
+        </StackPanel>
+
+        <Expander Grid.Row="1" Header="How to read this page" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                  AutomationProperties.Name="How to read this page">
+            <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                       Text="Microsoft's table is written for Windows IoT Enterprise. Some defaults there differ from Windows 11 Home and Pro, so a service that differs from the table is not always one that somebody changed. Memory is the working set of the process that hosts the service, right now." />
+        </Expander>
+
+        <Grid Grid.Row="2" ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="Search" PlaceholderText="Search services" TextChanged="OnSearchChanged" AutomationProperties.Name="Search services" />
+            <ComboBox x:Name="FilterBox" Grid.Column="1" MinWidth="260" SelectionChanged="OnFilterChanged" AutomationProperties.Name="Show these services">
+                <ComboBoxItem Content="All services" Tag="All" IsSelected="True" />
+                <ComboBoxItem Content="Running now" Tag="Running" />
+                <ComboBoxItem Content="Differs from Microsoft's table" Tag="DiffersFromGuide" />
+                <ComboBoxItem Content="Has a .Clarion setting" Tag="HasSetting" />
+                <ComboBoxItem Content="Microsoft says OK to disable" Tag="OkToDisable" />
+                <ComboBoxItem Content="Microsoft says don't disable" Tag="DontDisable" />
+                <ComboBoxItem Content="Not in Microsoft's table" Tag="NotListed" />
+            </ComboBox>
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <ListView x:Name="List" SelectionMode="None" ItemTemplate="{StaticResource ServiceRowTemplate}"
+                      ItemContainerStyle="{StaticResource CardListViewItemStyle}" AutomationProperties.Name="Windows services" />
+            <StackPanel x:Name="ReadingPanel" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressRing IsActive="True" Width="24" Height="24" />
+                <TextBlock Text="Reading the services on this PC" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+            </StackPanel>
+            <TextBlock x:Name="Empty" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="{ThemeResource ClTextMutedBrush}" Text="No service matches." />
+        </Grid>
+    </Grid>
+</Page>

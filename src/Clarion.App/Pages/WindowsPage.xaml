@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- One page for the five Windows lists. They were five sidebar rows under a group, which pushed Verify, Safety and the rest out of
+    <!-- One page for the Windows lists, and the read only services view. They were five sidebar rows under a group, which pushed Verify, Safety and the rest out of
          sight at the normal window size. -->
     <Grid>
         <Grid.RowDefinitions>
@@ -17,6 +17,7 @@
             <SelectorBarItem Text="Network" Tag="network" />
             <SelectorBarItem Text="Windows features" Tag="features" />
             <SelectorBarItem Text="Updates" Tag="updates" />
+            <SelectorBarItem Text="Services" Tag="services" />
         </SelectorBar>
         <Frame x:Name="Inner" Grid.Row="1" />
     </Grid>

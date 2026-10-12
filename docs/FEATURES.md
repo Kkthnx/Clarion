@@ -134,6 +134,7 @@ Exact values below are the intended implementation. Each must be re-verified aga
 | Restore point per batch | See Design section 5 |
 | Change history | Browsable journal, per entry Revert |
 | Troubleshooter | Symptom list maps what stopped working to the settings .Clarion changed that could cause it |
+| Services view | Read only tab of every Windows service with Microsoft's default start type and recommendation, running state, memory, and a link to the matching setting. Also a searchable reference on the documentation site |
 | Drift check | Verify page scans everything .Clarion applied, lists what Windows changed back and which removed apps returned, and puts them back in one step or leaves them as they are |
 | Profiles | Recommended, Gaming, Privacy Max, Minimal, Custom. Exportable. |
 | Dry run | Shows exact operations |

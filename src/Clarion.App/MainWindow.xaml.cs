@@ -39,6 +39,7 @@ public sealed partial class MainWindow : Window
         };
         UpdateWhatsNewBadge();
         _app.NavigateRequested += (_, tag) => DispatcherQueue.TryEnqueue(() => GoTo(tag));
+        _app.SearchRequested += (_, q) => DispatcherQueue.TryEnqueue(() => OpenSearch(q));
         _app.ReviewRequested += (_, _) => DispatcherQueue.TryEnqueue(() => OnReview(this, new RoutedEventArgs()));
 
         var refresh = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.F5 };
@@ -74,9 +75,10 @@ public sealed partial class MainWindow : Window
         }.ShowAsync();
     }
 
-    private void OnGlobalSearch(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    private void OnGlobalSearch(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) => OpenSearch(args.QueryText.Trim());
+
+    private void OpenSearch(string q)
     {
-        var q = args.QueryText.Trim();
         if (q.Length == 0) return;
         Nav.SelectedItem = null;
         ContentFrame.Navigate(typeof(TweakListPage), new PageArgs("Search results", $"Settings matching \"{q}\"", [], q));

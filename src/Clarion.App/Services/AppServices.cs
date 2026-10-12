@@ -481,6 +481,11 @@ public sealed partial class AppServices : UiObservableObject
 
     public void RequestNavigate(string tag) => NavigateRequested?.Invoke(this, tag);
 
+    /// <summary>Asks the main window to show the settings that match a search, the same as typing it into the search box.</summary>
+    public event EventHandler<string>? SearchRequested;
+
+    public void RequestSearch(string query) => SearchRequested?.Invoke(this, query);
+
     /// <summary>Shows the review dialog for whatever is queued.</summary>
     public void RequestReview()
     {

@@ -53,11 +53,11 @@ public static class EngineFactory
         var batch = new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);
         var restorePoints = new RestorePointService(registry, runner);
         return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect(), restorePoints, new Core.Actions.ActionRunner(new WindowsStreamingRunner()),
-            new Core.SystemInfo.SystemProbe(registry, new WindowsServiceStore(runner), runner, new WindowsTaskStore()), drift, winget);
+            new Core.SystemInfo.SystemProbe(registry, new WindowsServiceStore(runner), runner, new WindowsTaskStore()), drift, winget, new WindowsServiceLister());
     }
 }
 
 public sealed record ClarionRuntime(
     BatchRunner Runner, TweakEngine Engine, ChangeJournal Journal, Clarion.Core.Model.MachineProfile Profile,
     IRestorePointService RestorePoints, Core.Actions.ActionRunner Actions, Core.SystemInfo.SystemProbe System, Core.Drift.DriftScanner Drift,
-    Clarion.Core.Apps.IWingetStore Winget);
+    Clarion.Core.Apps.IWingetStore Winget, Clarion.Core.WindowsServices.IServiceLister Services);
