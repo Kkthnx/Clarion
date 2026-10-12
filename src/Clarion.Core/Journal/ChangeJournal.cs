@@ -78,6 +78,7 @@ public sealed class ChangeJournal
                     w.Write(line);
                     w.Flush();
                     fs.Flush(true);
+                    _cache = null;
                     return;
                 }
                 catch (IOException) when (attempt < 40)
@@ -100,11 +101,26 @@ public sealed class ChangeJournal
         return fs.ReadByte() != (int)'\n';
     }
 
+    // The last read, kept while the file keeps the size and time it had. A refresh asks several questions of the history
+    // (what is on, what drifted, what was released), and each one used to read and parse the whole file again.
+    private IReadOnlyList<JournalEntry>? _cache;
+    private (long Length, long Ticks) _cacheStamp;
+    private int _cacheSkipped;
+
     public IReadOnlyList<JournalEntry> ReadAll()
     {
         lock (_gate)
         {
-            if (!File.Exists(_path)) return [];
+            var info = new FileInfo(_path);
+            if (!info.Exists) { _cache = null; SkippedLines = 0; return []; }
+            // The stamp is taken before the read, so a write that lands in between only makes the next call read again.
+            var stamp = (info.Length, info.LastWriteTimeUtc.Ticks);
+            if (_cache is not null && _cacheStamp == stamp)
+            {
+                SkippedLines = _cacheSkipped;
+                return _cache;
+            }
+
             var list = new List<JournalEntry>();
             SkippedLines = 0;
             // Shared with writers, so a read in one process does not fail while another is appending.
@@ -116,14 +132,19 @@ public sealed class ChangeJournal
                 try
                 {
                     var e = JsonSerializer.Deserialize<JournalEntry>(line, Options);
-                    if (e is not null) list.Add(e);
+                    // A line such as {"Operation":null} parses but cannot be used, and would fail later where it is read.
+                    if (e is { TweakId: not null, Operation: not null, Undo: not null }) list.Add(e);
+                    else SkippedLines++;
                 }
                 catch (JsonException)
                 {
                     SkippedLines++;
                 }
             }
-            return list;
+            _cache = list.AsReadOnly();
+            _cacheStamp = stamp;
+            _cacheSkipped = SkippedLines;
+            return _cache;
         }
     }
 

@@ -32,6 +32,38 @@ public sealed class JournalResilienceTests : IDisposable
     }
 
     [Fact]
+    public void A_line_that_parses_but_has_no_step_is_skipped_like_a_damaged_one()
+    {
+        var path = Path.Combine(_dir, "j.jsonl");
+        var journal = new ChangeJournal(path);
+        journal.Append(Entry("a"));
+        File.AppendAllText(path, "{\"BatchId\":\"" + Guid.NewGuid() + "\",\"TweakId\":\"x\",\"Action\":\"Apply\",\"Time\":\"2026-10-11T00:00:00+00:00\",\"Operation\":null,\"Undo\":null}\n");
+        File.AppendAllText(path, "null\n");
+
+        Assert.Equal(["a"], journal.ReadAll().Select(e => e.TweakId).ToArray());
+        Assert.Equal(2, journal.SkippedLines);
+        Assert.Empty(journal.OutstandingFor("x"));
+    }
+
+    [Fact]
+    public void A_second_read_sees_what_another_writer_appended_in_between()
+    {
+        var path = Path.Combine(_dir, "j.jsonl");
+        var reader = new ChangeJournal(path);
+        new ChangeJournal(path).Append(Entry("a"));
+        Assert.Single(reader.ReadAll());
+
+        new ChangeJournal(path).Append(Entry("b"));
+        File.AppendAllText(path, "{ damaged\n");
+
+        Assert.Equal(["a", "b"], reader.ReadAll().Select(e => e.TweakId).ToArray());
+        Assert.Equal(1, reader.SkippedLines);
+        // Reading again from the kept copy still reports the same damaged line.
+        Assert.Equal(2, reader.ReadAll().Count);
+        Assert.Equal(1, reader.SkippedLines);
+    }
+
+    [Fact]
     public void A_cut_off_last_line_does_not_swallow_the_next_entry()
     {
         var path = Path.Combine(_dir, "j.jsonl");
