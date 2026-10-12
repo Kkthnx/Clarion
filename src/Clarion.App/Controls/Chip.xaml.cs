@@ -33,6 +33,12 @@ public sealed partial class Chip : UserControl
 
 public static class ThemeBrushes
 {
+    /// <summary>
+    /// The theme the window shows now, kept by the main window. For code with no element to ask, such as a row in a list. Looking a brush
+    /// up in the application's resources follows the Windows theme instead, which differs when the person picked another one here.
+    /// </summary>
+    public static ElementTheme Current { get; set; } = ElementTheme.Default;
+
     /// <summary>Looks up a brand brush for the given theme so code can color things the same as XAML does.</summary>
     public static Brush Get(string name, ElementTheme theme)
     {

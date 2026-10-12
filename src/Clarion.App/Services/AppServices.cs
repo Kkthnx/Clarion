@@ -225,6 +225,12 @@ public sealed partial class AppServices : UiObservableObject
     }
 
     public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
+
+    /// <summary>True while a repair job runs. It is set by the Repair page, so closing the window can be held back.</summary>
+    public bool RepairRunning { get; set; }
+
+    /// <summary>True when closing the window now could leave a change half done.</summary>
+    public bool IsChangingThisPc => IsBusy || RepairRunning || CleanupService.Instance.IsDeleting;
     public ActivityLog Activity { get; } = new();
 
     private readonly Clarion.Core.Engine.SharedRead<Clarion.Core.SystemInfo.SystemReport> _systemReport;

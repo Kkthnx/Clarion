@@ -93,6 +93,7 @@ public sealed partial class RepairPage : Page
     private async Task RunWithLogAsync(ActionItem item)
     {
         _running = true;
+        _app.RepairRunning = true;
         using var cts = new CancellationTokenSource();
         var builder = new StringBuilder();
         var dirty = false;
@@ -164,6 +165,8 @@ public sealed partial class RepairPage : Page
         }
         finally
         {
+            // The job is over here, whatever the dialog does next, so closing the window is no longer held back.
+            _app.RepairRunning = false;
             await timerStop.CancelAsync();
             await refresh;
         }
@@ -181,6 +184,7 @@ public sealed partial class RepairPage : Page
         dialog.CloseButtonText = "Close";
         await shown;
         _running = false;
+        _app.RepairRunning = false;
     }
 
     private ListView? _selectedList;

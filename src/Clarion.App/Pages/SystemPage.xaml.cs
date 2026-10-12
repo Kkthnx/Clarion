@@ -74,8 +74,7 @@ public sealed partial class SystemPage : Page
         Groups.ItemsSource = report.Groups;
         ShowUpdates(report.Updates);
         InstallCard.Visibility = Visibility.Visible;
-        InstallCard.BorderBrush = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources[
-            report.Install.Level == InstallLevel.Standard ? "ClBorderBrush" : "ClWarnBrush"];
+        InstallCard.BorderBrush = ThemeBrushes.Get(report.Install.Level == InstallLevel.Standard ? "ClBorder" : "ClWarn", ActualTheme);
         Ring.IsActive = false;
         StatusLabel.Text = "";
         RefreshButton.IsEnabled = true;

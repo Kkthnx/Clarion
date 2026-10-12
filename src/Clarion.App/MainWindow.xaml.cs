@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Clarion.App.Controls;
 using Clarion.App.Pages;
 using Clarion.App.Services;
 using Microsoft.UI.Windowing;
@@ -24,7 +25,10 @@ public sealed partial class MainWindow : Window
         ResizeToFit();
         AppWindow.Closing += OnClosing;
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets", "Clarion.ico"));
-        Root.ActualThemeChanged += (_, _) => UpdateCaptionButtons();
+        Root.ActualThemeChanged += (_, _) => { ThemeBrushes.Current = Root.ActualTheme; UpdateCaptionButtons(); };
+        // Before the window is shown, the theme may still read as the system default, so it is read again once it is loaded.
+        Root.Loaded += (_, _) => { ThemeBrushes.Current = Root.ActualTheme; UpdateCaptionButtons(); };
+        ThemeBrushes.Current = Root.ActualTheme;
         UpdateCaptionButtons();
 
         Activity.PropertyChanged += (_, _) => DispatcherQueue.TryEnqueue(UpdateActivity);
@@ -64,7 +68,7 @@ public sealed partial class MainWindow : Window
 
     private async void OnClosing(AppWindow sender, AppWindowClosingEventArgs args)
     {
-        if (!_app.IsBusy) return;
+        if (!_app.IsChangingThisPc) return;
         args.Cancel = true;
         await new ContentDialog
         {
@@ -87,6 +91,7 @@ public sealed partial class MainWindow : Window
     public void ApplyTheme(ElementTheme theme)
     {
         Root.RequestedTheme = theme;
+        ThemeBrushes.Current = Root.ActualTheme;
         UpdateCaptionButtons();
     }
 
@@ -471,7 +476,9 @@ public sealed partial class MainWindow : Window
         {
             if (stop.IsCancellationRequested) return;
             var id = item.Tweak.Apply.OfType<Clarion.Core.Model.InstallWingetPackage>().Select(o => o.Id).FirstOrDefault();
-            var info = id is null ? null : await Task.Run(() => _app.Runtime.Winget.Show(id));
+            Clarion.Core.Apps.WingetPackageInfo? info = null;
+            try { info = id is null ? null : await Task.Run(() => _app.Runtime.Winget.Show(id)); }
+            catch (Exception ex) when (ex is not OutOfMemoryException) { Log.Write($"winget could not show {id}: {ex.Message}"); }
             if (stop.IsCancellationRequested) return;
             details.Text = info is null
                 ? "winget could not read this package's details just now. Installing still checks the installer's checksum, but you cannot see it here first."
@@ -502,8 +509,10 @@ public sealed partial class MainWindow : Window
                 step => DispatcherQueue.TryEnqueue(() => Activity.Step(step)),
                 turnOnProtection, stop.Token);
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or System.ComponentModel.Win32Exception)
+        catch (Exception ex) when (ex is not OutOfMemoryException)
         {
+            // Any failure ends here, not only the few kinds expected. Otherwise the activity panel would stay open and the Stop button live.
+            Log.Write($"The run did not finish: {ex}");
             Activity.Close();
             await Dialogs.Say(Content.XamlRoot, "The run did not finish", $"Some changes may have been made. .Clarion has read your settings again, so what you see is what Windows has now. {ex.Message}");
             return;
@@ -575,7 +584,10 @@ public sealed partial class MainWindow : Window
     {
         foreach (var p in Process.GetProcessesByName("explorer"))
         {
-            try { p.Kill(); } catch (InvalidOperationException) { } catch (System.ComponentModel.Win32Exception) { }
+            using (p)
+            {
+                try { p.Kill(); } catch (InvalidOperationException) { } catch (System.ComponentModel.Win32Exception) { }
+            }
         }
     }
 }

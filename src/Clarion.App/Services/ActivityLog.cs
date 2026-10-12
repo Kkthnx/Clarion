@@ -56,12 +56,12 @@ public sealed class ActivityLine : UiObservableObject
         _ => "",
     };
 
-    public Microsoft.UI.Xaml.Media.Brush GlyphBrush => (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources[State switch
+    public Microsoft.UI.Xaml.Media.Brush GlyphBrush => Controls.ThemeBrushes.Get(State switch
     {
-        LineState.Done => "ClOkBrush",
-        LineState.Failed => "ClDangerBrush",
-        _ => "ClTextMutedBrush",
-    }];
+        LineState.Done => "ClOk",
+        LineState.Failed => "ClDanger",
+        _ => "ClTextMuted",
+    }, Controls.ThemeBrushes.Current);
 }
 
 /// <summary>

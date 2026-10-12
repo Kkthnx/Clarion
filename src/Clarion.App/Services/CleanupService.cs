@@ -44,6 +44,9 @@ public sealed class CleanupService : UiObservableObject
     public ObservableCollection<CleanupItem> Items { get; } = [];
 
     public bool IsBusy { get => _busy; private set => SetProperty(ref _busy, value); }
+
+    /// <summary>True while a real clean (not a preview) is deleting files, so closing the window can be held back.</summary>
+    public bool IsDeleting { get; private set; }
     public string Status { get => _status; private set => SetProperty(ref _status, value); }
     public string CurrentFile { get => _currentFile; private set => SetProperty(ref _currentFile, value); }
     public long FreedLive { get => _freedLive; private set => SetProperty(ref _freedLive, value); }
@@ -97,6 +100,7 @@ public sealed class CleanupService : UiObservableObject
     public async Task<CleanupSummary> CleanAsync(bool preview, bool queueDriverFiles)
     {
         IsBusy = true;
+        IsDeleting = !preview;
         FreedLive = 0;
         FilesLive = 0;
         using var cts = new CancellationTokenSource();
@@ -148,6 +152,7 @@ public sealed class CleanupService : UiObservableObject
         {
             _cts = null;
             foreach (var i in Items) i.IsBusy = false;
+            IsDeleting = false;
             IsBusy = false;
             CurrentFile = "";
         }
