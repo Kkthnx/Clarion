@@ -66,7 +66,73 @@ Sorted by what the evidence allows.
 - **Hardware clock as UTC** (`RealTimeIsUniversal`, for dual boot with Linux). winutil and Sparkle both set it. Microsoft's own support answers call it an undocumented and unsupported registry key, and a Windows 7 support article describes a hang at the daylight saving changeover with it set. Not built.
 - **Hosts file blocklists from a third party.** winutil's Adobe block downloads a list from another GitHub repository and applies it, which is a runtime download of data .Clarion cannot review.
 - **Wi-Fi Sense** (Sparkle). Microsoft removed the contact sharing part during Windows 10 development. What remains, connecting to open hotspots, has a Group Policy.
-- **Network tuning, `Win32PrioritySeparation`, dynamic tick and the NVIDIA profile.** Performance claims with no Microsoft source or measurement.
+- **Network tuning, `Win32PrioritySeparation`, dynamic tick and the NVIDIA profile.** Looked at again on 2026-10-12, with measurements. See "Network and graphics tuning" below for what was built and why the rest was not.
+
+## Network and graphics tuning
+
+Looked at on 2026-10-12 because Sparkle has "Optimize network settings" and "Optimize NVIDIA settings" and .Clarion had neither. Measured on Windows 11 Pro 25H2 build 26200 with a GeForce RTX 2060 (driver 32.0.16.1742). Sparkle was read as a lead only, and nothing from it was copied.
+
+### TCP settings: what Sparkle sets and what Windows does
+
+Sparkle's script runs eight netsh commands. To learn which of them change anything, `netsh int tcp show global` and `show supplemental` were saved, `netsh int tcp reset` was run (Microsoft's netsh reference describes it as removing user configured settings and resetting all TCP parameters to their default values), the two were compared, and the saved values were put back so the PC ended exactly as it began.
+
+| Setting | Sparkle sets | This PC before | Windows default after the reset |
+|---|---|---|---|
+| Congestion provider | ctcp | ctcp | cubic |
+| ECN capability | enabled | enabled | disabled |
+| Timestamps | disabled | disabled | allowed |
+| Scaling heuristics | disabled | disabled | disabled |
+| Receive side scaling | enabled | enabled | enabled |
+| Fast Open, and its fallback | enabled | enabled | enabled |
+| Initial congestion window | 10 | 10 | 10 |
+
+Three of the settings differ from Windows' own defaults, and this PC had all three, so the tool had been used on it. Its congestion provider choice replaces CUBIC, the default here, with the older CTCP. Its undo writes an initial congestion window of 4, where Windows uses 10, so undoing it does not give the defaults back. No test was made of whether any of this is faster or slower, so .Clarion does not claim either.
+
+Microsoft's Set-NetTCPSetting page says client computers use NewReno by default. The measured default here is CUBIC, so that page is out of date for this build and was not used as a source for the default.
+
+Built from this: a repair job, Put TCP settings back to Windows defaults, which runs `netsh int tcp reset`, and one that releases and renews the IP address. No setting changes TCP parameters.
+
+### Other network tweaks that were looked up and not built
+
+- **`NetworkThrottlingIndex`.** `mmcss.sys` on this build contains the value name, but Microsoft's Multimedia Class Scheduler Service page does not document it. Not built.
+- **`SystemResponsiveness`.** Documented on that page. As retrieved, the page says a value below 10 is treated as 20, so the often repeated advice to set it to 0 does not do what its authors say.
+- **`TcpAckFrequency` and `TCPNoDelay` (Nagle).** Microsoft's article for TcpAckFrequency describes Windows XP and Server 2003 and says Microsoft does not recommend changing the default of 2 without careful study. The registry value TcpNoDelay is documented only for Message Queuing. A program that wants Nagle off sets TCP_NODELAY on its own socket.
+- **Letting Windows switch a network adapter off to save power.** Microsoft's NetAdapter module has Set-NetAdapterPowerManagement, but on build 26200 its parameter list (checked with Get-Command) has no parameter for the option, so a script that passes one fails. The only registry route found in Microsoft's pages is the Windows 7 one with PnPCapabilities. Not built.
+- **`Win32PrioritySeparation`.** Microsoft's only page is a Windows 2000 era TechNet page. The value here is 2. No current documentation for what other values do. Not built.
+- **`bcdedit /set disabledynamictick yes`.** Microsoft's BCDEdit reference says to use it only for debugging, and the timeBeginPeriod page says that since Windows 10 version 2004 a program's timer request no longer sets the global resolution. Not built.
+- **Teredo.** Built, as Microsoft's policy. The default state is Default, and netsh on this PC reported it disabled and offline. After the policy was written netsh reported it as disabled by Group Policy, and removing the policy brought back Default. Microsoft's privacy guide says that turning Teredo off stops some Xbox gaming features and Delivery Optimization with Group or Internet peering, and the setting says so.
+
+### NVIDIA driver settings
+
+Sparkle's tweak writes a profile of 92 settings with a bundled copy of nvidiaProfileInspector, a third party program, and its own page says it cannot be undone. NVIDIA publishes a better way: the NVAPI library (github.com/NVIDIA/nvapi, MIT licence) with the driver settings API, and the setting numbers and allowed values in NvApiDriverSettings.h. The driver installs `nvapi64.dll` in System32, and .Clarion calls it from there with the function numbers from NVIDIA's `nvapi_interface.h`.
+
+Reading this PC's global profile through NVAPI showed that it already held 65 of Sparkle's 92 values and 25 were not stored, which matches a PC the tool had been used on. Several of the values equal the defaults in NVIDIA's header, for example Maximum pre-rendered frames 0, MFAA off and trilinear optimization off, so writing them changes nothing.
+
+Four settings are built, each with a reason NVIDIA gives, and each stores what it replaced so Revert can put it back, including the case where nothing was stored:
+
+- **Low latency mode On.** NVIDIA's control panel reference says On limits queued frames to one, and its 2019 driver announcement says the same. The announcement also says that in DirectX 12 and Vulkan games the game decides when to queue frames, and the Reflex article says Reflex overrides the driver setting. It is written as Maximum pre-rendered frames 1. Ultra is not built, because its setting number is not in NVIDIA's public header, and the driver names no other latency setting among the 130 it lists.
+- **Power management mode, prefer maximum performance.** NVIDIA's support article offers it for a card that throttles its clock speed.
+- **Shader cache with no size limit.** The header gives the default as 0x4000 megabytes, 16 GB. NVIDIA warns that a limit that is too small can make the driver delete shaders still in use.
+- **Texture filtering quality, high performance.** NVIDIA says it gives the highest frame rate. The control panel default for GeForce cards is Quality.
+
+Not built: vertical sync off (it causes tearing, so it is a taste), the anisotropic and trilinear optimizations, and the many settings that are already NVIDIA's default. A profile for a single game overrides these global settings. Each setting was applied and reverted on the RTX 2060 from two start states, not stored and stored with another value, and the profile was left as it was found.
+
+### Windows graphics
+
+- **Optimizations for windowed games.** Microsoft's DirectX blog describes it. The registry format was read by switching the checkbox in the real Settings page and reading `HKCU\Software\Microsoft\DirectX\UserGpuPreferences`: the value `DirectXUserGlobalSettings` is the text `SwapEffectUpgradeEnable=1;` for On and `=0;` for Off. It is one text value that can hold other entries, such as the variable refresh rate choice, so a new list entry operation sets only its own entry. With no value written Settings showed On on this build. Two exclusive settings were built, On and Off.
+- **Multi-Plane Overlay off.** NVIDIA's support article attaches `mpo_disable.reg`, which sets `OverlayTestMode` to 5 under `HKLM\SOFTWARE\Microsoft\Windows\Dwm`, and `mpo_restore.reg`, which deletes it. The files were read, not run. Both `dwmcore.dll` and `win32kfull.sys` on this build contain the value name.
+
+### Other additions from winutil and Sparkle
+
+- **Seconds in the taskbar clock** (both tools). The Settings checkbox is worded Show seconds in system tray clock (uses more power). Switching it wrote `ShowSecondsInSystemClock` as a DWORD, 1 for On and 0 for Off under `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced`.
+- **New Outlook** (winutil). Microsoft's two pages disagree on the first code sample for `HideNewOutlookToggle`, so the page on controlling access in Exchange Online, which says 1 hides the switch and 0 shows it, was used. The other setting is the policy `NewOutlookMigrationUserSetting` set to 0, which Microsoft says blocks automatic migration.
+- **Edge** (winutil). Configure Do Not Track and the Asset Delivery Service policy, from Microsoft's policy pages. `CreateDesktopShortcutDefault` was left out, because Microsoft says it has no effect on an Edge that is already installed.
+
+### Looked at and left out
+
+- **Reserved storage.** Microsoft documents `DISM /Online /Set-ReservedStorageState` and warns that disabling fails while it is in use. It is already disabled on this PC, so turning it on and off again could not be tried without reserving several gigabytes, and a setting that was never applied and reverted is not added.
+- **RDP file warnings off** (both tools). The warnings exist to stop a malicious file from starting a remote session, so turning them off weakens security.
+- **S3 sleep, window snapping, Storage Sense and the notification centre.** Not checked, or a loss of function with no matching gain.
 
 ## Services
 
