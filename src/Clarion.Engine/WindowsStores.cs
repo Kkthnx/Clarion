@@ -434,17 +434,15 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
             StaticServersScript +
             "[pscustomobject]@{IfIndex=[int]$_.InterfaceIndex;Alias=$_.Name;Servers=$s} }); " +
             "ConvertTo-Json -InputObject @{adapters=$a} -Depth 4 -Compress";
-        JsonDocument doc;
         try
         {
-            doc = JsonDocument.Parse(PowerShellHost.Run(runner, script, Timeout));
+            using var doc = JsonDocument.Parse(PowerShellHost.Run(runner, script, Timeout));
+            return ReadAdapters(doc);
         }
-        catch (InvalidOperationException)
+        catch (Exception ex) when (ex is InvalidOperationException or JsonException or KeyNotFoundException)
         {
             return []; // no network cmdlets or no adapters, so there is nothing to change
         }
-        using var _ = doc;
-        return ReadAdapters(doc);
     }
 
     private static List<AdapterDns> ReadAdapters(JsonDocument doc) =>
@@ -467,7 +465,7 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
             using var doc = JsonDocument.Parse(PowerShellHost.Run(runner, script, Timeout));
             return ReadAdapters(doc).FirstOrDefault();
         }
-        catch (InvalidOperationException)
+        catch (Exception ex) when (ex is InvalidOperationException or JsonException or KeyNotFoundException)
         {
             return null; // the adapter is gone, or there are no network cmdlets
         }
@@ -495,7 +493,7 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
                 e.GetProperty("Auto").GetBoolean(), e.GetProperty("Fallback").GetBoolean()))
                 .Where(r => DnsProviders.IsIpv4(r.Address)).ToList();
         }
-        catch (InvalidOperationException)
+        catch (Exception ex) when (ex is InvalidOperationException or JsonException or KeyNotFoundException)
         {
             return []; // Windows 10 has no encrypted DNS client
         }

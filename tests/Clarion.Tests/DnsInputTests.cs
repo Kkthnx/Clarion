@@ -43,4 +43,18 @@ public sealed class DnsInputTests
 
         Assert.Empty(runner.Calls);
     }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("not json")]
+    [InlineData("{\"something\":1}")]
+    public void Output_that_is_not_the_expected_json_reads_as_no_adapters_instead_of_throwing(string output)
+    {
+        var runner = new FakeProcessRunner { Respond = _ => new Clarion.Core.Abstractions.ProcessResult(0, output, "") };
+        var store = new WindowsDnsStore(runner);
+
+        Assert.Empty(store.GetAdapters());
+        Assert.Null(store.Find(3));
+        Assert.Empty(store.GetDohRegistrations());
+    }
 }
