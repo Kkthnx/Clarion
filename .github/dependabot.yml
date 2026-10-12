@@ -1,0 +1,8 @@
+# Keeps the pinned actions in the workflows current. The workflows name each action by its full commit, which cannot be moved by
+# whoever owns the action, and this opens a pull request when a newer version is out.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
