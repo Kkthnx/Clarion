@@ -156,7 +156,8 @@ public sealed partial class TweakListPage : Page
                 .Where(i => _app.ExpertMode || (i.Tweak.RiskLevel <= RiskLevel.Low && i.Tweak.Evidence != Evidence.Unproven))
                 .ToList();
 
-            FillTopics(inScope);
+            // The pills count what the search and the filter leave, so a pill never promises more settings than pressing it shows.
+            FillTopics(inScope.Where(Matches).Where(PassesFilter));
             var dns = inScope.Where(DnsChooser.IsDnsItem).ToList();
             var useChooser = dns.Count > 0 && _query.Length == 0 && _filter == "all";
             Chooser.Visibility = useChooser && (_topic.Length == 0 || _topic == dns[0].Tweak.Topic) ? Visibility.Visible : Visibility.Collapsed;
