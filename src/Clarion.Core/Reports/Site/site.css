@@ -147,3 +147,16 @@ footer{padding:20px;border-top:1px solid var(--divider);color:var(--muted);font-
   .chip,.item,.card,.button,.legend>div,.preset{border:1px solid CanvasText}
   .rail a[aria-current=page]{border:1px solid Highlight}
 }
+
+/* The services reference is a table, so its rows are plain rows and not cards */
+.tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;background:var(--s1)}
+table.services{width:100%;border-collapse:collapse}
+table.services th,table.services td{padding:9px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--divider)}
+table.services th{color:var(--muted);font-size:12.5px;font-weight:600;background:var(--s1)}
+table.services tbody tr:last-child td{border-bottom:0}
+table.services tr.item{background:none;border:0;border-radius:0;padding:0;margin:0}
+table.services tr.item:hover{background:var(--s2)}
+table.services tr.item:target{background:var(--accent-tint)}
+table.services tr.item:target::before{display:none}
+table.services tr.item[hidden]{display:none}
+@media (max-width:900px){table.services{min-width:640px}}

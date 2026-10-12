@@ -5,6 +5,7 @@ using Clarion.Core.Actions;
 using Clarion.Core.Catalog;
 using Clarion.Core.Cleanup;
 using Clarion.Core.Model;
+using Clarion.Core.WindowsServices;
 
 namespace Clarion.Core.Reports;
 
@@ -14,10 +15,11 @@ public sealed record SiteSource(
     IReadOnlyList<ActionDef> Actions,
     IReadOnlyList<CleanTarget> Cleanups,
     IReadOnlyDictionary<string, IReadOnlyList<string>> Presets,
-    string Version)
+    string Version,
+    ServiceGuide Guide)
 {
     public static SiteSource FromCatalog(string version) =>
-        new(CatalogLoader.LoadEmbedded(), CatalogLoader.LoadActions(), CatalogLoader.LoadCleanup(), CatalogLoader.LoadPresets(), version);
+        new(CatalogLoader.LoadEmbedded(), CatalogLoader.LoadActions(), CatalogLoader.LoadCleanup(), CatalogLoader.LoadPresets(), version, ServiceGuide.LoadEmbedded());
 }
 
 /// <summary>
@@ -37,7 +39,8 @@ public static class CatalogSite
     private sealed record Entry(
         string Id, string Name, string Topic, string Summary, string Advice, Recommendation Recommendation, IReadOnlyList<string> Facts,
         string? What, string Benefit, string Risk, RiskLevel RiskLevel, string? Evidence, IReadOnlyList<string> Notes,
-        string ChangesTitle, IReadOnlyList<string> Changes, IReadOnlyList<string> Undo, IReadOnlyList<string> Sources, IReadOnlyList<string> Provenance);
+        string ChangesTitle, IReadOnlyList<string> Changes, IReadOnlyList<string> Undo, IReadOnlyList<string> Sources, IReadOnlyList<string> Provenance,
+        IReadOnlyList<string> Services);
 
     private sealed record Group(string File, string Title, string Blurb, IReadOnlyList<Entry> Entries);
 
@@ -55,6 +58,7 @@ public static class CatalogSite
         var pages = new List<Group>(groups) { repair, cleanup };
         var nav = new List<NavLink> { new("index.html", "Home", 0), new("presets.html", "Presets", source.Presets.Count) };
         nav.AddRange(pages.Select(g => new NavLink(g.File, g.Title, g.Entries.Count)));
+        nav.Add(new NavLink("services.html", "Services", source.Guide.Entries.Count));
 
         var files = new SortedDictionary<string, string>(StringComparer.Ordinal)
         {
@@ -62,9 +66,10 @@ public static class CatalogSite
             ["presets.html"] = Shell(nav, source.Version, "presets.html", "Presets", PresetsBody(source), "The five presets in .Clarion and the exact settings each one queues."),
         };
         foreach (var g in pages)
-            files[g.File] = Shell(nav, source.Version, g.File, g.Title, GroupBody(g), $"{g.Title} in .Clarion: {g.Entries.Count} entries, each with what it does, the benefit, the risk and the exact changes.");
+            files[g.File] = Shell(nav, source.Version, g.File, g.Title, GroupBody(g, source.Guide), $"{g.Title} in .Clarion: {g.Entries.Count} entries, each with what it does, the benefit, the risk and the exact changes.");
 
-        files["assets/search-index.json"] = SearchIndex(pages);
+        files["services.html"] = Shell(nav, source.Version, "services.html", "Services", ServicesBody(source), $"What Microsoft says about {source.Guide.Entries.Count} Windows services: the default start type and whether each is OK to switch off.");
+        files["assets/search-index.json"] = SearchIndex(pages, source.Guide);
         files["assets/site.css"] = Resource("site.css");
         files["assets/site.js"] = Resource("site.js");
         files["404.html"] = Shell(nav, source.Version, "404.html", "Page not found", "<section class=\"intro\"><h1>Page not found</h1><p>That page does not exist. Try the search box above, or go back to the <a href=\"index.html\">home page</a>.</p></section>", "Page not found.");
@@ -97,7 +102,8 @@ public static class CatalogSite
     {
         var tip = TweakTooltip.Build(t);
         return new Entry(t.Id, t.Name, t.Topic, t.Summary, t.Advice, t.Recommendation, t.Facts, t.What, t.Benefit, t.Risk, t.RiskLevel, tip.EvidenceLabel,
-            tip.Notes, "Exactly what changes", t.Apply.Select(o => o.Describe()).ToList(), t.Undo.Select(o => o.Describe()).ToList(), t.Sources, t.Provenance);
+            tip.Notes, "Exactly what changes", t.Apply.Select(o => o.Describe()).ToList(), t.Undo.Select(o => o.Describe()).ToList(), t.Sources, t.Provenance,
+            t.Apply.OfType<SetServiceStartType>().Select(s => s.Name).ToList());
     }
 
     private static Entry FromAction(ActionDef a)
@@ -108,7 +114,7 @@ public static class CatalogSite
         var steps = a.Steps.Select(s => s.Describe()).ToList();
         steps.AddRange(a.Always.Select(s => "Afterward, always: " + s.Describe()));
         return new Entry(a.Id, a.Name, "", a.Summary, a.Advice, a.Recommendation, a.Facts, a.What, a.Benefit, a.Risk, a.RiskLevel, null, notes,
-            "Steps it runs", steps, [], a.Sources, []);
+            "Steps it runs", steps, [], a.Sources, [], []);
     }
 
     private static Entry FromCleanTarget(CleanTarget c)
@@ -121,7 +127,7 @@ public static class CatalogSite
         if (c.Processes.Count > 0) notes.Add($"Skipped while {JoinNames(c.Processes)} is running.");
         if (c.QueueLockedAtRestart) notes.Add("Files that are in use can be queued for removal at the next restart.");
         return new Entry(c.Id, c.Name, c.Group, c.Summary, c.Advice, c.Recommendation, c.Facts, null, c.Benefit, c.Risk, c.RiskLevel, null, notes,
-            "Where it looks", c.Rules.Select(DescribeRule).ToList(), [], c.Sources, []);
+            "Where it looks", c.Rules.Select(DescribeRule).ToList(), [], c.Sources, [], []);
     }
 
     private static string DescribeRule(CleanRule rule) => rule switch
@@ -172,12 +178,13 @@ public static class CatalogSite
         var settings = s.Tweaks.Count - apps;
         var sb = new StringBuilder();
         sb.Append("<section class=\"hero\"><img src=\"assets/icon.png\" alt=\"\" width=\"88\" height=\"88\"><div>\n<h1>.Clarion</h1>\n<p class=\"tagline\">See it. Set it. Done.</p>\n");
-        sb.Append($"<p class=\"lead\">A native Windows app to remove bloat, cut tracking, clean up, repair and tune your PC. This site explains all {settings} settings in it, plus {apps} apps it can install, {repair.Entries.Count} repair jobs and {cleanup.Entries.Count} cleanup rows. Each one says what it does, what you gain, what can go wrong and what it changes, down to the registry value.</p>\n");
+        sb.Append($"<p class=\"lead\">A native Windows app to remove bloat, cut tracking, clean up, repair and tune your PC. This site explains all {settings} settings in it, plus {apps} apps it can install, {repair.Entries.Count} repair jobs and {cleanup.Entries.Count} cleanup rows, and a reference of what Microsoft says about {s.Guide.Entries.Count} Windows services. Each setting says what it does, what you gain, what can go wrong and what it changes, down to the registry value.</p>\n");
         sb.Append($"<p class=\"actions\"><a class=\"button primary\" href=\"{Repo}/releases/latest\">Download</a><a class=\"button\" href=\"{Repo}\">Source on GitHub</a><a class=\"button\" href=\"presets.html\">See the presets</a></p>\n</div></section>\n");
 
         sb.Append("<section><h2>Browse by group</h2>\n<ul class=\"cards\">\n");
         foreach (var g in groups.Concat([repair, cleanup]))
             sb.Append($"<li><a class=\"card\" href=\"{g.File}\"><strong>{H(g.Title)}</strong><span class=\"count\">{g.Entries.Count}</span><span class=\"blurb\">{H(g.Blurb)}</span></a></li>\n");
+        sb.Append($"<li><a class=\"card\" href=\"services.html\"><strong>Services</strong><span class=\"count\">{s.Guide.Entries.Count}</span><span class=\"blurb\">What Microsoft says about each Windows service: how it starts by default and whether it is OK to switch off.</span></a></li>\n");
         sb.Append("</ul></section>\n");
 
         sb.Append("<section><h2>How to read an entry</h2>\n<div class=\"legend\">\n");
@@ -214,7 +221,7 @@ public static class CatalogSite
         return sb.ToString();
     }
 
-    private static string GroupBody(Group g)
+    private static string GroupBody(Group g, ServiceGuide guide)
     {
         var sb = new StringBuilder();
         sb.Append($"<section class=\"intro\"><h1>{H(g.Title)}</h1><p>{H(g.Blurb)}</p>\n");
@@ -230,13 +237,13 @@ public static class CatalogSite
             sb.Append("<section class=\"topic\">");
             if (topic.Key.Length > 0) sb.Append($"<h2>{H(topic.Key)} <span class=\"count\">{topic.Count()}</span></h2>");
             sb.Append('\n');
-            foreach (var e in topic) Article(sb, e);
+            foreach (var e in topic) Article(sb, e, guide);
             sb.Append("</section>\n");
         }
         return sb.ToString();
     }
 
-    private static void Article(StringBuilder sb, Entry e)
+    private static void Article(StringBuilder sb, Entry e, ServiceGuide guide)
     {
         var haystack = $"{e.Name} {e.Summary} {e.Id} {e.What} {e.Benefit} {e.Risk}".ToLowerInvariant();
         sb.Append($"<article class=\"item\" id=\"{H(e.Id)}\" data-risk=\"{RiskClass(e.RiskLevel)}\" data-rec=\"{RecClass(e.Recommendation)}\" data-text=\"{H(haystack)}\">\n");
@@ -277,13 +284,61 @@ public static class CatalogSite
         foreach (var src in e.Sources.Where(IsHttp)) sb.Append($" · <a href=\"{H(src)}\" rel=\"noopener\">Source</a>");
         sb.Append("</p>\n");
         if (e.Provenance.Count > 0) sb.Append($"<p class=\"meta\">Built from the Microsoft policy definitions: {H(string.Join(", ", e.Provenance))}</p>\n");
+        var listed = e.Services.Select(n => guide.Find(n)).OfType<GuideEntry>().ToList();
+        if (listed.Count > 0)
+            sb.Append("<p class=\"meta\">Microsoft's table of services: " + string.Join(", ", listed.Select(g =>
+                $"<a href=\"services.html#{ServiceAnchor(g.Name)}\">{H(g.Display)}</a> (starts {H(ServiceGuide.StartLabel(g.Default).ToLowerInvariant())}, {H(ServiceGuide.Label(g.Advice).ToLowerInvariant())})")) + "</p>\n");
         sb.Append("</article>\n");
     }
 
-    private static string SearchIndex(IEnumerable<Group> pages)
+    private static string SearchIndex(IEnumerable<Group> pages, ServiceGuide guide)
     {
-        var rows = pages.SelectMany(g => g.Entries.Select(e => new { n = e.Name, s = e.Summary, i = e.Id, g = g.Title, u = $"{g.File}#{e.Id}" }));
+        var rows = pages.SelectMany(g => g.Entries.Select(e => new { n = e.Name, s = e.Summary, i = e.Id, g = g.Title, u = $"{g.File}#{e.Id}" }))
+            .Concat(guide.Entries.Select(e => new
+            {
+                n = e.Display, s = $"Windows service. Starts {ServiceGuide.StartLabel(e.Default).ToLowerInvariant()} by default. Microsoft: {ServiceGuide.Label(e.Advice).ToLowerInvariant()}.",
+                i = e.Name, g = "Services", u = $"services.html#{ServiceAnchor(e.Name)}",
+            }));
         return JsonSerializer.Serialize(rows);
+    }
+
+    private static string ServiceAnchor(string name) => "svc-" + name;
+
+    private static string AdviceClass(ServiceAdvice a) => "advice-" + a.ToString().ToLowerInvariant();
+
+    private static string AdviceKind(ServiceAdvice a) => a switch { ServiceAdvice.OkToDisable => "ok", ServiceAdvice.DontDisable => "warn", ServiceAdvice.ShouldDisable => "ok", _ => "neutral" };
+
+    private static string ServicesBody(SiteSource s)
+    {
+        var guide = s.Guide;
+        var setting = new Dictionary<string, (Tweak Tweak, string File)>(StringComparer.OrdinalIgnoreCase);
+        foreach (var t in s.Tweaks)
+            foreach (var op in t.Apply.OfType<SetServiceStartType>())
+                setting.TryAdd(op.Name, (t, Slug(CategoryTitle(t.Category)) + ".html"));
+
+        var sb = new StringBuilder();
+        sb.Append("<section class=\"intro\"><h1>Services</h1>");
+        sb.Append($"<p>What Microsoft says about {guide.Entries.Count} Windows services: how Windows starts each one by default and whether it is OK to switch off. It is Microsoft's table, dated {H(guide.Dated)}, read from <a href=\"{H(guide.Source)}\" rel=\"noopener\">{H(guide.Title)}</a>. In the app, the Services tab shows the same table next to what is actually running on your PC.</p>");
+        sb.Append("<p>Read it with care. The table is written for Windows IoT Enterprise, so some defaults differ from Windows 11 Home and Pro, and OK to disable means useful to some people but not all. It is not a promise that switching a service off speeds anything up.</p>\n");
+        sb.Append("<form class=\"filters\" role=\"search\" aria-label=\"Filter this page\" onsubmit=\"return false\">");
+        sb.Append("<label>Filter <input id=\"filter\" type=\"search\" placeholder=\"Service name or words\" autocomplete=\"off\"></label>");
+        sb.Append("<label>Microsoft says <select id=\"risk\"><option value=\"\">Any</option>");
+        foreach (var a in Enum.GetValues<ServiceAdvice>()) sb.Append($"<option value=\"{AdviceClass(a)}\">{H(ServiceGuide.Label(a))}</option>");
+        sb.Append("</select></label><p id=\"shown\" role=\"status\" aria-live=\"polite\"></p></form></section>\n");
+
+        sb.Append("<div class=\"tablewrap\"><table class=\"services\"><thead><tr><th scope=\"col\">Service</th><th scope=\"col\">Default start</th><th scope=\"col\">Microsoft says</th><th scope=\"col\">.Clarion setting</th></tr></thead><tbody>\n");
+        foreach (var e in guide.Entries.OrderBy(e => e.Display, StringComparer.OrdinalIgnoreCase).ThenBy(e => e.Name, StringComparer.OrdinalIgnoreCase))
+        {
+            var haystack = $"{e.Display} {e.Name} {ServiceGuide.Label(e.Advice)}".ToLowerInvariant();
+            sb.Append($"<tr class=\"item\" id=\"{H(ServiceAnchor(e.Name))}\" data-risk=\"{AdviceClass(e.Advice)}\" data-text=\"{H(haystack)}\">");
+            sb.Append($"<td><strong>{H(e.Display)}</strong><br><code>{H(e.Name)}</code>{(e.PerUser ? " <span class=\"count\">per user</span>" : "")}</td>");
+            sb.Append($"<td>{H(ServiceGuide.StartLabel(e.Default))}</td>");
+            sb.Append($"<td><span class=\"chip {AdviceKind(e.Advice)}\" title=\"{H(ServiceGuide.Hint(e.Advice))}\">{H(ServiceGuide.Label(e.Advice))}</span></td>");
+            sb.Append(setting.TryGetValue(e.Name, out var st) ? $"<td><a href=\"{st.File}#{H(st.Tweak.Id)}\">{H(st.Tweak.Name)}</a></td>" : "<td></td>");
+            sb.Append("</tr>\n");
+        }
+        sb.Append("</tbody></table></div>\n");
+        return sb.ToString();
     }
 
     // ---- Small helpers -------------------------------------------------------------------------------------------------------

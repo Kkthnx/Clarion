@@ -15,6 +15,9 @@ public sealed partial class CatalogSiteTests
     [GeneratedRegex("<article class=\"item\" id=\"([^\"]+)\"")]
     private static partial Regex ArticleId();
 
+    [GeneratedRegex("<tr class=\"item\" id=\"([^\"]+)\"")]
+    private static partial Regex ServiceId();
+
     [GeneratedRegex("(?:href|src)=\"([^\"]+)\"")]
     private static partial Regex Link();
 
@@ -30,7 +33,7 @@ public sealed partial class CatalogSiteTests
     [Fact]
     public void Every_link_on_the_site_goes_somewhere()
     {
-        var anchors = Pages.ToDictionary(p => p, p => ArticleId().Matches(Site[p]).Select(m => m.Groups[1].Value).ToHashSet(StringComparer.Ordinal));
+        var anchors = Pages.ToDictionary(p => p, p => ArticleId().Matches(Site[p]).Concat(ServiceId().Matches(Site[p])).Select(m => m.Groups[1].Value).ToHashSet(StringComparer.Ordinal));
         var broken = new List<string>();
         foreach (var page in Pages)
         {
@@ -100,8 +103,30 @@ public sealed partial class CatalogSiteTests
     {
         using var doc = JsonDocument.Parse(Site["assets/search-index.json"]);
         var ids = doc.RootElement.EnumerateArray().Select(r => r.GetProperty("i").GetString()!).ToList();
-        Assert.Equal(Source.Tweaks.Count + Source.Actions.Count + Source.Cleanups.Count, ids.Count);
+        Assert.Equal(Source.Tweaks.Count + Source.Actions.Count + Source.Cleanups.Count + Source.Guide.Entries.Count, ids.Count);
         Assert.Equal(ids.Count, ids.Distinct().Count());
+    }
+
+    [Fact]
+    public void Every_service_in_Microsofts_table_is_on_the_services_page_once()
+    {
+        var rows = ServiceId().Matches(Site["services.html"]).Select(m => m.Groups[1].Value).ToList();
+        Assert.Equal(Source.Guide.Entries.Select(e => "svc-" + e.Name).Order(StringComparer.Ordinal), rows.Order(StringComparer.Ordinal));
+        Assert.Equal(rows.Count, rows.Distinct().Count());
+        // The filter offers every recommendation, and each row carries the one it belongs to.
+        foreach (var a in Enum.GetValues<Clarion.Core.WindowsServices.ServiceAdvice>())
+            Assert.Contains($"value=\"advice-{a.ToString().ToLowerInvariant()}\"", Site["services.html"], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_setting_that_changes_a_service_links_to_that_service_and_the_page_links_back()
+    {
+        var spooler = Site["system.html"];
+        Assert.Contains("services.html#svc-Spooler", spooler, StringComparison.Ordinal);
+        Assert.Contains("href=\"system.html#services.print-spooler-off\"", Site["services.html"], StringComparison.Ordinal);
+        // Where Microsoft's table says to leave a service alone, no setting of ours changes it.
+        var dontDisable = Source.Guide.Entries.Where(e => e.Advice == Clarion.Core.WindowsServices.ServiceAdvice.DontDisable).Select(e => e.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        Assert.DoesNotContain(Source.Tweaks.SelectMany(t => t.Apply.OfType<Clarion.Core.Model.SetServiceStartType>()), s => dontDisable.Contains(s.Name));
     }
 
     [Fact]

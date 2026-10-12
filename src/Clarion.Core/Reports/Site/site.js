@@ -64,13 +64,13 @@
       var words = filter.value.toLowerCase().split(/\s+/).filter(Boolean), n = 0;
       items.forEach(function (it) {
         var ok = words.every(function (w) { return it.getAttribute('data-text').indexOf(w) >= 0; }) &&
-          (!risk.value || it.getAttribute('data-risk') === risk.value) && (!rec.value || it.getAttribute('data-rec') === rec.value);
+          (!risk.value || it.getAttribute('data-risk') === risk.value) && (!rec || !rec.value || it.getAttribute('data-rec') === rec.value);
         it.hidden = !ok; if (ok) n++;
       });
       topics.forEach(function (t) { t.hidden = !t.querySelector('.item:not([hidden])'); });
-      shown.textContent = (filter.value || risk.value || rec.value) ? 'Showing ' + n + ' of ' + items.length : '';
+      shown.textContent = (filter.value || risk.value || (rec && rec.value)) ? 'Showing ' + n + ' of ' + items.length : '';
     }
-    [filter, risk, rec].forEach(function (c) { c.addEventListener('input', apply); });
+    [filter, risk, rec].forEach(function (c) { if (c) c.addEventListener('input', apply); });
     if (location.hash) { var target = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (target && target.tagName === 'ARTICLE') target.scrollIntoView(); }
   }
 })();
