@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased
+
+Safer
+- Cleanup no longer follows links. After a clean, the empty folders inside a cache were found with a listing that goes into a junction, so an empty folder behind a link in a cache could be removed from wherever the link pointed. It now walks the tree itself and removes a link without opening it. The check that a folder is allowed also looked only at the last folder of the path, so a link in the middle of a path below an allowed folder led the clean elsewhere. It now checks every folder in between.
+- A setting can no longer overwrite a registry value that .Clarion cannot read back. A list of strings was read as an empty binary value, so applying a setting to one and reverting it wrote an empty binary over the original. None of the values the catalog changes is one on the test PC, so this guards against a future setting or a different PC.
+- The monthly check runs with the account's administrator rights only when .Clarion is in Program Files or Windows. From a folder that any program of the same account can write to, such as Downloads, the program file could be replaced and would then run elevated on the second Wednesday. From there it now runs without them, and Settings says it may not be able to read every setting.
+- Every action in the build workflows is named by its full commit instead of a version tag that its owner can move, and Dependabot proposes updates monthly. The release workflow no longer pastes the tag name into its script.
+- A package, feature, power plan or setup id that ended in a line break passed validation. It no longer does.
+
+Fixed
+- Reverting a setting that stopped part way no longer hides the steps that did not run. The history marked each step undone as soon as it ran, so after a failure the next Revert said there was nothing to revert. The undo is now written only when every step worked, and running Revert again finishes the job.
+- The restart that .Clarion offers after a change used a reason code that Microsoft does not list. It now uses the documented one for a restart after a settings change.
+- Closing the window during a clean or a repair job was allowed and could cut it off half way. Only applying settings was guarded before.
+- If a run failed in an unexpected way, the activity panel stayed open with a Stop button that did nothing. If winget failed while the review window read an app's details, the licence box stayed disabled. Both now recover.
+- The status glyphs in the activity panel and the card on the System page took their colors from the Windows theme, not from the theme chosen in .Clarion, so they could be the wrong colors.
+- Deleting a folder in a repair job counted the size of files behind a link, and failed on a junction inside the folder on this Windows build. Links are now removed first and not counted.
+- A command line apply read every setting in the catalog first, which ran winget and the feature and app queries even for a preset that uses none of them. It now reads only the settings you asked for.
+- Unexpected output from the network commands is treated as no adapters, not as an error that stopped the page.
+- A size of one byte reads 1 byte, not 1 bytes.
+
+Polish
+- Refreshing reads the history file once instead of several times, and the feedback preview no longer reads the log and the history on every keystroke.
+- Journal lines that parse but hold no step, such as null where the step should be, are skipped and counted like a damaged line.
+- The logo beside the app name is hidden from screen readers, and a test now requires every picture to have a name or be hidden.
+- One symptom tip was reworded.
+
 ## 0.1.0-beta.17
 
 New
