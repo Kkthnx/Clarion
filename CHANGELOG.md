@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.0
 
 Safer
 - Cleanup no longer follows links. After a clean, the empty folders inside a cache were found with a listing that goes into a junction, so an empty folder behind a link in a cache could be removed from wherever the link pointed. It now walks the tree itself and removes a link without opening it. The check that a folder is allowed also looked only at the last folder of the path, so a link in the middle of a path below an allowed folder led the clean elsewhere. It now checks every folder in between.
@@ -22,6 +22,7 @@ Fixed
 - A size of one byte reads 1 byte, not 1 bytes.
 
 Polish
+- This is version 1.0.0, the first release that is not called a beta. It is still not code signed, so Windows SmartScreen warns on first run, and every setting has been checked on one PC running Windows 11 build 26200. From here a change that breaks how people use .Clarion or the files it saves bumps the major number.
 - Refreshing reads the history file once instead of several times, and the feedback preview no longer reads the log and the history on every keystroke.
 - Journal lines that parse but hold no step, such as null where the step should be, are skipped and counted like a damaged line.
 - The logo beside the app name is hidden from screen readers, and a test now requires every picture to have a name or be hidden.

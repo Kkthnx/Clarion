@@ -1,7 +1,8 @@
 # Code signing
 
 .Clarion asks for administrator rights, so an unsigned download that triggers a SmartScreen warning
-is the biggest trust problem it has. Signing is part of the 1.0 gate, next to finishing the beta.
+is the biggest trust problem it has. Signing was meant to gate 1.0. Version 1.0.0 shipped unsigned on 2026-10-11 because no
+free route fits and no paid one was chosen, so this stays the first thing to fix.
 
 ## State today
 

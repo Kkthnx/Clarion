@@ -14,7 +14,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 
 </div>
 
-> **Beta.** .Clarion is in public beta. Expect rough edges and please report them. The version stays below 1.0 until the beta is ironed out and the downloads are code signed (see [docs/SIGNING.md](docs/SIGNING.md)).
+> **Version 1.0, not code signed.** .Clarion is out of beta, but the downloads carry no code signing certificate, so Windows SmartScreen warns on first run (see below and [docs/SIGNING.md](docs/SIGNING.md)). Every setting was checked on one PC running Windows 11 build 26200, so please report anything that behaves differently on yours.
 
 ![.Clarion home screen](docs/images/home.png)
 
@@ -59,7 +59,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 2. Run it. .Clarion installs to Program Files with a Start menu entry and a clean uninstaller.
 3. Open .Clarion. It asks for administrator rights when it opens, because most settings are machine wide. If you say no, it opens in a read only mode that can look and verify but changes nothing, with a button to restart as administrator.
 
-The files are not code signed yet, so Windows SmartScreen shows its "Windows protected your PC" screen on first run, with Don't run as the default, and the administrator prompt names the publisher as Unknown. Choose More info, then Run anyway if you trust this download. Signing is planned before 1.0, and the options and their costs are in [docs/SIGNING.md](docs/SIGNING.md). Each download has a SHA256 file next to it so you can verify it. From 0.1.0-beta.16 each one also has a build attestation from GitHub, a signed statement that GitHub built that exact file from this repository. Check it with `gh attestation verify <file> --repo Kkthnx/Clarion`. Windows does not read it, so SmartScreen still warns.
+The files are not code signed yet, so Windows SmartScreen shows its "Windows protected your PC" screen on first run, with Don't run as the default, and the administrator prompt names the publisher as Unknown. Choose More info, then Run anyway if you trust this download. Signing is still wanted, and the options and their costs are in [docs/SIGNING.md](docs/SIGNING.md). Each download has a SHA256 file next to it so you can verify it. From 0.1.0-beta.16 each one also has a build attestation from GitHub, a signed statement that GitHub built that exact file from this repository. Check it with `gh attestation verify <file> --repo Kkthnx/Clarion`. Windows does not read it, so SmartScreen still warns.
 
 Requirements: Windows 10 version 2004 or later, 64-bit. Nothing else needs installing, because the .NET runtime is included. The one exception is the Apps page, which needs winget, Microsoft's package manager. It comes with App Installer on Windows 11 and on current Windows 10. .Clarion does not install it, and without it the apps are shown as unavailable.
 
