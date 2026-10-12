@@ -149,7 +149,7 @@
   {
     "id": "personal-data-access",
     "title": "An app says it cannot read my contacts, calendar, email, messages or call history",
-    "tip": "These permissions decide whether apps can read that information. Turning them off blocks the app, not just tracking.",
+    "tip": "These permissions decide whether apps can read that information. Turning one off stops apps from reading that information, whatever they want it for.",
     "topics": [],
     "tweakIds": ["perm.user-contacts", "perm.all-contacts", "perm.user-calendar", "perm.all-calendar", "perm.user-call-history", "perm.all-call-history", "perm.user-email", "perm.all-email", "perm.user-messaging", "perm.all-messaging", "perm.user-tasks", "perm.all-tasks", "perm.user-phone-calls", "perm.all-phone-calls", "perm.user-app-diagnostics", "perm.all-app-diagnostics"]
   },
