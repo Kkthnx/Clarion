@@ -123,7 +123,10 @@ public static class HeadlessRunner
 
         var runtime = EngineFactory.Create();
         var catalog = CatalogLoader.LoadEmbedded();
-        runtime.Engine.WarmUp(catalog);
+        // Only what was asked for is read up front. Warming the whole catalog would also run winget and the feature and app queries
+        // for settings that are not part of this run.
+        var wanted = ids.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        runtime.Engine.WarmUp(catalog.Where(t => wanted.Contains(t.Id)));
         var plan = CliPlanner.Plan(ids, catalog, runtime.Profile, runtime.Engine.Detect);
 
         // Apps are installed only when the person has said, on the command line, that they accept the publishers' licence terms.
