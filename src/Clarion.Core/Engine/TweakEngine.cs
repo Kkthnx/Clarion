@@ -146,42 +146,46 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
             journal.Append(new JournalEntry(batchId, tweak.Id, JournalAction.Release, _clock.GetUtcNow(), entry.Operation, entry.Undo));
     }
 
+    /// <summary>
+    /// Puts a setting back. The undo is written to the history only when every step worked, for the same reason as in
+    /// <see cref="RollBack"/>: the history counts a setting as still on until something other than an apply follows it, so a
+    /// record written after the first step would hide the steps that did not run. Running it again repeats the steps that
+    /// already worked, which is harmless because each one sets a value back.
+    /// </summary>
     public TweakResult Revert(Tweak tweak, Guid batchId)
     {
         var outstanding = journal.OutstandingFor(tweak.Id);
         try
         {
+            var steps = new List<(Operation Op, Operation Inverse)>();
             if (outstanding.Count > 0)
             {
-                foreach (var entry in outstanding.Reverse())
+                steps.AddRange(outstanding.Reverse().Select(e => (e.Undo, e.Operation)));
+            }
+            else
+            {
+                if (tweak.Undo.Count == 0) return TweakResult.Fail("Nothing recorded to revert and no default is defined.");
+                foreach (var op in tweak.Undo)
                 {
-                    RunAndRecord(tweak.Id, batchId, JournalAction.Revert, entry.Undo, entry.Operation, verify: true);
+                    var handler = HandlerFor(op);
+                    if (handler.IsApplicable(op)) steps.Add((op, handler.CaptureUndo(op)));
                 }
-                return TweakResult.Ok();
             }
 
-            if (tweak.Undo.Count == 0) return TweakResult.Fail("Nothing recorded to revert and no default is defined.");
-
-            foreach (var op in tweak.Undo)
+            foreach (var (op, _) in steps)
             {
                 var handler = HandlerFor(op);
-                if (!handler.IsApplicable(op)) continue;
-                RunAndRecord(tweak.Id, batchId, JournalAction.Revert, op, handler.CaptureUndo(op), verify: true);
+                handler.Execute(op);
+                if (!handler.IsSatisfied(op)) throw new InvalidOperationException($"Verification failed: {op.Describe()}");
             }
+            foreach (var (op, inverse) in steps)
+                journal.Append(new JournalEntry(batchId, tweak.Id, JournalAction.Revert, _clock.GetUtcNow(), op, inverse));
             return TweakResult.Ok();
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {
             return TweakResult.Fail(ex.Message);
         }
-    }
-
-    private void RunAndRecord(string tweakId, Guid batchId, JournalAction action, Operation op, Operation inverse, bool verify)
-    {
-        var handler = HandlerFor(op);
-        handler.Execute(op);
-        if (verify && !handler.IsSatisfied(op)) throw new InvalidOperationException($"Verification failed: {op.Describe()}");
-        journal.Append(new JournalEntry(batchId, tweakId, action, _clock.GetUtcNow(), op, inverse));
     }
 
     /// <summary>

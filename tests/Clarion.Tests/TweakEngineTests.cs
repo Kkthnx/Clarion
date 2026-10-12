@@ -117,6 +117,27 @@ public sealed class TweakEngineTests : IDisposable
     }
 
     [Fact]
+    public void A_revert_that_stops_part_way_leaves_the_whole_setting_listed_so_it_can_be_finished()
+    {
+        _reg.Write(T("A"), new RegistryData(RegistryKind.DWord, "1"));
+        _reg.Write(T("B"), new RegistryData(RegistryKind.DWord, "2"));
+        var tweak = Make(Dword(T("A"), "0"), Dword(T("B"), "0"));
+        Assert.True(_engine.Apply(tweak, Guid.NewGuid()).Success);
+
+        // The steps are undone last to first, so B goes back and then A cannot.
+        _reg.FailWrite = t => t.Name == "A";
+        Assert.False(_engine.Revert(tweak, Guid.NewGuid()).Success);
+        Assert.Equal("2", _reg.Read(T("B")).Data!.Value);
+        Assert.Equal(2, _journal.OutstandingFor("t.one").Count);
+
+        _reg.FailWrite = null;
+        Assert.True(_engine.Revert(tweak, Guid.NewGuid()).Success);
+        Assert.Equal("1", _reg.Read(T("A")).Data!.Value);
+        Assert.Equal("2", _reg.Read(T("B")).Data!.Value);
+        Assert.Empty(_journal.OutstandingFor("t.one"));
+    }
+
+    [Fact]
     public void Failed_step_rolls_back_earlier_steps()
     {
         _reg.Write(T("A"), new RegistryData(RegistryKind.DWord, "1"));
