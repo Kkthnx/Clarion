@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-351 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+352 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -46,6 +46,19 @@ Move the Start button and icons to the left edge.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAl to 0 (DWord)`
 - **Needs:** Windows build 22000 or later
+
+#### Show seconds in the taskbar clock
+
+`appearance.clock-seconds` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Count the seconds in the clock at the end of the taskbar.
+
+- **What it does:** Sets ShowSecondsInSystemClock to 1 for your account, the same value the checkbox Show seconds in system tray clock under Settings, Time and language, Date and time writes. Revert puts back what was there before.
+- **Benefit:** The taskbar clock shows seconds, which helps when you time something or check that the clock is right.
+- **Risk:** None. Windows labels the option as using more power.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ShowSecondsInSystemClock to 1 (DWord)`
+- **Needs:** Windows build 22621 or later
 
 ### Sign-in screen
 

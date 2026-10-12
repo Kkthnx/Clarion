@@ -1,0 +1,33 @@
+[
+  {
+    "id": "appearance.clock-seconds",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Look and feel",
+    "name": "Show seconds in the taskbar clock",
+    "summary": "Count the seconds in the clock at the end of the taskbar.",
+    "what": "Sets ShowSecondsInSystemClock to 1 for your account, the same value the checkbox Show seconds in system tray clock under Settings, Time and language, Date and time writes. Revert puts back what was there before.",
+    "benefit": "The taskbar clock shows seconds, which helps when you time something or check that the clock is right.",
+    "risk": "None. Windows labels the option as using more power.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "A matter of taste. Skip it on a laptop if battery life matters to you.",
+    "facts": [
+      "Windows labels the option as using more power",
+      "Windows 11 only",
+      "Per account setting",
+      "Revert puts back what was there before"
+    ],
+    "scope": "User",
+    "requires": {
+      "minBuild": 22621
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowSecondsInSystemClock" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "undo": [
+      { "type": "registry.delete", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowSecondsInSystemClock" } }
+    ]
+  }
+]
