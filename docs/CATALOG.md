@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-343 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+351 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -539,6 +539,20 @@ No built-in crypto wallet in Brave.
 
 ### Microsoft Edge
 
+#### Always send Do Not Track from Edge
+
+`edge.do-not-track-on` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Edge tells every site that asks that you do not want to be tracked.
+
+- **What it does:** Applies the Edge policy Configure Do Not Track with the value to always send the request to sites that ask for tracking information. Edge does not send it by default.
+- **Benefit:** Every site that asks gets your request not to be tracked.
+- **Risk:** None. It is only a request, and a site decides whether to honor it. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\ConfigureDoNotTrack to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/configuredonottrack>
+
 #### Hide Microsoft Rewards in Edge
 
 `edge.rewards-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
@@ -637,6 +651,20 @@ No pop-ups that suggest Edge features.
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/showrecommendationsenabled>
 
+#### Stop Edge fetching feature assets from Microsoft
+
+`edge.asset-delivery-off` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Edge features can no longer download their files from the Asset Delivery Service.
+
+- **What it does:** Applies the Edge policy that disables the Asset Delivery Service. Microsoft describes it as a delivery pipeline whose payloads can be configuration files or machine learning models for Edge features.
+- **Benefit:** Edge stops fetching those files for its features in the background.
+- **Risk:** Low. Microsoft says features that depend on the service cannot download what they need to run correctly, so some Edge features may stop working.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\EdgeAssetDeliveryServiceEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/edgeassetdeliveryserviceenabled>
+
 #### Stop Edge from personalizing ads with your browsing
 
 `edge.personalization` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
@@ -720,6 +748,34 @@ No price comparison, coupons or checkout autofill banners.
   - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\EdgeShoppingAssistantEnabled to 0 (DWord)`
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/edgeshoppingassistantenabled>
+
+### Outlook
+
+#### Hide the Try the new Outlook switch in classic Outlook
+
+`office.new-outlook-toggle-hidden` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Remove the switch that moves you to the new Outlook.
+
+- **What it does:** Sets HideNewOutlookToggle to 1 in the classic Outlook options for your account, which Microsoft documents for hiding the Try the new Outlook switch. Only classic Outlook reads it. Revert deletes the value, and the switch comes back the next time classic Outlook starts.
+- **Benefit:** Classic Outlook no longer offers the switch, so nobody moves to the new Outlook by accident.
+- **Risk:** Low. The new Outlook stays installed and opens from its own icon. Microsoft says that if you already use it, opening classic Outlook switches you back.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Office\16.0\Outlook\Options\General\HideNewOutlookToggle to 1 (DWord)`
+- **Sources:** <https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/outlook-on-the-web/enable-disable-employee-access-new-outlook>, <https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install>
+
+#### Stop Outlook moving you to the new Outlook by itself
+
+`office.new-outlook-auto-move-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Block the automatic switch from classic Outlook to the new Outlook.
+
+- **What it does:** Sets the policy Manage user setting for new Outlook automatic migration to 0 for your account. Microsoft says this turns the setting for automatic migration off and stops users changing it. Revert deletes the policy value.
+- **Benefit:** Classic Outlook stays your Outlook until you choose otherwise.
+- **Risk:** Low. Microsoft says the policy does not apply to a migration that an administrator starts with the admin controlled migration policy.
+- **Changes:**
+  - `Set HKCU\Software\Policies\Microsoft\office\16.0\outlook\preferences\NewOutlookMigrationUserSetting to 0 (DWord)`
+- **Sources:** <https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install>
 
 ### Suggestions and ads
 
@@ -3105,6 +3161,22 @@ Use Quad9 and encrypt the lookups so others on the network cannot read them.
 - **Needs:** Windows build 22000 or later; administrator rights, applies to every account
 - **Sources:** <https://docs.quad9.net/>, <https://learn.microsoft.com/en-us/windows-server/networking/dns/doh-client-support>
 
+### IPv6
+
+#### Turn off Teredo tunneling
+
+`network.teredo-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Stop Windows from using the Teredo IPv6 tunnel.
+
+- **What it does:** Sets the policy Set Teredo State to Disabled, which is how Microsoft's Windows privacy guide says to turn Teredo off. No Teredo interface is then present on this PC. Revert removes the policy, and Windows goes back to its own default.
+- **Benefit:** Removes a tunnel that lets Windows reach IPv6 sites through a Microsoft Teredo server, win1910.ipv6.microsoft.com by default, when the PC has no IPv6 of its own.
+- **Risk:** Low. Microsoft says some Xbox gaming features and Delivery Optimization with Group or Internet peering do not work without Teredo.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition\Teredo_State to Disabled (String)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services>, <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-tcpip>
+
 ### Network
 
 #### Prefer IPv4 over IPv6
@@ -4586,6 +4658,48 @@ Let the graphics card manage its own memory scheduling.
 - **Changes:**
   - `Set HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\HwSchMode to 2 (DWord)`
 - **Needs:** Windows build 19041 or later; administrator rights, applies to every account; a restart
+
+#### Optimizations for windowed games: Off
+
+`gaming.windowed-optimizations-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Keep windowed games on their own presentation model.
+
+- **What it does:** Writes the entry SwapEffectUpgradeEnable=0 into the graphics preferences Windows keeps for your account, the same entry the switch under Settings, System, Display, Graphics writes. Other entries in that value are left as they are, and Revert puts back the whole text that was there.
+- **Benefit:** Stops Windows moving a DirectX 10 or 11 game in a window onto the flip model, for a game that tears or flickers with it.
+- **Risk:** Low. Windowed and borderless DirectX 10 and 11 games lose the latency gain, Auto HDR and variable refresh rate that Microsoft says the optimization allows.
+- **Changes:**
+  - `In HKCU\Software\Microsoft\DirectX\UserGpuPreferences\DirectXUserGlobalSettings, set the entry SwapEffectUpgradeEnable to 0`
+- **Needs:** Windows build 22621 or later
+- **Sources:** <https://devblogs.microsoft.com/directx/updates-in-graphics-and-gaming/>
+
+#### Optimizations for windowed games: On
+
+`gaming.windowed-optimizations-on` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Present DirectX 10 and 11 games in a window with the newer flip model.
+
+- **What it does:** Writes the entry SwapEffectUpgradeEnable=1 into the graphics preferences Windows keeps for your account, the same entry the switch under Settings, System, Display, Graphics writes. Other entries in that value, such as the variable refresh rate choice, are left as they are, and Revert puts back the whole text that was there.
+- **Benefit:** Microsoft says it lowers latency in windowed and borderless DirectX 10 and 11 games and allows Auto HDR and variable refresh rate in them.
+- **Risk:** Low. A few games can tear or flicker with it on. DirectX 12 games already use the newer model, so it changes nothing for them.
+- **Changes:**
+  - `In HKCU\Software\Microsoft\DirectX\UserGpuPreferences\DirectXUserGlobalSettings, set the entry SwapEffectUpgradeEnable to 1`
+- **Needs:** Windows build 22621 or later
+- **Sources:** <https://devblogs.microsoft.com/directx/updates-in-graphics-and-gaming/>
+
+#### Turn off Multi-Plane Overlay
+
+`gaming.mpo-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Make Windows draw the desktop without separate hardware layers.
+
+- **What it does:** Sets the value OverlayTestMode to 5 under HKLM\SOFTWARE\Microsoft\Windows\Dwm, which is the value in the mpo_disable.reg file that NVIDIA's support article gives for turning Multi-Plane Overlay off. Revert deletes the value, which is what NVIDIA's mpo_restore.reg does.
+- **Benefit:** A way to test whether Multi-Plane Overlay is behind screen flicker, black flashes or glitches in windows and games.
+- **Risk:** Low. NVIDIA says the feature moves some composition work to the graphics hardware to improve performance and use less power, so the desktop may use a little more of both without it. Needs a restart.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Microsoft\Windows\Dwm\OverlayTestMode to 5 (DWord)`
+- **Needs:** Windows build 22000 or later; administrator rights, applies to every account; a restart
+- **Sources:** <https://nvidia.custhelp.com/app/answers/detail/a_id/5157/~/what-is-multi-plane-overlay-%28mpo%29-in-windows-11>, <https://nvidia.custhelp.com/ci/fattach/get/824301808/0/filename/mpo_disable.reg>, <https://nvidia.custhelp.com/ci/fattach/get/824301809/0/filename/mpo_restore.reg>
 
 #### Turn on Game Mode
 

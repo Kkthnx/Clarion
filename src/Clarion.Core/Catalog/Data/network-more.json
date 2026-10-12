@@ -1,0 +1,39 @@
+[
+  {
+    "id": "network.teredo-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Network",
+    "topic": "IPv6",
+    "name": "Turn off Teredo tunneling",
+    "summary": "Stop Windows from using the Teredo IPv6 tunnel.",
+    "what": "Sets the policy Set Teredo State to Disabled, which is how Microsoft's Windows privacy guide says to turn Teredo off. No Teredo interface is then present on this PC. Revert removes the policy, and Windows goes back to its own default.",
+    "benefit": "Removes a tunnel that lets Windows reach IPv6 sites through a Microsoft Teredo server, win1910.ipv6.microsoft.com by default, when the PC has no IPv6 of its own.",
+    "risk": "Low. Microsoft says some Xbox gaming features and Delivery Optimization with Group or Internet peering do not work without Teredo.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Only if you do not use Xbox networking or peer to peer features. Windows may already keep Teredo inactive on your PC, and this makes sure it stays that way.",
+    "facts": [
+      "Microsoft's privacy guide gives this policy value for turning Teredo off",
+      "Microsoft says some Xbox features and peer Delivery Optimization stop working",
+      "netsh then reports Teredo as disabled by Group Policy",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\TCPIP\\v6Transition", "name": "Teredo_State" }, "data": { "kind": "String", "value": "Disabled" } }
+    ],
+    "undo": [
+      { "type": "registry.delete", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\TCPIP\\v6Transition", "name": "Teredo_State" }, "pruneTo": "SOFTWARE\\Policies\\Microsoft\\Windows" }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services",
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-tcpip"
+    ],
+    "provenance": [ "tcpip.admx Teredo_State" ]
+  }
+]

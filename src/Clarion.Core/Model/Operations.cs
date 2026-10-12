@@ -7,6 +7,7 @@ public enum ServiceStartType { Automatic, AutomaticDelayed, Manual, Disabled }
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(SetRegistryValue), "registry.set")]
 [JsonDerivedType(typeof(DeleteRegistryValue), "registry.delete")]
+[JsonDerivedType(typeof(SetRegistryListEntry), "registry.list-entry")]
 [JsonDerivedType(typeof(SetServiceStartType), "service.start-type")]
 [JsonDerivedType(typeof(SetTaskEnabled), "task.set-enabled")]
 [JsonDerivedType(typeof(RemoveAppxPackage), "appx.remove")]
@@ -122,4 +123,13 @@ public sealed record ResetNvidiaSetting(uint Id) : Operation
     public override string Describe() => Nvidia.NvidiaSettings.Find(Id) is { } s
         ? $"Put the NVIDIA driver setting \"{s.Name}\" back to the driver's default"
         : $"Put NVIDIA driver setting 0x{Id:X8} back to the driver's default";
+}
+
+/// <summary>
+/// Sets one Name=Value entry in a text value that holds a list of such entries separated by semicolons, such as the graphics
+/// preferences Windows keeps in DirectXUserGlobalSettings. The other entries in the list are left as they are.
+/// </summary>
+public sealed record SetRegistryListEntry(RegistryTarget Target, string Key, string Value) : Operation
+{
+    public override string Describe() => $"In {Target}, set the entry {Key} to {Value}";
 }

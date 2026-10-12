@@ -164,7 +164,7 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     public bool IsDrifted { get => _isDrifted; set => SetProperty(ref _isDrifted, value); }
 
     /// <summary>Registry only tweaks read in milliseconds. Services, apps and features need PowerShell.</summary>
-    public bool ReadsQuickly => Tweak.Apply.All(o => o is SetRegistryValue or DeleteRegistryValue);
+    public bool ReadsQuickly => Tweak.Apply.All(o => o is SetRegistryValue or DeleteRegistryValue or SetRegistryListEntry);
 
     public bool IsApplied => State == TweakState.Applied;
     public bool IsUnavailable => State == TweakState.Unavailable;

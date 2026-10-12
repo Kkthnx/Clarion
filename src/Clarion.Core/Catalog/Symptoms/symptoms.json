@@ -201,5 +201,26 @@
     "tip": "These settings change the NVIDIA driver's global profile, the same one NVIDIA's control panel edits. A profile for one game can override them. Reverting a setting puts back the value that was stored before .Clarion changed it.",
     "topics": ["NVIDIA graphics"],
     "tweakIds": []
+  },
+  {
+    "id": "screen-flicker",
+    "title": "The screen flickers, flashes black or tears in a game or a window",
+    "tip": "These settings change how Windows draws the desktop and windowed games. Multi-Plane Overlay and the windowed game optimizations are the usual suspects, so revert the newest one first and restart if it asked for one.",
+    "topics": [],
+    "tweakIds": ["gaming.mpo-off", "gaming.windowed-optimizations-on", "gaming.windowed-optimizations-off", "gaming.hags-on"]
+  },
+  {
+    "id": "game-networking",
+    "title": "Xbox networking or peer to peer game features stopped working, or Windows updates no longer come from other PCs",
+    "tip": "Microsoft says some Xbox gaming features and peer Delivery Optimization need Teredo. Reverting the Teredo setting lets Windows use it again.",
+    "topics": ["IPv6"],
+    "tweakIds": ["network.delivery-optimization-http"]
+  },
+  {
+    "id": "outlook-switch",
+    "title": "The Try the new Outlook switch is missing, or Outlook did not move to the new Outlook",
+    "tip": "These settings hide the switch in classic Outlook and block the automatic move. Revert them if you want to try the new Outlook. Restart classic Outlook for the change to show.",
+    "topics": ["Outlook"],
+    "tweakIds": []
   }
 ]

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "office.new-outlook-toggle-hidden",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Outlook",
+    "name": "Hide the Try the new Outlook switch in classic Outlook",
+    "summary": "Remove the switch that moves you to the new Outlook.",
+    "what": "Sets HideNewOutlookToggle to 1 in the classic Outlook options for your account, which Microsoft documents for hiding the Try the new Outlook switch. Only classic Outlook reads it. Revert deletes the value, and the switch comes back the next time classic Outlook starts.",
+    "benefit": "Classic Outlook no longer offers the switch, so nobody moves to the new Outlook by accident.",
+    "risk": "Low. The new Outlook stays installed and opens from its own icon. Microsoft says that if you already use it, opening classic Outlook switches you back.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you use classic Outlook and want to keep it. Skip it if you want to try the new Outlook.",
+    "facts": [
+      "Microsoft documents this value for hiding the switch",
+      "Only classic Outlook (Office 16.0) reads it",
+      "The new Outlook app stays installed",
+      "Applies to your account only",
+      "Revert deletes the value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Office\\16.0\\Outlook\\Options\\General", "name": "HideNewOutlookToggle" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "undo": [
+      { "type": "registry.delete", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Office\\16.0\\Outlook\\Options\\General", "name": "HideNewOutlookToggle" } }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/outlook-on-the-web/enable-disable-employee-access-new-outlook",
+      "https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install"
+    ]
+  },
+  {
+    "id": "office.new-outlook-auto-move-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Outlook",
+    "name": "Stop Outlook moving you to the new Outlook by itself",
+    "summary": "Block the automatic switch from classic Outlook to the new Outlook.",
+    "what": "Sets the policy Manage user setting for new Outlook automatic migration to 0 for your account. Microsoft says this turns the setting for automatic migration off and stops users changing it. Revert deletes the policy value.",
+    "benefit": "Classic Outlook stays your Outlook until you choose otherwise.",
+    "risk": "Low. Microsoft says the policy does not apply to a migration that an administrator starts with the admin controlled migration policy.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you use classic Outlook and do not want it to switch on its own. Skip it if you are happy to move to the new Outlook.",
+    "facts": [
+      "Microsoft documents this policy for opting out of automatic migration",
+      "It blocks automatic migration and users cannot change it",
+      "It does not stop a migration an administrator starts",
+      "Applies to your account only",
+      "Revert deletes the policy value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\office\\16.0\\outlook\\preferences", "name": "NewOutlookMigrationUserSetting" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.delete", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\office\\16.0\\outlook\\preferences", "name": "NewOutlookMigrationUserSetting" } }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install"
+    ]
+  }
+]

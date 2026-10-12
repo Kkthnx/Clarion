@@ -1,0 +1,106 @@
+[
+  {
+    "id": "gaming.windowed-optimizations-on",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Gaming",
+    "name": "Optimizations for windowed games: On",
+    "summary": "Present DirectX 10 and 11 games in a window with the newer flip model.",
+    "what": "Writes the entry SwapEffectUpgradeEnable=1 into the graphics preferences Windows keeps for your account, the same entry the switch under Settings, System, Display, Graphics writes. Other entries in that value, such as the variable refresh rate choice, are left as they are, and Revert puts back the whole text that was there.",
+    "benefit": "Microsoft says it lowers latency in windowed and borderless DirectX 10 and 11 games and allows Auto HDR and variable refresh rate in them.",
+    "risk": "Low. A few games can tear or flicker with it on. DirectX 12 games already use the newer model, so it changes nothing for them.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Windows already treats it as on when no entry is written, as seen on build 26200, so this mostly matters if you or another tool turned it off. You can also leave it to Windows.",
+    "facts": [
+      "Affects only DirectX 10 and 11 games in a window or borderless window",
+      "Microsoft says DirectX 12 games already use the newer model",
+      "Windows shows it as on when no entry exists, as seen on build 26200",
+      "Applies to your account only",
+      "Revert puts back the whole text that was there"
+    ],
+    "scope": "User",
+    "exclusiveGroup": "windowed-game-optimizations",
+    "requires": {
+      "minBuild": 22621
+    },
+    "apply": [
+      { "type": "registry.list-entry", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\DirectX\\UserGpuPreferences", "name": "DirectXUserGlobalSettings" }, "key": "SwapEffectUpgradeEnable", "value": "1" }
+    ],
+    "sources": [
+      "https://devblogs.microsoft.com/directx/updates-in-graphics-and-gaming/"
+    ]
+  },
+  {
+    "id": "gaming.windowed-optimizations-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Gaming",
+    "name": "Optimizations for windowed games: Off",
+    "summary": "Keep windowed games on their own presentation model.",
+    "what": "Writes the entry SwapEffectUpgradeEnable=0 into the graphics preferences Windows keeps for your account, the same entry the switch under Settings, System, Display, Graphics writes. Other entries in that value are left as they are, and Revert puts back the whole text that was there.",
+    "benefit": "Stops Windows moving a DirectX 10 or 11 game in a window onto the flip model, for a game that tears or flickers with it.",
+    "risk": "Low. Windowed and borderless DirectX 10 and 11 games lose the latency gain, Auto HDR and variable refresh rate that Microsoft says the optimization allows.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Only if a game in a window or borderless window tears or flickers. To leave one game out, Windows also lets you tick Don't use Optimizations for windowed games for that game under Settings, System, Display, Graphics.",
+    "facts": [
+      "Affects only DirectX 10 and 11 games in a window or borderless window",
+      "Windows lets you leave out a single game under Display, Graphics",
+      "Applies to your account only",
+      "Choose this or the On setting, not both",
+      "Revert puts back the whole text that was there"
+    ],
+    "scope": "User",
+    "exclusiveGroup": "windowed-game-optimizations",
+    "requires": {
+      "minBuild": 22621
+    },
+    "apply": [
+      { "type": "registry.list-entry", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\DirectX\\UserGpuPreferences", "name": "DirectXUserGlobalSettings" }, "key": "SwapEffectUpgradeEnable", "value": "0" }
+    ],
+    "sources": [
+      "https://devblogs.microsoft.com/directx/updates-in-graphics-and-gaming/"
+    ]
+  },
+  {
+    "id": "gaming.mpo-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Gaming",
+    "name": "Turn off Multi-Plane Overlay",
+    "summary": "Make Windows draw the desktop without separate hardware layers.",
+    "what": "Sets the value OverlayTestMode to 5 under HKLM\\SOFTWARE\\Microsoft\\Windows\\Dwm, which is the value in the mpo_disable.reg file that NVIDIA's support article gives for turning Multi-Plane Overlay off. Revert deletes the value, which is what NVIDIA's mpo_restore.reg does.",
+    "benefit": "A way to test whether Multi-Plane Overlay is behind screen flicker, black flashes or glitches in windows and games.",
+    "risk": "Low. NVIDIA says the feature moves some composition work to the graphics hardware to improve performance and use less power, so the desktop may use a little more of both without it. Needs a restart.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Only if the screen flickers or flashes black, most often with more than one monitor. It does not fix every case, and with no such problem there is nothing to gain.",
+    "facts": [
+      "The value is the one NVIDIA's own support article gives",
+      "NVIDIA says Multi-Plane Overlay can improve performance and save power",
+      "Applies to every account",
+      "Restart required",
+      "Revert deletes the value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22000
+    },
+    "needsReboot": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Microsoft\\Windows\\Dwm", "name": "OverlayTestMode" }, "data": { "kind": "DWord", "value": "5" } }
+    ],
+    "undo": [
+      { "type": "registry.delete", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Microsoft\\Windows\\Dwm", "name": "OverlayTestMode" } }
+    ],
+    "sources": [
+      "https://nvidia.custhelp.com/app/answers/detail/a_id/5157/~/what-is-multi-plane-overlay-%28mpo%29-in-windows-11",
+      "https://nvidia.custhelp.com/ci/fattach/get/824301808/0/filename/mpo_disable.reg",
+      "https://nvidia.custhelp.com/ci/fattach/get/824301809/0/filename/mpo_restore.reg"
+    ]
+  }
+]

@@ -177,6 +177,11 @@ public static class CatalogLoader
                     case DeleteRegistryValue d:
                         CheckRegistry(t, d.Target, errors);
                         break;
+                    case SetRegistryListEntry l:
+                        CheckRegistry(t, l.Target, errors);
+                        if (!RegistryList.IsPlainName(l.Key)) errors.Add($"{t.Id}: not a plain list entry name: {l.Key}");
+                        if (!RegistryList.IsPlainValue(l.Value)) errors.Add($"{t.Id}: not a plain list entry value: {l.Value}");
+                        break;
                     case SetServiceStartType svc:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: service changes need Machine scope.");
                         if (string.IsNullOrWhiteSpace(svc.Name) || !Engine.ServiceNames.IsValid(svc.Name)) errors.Add($"{t.Id}: not a valid service name: {svc.Name}");

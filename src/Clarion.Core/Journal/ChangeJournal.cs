@@ -39,6 +39,7 @@ public sealed class ChangeJournal
     {
         SetRegistryValue s => s.Target.Hive == RegistryHive.CurrentUser,
         DeleteRegistryValue d => d.Target.Hive == RegistryHive.CurrentUser,
+        SetRegistryListEntry l => l.Target.Hive == RegistryHive.CurrentUser,
         RemoveAppxPackage r => !r.AllUsers,
         RestoreAppxPackage => true,
         _ => false,

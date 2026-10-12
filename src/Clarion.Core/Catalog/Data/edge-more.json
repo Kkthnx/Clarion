@@ -1,0 +1,61 @@
+[
+  {
+    "id": "edge.do-not-track-on",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Always send Do Not Track from Edge",
+    "summary": "Edge tells every site that asks that you do not want to be tracked.",
+    "what": "Applies the Edge policy Configure Do Not Track with the value to always send the request to sites that ask for tracking information. Edge does not send it by default.",
+    "benefit": "Every site that asks gets your request not to be tracked.",
+    "risk": "None. It is only a request, and a site decides whether to honor it. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Optional. It costs nothing, but it does not stop a site that ignores it.",
+    "facts": [
+      "Edge does not send Do Not Track unless this is set or the user turns it on",
+      "Sites decide whether to honor the request",
+      "Takes effect after Edge restarts",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "ConfigureDoNotTrack" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "undo": [
+      { "type": "registry.delete", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "ConfigureDoNotTrack" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/configuredonottrack" ]
+  },
+  {
+    "id": "edge.asset-delivery-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Stop Edge fetching feature assets from Microsoft",
+    "summary": "Edge features can no longer download their files from the Asset Delivery Service.",
+    "what": "Applies the Edge policy that disables the Asset Delivery Service. Microsoft describes it as a delivery pipeline whose payloads can be configuration files or machine learning models for Edge features.",
+    "benefit": "Edge stops fetching those files for its features in the background.",
+    "risk": "Low. Microsoft says features that depend on the service cannot download what they need to run correctly, so some Edge features may stop working.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Only if you want Edge to fetch as little as possible and can live with some Edge features not working. Revert if a feature stops working.",
+    "facts": [
+      "Microsoft says features that use the service need the downloads to run correctly",
+      "Takes effect after Edge restarts",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "EdgeAssetDeliveryServiceEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "undo": [
+      { "type": "registry.delete", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "EdgeAssetDeliveryServiceEnabled" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-browser-policies/edgeassetdeliveryserviceenabled" ]
+  }
+]
