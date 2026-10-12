@@ -31,7 +31,7 @@ public static class CatalogLoader
     {
         var asm = typeof(CatalogLoader).Assembly;
         var all = new List<T>();
-        foreach (var name in asm.GetManifestResourceNames().Where(n => n.Contains(marker, StringComparison.Ordinal) && n.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).Order())
+        foreach (var name in asm.GetManifestResourceNames().Where(n => n.Contains(marker, StringComparison.Ordinal) && n.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).Order(StringComparer.Ordinal))
         {
             using var stream = asm.GetManifestResourceStream(name)!;
             all.AddRange(JsonSerializer.Deserialize<List<T>>(stream, Options) ?? throw new InvalidDataException($"Empty catalog file {name}"));
@@ -171,13 +171,15 @@ public static class CatalogLoader
                             errors.Add($"{t.Id}: DWord value is not a valid unsigned number: {s.Data.Value}");
                         if (s.Data.Kind is RegistryKind.QWord && !ulong.TryParse(s.Data.Value, out _))
                             errors.Add($"{t.Id}: QWord value is not a valid unsigned number: {s.Data.Value}");
+                        if (s.Data.Kind is RegistryKind.Binary && !IsHex(s.Data.Value))
+                            errors.Add($"{t.Id}: Binary value is not whole bytes in hex: {s.Data.Value}");
                         break;
                     case DeleteRegistryValue d:
                         CheckRegistry(t, d.Target, errors);
                         break;
                     case SetServiceStartType svc:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: service changes need Machine scope.");
-                        if (string.IsNullOrWhiteSpace(svc.Name)) errors.Add($"{t.Id}: service name is empty.");
+                        if (string.IsNullOrWhiteSpace(svc.Name) || !Engine.ServiceNames.IsValid(svc.Name)) errors.Add($"{t.Id}: not a valid service name: {svc.Name}");
                         if (ProtectedServices.Contains(svc.Name)) errors.Add($"{t.Id}: {svc.Name} is a protected service.");
                         break;
                     case SetTaskEnabled task:
@@ -232,6 +234,8 @@ public static class CatalogLoader
         }
         return errors;
     }
+
+    private static bool IsHex(string value) => value.Length % 2 == 0 && value.All(Uri.IsHexDigit);
 
     private static void CheckRegistry(Tweak t, RegistryTarget target, List<string> errors)
     {
