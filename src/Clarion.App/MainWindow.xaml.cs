@@ -129,7 +129,7 @@ public sealed partial class MainWindow : Window
         var y = area.Y + (area.Height - height) / 2;
         appWindow.MoveAndResize(new Windows.Graphics.RectInt32(x, y, width, height));
 
-        // The pages are laid out for a window about this big. Smaller than this and cards and the detail pane start to crowd.
+        // The pages are laid out for a window about this big. Smaller than this and the cards start to crowd.
         // The limit is in real pixels, not scaled ones (measured: asking for 980 gave 980 at 125% scaling), so it follows the screen's scale.
         if (appWindow.Presenter is OverlappedPresenter presenter)
         {

@@ -3,7 +3,7 @@ using Clarion.Core.Model;
 
 namespace Clarion.App.Services;
 
-/// <summary>What the detail pane and tooltips need from any item: a setting, a cleanup row or a repair job.</summary>
+/// <summary>What the info flyout and tooltips need from any item: a setting, a cleanup row or a repair job.</summary>
 public interface IDetailSource
 {
     string Name { get; }

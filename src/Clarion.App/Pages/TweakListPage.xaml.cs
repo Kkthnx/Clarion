@@ -53,24 +53,19 @@ public sealed partial class TweakListPage : Page
         Rebuild();
     }
 
-    /// <summary>The compact list is one line per setting. The choice is remembered, and the page keeps its selection when it changes.</summary>
+    /// <summary>The compact list is one line per setting. The choice is remembered.</summary>
     private void ApplyDensity()
     {
         CompactToggle.IsChecked = _compact;
         List.ItemTemplate = (DataTemplate)Resources[_compact ? "CompactRow" : "RoomyRow"];
         List.ItemContainerStyle = (Style)Application.Current.Resources[_compact ? "CompactListViewItemStyle" : "CardListViewItemStyle"];
-        // One line per setting reads best with room for the name, so the list takes more of the width and the pane less.
-        ListColumn.Width = new GridLength(_compact ? 1.5 : 1, GridUnitType.Star);
-        DetailColumn.Width = new GridLength(_compact ? 1 : 1.05, GridUnitType.Star);
     }
 
     private void OnCompactClicked(object sender, RoutedEventArgs e)
     {
         _compact = CompactToggle.IsChecked == true;
         _app.UpdateSettings(s => s with { CompactLists = _compact });
-        var selected = (List.SelectedItem as TweakItem)?.Id;
         ApplyDensity();
-        if (selected is not null) List.SelectedItem = Visible.FirstOrDefault(i => i.Id == selected);
     }
 
     private void OnModeChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(Rebuild);
@@ -150,7 +145,6 @@ public sealed partial class TweakListPage : Page
         _building = true;
         try
         {
-            var selected = (List.SelectedItem as TweakItem)?.Id;
             var inScope = _app.Items
                 .Where(i => _args.Categories.Length == 0 || _args.Categories.Contains(i.Category, StringComparer.OrdinalIgnoreCase))
                 .Where(i => _app.ExpertMode || (i.Tweak.RiskLevel <= RiskLevel.Low && i.Tweak.Evidence != Evidence.Unproven))
@@ -177,8 +171,6 @@ public sealed partial class TweakListPage : Page
             var total = useChooser ? inScope.Count - dns.Count + 1 : inScope.Count;
             var shown = items.Count + (Chooser.Visibility == Visibility.Visible ? 1 : 0);
             CountText.Text = shown == total ? $"{shown} settings" : $"{shown} of {total} settings";
-            if (selected is not null) List.SelectedItem = items.FirstOrDefault(i => i.Id == selected);
-            UpdateDetail();
         }
         finally
         {
@@ -202,8 +194,4 @@ public sealed partial class TweakListPage : Page
         _ => true,
     };
 
-    private void OnSelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateDetail();
-
-
-    private void UpdateDetail() => Pane.Show(List.SelectedItem as TweakItem, _app.ExpertMode);
 }

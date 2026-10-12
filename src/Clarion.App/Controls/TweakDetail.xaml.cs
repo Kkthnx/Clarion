@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Clarion.App.Controls;
 
-/// <summary>The full explanation of one setting. Used inside tooltips and in the detail pane.</summary>
+/// <summary>The full explanation of one setting. Used inside tooltips and in the flyout behind each i button.</summary>
 public sealed partial class TweakDetail : UserControl
 {
     public static readonly DependencyProperty ItemProperty =

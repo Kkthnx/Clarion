@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- The list is the same list every settings page uses, so search, topics, the details pane, the queue and the review all work the same.
+    <!-- The list is the same list every settings page uses, so search, topics, the details under each i button, the queue and the review all work the same.
          The banner above it says where the apps come from, or that winget is missing. -->
     <Grid>
         <Grid.RowDefinitions>

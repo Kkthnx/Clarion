@@ -15,6 +15,17 @@ public sealed partial class DetailPane : UserControl
     private TweakItem? _shown;
     private bool _loading;
 
+    /// <summary>True inside a flyout, which already has its own background and border.</summary>
+    public bool Bare
+    {
+        get => Card.BorderThickness.Left == 0;
+        set
+        {
+            Card.BorderThickness = new Thickness(value ? 0 : 1);
+            Card.Background = value ? null : (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["ClSurface1Brush"];
+        }
+    }
+
     public string EmptyMessage { get => EmptyText.Text; set => EmptyText.Text = value; }
     public string TechnicalTitle { get => Detail.TechnicalTitle; set => Detail.TechnicalTitle = value; }
 

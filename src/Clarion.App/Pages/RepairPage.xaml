@@ -18,19 +18,14 @@
                        Text="One time jobs that fix common problems. Each one uses the tools that ship with Windows, shows its output while it runs, and can be stopped." />
         </StackPanel>
 
-        <Grid Grid.Row="1" ColumnSpacing="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="300" />
-                <ColumnDefinition Width="1.05*" MinWidth="280" MaxWidth="400" />
-            </Grid.ColumnDefinitions>
-
+        <Grid Grid.Row="1">
             <ScrollViewer Padding="0,0,14,0">
                 <ItemsControl x:Name="Groups">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="pages:RepairGroup">
                             <StackPanel Spacing="8" Margin="0,0,0,18">
                                 <TextBlock Text="{x:Bind Name}" FontSize="16" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                                <ListView ItemsSource="{x:Bind Items}" SelectionMode="Single" SelectionChanged="OnRowSelected"
+                                <ListView ItemsSource="{x:Bind Items}" SelectionMode="None"
                                           IsItemClickEnabled="False" ScrollViewer.VerticalScrollMode="Disabled"
                                           ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                           ItemContainerStyle="{StaticResource CardListViewItemStyle}">
@@ -43,7 +38,15 @@
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
                                                     <StackPanel Spacing="4">
-                                                        <TextBlock Text="{x:Bind Name}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                                        <Grid ColumnSpacing="4">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{x:Bind Name}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                                            <controls:InfoButton Grid.Column="1" Item="{x:Bind}" AlwaysTechnical="True" TechnicalTitle="Exact commands"
+                                                                                 HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-3,0,-3" />
+                                                        </Grid>
                                                         <TextBlock Text="{x:Bind Summary}" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
                                                         <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
                                                             <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}"
@@ -65,8 +68,6 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-
-            <controls:DetailPane x:Name="Pane" Grid.Column="1" TechnicalTitle="Exact commands" EmptyMessage="Select a job to see what it does, how long it takes, and the exact commands it runs." />
         </Grid>
     </Grid>
 </Page>

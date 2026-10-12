@@ -22,7 +22,7 @@ public static class DetailHelpers
         _ => ChipKind.Danger,
     };
 
-    /// <summary>What a recommendation label means, for the label's tooltip. The details pane says why for this one setting.</summary>
+    /// <summary>What a recommendation label means, for the label's tooltip. The info flyout says why for this one setting.</summary>
     public static string RecommendationHint(Recommendation r) => TweakTooltip.RecommendationHint(r);
 
     /// <summary>What a risk label means, for the label's tooltip.</summary>

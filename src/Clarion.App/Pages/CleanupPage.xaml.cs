@@ -253,21 +253,4 @@ public sealed partial class CleanupPage : Page
         package.SetText(text);
         Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(package);
     }
-
-    private ListView? _selectedList;
-
-    /// <summary>Each group is its own list, so picking a row in one clears the highlight in the others.</summary>
-    private void OnRowSelected(object sender, SelectionChangedEventArgs e)
-    {
-        if (sender is not ListView list || list.SelectedItem is not CleanupItem item) return;
-        if (_selectedList is not null && !ReferenceEquals(_selectedList, list))
-        {
-            var previous = _selectedList;
-            _selectedList = list;
-            previous.SelectedItem = null;
-        }
-        _selectedList = list;
-        Pane.Show(item, technical: true);
-    }
-
 }
