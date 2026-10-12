@@ -73,6 +73,7 @@ public sealed partial class SettingsPage : Page
             _app.UpdateSettings(s => s with { MonthlyVerify = wantOn });
             MonthlyStatus.Text = wantOn
                 ? "On. The first check is the next second Wednesday of the month. It only looks and changes nothing."
+                  + (Clarion.Core.Scheduling.MonthlyVerifySchedule.RunsElevated(exe) ? "" : " This copy is not in Program Files, so the check runs without administrator rights and may not be able to read every setting.")
                 : "Off. The scheduled task was removed.";
         }
         catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or IOException)

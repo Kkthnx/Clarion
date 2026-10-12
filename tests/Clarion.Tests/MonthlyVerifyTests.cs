@@ -117,6 +117,26 @@ public sealed class MonthlyVerifyTests : IDisposable
         Assert.Equal("true", All(doc, "StartWhenAvailable").Single().Value);
     }
 
+    [Theory]
+    [InlineData(@"C:\Program Files\Clarion\Clarion.exe", true)]
+    [InlineData(@"c:\program files (x86)\Clarion\Clarion.exe", true)]
+    [InlineData(@"C:\Windows\Clarion.exe", true)]
+    [InlineData(@"C:\Users\me\Downloads\Clarion\Clarion.exe", false)]
+    [InlineData(@"D:\Tools\Clarion.exe", false)]
+    [InlineData(@"C:\Program Files Evil\Clarion.exe", false)]
+    [InlineData(@"C:\Program Files\..\Users\me\Clarion.exe", false)]
+    public void The_check_only_keeps_administrator_rights_for_a_program_in_a_folder_only_an_administrator_can_write_to(string exe, bool elevated)
+    {
+        var folders = new[] { @"C:\Program Files", @"C:\Program Files (x86)", @"C:\Windows" };
+        Assert.Equal(elevated, MonthlyVerifySchedule.RunsElevated(exe, folders));
+
+        var store = new FakeTaskStore();
+        new MonthlyVerifySchedule(store).Enable(exe, @"PC\me", Day);
+        var level = All(Parse(store.Tasks[MonthlyVerifySchedule.TaskName]), "RunLevel").Single().Value;
+        Assert.Equal(MonthlyVerifySchedule.RunsElevated(exe) ? "HighestAvailable" : "LeastPrivilege", level);
+        Assert.Equal("LeastPrivilege", All(Parse(MonthlyVerifySchedule.BuildXml(exe, @"PC\me", Day, elevated: false)), "RunLevel").Single().Value);
+    }
+
     [Fact]
     public void A_path_or_user_with_special_characters_is_escaped_and_cannot_change_the_task()
     {

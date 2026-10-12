@@ -57,7 +57,33 @@ public sealed class MonthlyVerifySchedule(IScheduledTaskStore store)
         return m.Success ? System.Net.WebUtility.HtmlDecode(m.Groups[1].Value) : null;
     }
 
-    public void Enable(string exePath, string userId, DateTime firstDay) => store.Create(TaskName, BuildXml(exePath, userId, firstDay));
+    public void Enable(string exePath, string userId, DateTime firstDay) =>
+        store.Create(TaskName, BuildXml(exePath, userId, firstDay, RunsElevated(exePath)));
+
+    /// <summary>
+    /// True when the program sits in a folder that only an administrator can write to. The task runs with the highest rights the account
+    /// has, and a program file in a folder any program of the same account can write to could be swapped for another one, which
+    /// would then run with those rights on the second Wednesday. From such a folder, for example Downloads, the check runs without them.
+    /// </summary>
+    public static bool RunsElevated(string exePath) => RunsElevated(exePath, ProtectedFolders());
+
+    public static bool RunsElevated(string exePath, IEnumerable<string> protectedFolders)
+    {
+        string full;
+        try { full = Path.GetFullPath(exePath); }
+        catch (ArgumentException) { return false; }
+        catch (NotSupportedException) { return false; }
+        return protectedFolders.Where(f => !string.IsNullOrWhiteSpace(f))
+            .Select(f => Path.GetFullPath(f).TrimEnd('\\', '/') + "\\")
+            .Any(f => full.StartsWith(f, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static IEnumerable<string> ProtectedFolders() =>
+    [
+        Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+        Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+        Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+    ];
 
     public void Disable()
     {
@@ -65,7 +91,7 @@ public sealed class MonthlyVerifySchedule(IScheduledTaskStore store)
     }
 
     /// <summary>The task definition in the format Task Scheduler imports. Text from outside is escaped, not trusted.</summary>
-    public static string BuildXml(string exePath, string userId, DateTime firstDay)
+    public static string BuildXml(string exePath, string userId, DateTime firstDay, bool elevated = true)
     {
         string E(string text) => SecurityElement.Escape(text) ?? "";
         var start = firstDay.Date.AddHours(9).ToString("yyyy-MM-dd'T'HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
@@ -93,7 +119,7 @@ public sealed class MonthlyVerifySchedule(IScheduledTaskStore store)
         sb.AppendLine("    <Principal id=\"Author\">");
         sb.AppendLine($"      <UserId>{E(userId)}</UserId>");
         sb.AppendLine("      <LogonType>InteractiveToken</LogonType>");
-        sb.AppendLine("      <RunLevel>HighestAvailable</RunLevel>");
+        sb.AppendLine($"      <RunLevel>{(elevated ? "HighestAvailable" : "LeastPrivilege")}</RunLevel>");
         sb.AppendLine("    </Principal>");
         sb.AppendLine("  </Principals>");
         sb.AppendLine("  <Settings>");
