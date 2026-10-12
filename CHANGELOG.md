@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+New
+- Four NVIDIA graphics driver settings: low latency mode On, power management prefer maximum performance, no shader cache size limit and high performance texture filtering. They read and write the driver's global profile through NVIDIA's own NVAPI library, with the setting numbers and values from NVIDIA's public header, and no third party program. Each one stores what it replaced, including that nothing was stored, so Revert puts back exactly that. Each was applied and reverted on a GeForce RTX 2060 from two start states. They show as not available on a PC without an NVIDIA card.
+- Settings for Optimizations for windowed games, on and off, written as the one entry they change inside the text value Windows keeps for graphics choices, so other entries such as the variable refresh rate choice are kept. Also Multi-Plane Overlay off (the value in NVIDIA's own mpo_disable.reg), Teredo off (Microsoft's policy), seconds in the taskbar clock, two Outlook settings (hide the Try the new Outlook switch, stop the automatic move) and two Edge policies (Do Not Track, the Asset Delivery Service).
+- Two repair jobs. Put TCP settings back to Windows defaults runs netsh int tcp reset. On the PC it was tried on, another tool had set ECN on, timestamps off and the CTCP congestion provider, and Windows 11 build 26200 defaults to ECN off, timestamps allowed and CUBIC. Release and renew the IP address runs ipconfig /release and /renew.
+- docs/RESEARCH-OTHER-TOOLS.md has what Sparkle's network and NVIDIA tweaks set, the measured Windows defaults, and why the other network tweaks that were looked up were not built.
+
+Polish
+- The pane on the right of every list is gone. Each setting, repair job and cleanup row has a circled i that opens the same explanation, including the exact changes and sources in Expert mode, in a flyout beside it. It opens with a click or the keyboard, so it also works for touch and screen readers, and the lists use the full width.
+- The topic buttons above a list now count what the search box and filter leave. Searching for NVIDIA showed All 343 over five results before.
+
 ## 1.0.0
 
 Safer

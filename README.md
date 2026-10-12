@@ -25,7 +25,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 - **Safe by design.** A restore point before every batch, a journal that records the real previous value, and one click revert.
 - **Honest.** No telemetry in the app and no account. .Clarion's own only request is an update check, and that is off unless you ask for it. The Apps page runs winget, Microsoft's package manager, which talks to Microsoft's package source and the publishers' download sites, and it does so only when you open that page or install an app. Weak or unproven tweaks are hidden unless you turn on Expert mode.
 
-![Privacy settings with the detail pane](docs/images/privacy.png)
+![Privacy settings, each with an i button that opens its details](docs/images/privacy.png)
 
 ## What it does
 

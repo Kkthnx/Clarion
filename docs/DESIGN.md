@@ -25,7 +25,7 @@ Every entry in the catalog has these fields.
 |---|---|
 | `id` | Stable identifier |
 | `name`, `summary` | One line each, plain language |
-| `what`, `benefit`, `risk` | Short paragraphs shown in the detail pane |
+| `what`, `benefit`, `risk` | Short paragraphs shown under the i button beside each setting |
 | `evidence` | `Proven`, `Situational`, `Cosmetic`, `Unproven` |
 | `risk_level` | `Safe`, `Low`, `Medium`, `High` |
 | `scope` | `Machine` or `User` |
@@ -52,8 +52,8 @@ A WinUI 3 window with Mica backdrop, a left navigation rail, a content area, and
 +--------+---------------------------------------------+
 | Rail   |  Header: page title, search, Preset picker  |
 |        +---------------------------------------------+
-| Home   |  Tweak list (cards)      | Detail pane      |
-| Debloat|  toggle + summary        | What it does     |
+| Home   |  Tweak list (cards)      | i button opens   |
+| Debloat|  toggle + summary, i     | What it does     |
 | Privacy|  risk badge, state dot   | Benefit, Risk    |
 | Tweaks |                          | Exact changes    |
 | Network|                          | Revert           |
