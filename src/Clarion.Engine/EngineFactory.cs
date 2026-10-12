@@ -46,6 +46,7 @@ public static class EngineFactory
             new PowerHandler(new WindowsPowerStore(runner)),
             new DnsHandler(new WindowsDnsStore(runner)),
             new WingetHandler(winget),
+            new NvidiaHandler(new NvapiDriverStore()),
         };
         var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"), System.Security.Principal.WindowsIdentity.GetCurrent().User?.Value);
         var engine = new TweakEngine(handlers, journal);

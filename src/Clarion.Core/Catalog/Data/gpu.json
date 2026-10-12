@@ -1,0 +1,149 @@
+[
+  {
+    "id": "gpu.nvidia-low-latency",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "NVIDIA graphics",
+    "name": "NVIDIA low latency mode: On",
+    "summary": "Limit how many frames the CPU queues ahead of the graphics card.",
+    "what": "Sets Maximum pre-rendered frames to 1 in the NVIDIA driver's global profile, which is what Low Latency Mode On in NVIDIA's own control panel does. The game can then queue one frame ahead instead of up to three. It writes the driver's own settings through NVIDIA's NVAPI, and Revert puts back what was stored before.",
+    "benefit": "Less delay between a mouse click and the frame on screen in some games, mostly when the graphics card is the limit.",
+    "risk": "Low. The average frame rate can drop a little. A game that uses NVIDIA Reflex overrides it, and in DirectX 12 and Vulkan games the game decides when to queue frames.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Only if you play DirectX 9 or 11 games that are limited by the graphics card and you care about input delay. If a game offers NVIDIA Reflex, use that instead.",
+    "facts": [
+      "NVIDIA says On limits queued frames to one",
+      "It has the most effect when the graphics card is the limit",
+      "A game with NVIDIA Reflex overrides it",
+      "Needs a GeForce card with an NVIDIA driver",
+      "Revert puts back the value stored before"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 19041
+    },
+    "apply": [
+      { "type": "nvidia.set", "id": 8102046, "value": 1 }
+    ],
+    "undo": [
+      { "type": "nvidia.reset", "id": 8102046 }
+    ],
+    "sources": [
+      "https://www.nvidia.com/content/Control-Panel-Help/vLatest/en-us/mergedProjects/nv3d/Manage_3D_Settings_(reference).htm",
+      "https://www.nvidia.com/en-us/geforce/news/gamescom-2019-game-ready-driver/",
+      "https://github.com/NVIDIA/nvapi/blob/main/NvApiDriverSettings.h"
+    ]
+  },
+  {
+    "id": "gpu.nvidia-max-performance",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "NVIDIA graphics",
+    "name": "NVIDIA power management: prefer maximum performance",
+    "summary": "Keep the graphics card at full speed while a 3D program runs.",
+    "what": "Sets Power management mode to Prefer maximum performance in the NVIDIA driver's global profile, so the card is not allowed to drop to lower clock speeds while a 3D program runs. It writes the driver's own setting through NVIDIA's NVAPI, and Revert puts back what was stored before.",
+    "benefit": "Steadier frame rates in a game where the card clocks down too early and the frame rate dips.",
+    "risk": "Low. The card uses more power and runs warmer while a 3D program is open, which shortens battery life on a laptop.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Only if a game shows low clock speeds with uneven frame rates, which is the case NVIDIA's own support article gives for it. Skip it on a laptop that runs on battery.",
+    "facts": [
+      "NVIDIA says it uses the GPU only at maximum performance in most 3D programs",
+      "NVIDIA's support article offers it when the card throttles clock speeds",
+      "More power and heat while a 3D program runs",
+      "Needs a GeForce card with an NVIDIA driver",
+      "Revert puts back the value stored before"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 19041
+    },
+    "apply": [
+      { "type": "nvidia.set", "id": 274197361, "value": 1 }
+    ],
+    "undo": [
+      { "type": "nvidia.reset", "id": 274197361 }
+    ],
+    "sources": [
+      "https://www.nvidia.com/content/Control-Panel-Help/vLatest/en-us/mergedProjects/nv3d/Manage_3D_Settings_(reference).htm",
+      "https://nvidia.custhelp.com/app/answers/detail/a_id/3130/~/setting-power-management-mode-from-normal-to-maximum-performance",
+      "https://github.com/NVIDIA/nvapi/blob/main/NvApiDriverSettings.h"
+    ]
+  },
+  {
+    "id": "gpu.nvidia-shader-cache-unlimited",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "NVIDIA graphics",
+    "name": "NVIDIA shader cache: no size limit",
+    "summary": "Let the driver keep compiled shaders for as many games as you have.",
+    "what": "Sets the shader disk cache maximum size to no limit in the NVIDIA driver's global profile. The driver's own default is 16 GB. Revert puts back what was stored before.",
+    "benefit": "Compiled shaders of many large games stay stored, so a game does not rebuild them and stutter after the cache was trimmed.",
+    "risk": "Low. The cache can take more disk space as you play more games, and a driver install clears it. NVIDIA warns that a limit that is too small can make the driver delete shaders you still use.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Only if you keep many large games installed and have spare disk space. The default limit of 16 GB is enough for most people.",
+    "facts": [
+      "The driver's default limit is 16 GB",
+      "NVIDIA says a limit that is too small can cause stutter",
+      "The cache grows with the games you play",
+      "Needs a GeForce card with an NVIDIA driver",
+      "Revert puts back the value stored before"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 19041
+    },
+    "apply": [
+      { "type": "nvidia.set", "id": 11306135, "value": 4294967295 }
+    ],
+    "undo": [
+      { "type": "nvidia.reset", "id": 11306135 }
+    ],
+    "sources": [
+      "https://www.nvidia.com/content/Control-Panel-Help/vLatest/en-us/mergedProjects/nv3d/Manage_3D_Settings_(reference).htm",
+      "https://nvidia.custhelp.com/app/answers/detail/a_id/5735/~/deleting-nvidia-shader-cache-files",
+      "https://github.com/NVIDIA/nvapi/blob/main/NvApiDriverSettings.h"
+    ]
+  },
+  {
+    "id": "gpu.nvidia-texture-performance",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "NVIDIA graphics",
+    "name": "NVIDIA texture filtering: high performance",
+    "summary": "Trade a little texture smoothness for a higher frame rate.",
+    "what": "Sets Texture filtering - Quality to High performance in the NVIDIA driver's global profile. NVIDIA's default for GeForce cards is Quality. Revert puts back what was stored before.",
+    "benefit": "A few more frames per second on an older or weaker card.",
+    "risk": "Low. Textures can look slightly less smooth, mostly in the distance. A game with its own filtering setting can override it.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Only on an older or weaker card where you need every frame. Most people will not notice the gain.",
+    "facts": [
+      "NVIDIA says High performance gives the highest frame rate",
+      "The default for GeForce cards is Quality",
+      "Image quality drops slightly",
+      "Needs a GeForce card with an NVIDIA driver",
+      "Revert puts back the value stored before"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 19041
+    },
+    "apply": [
+      { "type": "nvidia.set", "id": 13510289, "value": 20 }
+    ],
+    "undo": [
+      { "type": "nvidia.reset", "id": 13510289 }
+    ],
+    "sources": [
+      "https://www.nvidia.com/content/Control-Panel-Help/vLatest/en-us/mergedProjects/nv3d/Manage_3D_Settings_(reference).htm",
+      "https://github.com/NVIDIA/nvapi/blob/main/NvApiDriverSettings.h"
+    ]
+  }
+]

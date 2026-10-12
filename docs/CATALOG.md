@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-339 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+343 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -4598,6 +4598,64 @@ Let Windows favor games when one is running.
 - **Risk:** None.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\GameBar\AutoGameModeEnabled to 1 (DWord)`
+
+### NVIDIA graphics
+
+#### NVIDIA low latency mode: On
+
+`gpu.nvidia-low-latency` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Limit how many frames the CPU queues ahead of the graphics card.
+
+- **What it does:** Sets Maximum pre-rendered frames to 1 in the NVIDIA driver's global profile, which is what Low Latency Mode On in NVIDIA's own control panel does. The game can then queue one frame ahead instead of up to three. It writes the driver's own settings through NVIDIA's NVAPI, and Revert puts back what was stored before.
+- **Benefit:** Less delay between a mouse click and the frame on screen in some games, mostly when the graphics card is the limit.
+- **Risk:** Low. The average frame rate can drop a little. A game that uses NVIDIA Reflex overrides it, and in DirectX 12 and Vulkan games the game decides when to queue frames.
+- **Changes:**
+  - `Set the NVIDIA driver setting "Maximum pre-rendered frames" to 1 frame`
+- **Needs:** Windows build 19041 or later; administrator rights, applies to every account
+- **Sources:** <https://www.nvidia.com/content/Control-Panel-Help/vLatest/en-us/mergedProjects/nv3d/Manage_3D_Settings_(reference).htm>, <https://www.nvidia.com/en-us/geforce/news/gamescom-2019-game-ready-driver/>, <https://github.com/NVIDIA/nvapi/blob/main/NvApiDriverSettings.h>
+
+#### NVIDIA power management: prefer maximum performance
+
+`gpu.nvidia-max-performance` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Keep the graphics card at full speed while a 3D program runs.
+
+- **What it does:** Sets Power management mode to Prefer maximum performance in the NVIDIA driver's global profile, so the card is not allowed to drop to lower clock speeds while a 3D program runs. It writes the driver's own setting through NVIDIA's NVAPI, and Revert puts back what was stored before.
+- **Benefit:** Steadier frame rates in a game where the card clocks down too early and the frame rate dips.
+- **Risk:** Low. The card uses more power and runs warmer while a 3D program is open, which shortens battery life on a laptop.
+- **Changes:**
+  - `Set the NVIDIA driver setting "Power management mode" to prefer maximum performance`
+- **Needs:** Windows build 19041 or later; administrator rights, applies to every account
+- **Sources:** <https://www.nvidia.com/content/Control-Panel-Help/vLatest/en-us/mergedProjects/nv3d/Manage_3D_Settings_(reference).htm>, <https://nvidia.custhelp.com/app/answers/detail/a_id/3130/~/setting-power-management-mode-from-normal-to-maximum-performance>, <https://github.com/NVIDIA/nvapi/blob/main/NvApiDriverSettings.h>
+
+#### NVIDIA shader cache: no size limit
+
+`gpu.nvidia-shader-cache-unlimited` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Let the driver keep compiled shaders for as many games as you have.
+
+- **What it does:** Sets the shader disk cache maximum size to no limit in the NVIDIA driver's global profile. The driver's own default is 16 GB. Revert puts back what was stored before.
+- **Benefit:** Compiled shaders of many large games stay stored, so a game does not rebuild them and stutter after the cache was trimmed.
+- **Risk:** Low. The cache can take more disk space as you play more games, and a driver install clears it. NVIDIA warns that a limit that is too small can make the driver delete shaders you still use.
+- **Changes:**
+  - `Set the NVIDIA driver setting "Shader disk cache maximum size" to no limit`
+- **Needs:** Windows build 19041 or later; administrator rights, applies to every account
+- **Sources:** <https://www.nvidia.com/content/Control-Panel-Help/vLatest/en-us/mergedProjects/nv3d/Manage_3D_Settings_(reference).htm>, <https://nvidia.custhelp.com/app/answers/detail/a_id/5735/~/deleting-nvidia-shader-cache-files>, <https://github.com/NVIDIA/nvapi/blob/main/NvApiDriverSettings.h>
+
+#### NVIDIA texture filtering: high performance
+
+`gpu.nvidia-texture-performance` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Trade a little texture smoothness for a higher frame rate.
+
+- **What it does:** Sets Texture filtering - Quality to High performance in the NVIDIA driver's global profile. NVIDIA's default for GeForce cards is Quality. Revert puts back what was stored before.
+- **Benefit:** A few more frames per second on an older or weaker card.
+- **Risk:** Low. Textures can look slightly less smooth, mostly in the distance. A game with its own filtering setting can override it.
+- **Changes:**
+  - `Set the NVIDIA driver setting "Texture filtering - Quality" to high performance`
+- **Needs:** Windows build 19041 or later; administrator rights, applies to every account
+- **Sources:** <https://www.nvidia.com/content/Control-Panel-Help/vLatest/en-us/mergedProjects/nv3d/Manage_3D_Settings_(reference).htm>, <https://github.com/NVIDIA/nvapi/blob/main/NvApiDriverSettings.h>
 
 ### System
 

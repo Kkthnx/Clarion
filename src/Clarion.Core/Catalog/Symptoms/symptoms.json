@@ -194,5 +194,12 @@
     "tip": "With the Program Compatibility Assistant off, Windows stops offering fixes for older programs. You can still set compatibility options by hand on the program's properties, or revert the setting.",
     "topics": [],
     "tweakIds": ["compat.pca-off"]
+  },
+  {
+    "id": "game-graphics",
+    "title": "A game stutters, looks different, or my graphics card runs hotter or louder than before",
+    "tip": "These settings change the NVIDIA driver's global profile, the same one NVIDIA's control panel edits. A profile for one game can override them. Reverting a setting puts back the value that was stored before .Clarion changed it.",
+    "topics": ["NVIDIA graphics"],
+    "tweakIds": []
   }
 ]

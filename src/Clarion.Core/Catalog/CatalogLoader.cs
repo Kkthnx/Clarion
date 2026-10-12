@@ -217,6 +217,15 @@ public static class CatalogLoader
                         break;
                     case RestoreDns:
                         break;
+                    case SetNvidiaSetting nv:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: NVIDIA driver changes need Machine scope.");
+                        if (Nvidia.NvidiaSettings.Find(nv.Id) is not { } listed) errors.Add($"{t.Id}: NVIDIA driver setting 0x{nv.Id:X8} is not one .Clarion changes.");
+                        else if (!listed.IsValid(nv.Value)) errors.Add($"{t.Id}: {nv.Value} is not a value NVIDIA lists for \"{listed.Name}\".");
+                        break;
+                    case ResetNvidiaSetting nvReset:
+                        if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: NVIDIA driver changes need Machine scope.");
+                        if (Nvidia.NvidiaSettings.Find(nvReset.Id) is null) errors.Add($"{t.Id}: NVIDIA driver setting 0x{nvReset.Id:X8} is not one .Clarion changes.");
+                        break;
                     case SetWindowsFeature feat:
                         if (t.Scope != TweakScope.Machine) errors.Add($"{t.Id}: feature changes need Machine scope.");
                         if (!Features.FeatureRules.IsValidName(feat.Name)) errors.Add($"{t.Id}: invalid feature name {feat.Name}.");

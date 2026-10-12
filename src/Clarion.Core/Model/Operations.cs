@@ -19,6 +19,8 @@ public enum ServiceStartType { Automatic, AutomaticDelayed, Manual, Disabled }
 [JsonDerivedType(typeof(RestoreDns), "dns.restore")]
 [JsonDerivedType(typeof(InstallWingetPackage), "winget.install")]
 [JsonDerivedType(typeof(UninstallWingetPackage), "winget.uninstall")]
+[JsonDerivedType(typeof(SetNvidiaSetting), "nvidia.set")]
+[JsonDerivedType(typeof(ResetNvidiaSetting), "nvidia.reset")]
 public abstract record Operation
 {
     public abstract string Describe();
@@ -101,4 +103,23 @@ public sealed record InstallWingetPackage(string Id, string? Location = null) : 
 public sealed record UninstallWingetPackage(string Id, string? Location = null) : Operation
 {
     public override string Describe() => $"Uninstall {Id} with winget";
+}
+
+/// <summary>
+/// Sets one value in the NVIDIA graphics driver's global profile, which is what NVIDIA's own control panel and app edit. Only the
+/// settings listed in <see cref="Nvidia.NvidiaSettings"/> may be set, each with the values NVIDIA documents for it.
+/// </summary>
+public sealed record SetNvidiaSetting(uint Id, uint Value) : Operation
+{
+    public override string Describe() => Nvidia.NvidiaSettings.Find(Id) is { } s
+        ? $"Set the NVIDIA driver setting \"{s.Name}\" to {s.Describe(Value)}"
+        : $"Set NVIDIA driver setting 0x{Id:X8} to {Value}";
+}
+
+/// <summary>Takes a value out of the NVIDIA driver's global profile, so the driver's own default applies again.</summary>
+public sealed record ResetNvidiaSetting(uint Id) : Operation
+{
+    public override string Describe() => Nvidia.NvidiaSettings.Find(Id) is { } s
+        ? $"Put the NVIDIA driver setting \"{s.Name}\" back to the driver's default"
+        : $"Put NVIDIA driver setting 0x{Id:X8} back to the driver's default";
 }
