@@ -212,7 +212,7 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 ## 14. Cleanup, repair, DNS, command line
 
 - Cleanup: 23 targets in shader caches, launcher caches, browsers and Windows housekeeping. Scan first, allow listed paths only, links never followed, files in use skipped, locked files queued for restart, last cleanup report.
-- Repair: 14 jobs using only built in Windows tools resolved from System32, with streaming output and Stop.
+- Repair: 16 jobs using only built in Windows tools resolved from System32, with streaming output and Stop.
 - DNS: five providers, plain or encrypted, exact restore of prior servers.
 - Command line and setup files: apply a preset, a saved setup, or run cleanup without the window.
 - Privacy entries carry the policy file and name they come from, and a test checks each against the local definitions.

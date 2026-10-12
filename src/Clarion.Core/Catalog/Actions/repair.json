@@ -534,5 +534,69 @@
     "sources": [
       "https://learn.microsoft.com/en-us/windows-server/networking/windows-time-service/windows-time-service-tools-and-settings"
     ]
+  },
+  {
+    "id": "repair.reset-tcp-settings",
+    "category": "Network",
+    "name": "Put TCP settings back to Windows defaults",
+    "summary": "Undo TCP tuning that a tweak tool or a guide set with netsh.",
+    "what": "Runs netsh int tcp reset, which Microsoft's netsh reference describes as removing user configured settings and resetting all TCP parameters to their default values. On Windows 11 build 26200 the defaults are ECN off, timestamps allowed and the CUBIC congestion provider. It does not touch Winsock, the IP stack or DNS.",
+    "benefit": "Gives you Windows' own TCP settings back after a tool changed them. Tools that promise a faster network often set ECN on, timestamps off or the older CTCP congestion provider, none of which is a Windows default.",
+    "risk": "Low. Any TCP tuning you made on purpose is lost, and .Clarion does not remember what it was.",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if a tweak tool or a guide changed TCP settings and you want Windows' own back. Windows tunes TCP by itself, so there is nothing to gain when nothing was changed.",
+    "facts": [
+      "Takes a second and needs no restart",
+      "Changes no Winsock, IP or DNS setting",
+      "Windows 11 build 26200 defaults: ECN off, timestamps allowed, CUBIC",
+      "Run netsh int tcp show global before and after to see the difference"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "run",
+        "file": "netsh.exe",
+        "args": "int tcp reset"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc731258(v=ws.10)",
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh-interface"
+    ]
+  },
+  {
+    "id": "repair.renew-ip",
+    "category": "Network",
+    "name": "Release and renew the IP address",
+    "summary": "Ask the router for a fresh address.",
+    "what": "Runs ipconfig /release to give up the IP addresses the router handed out, then ipconfig /renew to ask for new ones. Adapters that are not connected are skipped.",
+    "benefit": "Fixes a PC that has a self-assigned address, an address clash or no connection after the router restarted or the PC changed networks.",
+    "risk": "Low. The connection drops for a few seconds, and a download or a call in progress may fail.",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when other devices work on the same network but this PC says it has no internet or shows an address that starts with 169.254. Save your work first.",
+    "facts": [
+      "Takes a few seconds",
+      "Changes no setting",
+      "A static address is not changed",
+      "Does not touch Wi-Fi passwords"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "run",
+        "file": "ipconfig.exe",
+        "args": "/release"
+      },
+      {
+        "type": "run",
+        "file": "ipconfig.exe",
+        "args": "/renew"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig"
+    ]
   }
 ]
