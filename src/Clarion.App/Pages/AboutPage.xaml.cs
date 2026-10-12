@@ -12,6 +12,7 @@ public sealed partial class AboutPage : Page
         InitializeComponent();
     }
 
+    private void OnDocs(object sender, RoutedEventArgs e) => Shell.Open(Clarion.Core.Reports.CatalogSite.BaseUrl);
     private void OnWebsite(object sender, RoutedEventArgs e) => Shell.Open("https://kkthnx.com");
     private void OnGitHub(object sender, RoutedEventArgs e) => Shell.Open("https://github.com/Kkthnx");
     private void OnSource(object sender, RoutedEventArgs e) => Shell.Open("https://github.com/Kkthnx/Clarion");

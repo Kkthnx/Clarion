@@ -3,7 +3,7 @@
 ## Unreleased
 
 New
-- There is a documentation site at https://kkthnx.github.io/Clarion/ that explains every setting, app, repair job and cleanup row, in the same colors as the window. Each entry shows what it does, the benefit, the risk, the exact changes and the sources, and there is search and a filter by risk and suggestion. It is written from the same catalog the app runs on, so it cannot fall out of step with it.
+- There is a documentation site at https://kkthnx.github.io/Clarion/ that explains every setting, app, repair job and cleanup row, in the same colors as the window. Each entry shows what it does, the benefit, the risk, the exact changes and the sources, and there is search and a filter by risk and suggestion. It is written from the same catalog the app runs on, so it cannot fall out of step with it. The About page links to it.
 
 ## 0.1.0-beta.16
 

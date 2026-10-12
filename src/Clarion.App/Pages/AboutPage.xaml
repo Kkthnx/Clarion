@@ -27,6 +27,14 @@
                            Text="I have been tweaking Windows for years, and every debloat tool I tried had the same problem. It changed things it could not explain, with no way back when something broke. Run it, reboot, and good luck figuring out which of the forty things it did killed your Start menu." />
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
                            Text=".Clarion is the tool I wanted instead. Every setting tells you what it does, what you gain, and what could go wrong. Every change gets backed up before it is made, and one click puts it back. When Windows undoes something later, .Clarion notices and tells you. No telemetry, no account, no mystery." />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Click="OnDocs" AutomationProperties.Name="Every setting explained, a website that opens in your browser">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE8A5;" FontSize="14" />
+                            <TextBlock Text="Every setting explained" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </StackPanel>
 
             <StackPanel Spacing="8">
