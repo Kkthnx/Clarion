@@ -34,6 +34,9 @@ public sealed class RegistryHandler(IRegistryStore store) : IOperationHandler
             _ => throw new InvalidOperationException("Not a registry operation"),
         };
         var prior = store.Read(target);
+        // A value of a kind Clarion cannot read back (a list of strings) is left alone. Writing over it would lose it for good.
+        if (prior.Exists && prior.Data is null)
+            throw new NotSupportedException($"{(target.Name.Length == 0 ? "(Default)" : target.Name)} holds a kind of value that Clarion cannot put back, so it was left as it is.");
         return prior.Exists && prior.Data is not null
             ? new SetRegistryValue(target, prior.Data)
             : new DeleteRegistryValue(target, prior.DeepestExistingKey);

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Runtime.Versioning;
 using Clarion.Core.Abstractions;
 using Clarion.Core.Model;
@@ -86,19 +87,21 @@ public sealed class WindowsRegistryStore : IRegistryStore
     private static string[] Split(string path) =>
         path.Split('\\', StringSplitOptions.RemoveEmptyEntries);
 
-    private static RegistryData ToData(object value, RegistryValueKind kind) => kind switch
+    /// <summary>The value as Clarion can restore it, or null for a kind it cannot (a list of strings, or no type at all).</summary>
+    private static RegistryData? ToData(object value, RegistryValueKind kind) => kind switch
     {
         RegistryValueKind.DWord => new RegistryData(CoreKind.DWord, unchecked((uint)(int)value).ToString()),
         RegistryValueKind.QWord => new RegistryData(CoreKind.QWord, unchecked((ulong)(long)value).ToString()),
         RegistryValueKind.ExpandString => new RegistryData(CoreKind.ExpandString, (string)value),
         RegistryValueKind.String => new RegistryData(CoreKind.String, (string)value),
-        _ => new RegistryData(CoreKind.Binary, Convert.ToHexString(value as byte[] ?? [])),
+        RegistryValueKind.Binary when value is byte[] bytes => new RegistryData(CoreKind.Binary, Convert.ToHexString(bytes)),
+        _ => null,
     };
 
     private static (object Value, RegistryValueKind Kind) FromData(RegistryData data) => data.Kind switch
     {
-        CoreKind.DWord => (unchecked((int)uint.Parse(data.Value)), RegistryValueKind.DWord),
-        CoreKind.QWord => (unchecked((long)ulong.Parse(data.Value)), RegistryValueKind.QWord),
+        CoreKind.DWord => (unchecked((int)uint.Parse(data.Value, CultureInfo.InvariantCulture)), RegistryValueKind.DWord),
+        CoreKind.QWord => (unchecked((long)ulong.Parse(data.Value, CultureInfo.InvariantCulture)), RegistryValueKind.QWord),
         CoreKind.ExpandString => (data.Value, RegistryValueKind.ExpandString),
         CoreKind.Binary => (Convert.FromHexString(data.Value), RegistryValueKind.Binary),
         _ => (data.Value, RegistryValueKind.String),

@@ -45,6 +45,26 @@ public sealed class WindowsRegistryStoreTests : IDisposable
     }
 
     [Fact]
+    public void A_list_of_strings_is_reported_as_there_but_not_restorable_and_a_change_to_it_is_refused()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var store = new WindowsRegistryStore();
+        var path = _root + "\\Multi";
+        using (var key = Registry.CurrentUser.CreateSubKey(path))
+            key.SetValue("M", new[] { "one", "two" }, RegistryValueKind.MultiString);
+        var target = new RegistryTarget(RegistryHive.CurrentUser, path, "M");
+
+        var read = store.Read(target);
+        Assert.True(read.Exists);
+        Assert.Null(read.Data);
+
+        var handler = new RegistryHandler(store);
+        Assert.Throws<NotSupportedException>(() => handler.CaptureUndo(new SetRegistryValue(target, new RegistryData(RegistryKind.DWord, "1"))));
+        using var after = Registry.CurrentUser.OpenSubKey(path)!;
+        Assert.Equal(new[] { "one", "two" }, (string[])after.GetValue("M")!);
+    }
+
+    [Fact]
     public void Engine_apply_and_revert_on_real_registry_leaves_no_trace()
     {
         if (!OperatingSystem.IsWindows()) return;
