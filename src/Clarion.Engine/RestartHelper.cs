@@ -11,7 +11,10 @@ namespace Clarion.Engine;
 [SupportedOSPlatform("windows")]
 public static class RestartHelper
 {
-    private const uint ShutdownReasonPlanned = 0x80000000 | 0x00050000 | 0x00000001;
+    // Operating System: Reconfiguration (Planned), the reason Microsoft lists for a restart after a settings change.
+    // SHTDN_REASON_FLAG_PLANNED | SHTDN_REASON_MAJOR_OPERATINGSYSTEM | SHTDN_REASON_MINOR_RECONFIG.
+    // The earlier value, System: Maintenance, is not a combination Microsoft documents.
+    private const uint ShutdownReasonPlanned = 0x80000000 | 0x00020000 | 0x00000004;
 
     [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern bool InitiateSystemShutdownEx(string? machine, string message, uint timeout, bool forceAppsClosed, bool reboot, uint reason);
