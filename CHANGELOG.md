@@ -3,6 +3,7 @@
 ## Unreleased
 
 New
+- Thirteen settings, each checked against Microsoft's own documentation and applied and reverted on a real PC before it was added. Seven switch off background services you may not use, and each says what stops working: printing support, the Downloaded Maps Manager, distributed link tracking, the Connected Devices Platform, UPnP and SSDP device discovery, Xbox Live services and smart card services. The other six are a policy that stops other computers printing through this PC while printing from it keeps working, skipping the lock screen, a clear sign-in background, turning off the Program Compatibility Assistant, preferring IPv4 over IPv6 the way Microsoft documents it, and stopping Edge sending failed addresses to a suggestion service. docs/RESEARCH-OTHER-TOOLS.md has the measurements and sources, including why a single set everything to manual tweak was not built.
 - There is a documentation site at https://kkthnx.github.io/Clarion/ that explains every setting, app, repair job and cleanup row, in the same colors as the window. Each entry shows what it does, the benefit, the risk, the exact changes and the sources, and there is search and a filter by risk and suggestion. It is written from the same catalog the app runs on, so it cannot fall out of step with it. The About page links to it.
 
 ## 0.1.0-beta.16

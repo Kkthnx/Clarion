@@ -1,0 +1,187 @@
+[
+  {
+    "id": "services.print-spooler-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Background services",
+    "name": "Turn off printing support",
+    "summary": "Stop and disable the Print Spooler service if you never print.",
+    "what": "Stops the Print Spooler and sets it to Disabled. Microsoft offered this as a workaround for the 2021 PrintNightmare flaw where printing is not needed.",
+    "benefit": "Removes a service that has been a target of serious attacks, and frees a little memory.",
+    "risk": "Medium. Nothing can print from this PC, locally or over the network, and Print to PDF stops working. Revert sets the start type back.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Only if you never print and never use Print to PDF. If you just want to keep others out, use Stop other computers printing through this PC instead.",
+    "facts": [
+      "Microsoft's advisory says this disables printing both locally and remotely",
+      "Microsoft lists Print Spooler as OK to disable and Automatic by default",
+      "Stops the service now and keeps it from starting at the next boot",
+      "Revert puts back the start type that was there before"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "service.start-type", "name": "Spooler", "startType": "Disabled" }
+    ],
+    "sources": [
+      "https://msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2021-34527",
+      "https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services"
+    ]
+  },
+  {
+    "id": "services.maps-manager-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Background services",
+    "name": "Turn off the Downloaded Maps Manager",
+    "summary": "Stop the service that keeps offline maps up to date for the Maps app.",
+    "what": "Sets the Downloaded Maps Manager service to Disabled. Windows uses it only for maps downloaded for offline use.",
+    "benefit": "One less background service that starts with Windows.",
+    "risk": "Low. Offline maps used by the Maps app stop updating and may stop working.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not use offline maps in the Windows Maps app.",
+    "facts": [
+      "Microsoft lists it as OK to disable and Automatic by default",
+      "Only the Maps app and other apps that use downloaded maps need it",
+      "Revert puts back the start type that was there before"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "service.start-type", "name": "MapsBroker", "startType": "Disabled" }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services" ]
+  },
+  {
+    "id": "services.link-tracking-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Background services",
+    "name": "Turn off distributed link tracking",
+    "summary": "Stop the service that follows moved files for old shortcuts and linked documents.",
+    "what": "Sets the Distributed Link Tracking Client service to Disabled. It keeps links between NTFS files working after a file is moved.",
+    "benefit": "One less background service. On a test PC it used about 1 MB while running.",
+    "risk": "Low. A shortcut or linked document may no longer find a file that was moved to another drive or PC. Most people never notice.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Your choice. The saving is small. It matters mainly if you want fewer services running.",
+    "facts": [
+      "Microsoft lists it as OK to disable and Automatic by default",
+      "Only affects links that must follow a file that was moved",
+      "Revert puts back the start type that was there before"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "service.start-type", "name": "TrkWks", "startType": "Disabled" }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services" ]
+  },
+  {
+    "id": "services.connected-devices-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Background services",
+    "name": "Turn off the Connected Devices Platform",
+    "summary": "Stop the service behind sharing with nearby devices and linking phones and other devices.",
+    "what": "Sets the Connected Devices Platform Service to Disabled. Windows uses it to connect to and share with other devices.",
+    "benefit": "One less background service that talks to nearby devices. On a test PC it used a few megabytes while running.",
+    "risk": "Low. Sharing with nearby devices and features that link this PC to a phone or other device may stop working.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not share with nearby devices or link a phone. Skip it if you do.",
+    "facts": [
+      "Microsoft lists it as OK to disable and Automatic by default",
+      "Phone link is switched off separately by Turn off Phone link",
+      "Revert puts back the start type that was there before"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "service.start-type", "name": "CDPSvc", "startType": "Disabled" }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services" ]
+  },
+  {
+    "id": "services.device-discovery-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Background services",
+    "name": "Turn off UPnP and SSDP device discovery",
+    "summary": "Stop the services that find and talk to UPnP devices on your network.",
+    "what": "Sets the SSDP Discovery and UPnP Device Host services to Disabled. They start only when something asks for them.",
+    "benefit": "Fewer network services that other devices on your network can reach.",
+    "risk": "Low. Windows can no longer discover some network media players, speakers and similar UPnP devices, and apps that rely on that discovery may not find them.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not stream to or from network devices that use UPnP. Skip it if you do.",
+    "facts": [
+      "Microsoft lists both as OK to disable and Manual by default",
+      "They only start on demand, so the gain is a smaller attack surface, not memory",
+      "Revert puts back the start type that was there before"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "service.start-type", "name": "SSDPSRV", "startType": "Disabled" },
+      { "type": "service.start-type", "name": "upnphost", "startType": "Disabled" }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services" ]
+  },
+  {
+    "id": "services.xbox-live-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Background services",
+    "name": "Turn off Xbox Live services",
+    "summary": "Stop the services for Xbox sign-in, cloud saves and Xbox networking.",
+    "what": "Sets the Xbox Live Auth Manager, Xbox Live Game Save and Xbox Live Networking services to Disabled.",
+    "benefit": "Three fewer services that talk to Xbox Live. They start only when an Xbox feature asks for them.",
+    "risk": "Low. Signing in to Xbox, cloud saves for Xbox games and Xbox multiplayer stop working until you revert.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not use the Xbox app, Game Pass or Xbox games on this PC. Skip it if you do.",
+    "facts": [
+      "Microsoft lists all three as should be disabled and Manual by default",
+      "Xbox accessory support is a separate service that this setting leaves alone",
+      "They only start on demand, so the gain is fewer Xbox Live connections, not memory",
+      "Revert puts back the start type that was there before"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "service.start-type", "name": "XblAuthManager", "startType": "Disabled" },
+      { "type": "service.start-type", "name": "XblGameSave", "startType": "Disabled" },
+      { "type": "service.start-type", "name": "XboxNetApiSvc", "startType": "Disabled" }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services" ]
+  },
+  {
+    "id": "services.smart-card-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Background services",
+    "name": "Turn off smart card services",
+    "summary": "Stop the services that read smart cards and apply their removal rules.",
+    "what": "Sets the Smart Card, Smart Card Device Enumeration and Smart Card Removal Policy services to Disabled.",
+    "benefit": "Three fewer services for a feature most PCs never use.",
+    "risk": "Low. Smart cards and security keys that sign in as a smart card, including some banking and work card readers, stop working.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you have no smart card reader and do not use a smart card style security key. Skip it if you do.",
+    "facts": [
+      "Microsoft lists all three as OK to disable and Manual by default",
+      "They only start on demand, so the gain is a smaller attack surface, not memory",
+      "Revert puts back the start type that was there before"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "service.start-type", "name": "SCardSvr", "startType": "Disabled" },
+      { "type": "service.start-type", "name": "ScDeviceEnum", "startType": "Disabled" },
+      { "type": "service.start-type", "name": "SCPolicySvc", "startType": "Disabled" }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services" ]
+  }
+]

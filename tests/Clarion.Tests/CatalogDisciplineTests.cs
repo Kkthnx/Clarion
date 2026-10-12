@@ -22,7 +22,14 @@ public sealed class CatalogDisciplineTests
     ];
 
     // The only services Clarion is allowed to change. Adding one means adding it here deliberately.
-    private static readonly string[] ServiceAllowlist = ["DiagTrack"];
+    // Each one below is listed by Microsoft as OK to disable (or should be disabled) in its services guidance for Windows IoT
+    // Enterprise, and was applied and reverted on a real PC before it was added.
+    private static readonly string[] ServiceAllowlist =
+    [
+        "DiagTrack",
+        "Spooler", "MapsBroker", "TrkWks", "CDPSvc", "SSDPSRV", "upnphost",
+        "XblAuthManager", "XblGameSave", "XboxNetApiSvc", "SCardSvr", "ScDeviceEnum", "SCPolicySvc",
+    ];
 
     [Fact]
     public void No_tweak_touches_a_denylisted_service_in_apply_or_undo()

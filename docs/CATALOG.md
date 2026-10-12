@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-326 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+339 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -46,6 +46,36 @@ Move the Start button and icons to the left edge.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAl to 0 (DWord)`
 - **Needs:** Windows build 22000 or later
+
+### Sign-in screen
+
+#### Show a clear sign-in background
+
+`logon.clear-background` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Remove the blur from the sign-in screen background.
+
+- **What it does:** Sets the policy Show clear logon background, which turns off the acrylic blur behind the sign-in box.
+- **Benefit:** A sharp sign-in picture instead of a blurred one.
+- **Risk:** None. Only the look of the sign-in screen changes.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\System\DisableAcrylicBackgroundOnLogon to 1 (DWord)`
+- **Needs:** Windows build 18362 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-logon>
+
+#### Skip the lock screen
+
+`lock.skip-lock-screen` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Go straight to sign-in after locking, with no lock screen to dismiss first.
+
+- **What it does:** Sets the policy Do not display the lock screen. After you lock the PC you see your sign-in tile directly.
+- **Benefit:** One fewer click or key press every time you wake or unlock the PC.
+- **Risk:** None. You sign in the same way as before. Only the lock screen step is skipped.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization\NoLockScreen to 1 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-controlpaneldisplay>
 
 ### Taskbar and widgets
 
@@ -648,6 +678,20 @@ Edge will fully quit when you close the last window.
   - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\BackgroundModeEnabled to 0 (DWord)`
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/backgroundmodeenabled>
+
+#### Stop Edge suggesting pages for failed addresses
+
+`edge.error-suggestions-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Edge stops sending a mistyped or unreachable address to a web service for suggestions.
+
+- **What it does:** Applies the Edge policy Suggest similar pages when a webpage can't be found, set to off.
+- **Benefit:** Addresses that fail to load are not sent to a suggestion service.
+- **Risk:** None. You just see the plain error page. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\AlternateErrorPagesEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/alternateerrorpagesenabled>
 
 #### Turn off Edge feedback and surveys
 
@@ -3063,6 +3107,20 @@ Use Quad9 and encrypt the lookups so others on the network cannot read them.
 
 ### Network
 
+#### Prefer IPv4 over IPv6
+
+`network.prefer-ipv4` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Make Windows try IPv4 first when a site offers both.
+
+- **What it does:** Sets the IPv6 DisabledComponents value to 0x20, the setting Microsoft documents for preferring IPv4. IPv6 itself stays on.
+- **Benefit:** Can avoid slow page loads and timeouts on networks where IPv6 is broken or slow, without turning IPv6 off, which Microsoft advises against.
+- **Risk:** Low. Needs a restart. Sites and services that only offer IPv6 still work, because IPv6 stays on.
+- **Changes:**
+  - `Set HKLM\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\DisabledComponents to 32 (DWord)`
+- **Needs:** administrator rights, applies to every account; a restart
+- **Sources:** <https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-ipv6-in-windows>
+
 #### Stop sharing updates with other PCs
 
 `network.delivery-optimization-http` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
@@ -4350,6 +4408,20 @@ Keep Microsoft Defender from sending data to the Microsoft cloud protection serv
 
 ### Security
 
+#### Stop other computers printing through this PC
+
+`printing.no-print-server` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Make the print spooler refuse connections from other computers.
+
+- **What it does:** Sets the policy Allow Print Spooler to accept client connections to disabled. Printing from this PC is not affected.
+- **Benefit:** Other computers on your network can no longer reach the print spooler here. Microsoft offered exactly this as a mitigation for the 2021 PrintNightmare flaw.
+- **Risk:** Low. Other computers can no longer print through this PC, and you cannot share a printer from it. The print spooler must restart, so a restart finishes the change.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers\RegisterSpoolerRemoteRpcEndPoint to 2 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account; a restart
+- **Sources:** <https://msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2021-34527>, <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-printing2>
+
 #### Turn off AutoPlay
 
 `security.autoplay-off` · Safe · Helps in some cases · Suggested: turn on · checked on build 26200
@@ -4394,6 +4466,111 @@ Disable the old, insecure file sharing protocol.
 - **Sources:** <https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3>
 
 ## System
+
+### Background services
+
+#### Turn off UPnP and SSDP device discovery
+
+`services.device-discovery-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Stop the services that find and talk to UPnP devices on your network.
+
+- **What it does:** Sets the SSDP Discovery and UPnP Device Host services to Disabled. They start only when something asks for them.
+- **Benefit:** Fewer network services that other devices on your network can reach.
+- **Risk:** Low. Windows can no longer discover some network media players, speakers and similar UPnP devices, and apps that rely on that discovery may not find them.
+- **Changes:**
+  - `Set service SSDPSRV start type to Disabled`
+  - `Set service upnphost start type to Disabled`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services>
+
+#### Turn off Xbox Live services
+
+`services.xbox-live-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Stop the services for Xbox sign-in, cloud saves and Xbox networking.
+
+- **What it does:** Sets the Xbox Live Auth Manager, Xbox Live Game Save and Xbox Live Networking services to Disabled.
+- **Benefit:** Three fewer services that talk to Xbox Live. They start only when an Xbox feature asks for them.
+- **Risk:** Low. Signing in to Xbox, cloud saves for Xbox games and Xbox multiplayer stop working until you revert.
+- **Changes:**
+  - `Set service XblAuthManager start type to Disabled`
+  - `Set service XblGameSave start type to Disabled`
+  - `Set service XboxNetApiSvc start type to Disabled`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services>
+
+#### Turn off distributed link tracking
+
+`services.link-tracking-off` · Low · Helps in some cases · Optional: your choice · checked on build 26200
+
+Stop the service that follows moved files for old shortcuts and linked documents.
+
+- **What it does:** Sets the Distributed Link Tracking Client service to Disabled. It keeps links between NTFS files working after a file is moved.
+- **Benefit:** One less background service. On a test PC it used about 1 MB while running.
+- **Risk:** Low. A shortcut or linked document may no longer find a file that was moved to another drive or PC. Most people never notice.
+- **Changes:**
+  - `Set service TrkWks start type to Disabled`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services>
+
+#### Turn off printing support
+
+`services.print-spooler-off` · Medium · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Stop and disable the Print Spooler service if you never print.
+
+- **What it does:** Stops the Print Spooler and sets it to Disabled. Microsoft offered this as a workaround for the 2021 PrintNightmare flaw where printing is not needed.
+- **Benefit:** Removes a service that has been a target of serious attacks, and frees a little memory.
+- **Risk:** Medium. Nothing can print from this PC, locally or over the network, and Print to PDF stops working. Revert sets the start type back.
+- **Changes:**
+  - `Set service Spooler start type to Disabled`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2021-34527>, <https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services>
+
+#### Turn off smart card services
+
+`services.smart-card-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Stop the services that read smart cards and apply their removal rules.
+
+- **What it does:** Sets the Smart Card, Smart Card Device Enumeration and Smart Card Removal Policy services to Disabled.
+- **Benefit:** Three fewer services for a feature most PCs never use.
+- **Risk:** Low. Smart cards and security keys that sign in as a smart card, including some banking and work card readers, stop working.
+- **Changes:**
+  - `Set service SCardSvr start type to Disabled`
+  - `Set service ScDeviceEnum start type to Disabled`
+  - `Set service SCPolicySvc start type to Disabled`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services>
+
+#### Turn off the Connected Devices Platform
+
+`services.connected-devices-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Stop the service behind sharing with nearby devices and linking phones and other devices.
+
+- **What it does:** Sets the Connected Devices Platform Service to Disabled. Windows uses it to connect to and share with other devices.
+- **Benefit:** One less background service that talks to nearby devices. On a test PC it used a few megabytes while running.
+- **Risk:** Low. Sharing with nearby devices and features that link this PC to a phone or other device may stop working.
+- **Changes:**
+  - `Set service CDPSvc start type to Disabled`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services>
+
+#### Turn off the Downloaded Maps Manager
+
+`services.maps-manager-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Stop the service that keeps offline maps up to date for the Maps app.
+
+- **What it does:** Sets the Downloaded Maps Manager service to Disabled. Windows uses it only for maps downloaded for offline use.
+- **Benefit:** One less background service that starts with Windows.
+- **Risk:** Low. Offline maps used by the Maps app stop updating and may stop working.
+- **Changes:**
+  - `Set service MapsBroker start type to Disabled`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services>
 
 ### Gaming
 
@@ -4464,6 +4641,20 @@ Make Shut down a full shutdown.
 - **Changes:**
   - `Set HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power\HiberbootEnabled to 0 (DWord)`
 - **Needs:** administrator rights, applies to every account; a restart
+
+#### Turn off the Program Compatibility Assistant
+
+`compat.pca-off` · Low · Helps in some cases · Optional: your choice · checked on build 26200
+
+No more pop-ups offering compatibility fixes after an older program runs badly.
+
+- **What it does:** Sets the policy Turn off Program Compatibility Assistant. Windows stops offering solutions to known compatibility problems when programs run.
+- **Benefit:** No compatibility pop-ups after an older installer or program closes in a way Windows thinks is a problem.
+- **Risk:** Low. You lose the offered fixes for old programs, and you can still set compatibility options by hand on a program's properties.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat\DisablePCA to 1 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat>
 
 ## Updates
 

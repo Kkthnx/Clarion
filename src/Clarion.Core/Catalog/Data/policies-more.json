@@ -1,0 +1,181 @@
+[
+  {
+    "id": "printing.no-print-server",
+    "lastVerifiedBuild": 26200,
+    "category": "Security",
+    "topic": "Security",
+    "name": "Stop other computers printing through this PC",
+    "summary": "Make the print spooler refuse connections from other computers.",
+    "what": "Sets the policy Allow Print Spooler to accept client connections to disabled. Printing from this PC is not affected.",
+    "benefit": "Other computers on your network can no longer reach the print spooler here. Microsoft offered exactly this as a mitigation for the 2021 PrintNightmare flaw.",
+    "risk": "Low. Other computers can no longer print through this PC, and you cannot share a printer from it. The print spooler must restart, so a restart finishes the change.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not share a printer from this PC. Skip it if other computers print through it.",
+    "facts": [
+      "Printing from this PC to its own printers keeps working",
+      "Microsoft lists it as a mitigation for CVE-2021-34527, PrintNightmare",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "A restart finishes the change, because the spooler must restart"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "needsReboot": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers", "name": "RegisterSpoolerRemoteRpcEndPoint" }, "data": { "kind": "DWord", "value": "2" } }
+    ],
+    "sources": [
+      "https://msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2021-34527",
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-printing2"
+    ],
+    "provenance": [ "Printing2.admx RegisterSpoolerRemoteRpcEndPoint" ]
+  },
+  {
+    "id": "lock.skip-lock-screen",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Sign-in screen",
+    "name": "Skip the lock screen",
+    "summary": "Go straight to sign-in after locking, with no lock screen to dismiss first.",
+    "what": "Sets the policy Do not display the lock screen. After you lock the PC you see your sign-in tile directly.",
+    "benefit": "One fewer click or key press every time you wake or unlock the PC.",
+    "risk": "None. You sign in the same way as before. Only the lock screen step is skipped.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. Turn it on if you never use the lock screen for its clock or notifications.",
+    "facts": [
+      "Applies to people who are not required to press Ctrl+Alt+Del to sign in",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization", "name": "NoLockScreen" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-controlpaneldisplay" ],
+    "provenance": [ "ControlPanelDisplay.admx CPL_Personalization_NoLockScreen" ]
+  },
+  {
+    "id": "logon.clear-background",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Sign-in screen",
+    "name": "Show a clear sign-in background",
+    "summary": "Remove the blur from the sign-in screen background.",
+    "what": "Sets the policy Show clear logon background, which turns off the acrylic blur behind the sign-in box.",
+    "benefit": "A sharp sign-in picture instead of a blurred one.",
+    "risk": "None. Only the look of the sign-in screen changes.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It changes how the sign-in screen looks and nothing else.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Needs Windows 10 version 1903 or later",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 18362,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "DisableAcrylicBackgroundOnLogon" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-logon" ],
+    "provenance": [ "Logon.admx DisableAcrylicBackgroundOnLogon" ]
+  },
+  {
+    "id": "compat.pca-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "System",
+    "name": "Turn off the Program Compatibility Assistant",
+    "summary": "No more pop-ups offering compatibility fixes after an older program runs badly.",
+    "what": "Sets the policy Turn off Program Compatibility Assistant. Windows stops offering solutions to known compatibility problems when programs run.",
+    "benefit": "No compatibility pop-ups after an older installer or program closes in a way Windows thinks is a problem.",
+    "risk": "Low. You lose the offered fixes for old programs, and you can still set compatibility options by hand on a program's properties.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Your choice. Useful if the pop-ups only get in your way. Skip it if you run a lot of old software.",
+    "facts": [
+      "No program is changed by this setting",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat", "name": "DisablePCA" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat" ],
+    "provenance": [ "AppCompat.admx AppCompatTurnOffProgramCompatibilityAssistant_2" ]
+  },
+  {
+    "id": "network.prefer-ipv4",
+    "lastVerifiedBuild": 26200,
+    "category": "Network",
+    "topic": "Network",
+    "name": "Prefer IPv4 over IPv6",
+    "summary": "Make Windows try IPv4 first when a site offers both.",
+    "what": "Sets the IPv6 DisabledComponents value to 0x20, the setting Microsoft documents for preferring IPv4. IPv6 itself stays on.",
+    "benefit": "Can avoid slow page loads and timeouts on networks where IPv6 is broken or slow, without turning IPv6 off, which Microsoft advises against.",
+    "risk": "Low. Needs a restart. Sites and services that only offer IPv6 still work, because IPv6 stays on.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if connections hang or are slow and IPv6 is the suspect. Most people do not need it.",
+    "facts": [
+      "Microsoft recommends this over disabling IPv6 or unbinding it",
+      "Applies to every network adapter on this PC",
+      "Restart required",
+      "Revert puts back the value that was there before"
+    ],
+    "scope": "Machine",
+    "needsReboot": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters", "name": "DisabledComponents" }, "data": { "kind": "DWord", "value": "32" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-ipv6-in-windows" ]
+  },
+  {
+    "id": "edge.error-suggestions-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Stop Edge suggesting pages for failed addresses",
+    "summary": "Edge stops sending a mistyped or unreachable address to a web service for suggestions.",
+    "what": "Applies the Edge policy Suggest similar pages when a webpage can't be found, set to off.",
+    "benefit": "Addresses that fail to load are not sent to a suggestion service.",
+    "risk": "None. You just see the plain error page. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who would rather not send failed addresses to a web service.",
+    "facts": [
+      "Edge contacts a web service to suggest pages when a connection fails",
+      "Also locks the matching switch in Edge settings",
+      "Applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "AlternateErrorPagesEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/alternateerrorpagesenabled" ]
+  }
+]
