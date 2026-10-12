@@ -51,7 +51,8 @@ public static class DnsSpeed
         var list = providers.ToList();
         var limit = timeout ?? TimeSpan.FromMilliseconds(1500);
         var samples = list.ToDictionary(p => p.Key, _ => new List<double>());
-        var id = (ushort)Random.Shared.Next(1, ushort.MaxValue);
+        // A hard to guess id makes a forged answer from elsewhere on the network less likely to be taken for a real one.
+        var id = (ushort)System.Security.Cryptography.RandomNumberGenerator.GetInt32(1, ushort.MaxValue);
 
         // One name at a time, every provider at once, so each provider is asked the same thing at the same moment.
         for (var round = 0; round < rounds; round++)

@@ -56,7 +56,7 @@ public interface IAppxStore
 /// <summary>Rules that keep the app remover away from anything Windows needs.</summary>
 public static partial class AppxSafety
 {
-    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")]
+    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9._-]{0,127}\\z")]
     private static partial Regex NamePattern();
 
     /// <summary>Exact package names that must never be removed.</summary>

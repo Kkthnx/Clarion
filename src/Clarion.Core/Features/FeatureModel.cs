@@ -23,7 +23,7 @@ public interface IFeatureStore
 
 public static partial class FeatureRules
 {
-    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9._~-]{0,127}$")]
+    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\\z")]
     private static partial Regex NamePattern();
 
     private static readonly string[] NeverDisable =

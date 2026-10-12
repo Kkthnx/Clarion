@@ -23,7 +23,7 @@ public static partial class ProfileFile
         PropertyNameCaseInsensitive = true,
     };
 
-    [GeneratedRegex(@"^[a-z0-9][a-z0-9.\-]{0,100}$")]
+    [GeneratedRegex(@"^[a-z0-9][a-z0-9.\-]{0,100}\z")]
     private static partial Regex IdPattern();
 
     public static string Serialize(IEnumerable<string> tweakIds, string version) =>
