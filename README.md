@@ -10,7 +10,7 @@ Every change is explained, graded by evidence, backed up and reversible.
 ![Platform](https://img.shields.io/badge/Windows-10%20%7C%2011-5C8BCF)
 ![.NET](https://img.shields.io/badge/.NET-9-3FD0E0)
 
-[**Download**](https://github.com/Kkthnx/Clarion/releases/latest) | [Report a problem](https://github.com/Kkthnx/Clarion/issues/new/choose) | [Changelog](CHANGELOG.md)
+[**Download**](https://github.com/Kkthnx/Clarion/releases/latest) | [Every setting explained](https://kkthnx.github.io/Clarion/) | [Report a problem](https://github.com/Kkthnx/Clarion/issues/new/choose) | [Changelog](CHANGELOG.md)
 
 </div>
 
@@ -97,7 +97,8 @@ To build the installer and zip, install Inno Setup 6 and run `scripts/build-inst
 
 - [Design and approach](docs/DESIGN.md)
 - [Feature matrix](docs/FEATURES.md)
-- [Every setting, written out](docs/CATALOG.md)
+- [Every setting explained, as a website](https://kkthnx.github.io/Clarion/)
+- [Every setting, written out as one page](docs/CATALOG.md)
 - [Brand and palette](docs/BRAND.md)
 - [Changelog](CHANGELOG.md)
 - [Versioning](docs/VERSIONING.md)

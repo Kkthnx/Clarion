@@ -41,6 +41,12 @@ The catalog is JSON under `src/Clarion.Core/Catalog/Data/`. The fields are descr
    dotnet test Clarion.sln -c Release
    ```
 
+The documentation site at https://kkthnx.github.io/Clarion/ is written from the same catalog and is rebuilt when the catalog changes on main. To see your entry on it before you open a pull request, write the site to a folder and open `index.html`:
+
+```
+dotnet run --project tools/Clarion.Site -- _site
+```
+
 The catalog tests will tell you what is missing: a source for a setting marked Proven, the build it was checked on, an id that is already used, or a service that must never be touched.
 
 ## Changing the app

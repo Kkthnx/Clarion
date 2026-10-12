@@ -5,3 +5,4 @@ obj/
 TestResults/
 artifacts/
 packaging/
+_site/
