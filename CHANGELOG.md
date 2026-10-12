@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.17
 
 New
 - A Services tab on the Windows page lists every Windows service on this PC next to Microsoft's table of default start types and recommendations for 255 services. Each row shows how Windows starts the service, whether it is running and how much memory it uses, whether Windows can start it when needed, whether .Clarion protects it, and what Microsoft says about switching it off. Where .Clarion has a setting for the service, the row links to it. The page only reads and changes nothing. It says plainly that a difference from the table is not proof that somebody changed a service, because the table is written for Windows IoT Enterprise. The same table is on the documentation site, searchable, and each service setting there links to its row.
