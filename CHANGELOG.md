@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.1
 
 New
 - Four NVIDIA graphics driver settings: low latency mode On, power management prefer maximum performance, no shader cache size limit and high performance texture filtering. They read and write the driver's global profile through NVIDIA's own NVAPI library, with the setting numbers and values from NVIDIA's public header, and no third party program. Each one stores what it replaced, including that nothing was stored, so Revert puts back exactly that. Each was applied and reverted on a GeForce RTX 2060 from two start states. They show as not available on a PC without an NVIDIA card.
