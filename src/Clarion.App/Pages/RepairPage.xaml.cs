@@ -26,6 +26,23 @@ public sealed partial class RepairPage : Page
         Groups.ItemsSource = items.GroupBy(i => i.Category)
             .OrderBy(g => Array.IndexOf(order, g.Key) is var ix && ix < 0 ? 99 : ix)
             .Select(g => new RepairGroup(g.Key, g.ToList())).ToList();
+
+        foreach (var tool in WindowsTools.All)
+        {
+            var button = new Button { Content = tool.Name, Tag = tool };
+            ToolTipService.SetToolTip(button, tool.Summary);
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(button, tool.Name);
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetHelpText(button, tool.Summary);
+            button.Click += OnOpenTool;
+            ToolButtons.Children.Add(button);
+        }
+    }
+
+    private async void OnOpenTool(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.Tag is not WindowsTool tool) return;
+        if (!Shell.OpenTool(tool))
+            await Dialogs.Say(XamlRoot, $"{tool.Name} did not open", "Windows could not start it. The log has the reason.");
     }
 
     private async void OnRun(object sender, RoutedEventArgs e)

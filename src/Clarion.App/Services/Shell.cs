@@ -60,6 +60,33 @@ public static class Shell
         }
     }
 
+    /// <summary>
+    /// Opens one of Windows' own tools, started as the signed in user so it asks for administrator rights itself if it needs them. If that
+    /// cannot be done, it is started the ordinary way, which is acceptable here because both files are Microsoft's, from the system folder.
+    /// </summary>
+    public static bool OpenTool(Clarion.Core.Actions.WindowsTool tool)
+    {
+        var (program, arguments) = tool.CommandLine(Environment.SystemDirectory);
+        try
+        {
+            if (Clarion.Engine.UnelevatedLauncher.Start(program, arguments) != 0) return true;
+        }
+        catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException or InvalidOperationException)
+        {
+            Log.Write($"Could not open {tool.Name} without elevation: {ex.Message}");
+        }
+        try
+        {
+            using var started = Process.Start(new ProcessStartInfo(program, arguments) { UseShellExecute = false });
+            return true;
+        }
+        catch (Exception ex) when (ex is Win32Exception or InvalidOperationException or FileNotFoundException)
+        {
+            Log.Write($"Could not open {tool.Name}: {ex.Message}");
+            return false;
+        }
+    }
+
     private static bool OpenUnelevated(Uri link)
     {
         try

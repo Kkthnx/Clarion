@@ -20,6 +20,7 @@
 
         <Grid Grid.Row="1">
             <ScrollViewer Padding="0,0,14,0">
+                <StackPanel>
                 <ItemsControl x:Name="Groups">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="pages:RepairGroup">
@@ -67,6 +68,14 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <StackPanel Spacing="8" Margin="0,0,0,18">
+                    <TextBlock Text="Windows tools" FontSize="16" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                               Text="Shortcuts to the classic tools that Windows 11 still sends you to. They only open the Windows window. Nothing is changed by opening one." />
+                    <controls:WrapPanel x:Name="ToolButtons" HorizontalSpacing="8" VerticalSpacing="8" />
+                </StackPanel>
+                </StackPanel>
             </ScrollViewer>
         </Grid>
     </Grid>
