@@ -190,8 +190,11 @@ public sealed class CleanupService : UiObservableObject
             Directory.CreateDirectory(EngineFactory.DefaultDataDirectory);
             File.WriteAllText(ReportFile, BuildReport(rows, s));
         }
-        catch (IOException) { }
-        catch (UnauthorizedAccessException) { }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // The report is a courtesy copy of what the clean did, so failing to write it does not fail the clean. It is logged.
+            Log.Write($"The cleanup report could not be saved: {ex.Message}");
+        }
     }
 
     public string LastReportText() => File.Exists(ReportFile) ? File.ReadAllText(ReportFile) : "";

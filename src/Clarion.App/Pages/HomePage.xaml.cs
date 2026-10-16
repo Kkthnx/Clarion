@@ -267,9 +267,7 @@ public sealed partial class HomePage : Page
             : [];
         foreach (var item in items)
         {
-            var row = new Grid { ColumnSpacing = 16 };
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var row = Ui.StarAutoRow(16);
             row.Children.Add(new TextBlock { Text = item.Name, TextWrapping = TextWrapping.Wrap, Foreground = ThemeBrushes.Get("ClTextPrimary", ActualTheme) });
             var note = item.IsApplied ? "already on" : !item.IsSupported || item.IsUnavailable ? "not on this PC" : "";
             if (note.Length > 0)

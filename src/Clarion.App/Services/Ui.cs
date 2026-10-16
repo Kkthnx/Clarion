@@ -16,6 +16,15 @@ public static class Ui
         MaxWidth = maxWidth,
     };
 
+    /// <summary>A row with a wide first column and a second that is as wide as its content, for a name and the control or note beside it.</summary>
+    public static Grid StarAutoRow(double spacing)
+    {
+        var row = new Grid { ColumnSpacing = spacing };
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        return row;
+    }
+
     /// <summary>A line of something exact, such as a registry value or a command, in the fixed width font.</summary>
     public static TextBlock Mono(string text)
     {

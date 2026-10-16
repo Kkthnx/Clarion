@@ -499,9 +499,7 @@ public sealed partial class MainWindow : Window
             // One item can be taken out here without clearing the rest of the queue.
             var leaveOut = new HyperlinkButton { Content = "Leave out", VerticalAlignment = VerticalAlignment.Top, Padding = new Thickness(8, 2, 8, 2), FontSize = 12 };
             Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(leaveOut, $"Leave out {item.Name}");
-            var row = new Grid { ColumnSpacing = 8 };
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var row = Ui.StarAutoRow(8);
             row.Children.Add(block);
             Grid.SetColumn(leaveOut, 1);
             row.Children.Add(leaveOut);

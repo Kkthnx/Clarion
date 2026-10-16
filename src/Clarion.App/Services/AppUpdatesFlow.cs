@@ -93,9 +93,7 @@ public static class AppUpdatesFlow
         foreach (var update in updates)
         {
             var item = byPackage[update.Id];
-            var row = new Grid { ColumnSpacing = 8 };
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var row = Ui.StarAutoRow(8);
             var box = new CheckBox { Content = $"{item.Name}   {update.Current} → {update.Available}", IsChecked = false };
             Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(box, $"Update {item.Name} from {update.Current} to {update.Available}");
             row.Children.Add(box);

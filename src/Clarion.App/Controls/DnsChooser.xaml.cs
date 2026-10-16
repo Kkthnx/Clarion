@@ -164,9 +164,7 @@ public sealed partial class DnsChooser : UserControl
         var best = results.FirstOrDefault(r => r.Milliseconds is not null);
         foreach (var r in results)
         {
-            var row = new Grid { ColumnSpacing = 16 };
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var row = Ui.StarAutoRow(16);
             var isBest = ReferenceEquals(r, best);
             row.Children.Add(new TextBlock { Text = r.Provider.Name, FontWeight = isBest ? Microsoft.UI.Text.FontWeights.SemiBold : Microsoft.UI.Text.FontWeights.Normal, Foreground = ThemeBrushes.Get(isBest ? "ClOkText" : "ClTextPrimary", ActualTheme) });
             var time = new TextBlock { Text = r.Milliseconds is { } ms ? $"{ms} ms" : "no answer", Foreground = ThemeBrushes.Get(r.Milliseconds is null ? "ClTextMuted" : isBest ? "ClOkText" : "ClTextSecondary", ActualTheme) };
