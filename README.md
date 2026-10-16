@@ -11,7 +11,7 @@ A native Windows app to remove bloat, cut tracking, clean up, repair and tune yo
 - Installs 135 apps as exact winget package IDs. The review shows publisher, license, installer host and checksum before anything installs, and revert uninstalls.
 - Cleanup scans shader, launcher, browser and Windows caches first, shows exact folders and sizes, skips files in use, and queues locked files for the next restart.
 - Repair runs system file checks, component repair, and network and update resets, with live output and a stop button.
-- Safety by design: a restore point before every batch, a journal that records the real previous value, one-click revert, and presets (Minimal, Standard, Advanced, Gaming, Privacy). No telemetry in the app, and the update check is off unless you ask for it.
+- Safety by design: a restore point before every batch, a journal that records the real previous value, one-click revert, and presets (Minimal, Standard, Advanced, Gaming, Privacy). No telemetry in the app, and the update check is off unless you ask for it. The Apps page runs winget, which makes its own network requests.
 
 ## Get it
 

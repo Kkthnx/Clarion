@@ -25,14 +25,14 @@ public sealed class ReadmeTests
     public void The_readme_gives_the_real_number_of_settings()
     {
         var (settings, _) = Counts();
-        Assert.Contains($"| {settings} settings across", Readme(), StringComparison.Ordinal);
+        Assert.Contains($"- {settings} settings across", Readme(), StringComparison.Ordinal);
     }
 
     [Fact]
     public void The_readme_gives_the_real_number_of_apps()
     {
         var (_, apps) = Counts();
-        Assert.Contains($"| {apps} programs installed with winget", Readme(), StringComparison.Ordinal);
+        Assert.Contains($"Installs {apps} apps as exact winget package IDs", Readme(), StringComparison.Ordinal);
     }
 
     [Fact]
