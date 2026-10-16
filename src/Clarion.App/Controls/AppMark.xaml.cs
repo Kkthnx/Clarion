@@ -10,7 +10,7 @@ using Windows.Storage.FileProperties;
 
 namespace Clarion.App.Controls;
 
-/// <summary>An app's logo, drawn from its outline in the brand colour, or a plain tile with its first letter.</summary>
+/// <summary>An app's logo: its outline in the brand colour, or the picture saved inside the program, or the installed app's own icon, or a plain tile with its first letter.</summary>
 public sealed partial class AppMark : UserControl
 {
     public static readonly DependencyProperty IconProperty =
@@ -24,6 +24,12 @@ public sealed partial class AppMark : UserControl
 
     public static readonly DependencyProperty ImagePathProperty =
         DependencyProperty.Register(nameof(ImagePath), typeof(string), typeof(AppMark), new PropertyMetadata(null, (d, _) => ((AppMark)d).OnImagePathChanged()));
+    public static readonly DependencyProperty LogoFileProperty =
+        DependencyProperty.Register(nameof(LogoFile), typeof(string), typeof(AppMark), new PropertyMetadata(null, (d, _) => ((AppMark)d).OnLogoFileChanged()));
+
+    // The logo pictures saved inside the program, decoded once and shared by every row that shows one. Used on the UI thread only.
+    private static readonly Dictionary<string, BitmapImage> Logos = new(StringComparer.OrdinalIgnoreCase);
+
     // Icons already read, so a row that scrolls out and back does not read its file again. Used on the UI thread only.
     private static readonly Dictionary<string, BitmapImage> Photos = new(StringComparer.OrdinalIgnoreCase);
 
@@ -54,6 +60,45 @@ public sealed partial class AppMark : UserControl
 
     /// <summary>The icon file of the installed app. It stands in for the letter tile when there is no logo.</summary>
     public string? ImagePath { get => (string?)GetValue(ImagePathProperty); set => SetValue(ImagePathProperty, value); }
+    /// <summary>
+    /// The logo picture saved inside the program, for an app with no outline. It is a file beside the program, so showing it never uses the
+    /// network. A file that cannot be decoded leaves the letter tile.
+    /// </summary>
+    public string? LogoFile { get => (string?)GetValue(LogoFileProperty); set => SetValue(LogoFileProperty, value); }
+
+    private void OnLogoFileChanged()
+    {
+        Bundled.Source = null;
+        var path = LogoFile;
+        if (!string.IsNullOrEmpty(path))
+        {
+            try
+            {
+                if (!Logos.TryGetValue(path, out var image))
+                {
+                    image = new BitmapImage { DecodePixelWidth = 128 };
+                    var shared = image;
+                    // A picture that will not decode must not leave an empty square, so it is forgotten and the letter tile comes back.
+                    image.ImageFailed += (_, e) =>
+                    {
+                        Log.Write($"The logo file {path} could not be shown: {e.ErrorMessage}");
+                        Logos.Remove(path);
+                        if (ReferenceEquals(Bundled.Source, shared)) { Bundled.Source = null; Refresh(); }
+                    };
+                    image.UriSource = new Uri(path);
+                    if (Logos.Count > 400) Logos.Clear();
+                    Logos[path] = image;
+                }
+                Bundled.Source = image;
+            }
+            catch (Exception ex) when (ex is UriFormatException or ArgumentException or InvalidOperationException)
+            {
+                Log.Write($"The logo file {path} could not be opened: {ex.Message}");
+            }
+        }
+        Refresh();
+    }
+
     private void OnThemeChanged(FrameworkElement sender, object args) => Refresh();
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
@@ -149,6 +194,7 @@ public sealed partial class AppMark : UserControl
         Glyph.Margin = _tiled ? new Thickness(_padding) : new Thickness(0);
         Glyph.Visibility = Visibility.Visible;
         Photo.Visibility = Visibility.Collapsed;
+        Bundled.Visibility = Visibility.Collapsed;
         if (_shownPath != icon.Path)
         {
             // F1 is the non-zero fill rule, which is what SVG uses and what the outlines were drawn for.
@@ -176,10 +222,12 @@ public sealed partial class AppMark : UserControl
         _tiled = false;
         Glyph.Visibility = Visibility.Collapsed;
         _shownPath = null;
-        // No logo: the real icon of the installed app if Windows lists one, otherwise the letter tile.
+        // No outline: the real icon of the installed app if Windows lists one, then the picture saved inside the program, and last the letter tile.
         var photo = !IsWatermark && Photo.Source is not null;
+        var bundled = !IsWatermark && !photo && Bundled.Source is not null;
         Photo.Visibility = photo ? Visibility.Visible : Visibility.Collapsed;
-        Tile.Visibility = IsWatermark || photo ? Visibility.Collapsed : Visibility.Visible;
+        Bundled.Visibility = bundled ? Visibility.Visible : Visibility.Collapsed;
+        Tile.Visibility = IsWatermark || photo || bundled ? Visibility.Collapsed : Visibility.Visible;
         Letter.Visibility = Visibility.Visible;
         Letter.Text = Label.Length > 0 ? char.ToUpperInvariant(Label[0]).ToString() : "";
     }

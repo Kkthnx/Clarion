@@ -13,5 +13,6 @@
         </Border>
         <Path x:Name="Glyph" Stretch="Uniform" Visibility="Collapsed" />
         <Image x:Name="Photo" Stretch="Uniform" Margin="2" Visibility="Collapsed" />
+        <Image x:Name="Bundled" Stretch="Uniform" Visibility="Collapsed" />
     </Grid>
 </UserControl>

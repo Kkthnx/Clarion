@@ -20,7 +20,7 @@
                                     <!-- A fixed width, so the state text changing from "Checking" to "On" cannot change how the name wraps. -->
                                     <ColumnDefinition Width="84" />
                                 </Grid.ColumnDefinitions>
-                                <controls:AppMark Icon="{x:Bind Icon}" ImagePath="{x:Bind InstalledIconPath, Mode=OneWay}" Label="{x:Bind Name}" Width="36" Height="36" Margin="0,0,16,0"
+                                <controls:AppMark Icon="{x:Bind Icon}" ImagePath="{x:Bind InstalledIconPath, Mode=OneWay}" LogoFile="{x:Bind LogoFilePath}" Label="{x:Bind Name}" Width="36" Height="36" Margin="0,0,16,0"
                                                   VerticalAlignment="Top" Visibility="{x:Bind IsApp}" />
                                 <StackPanel Grid.Column="1" Spacing="6" Margin="0,0,16,0">
                                     <!-- The i sits right after the name, which takes only the room it needs. -->
@@ -80,7 +80,7 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <controls:AppMark Icon="{x:Bind Icon}" ImagePath="{x:Bind InstalledIconPath, Mode=OneWay}" Label="{x:Bind Name}" Width="22" Height="22" Margin="0,0,10,0"
+                    <controls:AppMark Icon="{x:Bind Icon}" ImagePath="{x:Bind InstalledIconPath, Mode=OneWay}" LogoFile="{x:Bind LogoFilePath}" Label="{x:Bind Name}" Width="22" Height="22" Margin="0,0,10,0"
                                       VerticalAlignment="Center" Visibility="{x:Bind IsApp}" />
                     <TextBlock Grid.Column="1" Text="{x:Bind Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />

@@ -88,8 +88,12 @@
             <StackPanel Spacing="8">
                 <TextBlock Text="Logos" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                           Text="The app logos on the Apps page come from the Simple Icons project, which releases them under CC0. The names and logos belong to their owners. .Clarion shows them only so you can tell which app is which, and it does not mean the owners endorse .Clarion." />
-                <HyperlinkButton Content="Simple Icons on GitHub" Click="OnSimpleIcons" Padding="0" />
+                           Text="App logos are saved inside .Clarion, so showing them sends nothing anywhere. Most are the Simple Icons set, released under CC0. Others were taken once from the program's own website or GitHub organization, or from two icon collections: Dashboard Icons (Apache-2.0) and selfh.st icons (CC BY 4.0, credited here as it asks). Where a logo was found, the address is written down in the program. A program with no logo shows its first letter. The names and logos belong to their owners. .Clarion shows them only so you can tell which app is which, and it does not mean the owners endorse .Clarion." />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <HyperlinkButton Content="Simple Icons" Click="OnSimpleIcons" Padding="0" />
+                    <HyperlinkButton Content="Dashboard Icons" Click="OnDashboardIcons" Padding="0" />
+                    <HyperlinkButton Content="selfh.st icons" Click="OnSelfhstIcons" Padding="0" />
+                </StackPanel>
             </StackPanel>
 
         </StackPanel>

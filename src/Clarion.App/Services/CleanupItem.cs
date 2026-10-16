@@ -46,6 +46,7 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
     public bool ShowRecommendation => true;
     public bool IsApp => false;
     public string? InstalledIconPath => null;
+    public string? LogoFilePath => null;
     public Clarion.Core.Apps.AppIcon? Icon => null;
     public ChipKind RiskKind => DetailHelpers.RiskKind(Target.RiskLevel);
 

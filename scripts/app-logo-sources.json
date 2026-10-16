@@ -1,0 +1,19 @@
+{
+  "_comment": "Logos taken from a curated collection, chosen by hand for the app. collection is dashboard-icons (homarr-labs/dashboard-icons, Apache-2.0) or selfhst (selfhst/icons, CC BY 4.0, credited on the About page). name is the file name without .png. Only add an entry after looking at the picture, because a name that only looks alike (Flux and f.lux) is the wrong program.",
+  "app.chromium-hibbiki-build": { "collection": "dashboard-icons", "name": "chromium" },
+  "app.oh-my-posh": { "collection": "dashboard-icons", "name": "oh-my-posh" },
+  "app.microsoft-teams": { "collection": "dashboard-icons", "name": "microsoft-teams" },
+  "app.windows-terminal": { "collection": "selfhst", "name": "windows-terminal" },
+  "app.sunshine": { "collection": "dashboard-icons", "name": "sunshine" },
+  "app.mkvtoolnix": { "collection": "dashboard-icons", "name": "mkvtoolnix" },
+  "app.veracrypt": { "collection": "dashboard-icons", "name": "vera-crypt" },
+  "app.balena-etcher": { "collection": "dashboard-icons", "name": "balena-etcher" },
+  "app.putty": { "collection": "dashboard-icons", "name": "putty" },
+  "app.powertoys": { "collection": "selfhst", "name": "microsoft-powertoys" },
+  "app.onedrive": { "collection": "dashboard-icons", "name": "microsoft-onedrive" },
+  "app.adobe-acrobat-reader": { "collection": "selfhst", "name": "adobe-acrobat" },
+  "app.foxit-pdf-reader": { "collection": "dashboard-icons", "name": "foxit-icon" },
+  "app.pdf24-creator": { "collection": "dashboard-icons", "name": "pdf24" },
+  "app.treesize-free": { "collection": "dashboard-icons", "name": "treesize" },
+  "app.unity-hub": { "collection": "dashboard-icons", "name": "unity" }
+}

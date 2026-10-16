@@ -11,7 +11,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <controls:AppMark Icon="{x:Bind Item.Icon, Mode=OneWay}" ImagePath="{x:Bind Item.InstalledIconPath, Mode=OneWay}" Label="{x:Bind Item.Name, Mode=OneWay}" Width="40" Height="40"
+            <controls:AppMark Icon="{x:Bind Item.Icon, Mode=OneWay}" ImagePath="{x:Bind Item.InstalledIconPath, Mode=OneWay}" LogoFile="{x:Bind Item.LogoFilePath, Mode=OneWay}" Label="{x:Bind Item.Name, Mode=OneWay}" Width="40" Height="40"
                               VerticalAlignment="Center" Visibility="{x:Bind Item.IsApp, Mode=OneWay}" />
             <TextBlock Grid.Column="1" Text="{x:Bind Item.Name, Mode=OneWay}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"
                        TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />

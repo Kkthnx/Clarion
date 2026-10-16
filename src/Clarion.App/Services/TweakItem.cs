@@ -14,6 +14,8 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
         Tooltip = TweakTooltip.Build(tweak);
         IsSupported = profile.Supports(tweak.Requires);
         LockReason = IsSupported ? "" : BuildLockReason(tweak, profile);
+        if (InstallsApps && Icon is null)
+            _logoFilePath = Clarion.Core.Apps.AppLogoFiles.Default.PathFor(Id, System.IO.Path.Combine(AppContext.BaseDirectory, "Assets"));
     }
 
     internal Tweak Tweak { get; }
@@ -37,6 +39,18 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
 
     /// <summary>The logo for an app, or null for an app without one and for every other kind of setting.</summary>
     public Clarion.Core.Apps.AppIcon? Icon => InstallsApps ? Clarion.Core.Apps.AppIcons.Default.For(Id) : null;
+
+    private string? _logoFilePath;
+
+    /// <summary>
+    /// The logo picture saved inside the program for an app that has no outline, or null. It is a plain file beside the program, found once when
+    /// the row is made, so showing it never touches the network.
+    /// </summary>
+    public string? LogoFilePath
+    {
+        get => _logoFilePath;
+        private set => SetProperty(ref _logoFilePath, value);
+    }
 
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Tweak.RiskLevel);

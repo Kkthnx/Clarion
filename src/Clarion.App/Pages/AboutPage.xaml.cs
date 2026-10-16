@@ -18,5 +18,7 @@ public sealed partial class AboutPage : Page
     private void OnSource(object sender, RoutedEventArgs e) => Shell.Open("https://github.com/Kkthnx/Clarion");
     private void OnTwitch(object sender, RoutedEventArgs e) => Shell.Open("https://twitch.tv/kkthnxtv");
     private void OnSimpleIcons(object sender, RoutedEventArgs e) => Shell.Open(Clarion.Core.Apps.AppIcons.Default.SetUrl);
+    private void OnDashboardIcons(object sender, RoutedEventArgs e) => Shell.Open("https://github.com/homarr-labs/dashboard-icons");
+    private void OnSelfhstIcons(object sender, RoutedEventArgs e) => Shell.Open("https://github.com/selfhst/icons");
     private void OnPayPal(object sender, RoutedEventArgs e) => Shell.Open("https://www.paypal.me/kkthnxTV");
 }
