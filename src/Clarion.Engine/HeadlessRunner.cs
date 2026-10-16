@@ -138,12 +138,24 @@ public static class HeadlessRunner
         }
         runtime.Winget.AcceptPackageAgreements = o.AcceptPackageAgreements;
 
+        // winget runs as the account that runs this command. When that is an administrator account other than the one that is signed in,
+        // an app would be installed into that other account's profile, so apps are left out, as the Apps page leaves them out.
+        var blockedApps = new List<Tweak>();
+        var wingetSettings = plan.ToApply.Where(t => t.Apply.Any(op => op is InstallWingetPackage or UninstallWingetPackage)).ToList();
+        if (wingetSettings.Count > 0 && AccountCheck.Detect() is { Differs: true } account)
+        {
+            blockedApps = wingetSettings;
+            plan = plan with { ToApply = plan.ToApply.Except(blockedApps).ToList() };
+            say($"This command runs as {account.ElevatedAs}, but {account.SignedInAs} is signed in, so apps would be installed for the wrong account. Start the command again from your own account to include them.");
+        }
+
         say($"{plan.ToApply.Count} to turn on, {plan.AlreadyOn.Count} already on, {plan.NotSupported.Count} not available here, {plan.Unknown.Count} unknown.");
         foreach (var id in plan.Unknown) say($"  unknown setting: {id}");
         foreach (var id in plan.NotSupported) say($"  not available here: {id}");
         foreach (var t in plan.ToApply) say($"  {(o.Preview ? "would turn on" : "turning on")}: {t.Name}");
         foreach (var t in skippedApps) say($"  skipped app: {t.Name}. Add --accept-package-agreements to install it, which accepts the publisher's licence terms for you.");
-        if (o.Preview || plan.ToApply.Count == 0) return skippedApps.Count > 0 ? 1 : 0;
+        foreach (var t in blockedApps) say($"  skipped app: {t.Name}. It would go to a different account.");
+        if (o.Preview || plan.ToApply.Count == 0) return skippedApps.Count + blockedApps.Count > 0 ? 1 : 0;
 
         var result = runtime.Runner.Apply(plan.ToApply, runtime.Profile,
             new BatchOptions { CreateRestorePoint = !o.NoRestorePoint, ContinueWithoutRestorePoint = o.NoRestorePoint, TurnOnSystemProtection = o.EnableProtection }, say);
@@ -156,7 +168,7 @@ public static class HeadlessRunner
         foreach (var item in result.Items.Where(i => !i.Result.Success)) say($"  failed: {item.TweakId}: {item.Result.Error}");
         // An installer can ask for a restart even though the setting itself does not need one.
         if (runtime.Winget.TakeRestartNeeded()) say("Restart Windows to finish some of these.");
-        var complete = result.AllSucceeded && skippedApps.Count == 0;
+        var complete = result.AllSucceeded && skippedApps.Count == 0 && blockedApps.Count == 0;
         say(complete ? "Done." : "Some settings did not finish.");
         return complete ? 0 : 1;
     }

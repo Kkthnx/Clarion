@@ -31,10 +31,14 @@ public static class AccountCheck
         using var me = WindowsIdentity.GetCurrent();
         var meName = me.Name ?? "";
 
+        // On a PC with more than one signed in session, only the shell of this session says who is using it. Another session's Explorer
+        // belongs to another person, and an administrator can open its token too.
+        var session = System.Diagnostics.Process.GetCurrentProcess().SessionId;
         foreach (var p in System.Diagnostics.Process.GetProcessesByName("explorer"))
         {
             try
             {
+                if (p.SessionId != session) continue;
                 using var handle = OpenProcess(ProcessQueryLimitedInformation, false, p.Id);
                 if (handle.IsInvalid || !OpenProcessToken(handle, TokenQuery, out var token)) continue;
                 try
