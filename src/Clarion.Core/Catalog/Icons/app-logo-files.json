@@ -90,6 +90,13 @@
                          "plate":  "white",
                          "sha256":  "10aae74271a4273a31e82d8aeaf65a3231d57681bee10ff5c0ee52fb4475081e"
                      },
+    "app.dotnet-sdk":  {
+                           "source":  "https://dotnet.microsoft.com/apple-touch-icon.png",
+                           "width":  128,
+                           "original":  "180x180",
+                           "plate":  "none",
+                           "sha256":  "038091a840f33b62dd6bbf87ff8f8bbbda031741ef81e4bc6d4f93c9f6cdeec3"
+                       },
     "app.emulationstation-desktop-edition":  {
                                                  "source":  "https://impro.usercontent.one/appid/oneComWsb/domain/es-de.org/media/es-de.org/onewebmedia/ES-DE_logo_small.png?etag=%22ba8-60428863%22\u0026amp;sourceContentType=image%2Fpng\u0026amp;resize=120,120\u0026amp;ignoreAspectRatio",
                                                  "width":  128,

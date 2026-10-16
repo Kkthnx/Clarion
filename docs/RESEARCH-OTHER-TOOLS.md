@@ -287,8 +287,8 @@ Matched by exact name against the 179 apps that had no Simple Icons outline when
 
 **What .Clarion does.** Nothing is fetched while the program runs. The logos are saved inside it, in this order:
 
-1. The Simple Icons outline, drawn in the brand's colour (`scripts/add-simple-icon.ps1`). 106 apps.
-2. A picture saved inside the program (`scripts/fetch-app-logos.ps1`), 84 apps: 11 from Dashboard Icons and 3 from selfh.st chosen by hand in `scripts/app-logo-sources.json`, 33 from the picture of the project's GitHub organization, and 37 from the program's own website. A picture is kept only if it is at least 48 pixels on each side, close to square and not blank, and it is never enlarged, so a blurry 16 pixel favicon is left out. One with a see through background is put on a white or dark plate, so it reads the same on a light card and a dark one. Where each came from is written in `app-logo-files.json` and checked by a test.
+1. The Simple Icons outline, drawn in the brand's colour (`scripts/add-simple-icon.ps1`). 105 apps.
+2. A picture saved inside the program (`scripts/fetch-app-logos.ps1`), 85 apps: 11 from Dashboard Icons and 3 from selfh.st chosen by hand in `scripts/app-logo-sources.json`, 33 from the picture of the project's GitHub organization, and 38 from the program's own website. A picture is kept only if it is at least 48 pixels on each side, close to square and not blank, and it is never enlarged, so a blurry 16 pixel favicon is left out. One with a see through background is put on a white or dark plate, so it reads the same on a light card and a dark one. Where each came from is written in `app-logo-files.json` and checked by a test.
 3. For an app that is installed, the icon Windows itself lists for it.
 4. The first letter on a plain tile. 65 apps are here today, nearly all Windows utilities.
 
