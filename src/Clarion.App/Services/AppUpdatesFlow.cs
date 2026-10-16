@@ -82,7 +82,7 @@ public static class AppUpdatesFlow
 
         var chosen = await PickAsync(root, updates, byPackage);
         if (chosen is null) return;
-        await UpdateAsync(root, app, chosen.Value.Updates, chosen.Value.AcceptTerms, byPackage);
+        await UpdateAsync(root, app, chosen.Value.Updates, chosen.Value.AcceptTerms);
     }
 
     private static async Task<(IReadOnlyList<AppUpdate> Updates, bool AcceptTerms)?> PickAsync(
@@ -150,62 +150,25 @@ public static class AppUpdatesFlow
         return (boxes.Where(b => b.Box.IsChecked == true).Select(b => b.Update).ToList(), agree.IsChecked == true);
     }
 
-    private static async Task UpdateAsync(XamlRoot root, AppServices app, IReadOnlyList<AppUpdate> updates, bool acceptTerms, Dictionary<string, TweakItem> byPackage)
+    private static async Task UpdateAsync(XamlRoot root, AppServices app, IReadOnlyList<AppUpdate> updates, bool acceptTerms)
     {
-        var lines = new System.Text.StringBuilder();
-        var logBox = new TextBlock
-        {
-            IsTextSelectionEnabled = true,
-            TextWrapping = Microsoft.UI.Xaml.TextWrapping.Wrap,
-            FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"),
-            FontSize = 12,
-        };
-        var scroller = new ScrollViewer { Content = logBox, Width = 600, Height = 260, Padding = new Thickness(8) };
-        var ring = new ProgressRing { IsActive = true, Width = 20, Height = 20 };
-        var status = new TextBlock { Text = "Starting", VerticalAlignment = VerticalAlignment.Center };
-        var content = new StackPanel { Spacing = 12 };
-        content.Children.Add(new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Children = { ring, status } });
-        content.Children.Add(scroller);
-
-        using var stop = new CancellationTokenSource();
-        var dialog = new ContentDialog { Title = $"Updating {updates.Count} {(updates.Count == 1 ? "app" : "apps")}", Content = content, PrimaryButtonText = "Stop", XamlRoot = root };
-        dialog.PrimaryButtonClick += (_, a) => { a.Cancel = true; status.Text = "Stopping"; stop.Cancel(); };
-        var shown = dialog.ShowAsync();
-
-        void Append(string line)
-        {
-            Log.Write($"update: {line}");
-            dialog.DispatcherQueue.TryEnqueue(() =>
-            {
-                lines.AppendLine(line);
-                logBox.Text = lines.ToString();
-                scroller.UpdateLayout();
-                scroller.ChangeView(null, scroller.ScrollableHeight, null, true);
-                status.Text = line.StartsWith("Updating ", StringComparison.Ordinal) ? line : status.Text;
-            });
-        }
+        using var log = new LogDialog(root, $"Updating {updates.Count} {(updates.Count == 1 ? "app" : "apps")}");
+        log.Start();
 
         IReadOnlyList<AppUpdateResult> results;
         app.RepairRunning = true;
         try
         {
-            results = await Task.Run(() => AppUpdater.Run(app.Runtime.Winget, updates, acceptTerms, Append, stop.Token));
+            results = await Task.Run(() => AppUpdater.Run(app.Runtime.Winget, updates, acceptTerms,
+                line => { Log.Write($"update: {line}"); log.Append(line, line.StartsWith("Updating ", StringComparison.Ordinal) ? line : null); }, log.Stop));
         }
         finally { app.RepairRunning = false; }
 
-        var summary = AppUpdater.Summary(results);
-        ring.IsActive = false;
-        lines.AppendLine();
-        lines.AppendLine(summary + ".");
+        var summary = AppUpdater.Summary(results) + ".";
+        var extra = new List<string> { "", summary };
         if (results.Any(r => !r.Succeeded && !r.Skipped && r.Message.Contains("licence terms", StringComparison.Ordinal)))
-            lines.AppendLine("Run the update again with the licence box ticked for the apps that asked for their terms again.");
-        if (app.Runtime.Winget.TakeRestartNeeded()) lines.AppendLine("Restart Windows to finish some of these.");
-        logBox.Text = lines.ToString();
-        scroller.UpdateLayout();
-        scroller.ChangeView(null, scroller.ScrollableHeight, null, true);
-        status.Text = summary + ".";
-        dialog.PrimaryButtonText = "";
-        dialog.CloseButtonText = "Close";
-        await shown;
+            extra.Add("Run the update again with the licence box ticked for the apps that asked for their terms again.");
+        if (app.Runtime.Winget.TakeRestartNeeded()) extra.Add("Restart Windows to finish some of these.");
+        await log.FinishAsync(summary, extra.ToArray());
     }
 }

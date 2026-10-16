@@ -111,74 +111,14 @@ public sealed partial class RepairPage : Page
     {
         _running = true;
         _app.RepairRunning = true;
-        using var cts = new CancellationTokenSource();
-        var builder = new StringBuilder();
-        var dirty = false;
-
-        var logBox = new TextBlock
-        {
-            IsTextSelectionEnabled = true,
-            TextWrapping = TextWrapping.NoWrap,
-            FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"),
-            FontSize = 12,
-        };
-        var scroller = new ScrollViewer
-        {
-            Content = logBox,
-            Width = 640,
-            Height = 300,
-            Padding = new Thickness(8),
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-        };
-        var ring = new ProgressRing { IsActive = true, Width = 20, Height = 20 };
-        var status = new TextBlock { Text = "Starting", VerticalAlignment = VerticalAlignment.Center };
-        var header = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
-        header.Children.Add(ring);
-        header.Children.Add(status);
-        var content = new StackPanel { Spacing = 12 };
-        content.Children.Add(header);
-        content.Children.Add(scroller);
-
-        var dialog = new ContentDialog { Title = item.Name, Content = content, PrimaryButtonText = "Stop", XamlRoot = XamlRoot };
-        dialog.PrimaryButtonClick += (_, a) =>
-        {
-            a.Cancel = true;
-            status.Text = "Stopping";
-            cts.Cancel();
-        };
-        var shown = dialog.ShowAsync();
-
-        void Append(string line)
-        {
-            lock (builder) { builder.AppendLine(line); dirty = true; }
-            Log.Write($"repair {item.Def.Id}: {line}");
-        }
-
-        using var timerStop = new CancellationTokenSource();
-        var refresh = Task.Run(async () =>
-        {
-            while (!timerStop.IsCancellationRequested)
-            {
-                await Task.Delay(150);
-                string? text = null;
-                lock (builder) { if (dirty) { text = builder.ToString(); dirty = false; } }
-                if (text is null) continue;
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    logBox.Text = text;
-                    scroller.UpdateLayout();
-                    scroller.ChangeView(null, scroller.ScrollableHeight, null, true);
-                    status.Text = "Running";
-                });
-            }
-        });
+        using var log = new LogDialog(XamlRoot, item.Name);
+        log.Start();
 
         Clarion.Core.Actions.ActionResult result;
         try
         {
-            status.Text = "Running";
-            result = await _app.Runtime.Actions.RunAsync(item.Def, Append, cts.Token);
+            log.SetStatus("Running");
+            result = await _app.Runtime.Actions.RunAsync(item.Def, line => { log.Append(line); Log.Write($"repair {item.Def.Id}: {line}"); }, log.Stop);
         }
         catch (Exception ex)
         {
@@ -190,23 +130,12 @@ public sealed partial class RepairPage : Page
         {
             // The job is over here, whatever the dialog does next, so closing the window is no longer held back.
             _app.RepairRunning = false;
-            await timerStop.CancelAsync();
-            await refresh;
         }
 
-        string finalText;
-        lock (builder) finalText = builder.ToString();
-        logBox.Text = finalText;
-        scroller.UpdateLayout();
-        scroller.ChangeView(null, scroller.ScrollableHeight, null, true);
-        ring.IsActive = false;
-        status.Text = result.Success
+        var status = result.Success
             ? $"Finished in {result.Duration.TotalSeconds:0} seconds.{(result.BytesFreed > 0 ? $" Freed {ByteSize.Format(result.BytesFreed)}." : "")}{(item.Def.NeedsReboot ? " Restart to finish." : "")}"
             : result.Cancelled ? "Stopped." : $"Did not finish. {result.Error}";
-        dialog.PrimaryButtonText = "";
-        dialog.CloseButtonText = "Close";
-        await shown;
+        await log.FinishAsync(status);
         _running = false;
-        _app.RepairRunning = false;
     }
 }
