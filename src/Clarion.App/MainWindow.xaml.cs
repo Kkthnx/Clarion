@@ -317,7 +317,7 @@ public sealed partial class MainWindow : Window
         {
             var row = new StackPanel { Spacing = 2, Margin = new Thickness(0, 2, 0, 6) };
             row.Children.Add(new TextBlock { Text = title + (title == "Standard" ? "  (suggested)" : ""), FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-            row.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Opacity = 0.8, FontSize = 12, MaxWidth = 460 });
+            row.Children.Add(Ui.Note(text, 460));
             choices.Items.Add(row);
         }
 
@@ -339,7 +339,7 @@ public sealed partial class MainWindow : Window
             "3. Verify. Later, .Clarion checks that Windows has not put things back.",
             "4. Revert. Any change can be undone from the Safety page.",
         })
-            loop.Children.Add(new TextBlock { Text = line, TextWrapping = TextWrapping.Wrap, FontSize = 12, Opacity = 0.8, MaxWidth = 460 });
+            loop.Children.Add(Ui.Note(line, 460));
         body.Children.Add(loop);
         body.Children.Add(new TextBlock { Text = "Pick a starting point", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         body.Children.Add(choices);
@@ -461,7 +461,7 @@ public sealed partial class MainWindow : Window
             if (item.IsOn)
             {
                 foreach (var step in item.ExactChanges)
-                    block.Children.Add(new TextBlock { Text = step, FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"), FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
+                    block.Children.Add(Ui.Mono(step));
                 if (item.RemovesApps)
                     block.Children.Add(new TextBlock { Text = Clarion.Core.Appx.AppRemovalNotice.Text, FontSize = 12, TextWrapping = TextWrapping.Wrap, Foreground = Clarion.App.Controls.ThemeBrushes.Get("ClWarnText", Root.ActualTheme) });
                 if (item.InstallsApps)
@@ -485,21 +485,15 @@ public sealed partial class MainWindow : Window
             }
             else if (item.InstallsApps)
             {
-                block.Children.Add(new TextBlock { Text = "Runs the program's own uninstaller through winget. If you did not install it with .Clarion, this removes the copy you already have.", FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
+                block.Children.Add(Ui.Note("Runs the program's own uninstaller through winget. If you did not install it with .Clarion, this removes the copy you already have."));
             }
             else
             {
                 // The steps Revert will run, read from the history exactly as the engine reads it, so nothing is a surprise.
                 var preview = Clarion.Core.Reports.RevertPreview.For(_app.Runtime.Journal.OutstandingFor(item.Id), item.Tweak.Undo);
                 foreach (var step in preview.Lines)
-                    block.Children.Add(new TextBlock { Text = step, FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"), FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
-                block.Children.Add(new TextBlock
-                {
-                    Text = preview.FromHistory ? "Puts back the value that was recorded before the change." : "Nothing was recorded for this one, so the default shown is used.",
-                    FontSize = 12,
-                    TextWrapping = TextWrapping.Wrap,
-                    Opacity = 0.8,
-                });
+                    block.Children.Add(Ui.Mono(step));
+                block.Children.Add(Ui.Note(preview.FromHistory ? "Puts back the value that was recorded before the change." : "Nothing was recorded for this one, so the default shown is used."));
             }
 
             // One item can be taken out here without clearing the rest of the queue.
