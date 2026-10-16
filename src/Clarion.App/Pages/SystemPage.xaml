@@ -15,7 +15,10 @@
 
             <StackPanel Orientation="Horizontal" Spacing="12">
                 <Button x:Name="RefreshButton" Content="Check again" Click="OnRefresh" />
-                <Button x:Name="CopyButton" Content="Copy report" Click="OnCopy" IsEnabled="False" />
+                <Button x:Name="CopyButton" Content="Copy report" Click="OnCopy" IsEnabled="False"
+                        ToolTipService.ToolTip="Copies the report with the computer name, user name, network addresses and account IDs removed." />
+                <Button x:Name="SaveButton" Content="Save report" Click="OnSave" IsEnabled="False"
+                        ToolTipService.ToolTip="Saves the same report to a text file, to attach to a question or a bug report." />
                 <ProgressRing x:Name="Ring" Width="20" Height="20" IsActive="True" />
                 <TextBlock x:Name="StatusLabel" Text="Reading your system, this takes a few seconds." VerticalAlignment="Center"
                            Foreground="{ThemeResource ClTextMutedBrush}" />

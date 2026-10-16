@@ -28,6 +28,7 @@ public sealed partial class SystemPage : Page
     {
         RefreshButton.IsEnabled = false;
         CopyButton.IsEnabled = false;
+        SaveButton.IsEnabled = false;
         Ring.IsActive = true;
         StatusLabel.Text = "Reading your system, this takes a few seconds.";
         try
@@ -79,6 +80,7 @@ public sealed partial class SystemPage : Page
         StatusLabel.Text = "";
         RefreshButton.IsEnabled = true;
         CopyButton.IsEnabled = true;
+        SaveButton.IsEnabled = true;
     }
 
     private async void OnRefresh(object sender, RoutedEventArgs e)
@@ -86,13 +88,33 @@ public sealed partial class SystemPage : Page
         await LoadAsync(true);
     }
 
+    /// <summary>The report as text for sharing. The computer name, user name, network addresses and account IDs are taken out first.</summary>
+    private string? ShareableText() =>
+        _report is null ? null : Clarion.Core.Feedback.Sanitizer.Clean(_report.ToText(), Environment.UserName, Environment.MachineName);
+
     private void OnCopy(object sender, RoutedEventArgs e)
     {
-        if (_report is null) return;
+        if (ShareableText() is not { } text) return;
         var package = new DataPackage();
-        package.SetText(_report.ToText());
+        package.SetText(text);
         Clipboard.SetContent(package);
-        StatusLabel.Text = "Copied.";
+        StatusLabel.Text = "Copied, with the computer name, user name and network addresses removed.";
+    }
+
+    private void OnSave(object sender, RoutedEventArgs e)
+    {
+        if (ShareableText() is not { } text) return;
+        var path = FileDialogs.Save(((App)Application.Current).WindowHandle, "Save the system report", "Text file (*.txt)|*.txt", "clarion-system-report.txt");
+        if (path is null) return;
+        try
+        {
+            File.WriteAllText(path, text);
+            StatusLabel.Text = $"Saved to {path}, with the computer name, user name and network addresses removed.";
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            StatusLabel.Text = $"Could not save the file: {ex.Message}";
+        }
     }
 }
 
