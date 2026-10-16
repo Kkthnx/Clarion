@@ -648,7 +648,7 @@ public sealed partial class MainWindow : Window
         };
         if (restartsExplorer)
         {
-            body.Children.Add(new TextBlock { Text = "Explorer needs a restart to show some changes.", TextWrapping = TextWrapping.Wrap });
+            body.Children.Add(new TextBlock { Text = "Explorer needs a restart to show some changes. Restarting it closes every open folder window, interrupts a file copy running in one, and makes the taskbar and desktop icons disappear for a moment.", TextWrapping = TextWrapping.Wrap });
             dialog.PrimaryButtonText = "Restart Explorer now";
         }
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) RestartExplorer();

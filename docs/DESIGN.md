@@ -118,7 +118,7 @@ Full keyboard navigation, Narrator labels on every control, 4.5:1 text contrast,
 ### Stack
 
 - C# on current .NET LTS, WinUI 3 with the Windows App SDK, MVVM with the CommunityToolkit.Mvvm package.
-- Unpackaged, self contained, with an optional MSIX build. Targets x64 and ARM64.
+- Unpackaged and self contained. Releases are x64 only for now. The projects carry ARM64 settings, but no ARM64 build is made or tested yet, and there is no MSIX build.
 - Starts without administrator rights and asks for them when the window opens (a relaunch through the Windows prompt). If the user says no, it runs in a read only look and verify mode.
 
 ### Layers
@@ -170,10 +170,10 @@ Most tweaks are data only. Scripts exist only for operations with no clean nativ
 
 ### Quality
 
-- Catalog schema validated at build time. A bad entry fails the build.
-- Every tweak has a unit test for detect, apply and undo against a mock system layer.
-- Integration tests run in disposable virtual machines on Windows 11 Home, Pro, and Windows 10 22H2.
-- Static analysis and a script linter run in CI.
+- The catalog is validated by tests, so a bad entry fails the test run that CI makes on every push.
+- Every operation type has unit tests for detect, apply and undo against a fake system layer.
+- CI builds the app, checks whitespace formatting with dotnet format, runs the tests and lints the workflow files with actionlint. The release workflow also starts the published program on its command line.
+- Not built yet: integration tests in disposable virtual machines on Windows 11 Home, Pro and Windows 10 22H2, an installer upgrade test, and a test of the elevation boundary with two accounts.
 - A SHA-256 file is published with each release. Signing is planned (see docs/SIGNING.md).
 
 ### Distribution
