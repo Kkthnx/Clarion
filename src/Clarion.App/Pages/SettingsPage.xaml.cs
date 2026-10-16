@@ -147,6 +147,50 @@ public sealed partial class SettingsPage : Page
         await Say("Setup loaded", text);
     }
 
+    private async void OnSaveApps(object sender, RoutedEventArgs e)
+    {
+        var packages = Clarion.Core.Apps.AppSets.PackagesOf(_app.Items.Select(i => i.Tweak), _app.AppliedIds());
+        if (packages.Count == 0) { await Say("No apps to save", "None of the apps from the Apps page are installed through .Clarion yet."); return; }
+        var path = FileDialogs.Save(((App)Application.Current).WindowHandle, "Save my apps", "winget file (*.json)|*.json", "my-clarion-apps.json");
+        if (path is null) return;
+        try
+        {
+            File.WriteAllText(path, Clarion.Core.Apps.WingetExport.Serialize(packages, DateTimeOffset.Now));
+            await Say("Apps saved", $"{packages.Count} apps were saved to {path}. winget import can read the file too.");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            await Say("Could not save the file", ex.Message);
+        }
+    }
+
+    private async void OnLoadApps(object sender, RoutedEventArgs e)
+    {
+        var path = FileDialogs.Open(((App)Application.Current).WindowHandle, "Load a winget file", "winget file (*.json)|*.json");
+        if (path is null) return;
+        IReadOnlySet<string> packages;
+        try
+        {
+            if (new FileInfo(path).Length > Clarion.Core.Profiles.ProfileFile.MaxBytes) { await Say("That file cannot be used", "It is too large to be a winget file."); return; }
+            packages = Clarion.Core.Apps.WingetExport.InstalledIds(File.ReadAllText(path));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
+        {
+            await Say("That file cannot be used", $"It could not be read as a winget file. {ex.Message}");
+            return;
+        }
+
+        var (matched, unknown) = Clarion.Core.Apps.AppSets.FromPackages(_app.Items.Select(i => i.Tweak), packages);
+        var (queued, _, notAvailable) = await _app.QueueIdsAsync(matched);
+        var text = $"{queued} apps were queued. Review them with Review and apply at the bottom.";
+        var already = matched.Count - queued - notAvailable;
+        if (already > 0) text += $" {already} are installed already.";
+        if (notAvailable > 0) text += $" {notAvailable} cannot be installed on this PC.";
+        if (unknown.Count > 0)
+            text += $" {unknown.Count} in the file are not in .Clarion's list, so they were not queued: {string.Join(", ", unknown.Take(8))}{(unknown.Count > 8 ? ", and more" : "")}. .Clarion installs only packages it has looked at.";
+        await Say("Apps loaded", text);
+    }
+
     private Task Say(string title, string text) => Dialogs.Say(XamlRoot, title, text);
 
     private void OnExpertToggled(object sender, RoutedEventArgs e)

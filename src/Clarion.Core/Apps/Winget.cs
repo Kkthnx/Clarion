@@ -197,9 +197,39 @@ public static partial class WingetShow
 }
 
 
-/// <summary>Reads the file <c>winget export</c> writes.</summary>
+/// <summary>Reads and writes the file <c>winget export</c> writes, so an app set made here can be used by <c>winget import</c> and the other way round.</summary>
 public static class WingetExport
 {
+    /// <summary>
+    /// A file in the shape <c>winget export</c> writes (schema 2.0), listing the packages by exact ID. The source block is the one winget
+    /// itself wrote on the PC this was checked on, because <c>winget import</c> uses it to know which source to look in. Nothing in the file
+    /// says who made it, and it holds no names of people or computers.
+    /// </summary>
+    public static string Serialize(IEnumerable<string> packageIds, DateTimeOffset created)
+    {
+        var ids = packageIds.Distinct(StringComparer.OrdinalIgnoreCase).Order(StringComparer.OrdinalIgnoreCase).ToList();
+        var file = new Dictionary<string, object>
+        {
+            ["$schema"] = "https://aka.ms/winget-packages.schema.2.0.json",
+            ["CreationDate"] = created.ToString("yyyy-MM-dd'T'HH:mm:ss.fffzzz", System.Globalization.CultureInfo.InvariantCulture),
+            ["Sources"] = new[]
+            {
+                new Dictionary<string, object>
+                {
+                    ["Packages"] = ids.Select(id => new Dictionary<string, string> { ["PackageIdentifier"] = id }).ToList(),
+                    ["SourceDetails"] = new Dictionary<string, string>
+                    {
+                        ["Argument"] = "https://cdn.winget.microsoft.com/cache",
+                        ["Identifier"] = "Microsoft.Winget.Source_8wekyb3d8bbwe",
+                        ["Name"] = "winget",
+                        ["Type"] = "Microsoft.PreIndexed.Package",
+                    },
+                },
+            },
+        };
+        return JsonSerializer.Serialize(file, new JsonSerializerOptions { WriteIndented = true });
+    }
+
     public static IReadOnlySet<string> InstalledIds(string json)
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

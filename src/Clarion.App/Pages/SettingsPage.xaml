@@ -46,6 +46,12 @@
                         <Button Content="Save my setup" Click="OnSaveSetup" />
                         <Button Content="Load a setup" Click="OnLoadSetup" />
                     </StackPanel>
+                    <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" Margin="0,8,0,0"
+                               Text="Apps alone can also go to and from a winget file, the kind winget export and winget import use. Loading queues only the apps .Clarion lists, and says which others it did not know." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="Save my apps as a winget file" Click="OnSaveApps" />
+                        <Button Content="Load a winget file" Click="OnLoadApps" />
+                    </StackPanel>
                 </StackPanel>
             </Border>
 
