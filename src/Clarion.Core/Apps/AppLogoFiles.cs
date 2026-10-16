@@ -33,11 +33,17 @@ public sealed class AppLogoFiles
 
     public AppLogoFile? For(string tweakId) => _files.GetValueOrDefault(tweakId);
 
+    /// <summary>
+    /// The file name for a catalog id. The dot in "app.name" is written as a hyphen, because the build reads whatever follows a dot in a file name
+    /// as a resource qualifier and warns about every name it does not recognise.
+    /// </summary>
+    public static string FileNameFor(string tweakId) => tweakId.Replace('.', '-') + ".png";
+
     /// <summary>The picture file for a catalog id under the folder that holds them, or null when there is none or it is not on disk.</summary>
     public string? PathFor(string tweakId, string assetsFolder)
     {
         if (!_files.ContainsKey(tweakId)) return null;
-        var path = System.IO.Path.Combine(assetsFolder, FolderName, tweakId + ".png");
+        var path = System.IO.Path.Combine(assetsFolder, FolderName, FileNameFor(tweakId));
         return File.Exists(path) ? path : null;
     }
 

@@ -40,11 +40,18 @@ public sealed class AppLogoFilesTests
     }
 
     [Fact]
+    public void A_file_name_has_no_dot_but_the_one_before_the_extension_so_the_build_reads_no_qualifier_in_it()
+    {
+        Assert.Equal("app-python-3-14.png", AppLogoFiles.FileNameFor("app.python-3-14"));
+        Assert.All(AppLogoFiles.Default.All.Keys, id => Assert.Equal(1, AppLogoFiles.FileNameFor(id).Count(c => c == '.')));
+    }
+
+    [Fact]
     public void Every_listed_logo_is_a_real_png_of_a_sensible_size_that_matches_its_checksum()
     {
         foreach (var (id, entry) in AppLogoFiles.Default.All)
         {
-            var path = Path.Combine(Folder(), id + ".png");
+            var path = Path.Combine(Folder(), AppLogoFiles.FileNameFor(id));
             Assert.True(File.Exists(path), $"{id}: file is missing");
             var bytes = File.ReadAllBytes(path);
             var (w, h) = PngSize(bytes);
@@ -72,8 +79,8 @@ public sealed class AppLogoFilesTests
     public void No_file_is_left_without_an_entry_and_no_entry_without_a_known_app()
     {
         var ids = Apps().Select(a => a.Id).ToHashSet(StringComparer.Ordinal);
-        var onDisk = Directory.GetFiles(Folder(), "*.png").Select(f => Path.GetFileNameWithoutExtension(f)).ToHashSet(StringComparer.Ordinal);
-        Assert.Empty(onDisk.Except(AppLogoFiles.Default.All.Keys));
+        var onDisk = Directory.GetFiles(Folder(), "*.png").Select(Path.GetFileName).ToHashSet(StringComparer.Ordinal);
+        Assert.Empty(onDisk.Except(AppLogoFiles.Default.All.Keys.Select(AppLogoFiles.FileNameFor)));
         Assert.All(AppLogoFiles.Default.All.Keys, id => Assert.Contains(id, ids));
     }
 
@@ -96,7 +103,7 @@ public sealed class AppLogoFilesTests
         {
             Assert.Contains(p.Name, ids);
             Assert.False(string.IsNullOrWhiteSpace(p.Value.GetString()), $"{p.Name} has no reason");
-            Assert.False(File.Exists(Path.Combine(Folder(), p.Name + ".png")), $"{p.Name} is rejected but its file is still there");
+            Assert.False(File.Exists(Path.Combine(Folder(), AppLogoFiles.FileNameFor(p.Name))), $"{p.Name} is rejected but its file is still there");
             Assert.False(AppLogoFiles.Default.All.ContainsKey(p.Name), $"{p.Name} is rejected but still listed");
         }
     }

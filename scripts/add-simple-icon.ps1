@@ -103,7 +103,7 @@ $json = ($out | ConvertTo-Json -Depth 6) -replace "`r?`n", "`r`n"
 [IO.File]::WriteAllText($iconFile, $json)
 
 # An app has an outline or a picture, never both.
-$png = Join-Path $logoDir "$Id.png"
+$png = Join-Path $logoDir ($Id.Replace(".", "-") + ".png")
 if (Test-Path $png) { Remove-Item $png }
 if (Test-Path $logoList) {
     $list = [IO.File]::ReadAllText($logoList) | ConvertFrom-Json

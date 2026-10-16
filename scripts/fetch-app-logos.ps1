@@ -211,7 +211,7 @@ foreach ($app in $apps) {
     if ($Id -and $app.id -ne $Id) { continue }
     if ($vectors -contains $app.id) { continue }
     if ($rejected.ContainsKey($app.id)) { continue }
-    $file = Join-Path $logoDir "$($app.id).png"
+    $file = Join-Path $logoDir ($app.id.Replace(".", "-") + ".png")
     if ((Test-Path $file) -and -not $Force) { continue }
 
     $saved = $false; $source = ''
