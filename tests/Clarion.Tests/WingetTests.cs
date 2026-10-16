@@ -17,11 +17,18 @@ public sealed class FakeWingetStore : IWingetStore
     public WingetPackageInfo? Info { get; set; }
 
     private IReadOnlySet<string>? _cache;
+    private string? _pendingRemoval;
+    private int _readsLeft;
 
     // Like the real store, the installed list is read once and kept until it is invalidated.
     public IReadOnlySet<string> InstalledIds()
     {
-        if (_cache is null) { Reads++; _cache = new HashSet<string>(Installed, StringComparer.OrdinalIgnoreCase); }
+        if (_cache is null)
+        {
+            Reads++;
+            if (_pendingRemoval is not null && --_readsLeft <= 0) { Installed.Remove(_pendingRemoval); _pendingRemoval = null; }
+            _cache = new HashSet<string>(Installed, StringComparer.OrdinalIgnoreCase);
+        }
         return _cache;
     }
 
@@ -35,17 +42,24 @@ public sealed class FakeWingetStore : IWingetStore
 
     public bool TakeRestartNeeded() { var was = RestartNeeded; RestartNeeded = false; return was; }
 
-    public WingetOutcome Install(string id, string? location = null)
+    public WingetOutcome Install(string id, string? location = null, string? scope = null)
     {
-        Calls.Add(location is null ? "install " + id : $"install {id} at {location}");
+        Calls.Add((location is null ? "install " + id : $"install {id} at {location}") + (scope is null ? "" : $" scope {scope}"));
         if (WingetCodes.IsSuccess(InstallCode)) Installed.Add(id);
         return new WingetOutcome(InstallCode, "");
     }
 
-    public WingetOutcome Uninstall(string id)
+    /// <summary>Like an app whose uninstaller opens its own wizard: winget says it worked and the app stays.</summary>
+    public bool UninstallLeavesItInstalled { get; set; }
+
+    /// <summary>Like an uninstaller that finishes a moment after winget returns: the app is gone after this many more reads.</summary>
+    public int GoneAfterReads { get; set; }
+
+    public WingetOutcome Uninstall(string id, string? scope = null)
     {
-        Calls.Add("uninstall " + id);
-        if (UninstallCode == 0) Installed.Remove(id);
+        Calls.Add("uninstall " + id + (scope is null ? "" : $" scope {scope}"));
+        if (UninstallCode == 0 && GoneAfterReads > 0) { _pendingRemoval = id; _readsLeft = GoneAfterReads; return new WingetOutcome(0, ""); }
+        if (UninstallCode == 0 && !UninstallLeavesItInstalled) Installed.Remove(id);
         return new WingetOutcome(UninstallCode, "");
     }
 

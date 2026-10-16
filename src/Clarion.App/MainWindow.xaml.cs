@@ -458,6 +458,7 @@ public sealed partial class MainWindow : Window
                     foreach (var link in shown) links.Children.Add(MakeLink(link));
                     block.Children.Add(links);
                     installs.Add((item, details));
+                    if (item.SupportsUserScope) AddUserScopeChoice(block, item);
                 }
             }
             else if (item.InstallsApps)
@@ -521,6 +522,7 @@ public sealed partial class MainWindow : Window
             {
                 // Back to what is on this PC now, which is what Clear queue does for every item.
                 item.IsOn = item.IsApplied;
+                item.SetUserScope(false);
                 row.Visibility = Visibility.Collapsed;
                 var left = rows.Where(r => r.Row.Visibility == Visibility.Visible).ToList();
                 if (left.Count == 0) { dialog.Hide(); return; }
@@ -539,13 +541,49 @@ public sealed partial class MainWindow : Window
         if (installs.Count > 0) _ = ReadAppDetailsAsync(installs, agree!, stopReading.Token);
         var answer = await dialog.ShowAsync();
         stopReading.Cancel();
-        if (answer != ContentDialogResult.Primary || _app.PendingCount == 0) return;
+        // Installing for one account only is a choice for this run, so it starts unticked again the next time.
+        if (answer != ContentDialogResult.Primary || _app.PendingCount == 0)
+        {
+            foreach (var (item, _, _) in rows) item.SetUserScope(false);
+            return;
+        }
 
         // Consent holds for this run only, and only while an app install is still in the queue.
         var stillInstalling = _app.Pending.Any(p => p.InstallsApps && p.IsOn);
         _app.Runtime.Winget.AcceptPackageAgreements = stillInstalling && agree?.IsChecked == true;
         try { await RunAsync(restore.IsChecked == true); }
-        finally { _app.Runtime.Winget.AcceptPackageAgreements = false; }
+        finally
+        {
+            _app.Runtime.Winget.AcceptPackageAgreements = false;
+            foreach (var (item, _, _) in rows) item.SetUserScope(false);
+        }
+    }
+
+    /// <summary>
+    /// The review's choice to install an app for the signed in account only. It says in plain words what that means and why it is offered for this app,
+    /// since scope is not consistent across installers.
+    /// </summary>
+    private static void AddUserScopeChoice(StackPanel block, TweakItem item)
+    {
+        var forMe = new CheckBox { Content = "Install for this account only", IsChecked = item.UserScope };
+        forMe.Checked += (_, _) => item.SetUserScope(true);
+        forMe.Unchecked += (_, _) => item.SetUserScope(false);
+        block.Children.Add(forMe);
+
+        var basis = Clarion.Core.Apps.AppScopes.Default.For(item.Id)?.Basis switch
+        {
+            "declared" => "Its winget package record says it can be installed for one account.",
+            "portable" => "winget itself carries this out for a portable app.",
+            "msix" => "A packaged app installs for the account that installs it.",
+            _ => "",
+        };
+        block.Children.Add(new TextBlock
+        {
+            Text = $"It goes in your own profile and not in Program Files, so other accounts on this PC do not get it, and it is removed from your account too. {basis} Not every installer follows this, so look where it went. Leave it off to install for everyone, as before.",
+            FontSize = 12,
+            TextWrapping = TextWrapping.Wrap,
+            Opacity = 0.8,
+        });
     }
 
     // The details of an install are read from winget while the review is open, a few at a time. The tick box that accepts the licence

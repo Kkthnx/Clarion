@@ -187,8 +187,8 @@ public sealed class WingetUpgradeTests
         public bool AcceptPackageAgreements { get => Inner.AcceptPackageAgreements; set => Inner.AcceptPackageAgreements = value; }
         public IReadOnlySet<string> InstalledIds() => Inner.InstalledIds();
         public void Invalidate() => Inner.Invalidate();
-        public WingetOutcome Install(string id, string? location = null) => Inner.Install(id, location);
-        public WingetOutcome Uninstall(string id) => Inner.Uninstall(id);
+        public WingetOutcome Install(string id, string? location = null, string? scope = null) => Inner.Install(id, location, scope);
+        public WingetOutcome Uninstall(string id, string? scope = null) => Inner.Uninstall(id, scope);
         public void CancelRunning() => Inner.CancelRunning();
         public bool TakeRestartNeeded() => Inner.TakeRestartNeeded();
         public WingetPackageInfo? Show(string id) => Inner.Show(id);

@@ -1,0 +1,474 @@
+{
+    "app.1password":  {
+                          "basis":  "msix",
+                          "installerType":  "msix"
+                      },
+    "app.ab-download-manager":  {
+                                    "basis":  "declared",
+                                    "installerType":  "nullsoft"
+                                },
+    "app.autohotkey":  {
+                           "basis":  "declared",
+                           "installerType":  "exe"
+                       },
+    "app.autoruns":  {
+                         "basis":  "portable",
+                         "installerType":  "portable"
+                     },
+    "app.balena-etcher":  {
+                              "basis":  "declared",
+                              "installerType":  "exe"
+                          },
+    "app.bitwarden":  {
+                          "basis":  "declared",
+                          "installerType":  "nullsoft"
+                      },
+    "app.blur-autoclicker":  {
+                                 "basis":  "declared",
+                                 "installerType":  "nullsoft"
+                             },
+    "app.brave":  {
+                      "basis":  "declared",
+                      "installerType":  "exe"
+                  },
+    "app.bruno":  {
+                      "basis":  "portable",
+                      "installerType":  "portable"
+                  },
+    "app.cemu":  {
+                     "basis":  "portable",
+                     "installerType":  "portable"
+                 },
+    "app.chatterino":  {
+                           "basis":  "declared",
+                           "installerType":  "inno"
+                       },
+    "app.chromium-hibbiki-build":  {
+                                       "basis":  "declared",
+                                       "installerType":  "exe"
+                                   },
+    "app.cinebench-r23":  {
+                              "basis":  "portable",
+                              "installerType":  "portable"
+                          },
+    "app.claude":  {
+                       "basis":  "declared",
+                       "installerType":  "exe"
+                   },
+    "app.claude-code":  {
+                            "basis":  "portable",
+                            "installerType":  "portable"
+                        },
+    "app.cmake":  {
+                      "basis":  "portable",
+                      "installerType":  "portable"
+                  },
+    "app.codex-cli":  {
+                          "basis":  "portable",
+                          "installerType":  "portable"
+                      },
+    "app.curseforge":  {
+                           "basis":  "declared",
+                           "installerType":  "nullsoft"
+                       },
+    "app.cursor":  {
+                       "basis":  "declared",
+                       "installerType":  "inno"
+                   },
+    "app.discord":  {
+                        "basis":  "declared",
+                        "installerType":  "exe"
+                    },
+    "app.eartrumpet":  {
+                           "basis":  "msix",
+                           "installerType":  "msix"
+                       },
+    "app.element":  {
+                        "basis":  "declared",
+                        "installerType":  "exe"
+                    },
+    "app.ente-auth":  {
+                          "basis":  "declared",
+                          "installerType":  "inno"
+                      },
+    "app.everything":  {
+                           "basis":  "portable",
+                           "installerType":  "portable"
+                       },
+    "app.fancontrol":  {
+                           "basis":  "portable",
+                           "installerType":  "portable"
+                       },
+    "app.fast-node-manager-fnm":  {
+                                      "basis":  "portable",
+                                      "installerType":  "portable"
+                                  },
+    "app.ffmpeg":  {
+                       "basis":  "portable",
+                       "installerType":  "portable"
+                   },
+    "app.files":  {
+                      "basis":  "msix",
+                      "installerType":  "msix"
+                  },
+    "app.flow-launcher":  {
+                              "basis":  "declared",
+                              "installerType":  "exe"
+                          },
+    "app.f-lux":  {
+                      "basis":  "declared",
+                      "installerType":  "nullsoft"
+                  },
+    "app.geforce-now":  {
+                            "basis":  "declared",
+                            "installerType":  "exe"
+                        },
+    "app.gimp":  {
+                     "basis":  "declared",
+                     "installerType":  "inno"
+                 },
+    "app.git":  {
+                    "basis":  "declared",
+                    "installerType":  "inno"
+                },
+    "app.github-cli":  {
+                           "basis":  "portable",
+                           "installerType":  "portable"
+                       },
+    "app.github-desktop":  {
+                               "basis":  "declared",
+                               "installerType":  "exe"
+                           },
+    "app.greenshot":  {
+                          "basis":  "declared",
+                          "installerType":  "inno"
+                      },
+    "app.gsudo":  {
+                      "basis":  "portable",
+                      "installerType":  "portable"
+                  },
+    "app.helium":  {
+                       "basis":  "declared",
+                       "installerType":  "nullsoft"
+                   },
+    "app.heroic":  {
+                       "basis":  "declared",
+                       "installerType":  "nullsoft"
+                   },
+    "app.hugo-extended":  {
+                              "basis":  "portable",
+                              "installerType":  "portable"
+                          },
+    "app.imageglass":  {
+                           "basis":  "declared",
+                           "installerType":  "msix"
+                       },
+    "app.itch":  {
+                     "basis":  "declared",
+                     "installerType":  "exe"
+                 },
+    "app.jetbrains-toolbox":  {
+                                  "basis":  "declared",
+                                  "installerType":  "exe"
+                              },
+    "app.joplin":  {
+                       "basis":  "declared",
+                       "installerType":  "nullsoft"
+                   },
+    "app.kdenlive":  {
+                         "basis":  "declared",
+                         "installerType":  "nullsoft"
+                     },
+    "app.kodi":  {
+                     "basis":  "declared",
+                     "installerType":  "nullsoft"
+                 },
+    "app.lazygit":  {
+                        "basis":  "portable",
+                        "installerType":  "portable"
+                    },
+    "app.libre-hardware-monitor":  {
+                                       "basis":  "portable",
+                                       "installerType":  "portable"
+                                   },
+    "app.media-player-classic-qute-theater":  {
+                                                  "basis":  "portable",
+                                                  "installerType":  "portable"
+                                              },
+    "app.microsoft-teams":  {
+                                "basis":  "msix",
+                                "installerType":  "msix"
+                            },
+    "app.mkvtoolnix":  {
+                           "basis":  "portable",
+                           "installerType":  "portable"
+                       },
+    "app.moonlight":  {
+                          "basis":  "declared",
+                          "installerType":  "burn"
+                      },
+    "app.mullvad-browser":  {
+                                "basis":  "declared",
+                                "installerType":  "nullsoft"
+                            },
+    "app.nanazip":  {
+                        "basis":  "msix",
+                        "installerType":  "msix"
+                    },
+    "app.naps2":  {
+                      "basis":  "msix",
+                      "installerType":  "msix"
+                  },
+    "app.nmap":  {
+                     "basis":  "declared",
+                     "installerType":  "nullsoft"
+                 },
+    "app.nodejs":  {
+                       "basis":  "portable",
+                       "installerType":  "portable"
+                   },
+    "app.node-js-lts":  {
+                            "basis":  "portable",
+                            "installerType":  "portable"
+                        },
+    "app.notepadpp":  {
+                          "basis":  "portable",
+                          "installerType":  "portable"
+                      },
+    "app.nuget":  {
+                      "basis":  "portable",
+                      "installerType":  "portable"
+                  },
+    "app.obsidian":  {
+                         "basis":  "declared",
+                         "installerType":  "nullsoft"
+                     },
+    "app.obs-studio":  {
+                           "basis":  "portable",
+                           "installerType":  "portable"
+                       },
+    "app.ofgb-oh-frick-go-back":  {
+                                      "basis":  "portable",
+                                      "installerType":  "portable"
+                                  },
+    "app.oh-my-posh":  {
+                           "basis":  "declared",
+                           "installerType":  "msix"
+                       },
+    "app.okular":  {
+                       "basis":  "declared",
+                       "installerType":  "nullsoft"
+                   },
+    "app.onedrive":  {
+                         "basis":  "declared",
+                         "installerType":  "exe"
+                     },
+    "app.op-auto-clicker":  {
+                                "basis":  "portable",
+                                "installerType":  "portable"
+                            },
+    "app.paint-net":  {
+                          "basis":  "portable",
+                          "installerType":  "portable"
+                      },
+    "app.parsec":  {
+                       "basis":  "declared",
+                       "installerType":  "nullsoft"
+                   },
+    "app.peazip":  {
+                       "basis":  "portable",
+                       "installerType":  "portable"
+                   },
+    "app.playnite":  {
+                         "basis":  "declared",
+                         "installerType":  "inno"
+                     },
+    "app.pnpm":  {
+                     "basis":  "portable",
+                     "installerType":  "portable"
+                 },
+    "app.policy-plus":  {
+                            "basis":  "portable",
+                            "installerType":  "portable"
+                        },
+    "app.postman":  {
+                        "basis":  "declared",
+                        "installerType":  "exe"
+                    },
+    "app.powershell":  {
+                           "basis":  "msix",
+                           "installerType":  "msix"
+                       },
+    "app.powertoys":  {
+                          "basis":  "declared",
+                          "installerType":  "burn"
+                      },
+    "app.process-explorer":  {
+                                 "basis":  "portable",
+                                 "installerType":  "portable"
+                             },
+    "app.process-monitor":  {
+                                "basis":  "portable",
+                                "installerType":  "portable"
+                            },
+    "app.proton-drive":  {
+                             "basis":  "declared",
+                             "installerType":  "burn"
+                         },
+    "app.proton-mail":  {
+                            "basis":  "declared",
+                            "installerType":  "exe"
+                        },
+    "app.proton-pass":  {
+                            "basis":  "msix",
+                            "installerType":  "msix"
+                        },
+    "app.putty":  {
+                      "basis":  "portable",
+                      "installerType":  "portable"
+                  },
+    "app.python":  {
+                       "basis":  "declared",
+                       "installerType":  "burn"
+                   },
+    "app.python-3-14":  {
+                            "basis":  "declared",
+                            "installerType":  "burn"
+                        },
+    "app.qownnotes":  {
+                          "basis":  "portable",
+                          "installerType":  "portable"
+                      },
+    "app.remote-desktop-connection-manager":  {
+                                                  "basis":  "portable",
+                                                  "installerType":  "portable"
+                                              },
+    "app.roblox":  {
+                       "basis":  "portable",
+                       "installerType":  "portable"
+                   },
+    "app.ruby-4-0":  {
+                         "basis":  "declared",
+                         "installerType":  "inno"
+                     },
+    "app.rufus":  {
+                      "basis":  "portable",
+                      "installerType":  "portable"
+                  },
+    "app.sharex":  {
+                       "basis":  "declared",
+                       "installerType":  "inno"
+                   },
+    "app.signal":  {
+                       "basis":  "declared",
+                       "installerType":  "nullsoft"
+                   },
+    "app.snappy-driver-installer-origin":  {
+                                               "basis":  "portable",
+                                               "installerType":  "portable"
+                                           },
+    "app.starship":  {
+                         "basis":  "portable",
+                         "installerType":  "portable"
+                     },
+    "app.startallback":  {
+                             "basis":  "declared",
+                             "installerType":  "exe"
+                         },
+    "app.sublime-text":  {
+                             "basis":  "portable",
+                             "installerType":  "portable"
+                         },
+    "app.sumatrapdf":  {
+                           "basis":  "declared",
+                           "installerType":  "exe"
+                       },
+    "app.syncthing":  {
+                          "basis":  "portable",
+                          "installerType":  "portable"
+                      },
+    "app.synctrayzor":  {
+                            "basis":  "declared",
+                            "installerType":  "inno"
+                        },
+    "app.tcpview":  {
+                        "basis":  "portable",
+                        "installerType":  "portable"
+                    },
+    "app.teamspeak-3":  {
+                            "basis":  "declared",
+                            "installerType":  "nullsoft"
+                        },
+    "app.teamspeak-6-beta":  {
+                                 "basis":  "declared",
+                                 "installerType":  "wix"
+                             },
+    "app.telegram":  {
+                         "basis":  "declared",
+                         "installerType":  "inno"
+                     },
+    "app.tor-browser":  {
+                            "basis":  "declared",
+                            "installerType":  "nullsoft"
+                        },
+    "app.total-commander":  {
+                                "basis":  "declared",
+                                "installerType":  "exe"
+                            },
+    "app.translucenttb":  {
+                              "basis":  "msix",
+                              "installerType":  "msix"
+                          },
+    "app.treesize-free":  {
+                              "basis":  "declared",
+                              "installerType":  "inno"
+                          },
+    "app.ungoogled-chromium":  {
+                                   "basis":  "declared",
+                                   "installerType":  "exe"
+                               },
+    "app.unigetui":  {
+                         "basis":  "declared",
+                         "installerType":  "inno"
+                     },
+    "app.unity-hub":  {
+                          "basis":  "msix",
+                          "installerType":  "msix"
+                      },
+    "app.uv":  {
+                   "basis":  "portable",
+                   "installerType":  "portable"
+               },
+    "app.ventoy":  {
+                       "basis":  "portable",
+                       "installerType":  "portable"
+                   },
+    "app.vivaldi":  {
+                        "basis":  "declared",
+                        "installerType":  "exe"
+                    },
+    "app.vscode":  {
+                       "basis":  "declared",
+                       "installerType":  "inno"
+                   },
+    "app.vscodium":  {
+                         "basis":  "declared",
+                         "installerType":  "inno"
+                     },
+    "app.windows-terminal":  {
+                                 "basis":  "msix",
+                                 "installerType":  "msix"
+                             },
+    "app.winscp":  {
+                       "basis":  "declared",
+                       "installerType":  "inno"
+                   },
+    "app.xournal":  {
+                        "basis":  "declared",
+                        "installerType":  "nullsoft"
+                    },
+    "app.yt-dlp":  {
+                       "basis":  "portable",
+                       "installerType":  "portable"
+                   }
+}

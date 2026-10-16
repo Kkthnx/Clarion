@@ -85,7 +85,9 @@ Clarion.exe --apply-preset gaming --preview
 2. **Review and apply** asks winget for the version, publisher, licence, installer host and checksum of each one. Read them. The tick box that accepts the licence terms stays off until winget has answered, and it covers this run only.
 3. Winget downloads the installer from the publisher and checks its checksum before it runs.
 
-Turning an app off runs the program's own uninstaller through winget. If you did not install it with .Clarion, this removes the copy you already had.
+Turning an app off runs the program's own uninstaller through winget. If an app's uninstaller cannot run silently, winget says it worked while the uninstaller waits in its own window. .Clarion says so, and the app is gone once you finish it there.
+
+For about half the apps the review also offers **Install for this account only**. It puts the app in your own profile and not in Program Files, other accounts on the PC do not get it, and Revert removes it from your account. It starts unticked. `--user-scope` does the same from the command line. If you did not install it with .Clarion, this removes the copy you already had.
 
 ## Update your apps
 

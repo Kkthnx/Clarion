@@ -48,15 +48,23 @@ public static class WingetCommands
 {
     private const string Common = "--source winget --accept-source-agreements --disable-interactivity";
 
-    public static string Install(string id, string? location = null) =>
-        $"install --id {Checked(id)} --exact {Common} --silent --accept-package-agreements{LocationArgument(location)}";
+    public static string Install(string id, string? location = null, string? scope = null) =>
+        $"install --id {Checked(id)} --exact {Common} --silent --accept-package-agreements{LocationArgument(location)}{ScopeArgument(scope)}";
+
+    /// <summary>Only "user" and "machine" can reach a command line, and nothing else.</summary>
+    private static string ScopeArgument(string? scope) => scope switch
+    {
+        null => "",
+        "user" or "machine" => $" --scope {scope}",
+        _ => throw new ArgumentException($"Not a winget scope: {scope}"),
+    };
 
     // A package whose manifest says InstallLocationRequired fails with 0x8A15005F unless --location is given.
     private static string LocationArgument(string? location) =>
         location is null ? "" : $" --location \"{WingetLocations.Expand(location)}\"";
 
-    public static string Uninstall(string id) =>
-        $"uninstall --id {Checked(id)} --exact {Common} --silent";
+    public static string Uninstall(string id, string? scope = null) =>
+        $"uninstall --id {Checked(id)} --exact {Common} --silent{ScopeArgument(scope)}";
 
     /// <summary>
     /// Lists the installed packages that have a newer version in the winget source. Nothing is changed. Packages whose installed version winget
@@ -300,9 +308,9 @@ public interface IWingetStore
     /// <summary>Forgets the installed list, so the next read asks winget again.</summary>
     void Invalidate();
 
-    /// <summary>Installs the package. The location is passed only when the package's manifest requires one.</summary>
-    WingetOutcome Install(string id, string? location = null);
-    WingetOutcome Uninstall(string id);
+    /// <summary>Installs the package. The location is passed only when the package's manifest requires one, and the scope only for a per account install.</summary>
+    WingetOutcome Install(string id, string? location = null, string? scope = null);
+    WingetOutcome Uninstall(string id, string? scope = null);
 
     /// <summary>Stops the install or uninstall that is running now, with the installer winget started. Does nothing when none is running.</summary>
     void CancelRunning();

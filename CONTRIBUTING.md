@@ -63,7 +63,7 @@ An app is a setting like any other, pinned to one exact winget package ID. You n
 
    If the app carries a real risk (a runtime other programs rely on, a remote access tool, a driver tool), add `-Risk "Medium. ..."` and `-RiskLevel Medium` and say so plainly. Hiding an app is not the answer, telling the truth is.
 2. Add its logo. If Simple Icons has it, `./scripts/add-simple-icon.ps1 -Id app.name -Slug slug`. Otherwise `./scripts/fetch-app-logos.ps1 -Id app.name`, then open the picture it saved in `src/Clarion.App/Assets/AppLogos` and look at it. If it is the wrong program, a company wide logo or GitHub's own icon, delete it and add the id to `scripts/app-logo-rejected.json` with the reason. A collection logo you picked by hand goes in `scripts/app-logo-sources.json`.
-3. Write the reference page again and run the tests, as for any setting. `./scripts/check-winget-ids.ps1` checks every ID against winget's source and runs monthly in CI.
+3. Write the reference page again and run the tests, as for any setting. `./scripts/check-winget-ids.ps1` checks every ID against winget's source and runs monthly in CI. `./scripts/check-winget-scopes.ps1` works out which apps may be installed for one account only and rewrites `src/Clarion.Core/Catalog/Apps/app-scopes.json`, so run it after adding apps.
 ## Changing the app
 
 - Keep a change small and about one thing. Do not reformat files you are not changing.

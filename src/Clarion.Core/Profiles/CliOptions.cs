@@ -15,6 +15,7 @@ public sealed record CliOptions(
     DateTimeOffset? Since = null,
     bool SaveReport = false,
     bool AcceptPackageAgreements = false,
+    bool UserScope = false,
     string? Error = null)
 {
     public bool IsCli => Mode != CliMode.None;
@@ -34,6 +35,7 @@ public sealed record CliOptions(
         DateTimeOffset? since = null;
         var saveReport = false;
         var acceptPackages = false;
+        var userScope = false;
 
         for (var i = 0; i < args.Count; i++)
         {
@@ -67,6 +69,7 @@ public sealed record CliOptions(
                 case "--verify": mode = CliMode.Verify; break;
                 case "--save": saveReport = true; break;
                 case "--accept-package-agreements": acceptPackages = true; break;
+                case "--user-scope": userScope = true; break;
                 case "--history": mode = CliMode.History; break;
                 case "--list-symptoms": mode = CliMode.ListSymptoms; break;
                 case "--list-settings": mode = CliMode.ListSettings; break;
@@ -87,7 +90,7 @@ public sealed record CliOptions(
                     return a.StartsWith('-') || a.StartsWith('/') ? Fail($"Unknown option {a}. Use --help.") : new CliOptions(CliMode.None);
             }
         }
-        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection, symptom, since, saveReport, acceptPackages);
+        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection, symptom, since, saveReport, acceptPackages, userScope);
     }
 
     private static IEnumerable<string> Split(string? value) =>
@@ -115,6 +118,7 @@ public sealed record CliOptions(
         --preview           show what would change and change nothing
         --no-restore-point  skip the System Restore point
         --accept-package-agreements  with --apply, install the apps in the setup. You are accepting the publishers licence terms yourself, so read them first. Without it apps are skipped
+        --user-scope        with --apply or --apply-preset, install each app that supports it for your account only, in your profile and not in Program Files. Apps that do not support it are installed for everyone, as without this switch, and are listed
         --enable-protection turn on System Protection if it is off, so the restore point can be made
         --only / --include  cleanup row names, such as shaders.nvidia,windows.temp. --list-cleanups shows them all
         --update-apps       update the apps from the Apps page that are installed and have a newer version in winget. Updates cannot be undone from .Clarion, because winget keeps no copy of the old version. --only limits it to the apps named, as --list-settings names them. --preview lists what would be updated and changes nothing. An app whose new version asks for its licence terms again is not updated unless --accept-package-agreements is given

@@ -312,6 +312,30 @@ The column titles and the sentences below the table are in the language of Windo
 
 Tried for real on this PC: the real list found the same four catalog apps that winget lists (CPU-Z, .NET 9 SDK, Microsoft Edge, .NET Desktop Runtime 10). An older Greenshot (1.3.312) was installed, found, and updated to 1.3.323 in about 10 seconds both by the command and by the window, and then removed. One thing seen on the way: Greenshot's installer starts the program, and a silent uninstall of a running program waits for a dialog, so close an app before you update or remove it.
 
+## Installing for one account
+
+Looked at on 16 October 2026.
+
+**What winget says.** `winget install --scope user` targets the account that runs it, and `--scope machine` the whole PC. Microsoft's troubleshooting page says plainly that scope is not consistent across installers: MSIX packages are reliable, MSI packages are mostly reliable, and for EXE installers the behaviour is "not necessarily deterministic", because the arguments for scope may not exist, or the installer may decide from whether the person is an administrator, and a package installed in user scope may still ask for UAC.
+
+**What the catalog allows.** Asking winget with `winget show --scope user` for all 255 packages, it picks an installer for 123. That is not the same as the installer honouring it: 63 of those declare `Scope: user` in their manifest in winget-pkgs (and winget agreed with every one of the 63), and the other 60 name no scope at all, so winget passes the flag along and the installer may ignore it. So an app is offered for one account only when winget picks an installer for it and either its manifest declares the user scope, or winget itself carries the scope out, which it does for portable and MSIX packages. That is 118 apps: 63 declared, 44 portable and 11 MSIX. The list is `src/Clarion.Core/Catalog/Apps/app-scopes.json`, written by `scripts/check-winget-scopes.ps1`.
+
+**Tried for real on this PC,** through .Clarion's own engine (apply for one account, look at what changed, then Revert):
+
+| Installer | App | Where it went | Revert |
+|---|---|---|---|
+| Inno Setup | Greenshot | the profile (AppData\Local\Programs), a current user registry entry, Program Files untouched | clean |
+| portable | lazygit | the profile (AppData\Local\Microsoft\WinGet\Packages) | clean |
+| MSIX | EarTrumpet | registered for the account | clean |
+| EXE | SumatraPDF | a current user registry entry | clean |
+| NSIS | Xournal++ | the profile, but see below | winget's uninstall opened the wizard |
+
+The five Burn packages and one WiX package are listed because their manifests declare it, and none was installed here. winget's return code 0x8A15007D is for an operation not allowed from an administrator context on a user scope package. Install, list and uninstall were all allowed from the elevated session here, so it was not met.
+
+**One thing found on the way, not specific to scope.** Xournal++'s installer put it in the profile even without `--scope`, and winget's silent uninstall of it opened the NSIS uninstall wizard while winget reported "Successfully uninstalled". winget's own source (`UninstallFlow.cpp`) explains it: the silent uninstall command is the quiet command the app registered, and when the app registered none, winget runs its ordinary uninstall command. So for such an app, winget says it worked when a wizard is waiting. Revert now looks for the app again, waits a few seconds for an uninstaller that finishes late, and if it is still installed says that its uninstaller cannot run silently and may be waiting in its own window.
+
+**What .Clarion does.** The review has **Install for this account only** for an app on that list, unticked, with the reason it is offered. It is a choice for one run. The step is recorded for that account, so another administrator opening .Clarion does not see it as theirs, and Revert removes it from the same account. `--user-scope` does the same on the command line, and lists the apps that have no such option and are installed for everyone. winget is still run with administrator rights, which is what Microsoft documents as working, and which keeps the rest of the flow the same.
+
 ## Sources
 
 - winutil: `config/tweaks.json`, `config/feature.json`, `config/appx.json`, `config/applications.json`, `config/preset.json`, `functions/`, `README.md` on the main branch, read 2026-10-11. Licence MIT.

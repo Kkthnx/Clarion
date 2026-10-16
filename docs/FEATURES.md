@@ -232,6 +232,7 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 
 - 255 programs installed with winget, each pinned to one exact package ID from the winget source, never a search. An app is an ordinary setting, so queue, review, apply, Revert, Verify, setup files and the command line all work for it. Revert runs the app's own uninstaller through winget.
 - The review reads the version, publisher, licence, installer host and SHA-256 from winget while the dialog is open. Apply stays off until the person ticks that they accept the licence terms, and that covers one run. On the command line, apps are skipped unless --accept-package-agreements is given.
+- Install for this account only is a choice in the review for the 118 apps whose manifest declares that scope or whose package winget carries it out itself (portable and MSIX). It is unticked, goes in your own profile instead of Program Files, and Revert removes it from the same account. Revert also checks that an app is really gone, since winget reports success when an uninstaller opens its own wizard.
 - Check for app updates asks winget which installed apps have a newer version, lists them with nothing ticked, and updates the ones you choose, one at a time, with a live log and Stop. It never updates everything at once and never uses winget's include unknown or include pinned options. An update cannot be undone, because winget keeps no copy of the old version. The same is `--update-apps` on the command line.
 - Winget is found at its fixed per-user path, never by searching PATH, and .Clarion does not install it. It is not started until the Apps page is opened or an app is asked for, because it may contact Microsoft's package source.
 - An app whose winget record needs an install folder carries one in the catalog. Apps whose installer refuses to run as administrator are left out.
@@ -241,7 +242,7 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 
 - Microsoft 365 and Office telemetry policies.
 - Per app permission lists.
-- Installing for one account only, and a list of the programs already installed.
+- A list of the programs already installed.
 - Startup app manager.
 - Host file blocklists.
 - IPv6 DNS servers.

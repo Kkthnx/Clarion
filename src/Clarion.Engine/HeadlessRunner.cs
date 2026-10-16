@@ -210,10 +210,22 @@ public static class HeadlessRunner
             say($"This command runs as {account.ElevatedAs}, but {account.SignedInAs} is signed in, so apps would be installed for the wrong account. Start the command again from your own account to include them.");
         }
 
+        // Apps that go in one account only: each one that supports it. The others are installed for everyone, and the list says which.
+        var forEveryone = new List<Tweak>();
+        if (o.UserScope)
+        {
+            var scopes = AppScopes.Default;
+            var apps = plan.ToApply.Where(t => t.Apply.OfType<InstallWingetPackage>().Any()).ToList();
+            forEveryone = apps.Where(t => !UserScopeVariant.CanApply(t, scopes)).ToList();
+            plan = plan with { ToApply = plan.ToApply.Select(t => UserScopeVariant.CanApply(t, scopes) ? UserScopeVariant.Of(t) : t).ToList() };
+        }
+
         say($"{plan.ToApply.Count} to turn on, {plan.AlreadyOn.Count} already on, {plan.NotSupported.Count} not available here, {plan.Unknown.Count} unknown.");
         foreach (var id in plan.Unknown) say($"  unknown setting: {id}");
         foreach (var id in plan.NotSupported) say($"  not available here: {id}");
-        foreach (var t in plan.ToApply) say($"  {(o.Preview ? "would turn on" : "turning on")}: {t.Name}");
+        foreach (var t in plan.ToApply)
+            say($"  {(o.Preview ? "would turn on" : "turning on")}: {t.Name}{(t.Apply.OfType<InstallWingetPackage>().Any(i => i.Scope == "user") ? " (for this account only)" : "")}");
+        foreach (var t in forEveryone) say($"  {t.Name} has no option for one account, so it is installed for everyone.");
         foreach (var t in skippedApps) say($"  skipped app: {t.Name}. Add --accept-package-agreements to install it, which accepts the publisher's licence terms for you.");
         foreach (var t in blockedApps) say($"  skipped app: {t.Name}. It would go to a different account.");
         if (o.Preview || plan.ToApply.Count == 0) return skippedApps.Count + blockedApps.Count > 0 ? 1 : 0;

@@ -97,8 +97,30 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     /// <summary>True once the journal shows this was applied with the option, which Revert cannot undo.</summary>
     public bool DeprovisionLocked { get; private set; }
 
-    /// <summary>What actually runs: the catalog entry, or its variant when the option is on.</summary>
-    internal Tweak EffectiveTweak => DeprovisionToo ? DeprovisionVariant.Of(Tweak) : Tweak;
+    /// <summary>True for an app winget can install for the account that runs .Clarion only, which the review offers as a choice.</summary>
+    public bool SupportsUserScope => InstallsApps && IsSupported && Clarion.Core.Apps.UserScopeVariant.CanApply(Tweak, Clarion.Core.Apps.AppScopes.Default);
+
+    /// <summary>True when the person chose, in the review, to install this app for their own account only. It is a choice for one run.</summary>
+    public bool UserScope { get; private set; }
+
+    public void SetUserScope(bool on)
+    {
+        on &= SupportsUserScope;
+        if (UserScope == on) return;
+        UserScope = on;
+        OnPropertyChanged(nameof(UserScope));
+        OnPropertyChanged(nameof(ExactChanges));
+    }
+
+    /// <summary>What actually runs: the catalog entry, or its variant when an option is on.</summary>
+    internal Tweak EffectiveTweak
+    {
+        get
+        {
+            var tweak = DeprovisionToo ? DeprovisionVariant.Of(Tweak) : Tweak;
+            return UserScope ? Clarion.Core.Apps.UserScopeVariant.Of(tweak) : tweak;
+        }
+    }
 
     public void SetDeprovision(bool on, bool locked)
     {

@@ -64,9 +64,9 @@ public sealed class WindowsWingetStore(IProcessRunner runner, string? wingetPath
         }
     }
 
-    public WingetOutcome Install(string id, string? location = null) => Run(WingetCommands.Install(id, location), InstallTimeout);
+    public WingetOutcome Install(string id, string? location = null, string? scope = null) => Run(WingetCommands.Install(id, location, scope), InstallTimeout);
 
-    public WingetOutcome Uninstall(string id) => Run(WingetCommands.Uninstall(id), InstallTimeout);
+    public WingetOutcome Uninstall(string id, string? scope = null) => Run(WingetCommands.Uninstall(id, scope), InstallTimeout);
 
     /// <summary>
     /// Asks winget for the table of available updates and keeps the rows of the apps given. When nothing is out of date winget prints a sentence

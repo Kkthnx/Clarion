@@ -42,6 +42,8 @@ public sealed class ChangeJournal
         SetRegistryListEntry l => l.Target.Hive == RegistryHive.CurrentUser,
         RemoveAppxPackage r => !r.AllUsers,
         RestoreAppxPackage => true,
+        // An app installed for one account is in that account's profile, so another administrator must not see it as theirs or revert it.
+        InstallWingetPackage { Scope: "user" } or UninstallWingetPackage { Scope: "user" } => true,
         _ => false,
     };
 

@@ -94,16 +94,21 @@ public sealed record RestoreDns(IReadOnlyList<Dns.AdapterDns> Adapters, IReadOnl
 {
     public override string Describe() => "Put the previous DNS servers back";
 }
-/// <summary>Installs one package from winget's community source, pinned by its exact ID. Location is only for packages whose manifest requires an install folder.</summary>
-public sealed record InstallWingetPackage(string Id, string? Location = null) : Operation
+/// <summary>
+/// Installs one package from winget's community source, pinned by its exact ID. Location is only for packages whose manifest requires an install
+/// folder. Scope is null for winget's own choice, which for these packages is machine wide, or "user" to install for the account that runs
+/// .Clarion only, and is only ever "user" for a package whose installer winget says supports it.
+/// </summary>
+public sealed record InstallWingetPackage(string Id, string? Location = null, string? Scope = null) : Operation
 {
-    public override string Describe() => Location is null ? $"Install {Id} with winget" : $"Install {Id} with winget into {Location}";
+    public override string Describe() =>
+        (Location is null ? $"Install {Id} with winget" : $"Install {Id} with winget into {Location}") + (Scope == "user" ? " for this account only" : "");
 }
 
-/// <summary>Uninstalls one package that winget installed or knows, pinned by its exact ID.</summary>
-public sealed record UninstallWingetPackage(string Id, string? Location = null) : Operation
+/// <summary>Uninstalls one package that winget installed or knows, pinned by its exact ID. Scope is "user" for a package that was installed for one account.</summary>
+public sealed record UninstallWingetPackage(string Id, string? Location = null, string? Scope = null) : Operation
 {
-    public override string Describe() => $"Uninstall {Id} with winget";
+    public override string Describe() => Scope == "user" ? $"Uninstall {Id} with winget, from this account" : $"Uninstall {Id} with winget";
 }
 
 /// <summary>
