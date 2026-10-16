@@ -162,6 +162,14 @@ public static class AppUpdatesFlow
             results = await Task.Run(() => AppUpdater.Run(app.Runtime.Winget, updates, acceptTerms,
                 line => { Log.Write($"update: {line}"); log.Append(line, line.StartsWith("Updating ", StringComparison.Ordinal) ? line : null); }, log.Stop));
         }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            // Anything the updater did not expect still ends the dialog cleanly. Otherwise it stays open with no way to close it.
+            Log.Write($"update: {ex}");
+            app.RepairRunning = false;
+            await log.FinishAsync("Did not finish.", "", $"Something unexpected stopped the update: {ex.Message}", "Nothing else was started. The log has the detail.");
+            return;
+        }
         finally { app.RepairRunning = false; }
 
         var summary = AppUpdater.Summary(results) + ".";

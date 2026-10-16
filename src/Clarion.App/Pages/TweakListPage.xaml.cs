@@ -67,8 +67,6 @@ public sealed partial class TweakListPage : Page
     // name, summary and switch, so a narrower list keeps one wide card, which reads better.
     private int _columns;
 
-    public ObservableCollection<CardRow> Rows { get; } = [];
-
     private void OnListSizeChanged(object sender, SizeChangedEventArgs e) => ApplyColumns();
 
     private void ApplyColumns()
@@ -78,10 +76,9 @@ public sealed partial class TweakListPage : Page
         _columns = wanted;
         if (wanted > 1)
         {
-            FillRows();
             List.ItemTemplate = (DataTemplate)Resources[wanted == 2 ? "TwoColumnRow" : "ThreeColumnRow"];
             List.ItemContainerStyle = (Style)Resources["PairRowItemStyle"];
-            List.ItemsSource = Rows;
+            FillRows();
         }
         else
         {
@@ -91,11 +88,8 @@ public sealed partial class TweakListPage : Page
         }
     }
 
-    private void FillRows()
-    {
-        Rows.Clear();
-        foreach (var row in CardRow.Of(Visible, _columns)) Rows.Add(row);
-    }
+    // The rows are cut from the list in one go and handed over as one list, so the page changes once and not once per row.
+    private void FillRows() => List.ItemsSource = CardRow.Of(Visible, _columns);
     // A card in a row of several lights up under the pointer like a card in the single column does.
     private void OnCardEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
     {
