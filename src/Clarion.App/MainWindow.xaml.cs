@@ -324,10 +324,24 @@ public sealed partial class MainWindow : Window
         var body = new StackPanel { Spacing = 12 };
         body.Children.Add(new TextBlock
         {
-            Text = ".Clarion explains every change before it makes it, takes a restore point first, and can undo anything it did. Pick a starting point. Nothing changes until you have seen the list and pressed Apply.",
+            Text = ".Clarion explains every change before it makes it, takes a restore point first, and can undo anything it did.",
             TextWrapping = TextWrapping.Wrap,
             MaxWidth = 480,
         });
+        // The whole safety loop in four short lines, so the first change is not the first time a person meets Review, Verify or Revert.
+        // It sits above the presets, because the presets are what scrolls in a short window.
+        var loop = new StackPanel { Spacing = 2 };
+        loop.Children.Add(new TextBlock { Text = "How it works", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        foreach (var line in new[]
+        {
+            "1. Queue. Switch settings on or off. Nothing changes yet.",
+            "2. Review. You see every exact change, then press Apply.",
+            "3. Verify. Later, .Clarion checks that Windows has not put things back.",
+            "4. Revert. Any change can be undone from the Safety page.",
+        })
+            loop.Children.Add(new TextBlock { Text = line, TextWrapping = TextWrapping.Wrap, FontSize = 12, Opacity = 0.8, MaxWidth = 460 });
+        body.Children.Add(loop);
+        body.Children.Add(new TextBlock { Text = "Pick a starting point", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         body.Children.Add(choices);
 
         var dialog = new ContentDialog
@@ -432,8 +446,10 @@ public sealed partial class MainWindow : Window
         var list = new StackPanel { Spacing = 12 };
         var installs = new List<(TweakItem Item, TextBlock Details)>();
         var rows = new List<(TweakItem Item, FrameworkElement Row, HyperlinkButton LeaveOut)>();
+        var kinds = new Dictionary<TweakItem, Clarion.Core.Layout.ReviewKind>();
         foreach (var item in _app.Pending.ToList())
         {
+            kinds[item] = Clarion.Core.Layout.ReviewGroups.Of(item.InstallsApps, item.RemovesApps, item.IsOn);
             var block = new StackPanel { Spacing = 2 };
             var verb = item.InstallsApps ? (item.IsOn ? "install" : "uninstall") : item.IsOn ? "turn on" : "revert";
             block.Children.Add(new TextBlock
@@ -473,7 +489,17 @@ public sealed partial class MainWindow : Window
             }
             else
             {
-                block.Children.Add(new TextBlock { Text = "Puts back the value that was recorded before the change.", FontSize = 12, Opacity = 0.8 });
+                // The steps Revert will run, read from the history exactly as the engine reads it, so nothing is a surprise.
+                var preview = Clarion.Core.Reports.RevertPreview.For(_app.Runtime.Journal.OutstandingFor(item.Id), item.Tweak.Undo);
+                foreach (var step in preview.Lines)
+                    block.Children.Add(new TextBlock { Text = step, FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"), FontSize = 12, TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
+                block.Children.Add(new TextBlock
+                {
+                    Text = preview.FromHistory ? "Puts back the value that was recorded before the change." : "Nothing was recorded for this one, so the default shown is used.",
+                    FontSize = 12,
+                    TextWrapping = TextWrapping.Wrap,
+                    Opacity = 0.8,
+                });
             }
 
             // One item can be taken out here without clearing the rest of the queue.
@@ -486,8 +512,45 @@ public sealed partial class MainWindow : Window
             Grid.SetColumn(leaveOut, 1);
             row.Children.Add(leaveOut);
             rows.Add((item, row, leaveOut));
-            list.Children.Add(row);
         }
+
+        // A long queue is sorted into sections, each with its own count, so settings, installs and removals can be read one kind at a time.
+        var sections = new List<(Clarion.Core.Layout.ReviewKind Kind, Expander Box)>();
+        if (Clarion.Core.Layout.ReviewGroups.ShouldGroup(kinds.Values))
+        {
+            foreach (var kind in Clarion.Core.Layout.ReviewGroups.Order.Where(k => kinds.ContainsValue(k)))
+            {
+                var inside = new StackPanel { Spacing = 12 };
+                foreach (var (_, row, _) in rows.Where(r => kinds[r.Item] == kind)) inside.Children.Add(row);
+                var box = new Expander
+                {
+                    IsExpanded = true,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                    Header = new TextBlock { FontWeight = Microsoft.UI.Text.FontWeights.SemiBold },
+                    Content = inside,
+                };
+                sections.Add((kind, box));
+                list.Children.Add(box);
+            }
+        }
+        else
+        {
+            foreach (var (_, row, _) in rows) list.Children.Add(row);
+        }
+
+        void RefreshSections()
+        {
+            foreach (var (kind, box) in sections)
+            {
+                var count = rows.Count(r => kinds[r.Item] == kind && r.Row.Visibility == Visibility.Visible);
+                var title = Clarion.Core.Layout.ReviewGroups.Title(kind, count);
+                ((TextBlock)box.Header).Text = title;
+                Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(box, title);
+                box.Visibility = count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        RefreshSections();
 
         // A restore point before a few installs costs minutes, so it starts unticked when nothing in the queue changes Windows settings.
         var onlyApps = _app.Pending.All(p => p.InstallsApps);
@@ -530,6 +593,7 @@ public sealed partial class MainWindow : Window
                 item.IsOn = item.IsApplied;
                 item.SetUserScope(false);
                 row.Visibility = Visibility.Collapsed;
+                RefreshSections();
                 var left = rows.Where(r => r.Row.Visibility == Visibility.Visible).ToList();
                 if (left.Count == 0) { dialog.Hide(); return; }
                 dialog.Title = $"Apply {left.Count} change{(left.Count == 1 ? "" : "s")}?";
