@@ -206,11 +206,7 @@ public sealed partial class HomePage : Page
         RestartBar.Visibility = RestartBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         if (pending is not { IsPending: true }) return;
 
-        var checkedCount = _app.Drift?.Checked ?? 0;
-        RestartBar.Message = $"{string.Join(". ", pending.Reasons)}. " +
-            (checkedCount > 0
-                ? $"After it restarts, .Clarion will check the {checkedCount} setting{(checkedCount == 1 ? "" : "s")} it applied again, because updates are when changes are most likely to be undone."
-                : "Once you have applied settings, .Clarion checks them again after a restart like this.");
+        RestartBar.Message = Clarion.Core.Reports.RestartNotice.Message(pending.Reasons, _app.Drift?.Checked ?? 0);
     }
 
     private void ShowImage()
