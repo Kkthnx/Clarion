@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0
 
 Safer
 - An unexpected error no longer carries on as if nothing happened. The global handler used to log it and mark it handled. While .Clarion is idle it now empties the queue, reads every setting again from Windows and tells you. During a run, the run ends with its own read of Windows. Five errors in a minute end the program.
@@ -12,6 +12,7 @@ Fixed
 - The review reads app details from winget four at a time, with 60 seconds for the whole read, instead of one at a time with up to two minutes each. A row that is still waiting says winget took too long, and the licence box no longer stays locked behind it.
 - Revert of an app checks that it is really gone. winget uses an app's quiet uninstall command only when the app registered one, and otherwise runs its ordinary uninstaller and reports success as soon as it starts. Xournal++ is one: its uninstall wizard opened while winget said it was done. Revert now looks again after a few seconds, and if the app is still installed says that its uninstaller cannot run silently and may be waiting in its own window.
 - An app logo that cannot be drawn is logged with the app's name and the row shows the letter tile.
+- The log window of a repair job or an app update could be closed with Escape while the job was still running, leaving it going with no window and no Stop button. It now stays until the job has reported.
 
 New
 - 120 more apps, 255 in all, each one an exact winget package ID read from winget's own record. Windows runtimes (.NET Desktop Runtime 6 to 10, Visual C++ 2015 to 2022, Amazon Corretto), remote access tools, driver tools, Windows shell mods and auto clickers are in, each with its risk written plainly: turning a runtime off later runs its uninstaller and any program that needs it stops starting, a remote access tool lets someone connect once you set it up, a driver tool can leave a driver that does not work, and many online games ban an auto clicker. A new Runtimes topic and a symptom for a program that will not start for want of a runtime lead to them.
@@ -24,11 +25,16 @@ New
 - Flush the DNS cache beside the DNS provider choice, so a changed provider takes effect at once.
 - Save report on the System page. Copy report and Save report both remove the computer name, user name, network addresses and account IDs first.
 - Each item in the review has Leave out. It takes that one item out of the queue and leaves the rest. Before, the choice was to apply everything or clear everything. If it was the last app install, the licence box goes away.
+- Save change report on the Safety page. It saves what .Clarion changed and is still on, newest first, with the step that undoes each one, as a text file with the computer name, user name and network addresses removed. Before, the history could only be read on screen.
 - A setting request template for issues, and docs/GUIDES.md with task by task guides.
 
 Polish
 - Two or three cards across in a wide window. On a maximized window each setting card used to stretch over the whole width with most of it empty. The list now fits as many cards as have room for their name, summary and switch (480 wide each, up to three), and one wide card in a narrow window, as before. Each row is as tall as its tallest card, so no card is cut off when its summary takes two lines, and the list still creates only the rows on screen. The compact list stays one line per setting. Sparkle's Tweaks page does the same with a grid that goes from one to four columns at fixed window widths, which .Clarion replaces with the width the list really has.
 - A check of every winget package ID in the app list against winget's own source (scripts/check-winget-ids.ps1) runs monthly and on any pull request that changes the list. All 255 pass. scripts/new-app-entry.ps1 writes a catalog entry from winget's record, and scripts/add-simple-icon.ps1 and scripts/fetch-app-logos.ps1 add logos.
+- A long review is sorted into sections. From six changes with more than one kind, the review shows a heading and a count for settings to turn on, apps to install, Windows apps to remove, apps to uninstall and settings to revert, and each section folds. Nothing starts folded, because a section that has not been looked at has not been agreed to. A revert row used to say only that it puts back the recorded value. It now lists the steps, read from the history the way the engine reads it, or says that nothing was recorded and the default shown is used.
+- The welcome dialog shows the loop in four short lines above the presets: Queue, Review, Verify, Revert. Microsoft says a teaching tip is impermanent and must not hold anything critical to the app, so the loop is plain text in the dialog a new person has to read anyway.
+- The navigation pane and the caption buttons follow the High Contrast theme. The pane kept its dark background while its text took the person's colours, and the caption buttons used fixed colours. Both now read the same theme colours as the rest of the window, and in High Contrast the caption buttons use the system's own.
+- The build no longer prints 45 warnings about logo file names. The resource indexer reads whatever follows a dot in a file name as a qualifier, so the logo files are now named app-name.png and not app.name.png.
 - Continuous integration lints the workflow files with actionlint and checks whitespace formatting. The release workflow starts the published program and checks that --version, --list-presets and --list-settings answer, since the tests start the built program and not the files that ship.
 - docs/DESIGN.md no longer lists static analysis, a script linter, virtual machine tests or ARM64 builds. It says what CI runs and what is not built yet.
 

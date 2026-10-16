@@ -22,6 +22,7 @@ public sealed class LogDialog : IDisposable
     private readonly ContentDialog _dialog;
     private readonly DispatcherQueueTimer _timer;
     private bool _dirty;
+    private bool _finished;
     private string? _pendingStatus;
     private Task? _shown;
 
@@ -56,6 +57,9 @@ public sealed class LogDialog : IDisposable
             _status.Text = "Stopping";
             _stop.Cancel();
         };
+
+        // Escape closes a dialog even when it has no Close button. While the job runs that would leave it going with no window and no Stop.
+        _dialog.Closing += (_, a) => { if (!_finished) a.Cancel = true; };
 
         _timer = _dialog.DispatcherQueue.CreateTimer();
         _timer.Interval = TimeSpan.FromMilliseconds(150);
@@ -112,6 +116,7 @@ public sealed class LogDialog : IDisposable
         _status.Text = status;
         _dialog.PrimaryButtonText = "";
         _dialog.CloseButtonText = "Close";
+        _finished = true;
         if (_shown is not null) await _shown;
     }
 
