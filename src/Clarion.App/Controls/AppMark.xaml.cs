@@ -10,7 +10,7 @@ using Windows.Storage.FileProperties;
 
 namespace Clarion.App.Controls;
 
-/// <summary>An app's logo: its outline in the brand colour, or the picture saved inside the program, or the installed app's own icon, or a plain tile with its first letter.</summary>
+/// <summary>An app's logo, first found of: its outline in the brand colour, the picture saved inside the program, the installed app's own icon, a plain tile with its first letter.</summary>
 public sealed partial class AppMark : UserControl
 {
     public static readonly DependencyProperty IconProperty =
@@ -222,9 +222,9 @@ public sealed partial class AppMark : UserControl
         _tiled = false;
         Glyph.Visibility = Visibility.Collapsed;
         _shownPath = null;
-        // No outline: the real icon of the installed app if Windows lists one, then the picture saved inside the program, and last the letter tile.
-        var photo = !IsWatermark && Photo.Source is not null;
-        var bundled = !IsWatermark && !photo && Bundled.Source is not null;
+        // No outline: the picture saved inside the program, which was looked at one by one, then the icon of the installed app if Windows lists one (some are a generic installer icon), and last the letter tile.
+        var bundled = !IsWatermark && Bundled.Source is not null;
+        var photo = !IsWatermark && !bundled && Photo.Source is not null;
         Photo.Visibility = photo ? Visibility.Visible : Visibility.Collapsed;
         Bundled.Visibility = bundled ? Visibility.Visible : Visibility.Collapsed;
         Tile.Visibility = IsWatermark || photo || bundled ? Visibility.Collapsed : Visibility.Visible;
