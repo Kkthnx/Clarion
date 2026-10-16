@@ -68,6 +68,26 @@ public sealed class WindowsWingetStore(IProcessRunner runner, string? wingetPath
 
     public WingetOutcome Uninstall(string id) => Run(WingetCommands.Uninstall(id), InstallTimeout);
 
+    /// <summary>
+    /// Asks winget for the table of available updates and keeps the rows of the apps given. When nothing is out of date winget prints a sentence
+    /// and no table, which is an empty answer. Any other failure without a table is an error, so a broken winget is not read as "all up to date".
+    /// </summary>
+    public IReadOnlyList<AppUpdate> AvailableUpdates(IReadOnlySet<string> catalogIds)
+    {
+        ProcessResult result;
+        try { result = runner.Run(_path, WingetCommands.ListUpgrades(), QueryTimeout); }
+        catch (System.ComponentModel.Win32Exception ex) { throw new InvalidOperationException(ex.Message, ex); }
+
+        var updates = WingetUpgrades.Parse(result.Output, catalogIds);
+        if (updates.Count > 0) return updates;
+        var hasTable = result.Output.Contains("----------", StringComparison.Ordinal);
+        if (hasTable || result.ExitCode is WingetCodes.Success or WingetCodes.NoPackagesFound) return updates;
+        throw new InvalidOperationException(WingetCodes.Explain(result.ExitCode));
+    }
+
+    public WingetOutcome Upgrade(string id, bool acceptPackageAgreements) =>
+        Run(WingetCommands.Upgrade(id, acceptPackageAgreements), InstallTimeout);
+
     public WingetPackageInfo? Show(string id)
     {
         try

@@ -50,6 +50,25 @@ public sealed class FakeWingetStore : IWingetStore
     }
 
     public WingetPackageInfo? Show(string id) => Info;
+
+    public List<AppUpdate> Updates { get; } = [];
+    public string? UpdatesFailure { get; set; }
+    public int UpgradeCode { get; set; }
+    public bool? LastUpgradeAcceptedAgreements { get; private set; }
+
+    public IReadOnlyList<AppUpdate> AvailableUpdates(IReadOnlySet<string> catalogIds)
+    {
+        if (UpdatesFailure is not null) throw new InvalidOperationException(UpdatesFailure);
+        return Updates.Where(u => catalogIds.Contains(u.Id)).ToList();
+    }
+
+    public WingetOutcome Upgrade(string id, bool acceptPackageAgreements)
+    {
+        Calls.Add("upgrade " + id);
+        LastUpgradeAcceptedAgreements = acceptPackageAgreements;
+        if (WingetCodes.IsUpgradeSuccess(UpgradeCode)) Updates.RemoveAll(u => u.Id == id);
+        return new WingetOutcome(UpgradeCode, "");
+    }
 }
 
 public sealed class WingetTests : IDisposable

@@ -8,6 +8,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -17,6 +18,18 @@
             </InfoBar.ActionButton>
         </InfoBar>
 
-        <Frame x:Name="Inner" Grid.Row="1" />
+        <!-- Updates are not part of the queue, because an update cannot be reverted. They have their own list, with nothing ticked at first. -->
+        <Grid Grid.Row="1" Margin="32,12,32,0" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="UpdatesButton" Content="Check for app updates" Click="OnCheckUpdates"
+                    ToolTipService.ToolTip="Asks winget which of your installed apps have a newer version. You choose which to update. Nothing changes until you do." />
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}"
+                       Text="You pick which installed apps to update. An update cannot be undone from .Clarion." />
+        </Grid>
+
+        <Frame x:Name="Inner" Grid.Row="2" />
     </Grid>
 </Page>

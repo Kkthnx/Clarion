@@ -50,6 +50,7 @@ public sealed class ProfileAndCliTests
     [InlineData("--apply-preset standard --preview", CliMode.Apply)]
     [InlineData("--clean --only shaders.nvidia,windows.temp", CliMode.Clean)]
     [InlineData("--list-presets", CliMode.ListPresets)]
+    [InlineData("--update-apps --preview", CliMode.UpdateApps)]
     [InlineData("--version", CliMode.Version)]
     [InlineData("--help", CliMode.Help)]
     [InlineData("", CliMode.None)]
@@ -89,6 +90,19 @@ public sealed class ProfileAndCliTests
     {
         var load = ProfileFile.Parse(ProfileFile.Serialize(["a.b"], "1.0"));
         Assert.Equal(SetupProfile.CurrentFormat, load.Profile!.Format);
+    }
+
+    [Fact]
+    public void The_update_command_reads_its_switches_and_licence_terms_are_off_unless_asked_for()
+    {
+        var o = CliOptions.Parse(["--update-apps", "--only", "app.git, app.brave", "--preview"]);
+        Assert.Equal(CliMode.UpdateApps, o.Mode);
+        Assert.Equal(["app.git", "app.brave"], o.Only);
+        Assert.True(o.Preview);
+        Assert.False(o.AcceptPackageAgreements);
+        Assert.True(CliOptions.Parse(["--update-apps", "--accept-package-agreements"]).AcceptPackageAgreements);
+        Assert.Contains("--update-apps", CliOptions.HelpText);
+        Assert.Contains("cannot be undone", CliOptions.HelpText);
     }
 
     [Fact]

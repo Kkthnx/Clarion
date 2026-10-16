@@ -232,6 +232,7 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 
 - 255 programs installed with winget, each pinned to one exact package ID from the winget source, never a search. An app is an ordinary setting, so queue, review, apply, Revert, Verify, setup files and the command line all work for it. Revert runs the app's own uninstaller through winget.
 - The review reads the version, publisher, licence, installer host and SHA-256 from winget while the dialog is open. Apply stays off until the person ticks that they accept the licence terms, and that covers one run. On the command line, apps are skipped unless --accept-package-agreements is given.
+- Check for app updates asks winget which installed apps have a newer version, lists them with nothing ticked, and updates the ones you choose, one at a time, with a live log and Stop. It never updates everything at once and never uses winget's include unknown or include pinned options. An update cannot be undone, because winget keeps no copy of the old version. The same is `--update-apps` on the command line.
 - Winget is found at its fixed per-user path, never by searching PATH, and .Clarion does not install it. It is not started until the Apps page is opened or an app is asked for, because it may contact Microsoft's package source.
 - An app whose winget record needs an install folder carries one in the catalog. Apps whose installer refuses to run as administrator are left out.
 - Logos are saved inside the program and nothing is fetched while it runs: a Simple Icons outline (CC0) where there is one, otherwise a picture taken once from a curated collection, the project's GitHub organization or its own website, with each address written down and credited on the About page. An installed app without an outline shows the icon Windows lists for it. Otherwise it gets a letter tile.
@@ -240,7 +241,6 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 
 - Microsoft 365 and Office telemetry policies.
 - Per app permission lists.
-- Updating installed apps (the Apps page installs and removes them).
 - Installing for one account only, and a list of the programs already installed.
 - Startup app manager.
 - Host file blocklists.

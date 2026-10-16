@@ -1,6 +1,6 @@
 namespace Clarion.Core.Profiles;
 
-public enum CliMode { None, Help, Version, Apply, Clean, ListPresets, Verify, WhatBroke, ListSymptoms, History, ListSettings, ListCleanups, CatalogDoc }
+public enum CliMode { None, Help, Version, Apply, Clean, ListPresets, Verify, WhatBroke, ListSymptoms, History, ListSettings, ListCleanups, CatalogDoc, UpdateApps }
 
 public sealed record CliOptions(
     CliMode Mode,
@@ -58,6 +58,7 @@ public sealed record CliOptions(
                     if (preset is null || preset.StartsWith("--", StringComparison.Ordinal)) return Fail("--apply-preset needs a preset name.");
                     break;
                 case "--clean": mode = CliMode.Clean; break;
+                case "--update-apps": mode = CliMode.UpdateApps; break;
                 case "--only": only.AddRange(Split(Next())); break;
                 case "--include": include.AddRange(Split(Next())); break;
                 case "--preview": preview = true; break;
@@ -100,6 +101,7 @@ public sealed record CliOptions(
           Clarion.exe --apply setup.json [--preview] [--no-restore-point] [--enable-protection]
           Clarion.exe --apply-preset minimal|standard|advanced|gaming|privacy [--preview]
           Clarion.exe --clean [--only a,b] [--include c,d] [--preview]
+          Clarion.exe --update-apps [--only app.git,app.vscode] [--preview] [--accept-package-agreements]
           Clarion.exe --verify [--save]
           Clarion.exe --what-broke symptom [--since 2026-09-01]
           Clarion.exe --list-symptoms
@@ -115,6 +117,7 @@ public sealed record CliOptions(
         --accept-package-agreements  with --apply, install the apps in the setup. You are accepting the publishers licence terms yourself, so read them first. Without it apps are skipped
         --enable-protection turn on System Protection if it is off, so the restore point can be made
         --only / --include  cleanup row names, such as shaders.nvidia,windows.temp. --list-cleanups shows them all
+        --update-apps       update the apps from the Apps page that are installed and have a newer version in winget. Updates cannot be undone from .Clarion, because winget keeps no copy of the old version. --only limits it to the apps named, as --list-settings names them. --preview lists what would be updated and changes nothing. An app whose new version asks for its licence terms again is not updated unless --accept-package-agreements is given
         --list-settings     list every setting with the name a setup file uses for it
         --catalog-doc       print the settings reference as Markdown, for docs/CATALOG.md
 

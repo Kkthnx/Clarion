@@ -72,7 +72,7 @@ public sealed class CommandLineSmokeTests(ITestOutputHelper output) : IDisposabl
     {
         if (Run("--help") is not var (code, text)) return;
         Assert.Equal(0, code);
-        foreach (var command in new[] { "--apply-preset", "--clean", "--verify", "--history", "--list-presets", "--list-settings" })
+        foreach (var command in new[] { "--apply-preset", "--clean", "--verify", "--history", "--list-presets", "--list-settings", "--update-apps" })
             Assert.Contains(command, text);
 
         Assert.Equal(2, Run("--no-such-command")!.Value.Code);
@@ -104,6 +104,24 @@ public sealed class CommandLineSmokeTests(ITestOutputHelper output) : IDisposabl
         Assert.Equal(0, Run("--verify")!.Value.Code);
         Assert.Equal(0, Run("--list-symptoms")!.Value.Code);
         Assert.Equal(2, Run("--what-broke", "no-such-symptom")!.Value.Code);
+    }
+
+    [Fact]
+    public void Updating_apps_refuses_a_name_that_is_not_in_the_list_before_it_asks_winget_anything()
+    {
+        if (Run("--update-apps", "--preview", "--only", "app.no-such-app") is not var (code, text)) return;
+        Assert.Equal(2, code);
+        Assert.Contains("unknown app: app.no-such-app", text);
+    }
+
+    [Fact]
+    public void Listing_what_is_out_of_date_needs_no_administrator_rights_and_changes_nothing()
+    {
+        // Needs winget on this PC. Without it the command says so and exits with 1, which is also a clean answer.
+        if (Run("--update-apps", "--preview") is not var (code, text)) return;
+        Assert.Contains(code, new[] { 0, 1 });
+        Assert.True(text.Contains("up to date", StringComparison.Ordinal) || text.Contains("newer version", StringComparison.Ordinal) || text.Contains("winget", StringComparison.Ordinal), text);
+        Assert.DoesNotContain("Updating ", text);
     }
 
     [Fact]

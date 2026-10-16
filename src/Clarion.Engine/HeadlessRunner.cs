@@ -2,6 +2,7 @@ using Clarion.Core.Model;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using Clarion.Core.Apps;
 using Clarion.Core.Catalog;
 using Clarion.Core.Cleanup;
 using Clarion.Core.Engine;
@@ -65,6 +66,9 @@ public static class HeadlessRunner
                 return 0;
             case CliMode.Verify or CliMode.WhatBroke or CliMode.History:
                 return RunReadOnly(o, Say);
+            // Listing what is out of date only reads, so it needs no administrator rights. Updating does.
+            case CliMode.UpdateApps when o.Preview:
+                return RunUpdateApps(o, Say);
         }
 
         if (!WindowsMachine.IsElevated())
@@ -73,7 +77,64 @@ public static class HeadlessRunner
             return 3;
         }
 
-        return o.Mode == CliMode.Apply ? RunApply(o, Say) : RunClean(o, Say);
+        return o.Mode switch
+        {
+            CliMode.Apply => RunApply(o, Say),
+            CliMode.UpdateApps => RunUpdateApps(o, Say),
+            _ => RunClean(o, Say),
+        };
+    }
+
+    /// <summary>
+    /// Updates the installed apps of the Apps page that have a newer version in winget, or with --preview only lists them. It acts on the
+    /// catalog's packages, never on a name from the command line, and leaves apps alone when the command runs as another account than the one
+    /// signed in, since winget would then work on that account's apps.
+    /// </summary>
+    private static int RunUpdateApps(CliOptions o, Action<string> say)
+    {
+        var apps = CatalogLoader.LoadEmbedded().Where(t => t.Apply.OfType<InstallWingetPackage>().Any()).ToList();
+        var chosen = apps;
+        if (o.Only is { Count: > 0 })
+        {
+            var unknown = o.Only.Where(n => apps.All(a => !a.Id.Equals(n, StringComparison.OrdinalIgnoreCase))).ToList();
+            foreach (var n in unknown) say($"unknown app: {n}. Use --list-settings for the names.");
+            if (unknown.Count > 0) return 2;
+            chosen = apps.Where(a => o.Only.Contains(a.Id, StringComparer.OrdinalIgnoreCase)).ToList();
+        }
+
+        var runtime = EngineFactory.Create();
+        if (!runtime.Winget.IsAvailable)
+        {
+            say("winget was not found for this account, so apps cannot be updated. Install or repair App Installer from Microsoft.");
+            return 1;
+        }
+
+        var byPackage = chosen.ToDictionary(a => a.Apply.OfType<InstallWingetPackage>().First().Id, a => a, StringComparer.OrdinalIgnoreCase);
+        IReadOnlyList<AppUpdate> updates;
+        try { updates = runtime.Winget.AvailableUpdates(byPackage.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase)); }
+        catch (InvalidOperationException ex) { say($"winget could not say what is out of date. {ex.Message}"); return 1; }
+
+        if (updates.Count == 0)
+        {
+            say("Every app from the list that winget can read the version of is up to date. winget does not list an app whose installed version it cannot read, or one that is pinned.");
+            return 0;
+        }
+        say($"{updates.Count} {(updates.Count == 1 ? "app has" : "apps have")} a newer version:");
+        foreach (var u in updates) say($"  {byPackage[u.Id].Name}: {u.Current} -> {u.Available}");
+        if (o.Preview) return 0;
+
+        if (AccountCheck.Detect() is { Differs: true } account)
+        {
+            say($"This command runs as {account.ElevatedAs}, but {account.SignedInAs} is signed in, so winget would work on the wrong account's apps. Start the command again from your own account.");
+            return 1;
+        }
+
+        var results = AppUpdater.Run(runtime.Winget, updates, o.AcceptPackageAgreements, say, CancellationToken.None);
+        say(AppUpdater.Summary(results) + ".");
+        if (results.Any(r => !r.Succeeded && !r.Skipped && r.Message.Contains("licence terms", StringComparison.Ordinal)))
+            say("Add --accept-package-agreements to accept the publisher's licence terms for the apps that ask for them again.");
+        if (runtime.Winget.TakeRestartNeeded()) say("Restart Windows to finish some of these.");
+        return results.All(r => r.Succeeded) ? 0 : 1;
     }
 
     /// <summary>The commands that only look. They change nothing in Windows, so they do not ask for administrator rights.</summary>

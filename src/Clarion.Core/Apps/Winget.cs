@@ -58,6 +58,20 @@ public static class WingetCommands
     public static string Uninstall(string id) =>
         $"uninstall --id {Checked(id)} --exact {Common} --silent";
 
+    /// <summary>
+    /// Lists the installed packages that have a newer version in the winget source. Nothing is changed. Packages whose installed version winget
+    /// cannot read, and packages pinned with a blocking pin, are not listed, which is what winget itself does without --include-unknown and
+    /// --include-pinned.
+    /// </summary>
+    public static string ListUpgrades() => $"upgrade {Common}";
+
+    /// <summary>
+    /// Updates one package, pinned by ID with --exact like an install. The licence terms are accepted only when the person has, because a new
+    /// version can ask for them again.
+    /// </summary>
+    public static string Upgrade(string id, bool acceptPackageAgreements) =>
+        $"upgrade --id {Checked(id)} --exact {Common} --silent{(acceptPackageAgreements ? " --accept-package-agreements" : "")}";
+
     public static string Show(string id) =>
         $"show --id {Checked(id)} --exact {Common}";
 
@@ -74,6 +88,9 @@ public static class WingetCodes
 {
     public const int Success = 0;
     public const int NoPackagesFound = unchecked((int)0x8A150014);
+
+    /// <summary>winget's answer when an installed package has no newer version: APPINSTALLER_CLI_ERROR_UPDATE_NOT_APPLICABLE.</summary>
+    public const int UpdateNotApplicable = unchecked((int)0x8A15002B);
     private const int AlreadyInstalledA = unchecked((int)0x8A150061);
     private const int AlreadyInstalledB = unchecked((int)0x8A15010D);
     private const int HigherVersionInstalled = unchecked((int)0x8A15010E);
@@ -83,6 +100,29 @@ public static class WingetCodes
     /// <summary>True when the package is installed now, whichever way that came about.</summary>
     public static bool IsSuccess(int code) =>
         code is Success or AlreadyInstalledA or AlreadyInstalledB or HigherVersionInstalled or RebootToFinish or RebootInitiated;
+
+    /// <summary>True when the app is up to date after an update, whether it was updated now or was already the newest.</summary>
+    public static bool IsUpgradeSuccess(int code) => IsSuccess(code) || code == UpdateNotApplicable;
+
+    /// <summary>
+    /// What an update's return code means, in plain words. The codes are from the winget-cli repository's return code list. Anything not
+    /// specific to updates is explained as for an install, with the word installed changed to updated where the sentence says it.
+    /// </summary>
+    public static string ExplainUpgrade(int code) => code switch
+    {
+        Success => "Updated.",
+        UpdateNotApplicable => "It is already the newest version.",
+        unchecked((int)0x8A15004F) => "The version winget found is not newer than the one installed, so nothing was changed.",
+        unchecked((int)0x8A150050) => "winget cannot tell which version is installed, so it did not update it.",
+        unchecked((int)0x8A150068) => "It is pinned in winget, so it was not updated. Remove the pin with winget pin remove to update it.",
+        unchecked((int)0x8A150114) => "This app's installer cannot update an existing copy.",
+        unchecked((int)0x8A15008E) => "The newer version uses a different kind of installer than the copy on this PC, so winget will not update it. Remove the old copy and install again for the newer one.",
+        unchecked((int)0x8A150041) => "The licence terms were not accepted, so nothing was updated. Tick that you accept them and try again.",
+        unchecked((int)0x8A150101) => "The app is running. Close it and try again.",
+        RebootToFinish or RebootInitiated => "Updated. Restart the PC to finish.",
+        _ => Explain(code).Replace("nothing was installed", "nothing was updated"),
+    };
+
 
     public static bool NeedsRestart(int code) => code is RebootToFinish or RebootInitiated;
 
@@ -272,6 +312,15 @@ public interface IWingetStore
 
     /// <summary>The version, publisher, licence and installer details winget holds for a package, or null when it cannot be read.</summary>
     WingetPackageInfo? Show(string id);
+
+    /// <summary>
+    /// Which of the given apps are installed and have a newer version in the winget source. Nothing is changed. Throws when winget cannot answer.
+    /// An app whose installed version winget cannot read, or that is pinned, is not listed.
+    /// </summary>
+    IReadOnlyList<AppUpdate> AvailableUpdates(IReadOnlySet<string> catalogIds);
+
+    /// <summary>Updates one installed package to its newest version. The licence terms are accepted only when the flag says the person has.</summary>
+    WingetOutcome Upgrade(string id, bool acceptPackageAgreements);
 }
 
 public sealed partial record WingetOutcome(int ExitCode, string Output)

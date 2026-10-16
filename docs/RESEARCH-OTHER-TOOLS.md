@@ -294,6 +294,24 @@ Matched by exact name against the 179 apps that had no Simple Icons outline when
 
 The first run of the script saved 142 pictures. Looking at every one found 45 wrong ones, and they are not used: GitHub's own icon (a repository page names it), a company wide Microsoft or Amazon Web Services icon, the publisher's mark where the program has its own, a picture of a different program, and one blank image. Each is in `scripts/app-logo-rejected.json` with the reason, and the script skips it on the next run.
 
+## Updating apps
+
+Looked at on 16 October 2026.
+
+**What the other tools do.** winutil upgrades everything at once. `Invoke-WPFInstallUpgrade.ps1` runs `winget upgrade --all` (or `choco upgrade all`) and reports the result, and a comment in it says it does this on purpose and does not read winget's table, because the table is localized and width truncated. There is no list to choose from. Sparkle has no app update at all: its Updates page sets Windows Update modes, and its Apps page has no upgrade or outdated code.
+
+**What winget says.** From Microsoft's `upgrade` page: with no arguments it lists the apps that have an update, `--id` with `--exact` updates one, and `--all` updates everything that has one. An app whose installed version winget cannot read is only included with `--include-unknown`, and an app with a blocking pin only with `--include-pinned`. Without those two, which are not used here, such apps are left out of the list and of an update. `winget upgrade` and `winget install` both take `--accept-package-agreements`.
+
+**The table, read carefully.** winget's source (`TableOutput.cpp`, `ChannelStreams.cpp`) sizes each column to its widest value, and shortens a value with an ellipsis only when the total is as wide as the console, taking a character at a time from the widest column. The console width comes from `GetConsoleScreenBufferInfo` on standard output. When output goes to a pipe, as it does when .Clarion runs winget, that call fails, so there is no width, no shortening and no spinner. That is why winutil's worry does not apply to a pipe, and why it would to a program that gave winget a console. The table on this PC, read through a pipe, had full ids and versions. .Clarion still matches a cut short id by its start, when only one known id starts that way.
+
+The column titles and the sentences below the table are in the language of Windows, so they are not used. A row is found by the exact id of an app in the catalog, and the next two words are the installed and the new version. That was checked against the real table from this PC, a copy with Spanish titles, a source column, and versions printed with a leading less than sign.
+
+**Return codes, measured and from the list.** An app that is up to date returns 0x8A15002B (no applicable update), and an id that is not installed returns 0x8A150014. The documented codes for the pinned, not newer, technology mismatch and agreements cases are explained in plain words by `WingetCodes.ExplainUpgrade`.
+
+**What .Clarion does.** Check for app updates on the Apps page, and `--update-apps` on the command line. It asks winget which of the catalog's installed apps have a newer version and lists them with nothing ticked. You choose which to update, and they are updated one at a time with a live log and a Stop button. It never uses `--all`, never passes `--include-unknown` or `--include-pinned`, and passes `--accept-package-agreements` only if you tick the box, since a new version can ask for the terms again. An update cannot be undone from .Clarion, because winget keeps no copy of the old version, and the window and the help say so.
+
+Tried for real on this PC: the real list found the same four catalog apps that winget lists (CPU-Z, .NET 9 SDK, Microsoft Edge, .NET Desktop Runtime 10). An older Greenshot (1.3.312) was installed, found, and updated to 1.3.323 in about 10 seconds both by the command and by the window, and then removed. One thing seen on the way: Greenshot's installer starts the program, and a silent uninstall of a running program waits for a dialog, so close an app before you update or remove it.
+
 ## Sources
 
 - winutil: `config/tweaks.json`, `config/feature.json`, `config/appx.json`, `config/applications.json`, `config/preset.json`, `functions/`, `README.md` on the main branch, read 2026-10-11. Licence MIT.

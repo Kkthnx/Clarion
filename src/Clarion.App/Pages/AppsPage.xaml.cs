@@ -36,6 +36,7 @@ public sealed partial class AppsPage : Page
 
     private void ShowBanner()
     {
+        UpdatesButton.IsEnabled = _app.Runtime.Winget.IsAvailable && _app.AppsProblem is null;
         if (!_app.Runtime.Winget.IsAvailable)
         {
             WingetBar.Severity = InfoBarSeverity.Warning;
@@ -73,6 +74,13 @@ public sealed partial class AppsPage : Page
         WingetBar.IsClosable = true;
         WingetBar.IsOpen = true;
         WingetBar.Visibility = Visibility.Visible;
+    }
+
+    private async void OnCheckUpdates(object sender, RoutedEventArgs e)
+    {
+        UpdatesButton.IsEnabled = false;
+        try { await AppUpdatesFlow.RunAsync(XamlRoot); }
+        finally { UpdatesButton.IsEnabled = _app.Runtime.Winget.IsAvailable && _app.AppsProblem is null; }
     }
 
     private void OnNoticeClosed(InfoBar sender, InfoBarClosedEventArgs args)
