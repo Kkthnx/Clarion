@@ -515,22 +515,50 @@ public sealed partial class MainWindow : Window
         finally { _app.Runtime.Winget.AcceptPackageAgreements = false; }
     }
 
-    /// <summary>Fills in each install's details from winget, one after another, while the review dialog is open.</summary>
+    // The details of an install are read from winget while the review is open, a few at a time. The tick box that accepts the licence
+    // terms stays locked until every row has its details or a note that they could not be read, so one slow answer must not hold it
+    // for long: the whole read has a time limit, and a row that is still waiting then says so.
+    private static readonly TimeSpan DetailsBudget = TimeSpan.FromSeconds(60);
+    private const int DetailsInParallel = 4;
+
+    /// <summary>Fills in each install's details from winget while the review dialog is open.</summary>
     private async Task ReadAppDetailsAsync(List<(TweakItem Item, TextBlock Details)> installs, CheckBox agree, CancellationToken stop)
     {
-        foreach (var (item, details) in installs)
+        using var budget = CancellationTokenSource.CreateLinkedTokenSource(stop);
+        budget.CancelAfter(DetailsBudget);
+        using var gate = new SemaphoreSlim(DetailsInParallel);
+
+        var rows = installs.Select(async row =>
         {
-            if (stop.IsCancellationRequested) return;
+            var (item, details) = row;
             var id = item.Tweak.Apply.OfType<Clarion.Core.Model.InstallWingetPackage>().Select(o => o.Id).FirstOrDefault();
             Clarion.Core.Apps.WingetPackageInfo? info = null;
-            try { info = id is null ? null : await Task.Run(() => _app.Runtime.Winget.Show(id)); }
+            var tookTooLong = false;
+            try
+            {
+                await gate.WaitAsync(budget.Token);
+                try
+                {
+                    var work = Task.Run(() => id is null ? null : _app.Runtime.Winget.Show(id));
+                    // A winget call that does not come back is left to end by itself. Its answer is no longer wanted.
+                    var first = await Task.WhenAny(work, Task.Delay(Timeout.Infinite, budget.Token));
+                    if (ReferenceEquals(first, work)) info = await work;
+                    else tookTooLong = true;
+                }
+                finally { gate.Release(); }
+            }
+            catch (OperationCanceledException) { tookTooLong = true; }
             catch (Exception ex) when (ex is not OutOfMemoryException) { Log.Write($"winget could not show {id}: {ex.Message}"); }
             if (stop.IsCancellationRequested) return;
             details.Text = info is null
-                ? "winget could not read this package's details just now. Installing still checks the installer's checksum, but you cannot see it here first."
+                ? (tookTooLong ? "winget took too long to answer for this package. " : "winget could not read this package's details just now. ")
+                  + "Installing still checks the installer's checksum, but you cannot see it here first."
                 : $"Version {info.Version}, from {info.Publisher}\nLicence: {(info.License.Length > 0 ? info.License : "see the link below")}\nInstaller from {info.InstallerHost} ({info.InstallerType})\nChecksum (SHA-256): {info.Sha256}\nwinget refuses to run the installer if its checksum differs.";
             details.Opacity = 1;
-        }
+        }).ToList();
+
+        await Task.WhenAll(rows);
+        if (stop.IsCancellationRequested) return;
         // Every row has either its details or the note that they could not be read, so the terms can be accepted now.
         agree.IsEnabled = true;
         ToolTipService.SetToolTip(agree, null);
