@@ -21,11 +21,25 @@ public static class Shell
 
     private const int Restore = 9;
 
+    /// <summary>Raised with the address when a web link was not opened, so the window can show it to be copied.</summary>
+    public static event Action<string>? LinkNotOpened;
+
     /// <summary>Opens a file, folder, address or program. Returns false, and logs why, when Windows cannot.</summary>
     public static bool Open(string target, string? arguments = null)
     {
         // A web page is opened for the signed-in user, not with Clarion's administrator rights, so the browser is not elevated.
-        if (arguments is null && Uri.TryCreate(target, UriKind.Absolute, out var link) && link.Scheme is "http" or "https" && OpenUnelevated(link)) return true;
+        if (arguments is null && Uri.TryCreate(target, UriKind.Absolute, out var link) && link.Scheme is "http" or "https")
+        {
+            if (OpenUnelevated(link)) return true;
+            // With administrator rights, an ordinary launch would start the browser with them too. So the link is not opened that way. The
+            // person is told, and given the address to copy, instead.
+            if (Clarion.Engine.WindowsMachine.IsElevated())
+            {
+                Log.Write($"A link was not opened because it could not be started without administrator rights: {link.AbsoluteUri}");
+                LinkNotOpened?.Invoke(link.AbsoluteUri);
+                return false;
+            }
+        }
         try
         {
             // A program named without a folder (notepad.exe, rstrui.exe) is looked for beside Clarion first, and Clarion runs with

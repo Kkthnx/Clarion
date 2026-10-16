@@ -24,6 +24,7 @@ public sealed partial class MainWindow : Window
         SetTitleBar(AppTitleBar);
         ResizeToFit();
         AppWindow.Closing += OnClosing;
+        Shell.LinkNotOpened += address => DispatcherQueue.TryEnqueue(() => ShowLinkNotOpened(address));
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets", "Clarion.ico"));
         Root.ActualThemeChanged += (_, _) => { ThemeBrushes.Current = Root.ActualTheme; UpdateCaptionButtons(); };
         // Before the window is shown, the theme may still read as the system default, so it is read again once it is loaded.
@@ -64,6 +65,35 @@ public sealed partial class MainWindow : Window
         _ = _app.LoadImageNotesAsync();
         _ = _app.StartupUpdateCheckAsync();
         _ = _app.CheckMonthlyTaskAsync();
+    }
+
+    private bool _linkDialogOpen;
+
+    /// <summary>Shows a web address that could not be opened safely, ready to copy, instead of opening it with administrator rights.</summary>
+    private async void ShowLinkNotOpened(string address)
+    {
+        if (_linkDialogOpen || Content?.XamlRoot is null) return;
+        _linkDialogOpen = true;
+        try
+        {
+            var box = new TextBox { Text = address, IsReadOnly = true, TextWrapping = TextWrapping.Wrap };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(box, "Web address");
+            var body = new StackPanel { Spacing = 10, MaxWidth = 520 };
+            body.Children.Add(new TextBlock
+            {
+                Text = "This link was not opened, because .Clarion has administrator rights and a browser started from it would have them too. Copy the address and open it in your browser.",
+                TextWrapping = TextWrapping.Wrap,
+            });
+            body.Children.Add(box);
+            var dialog = new ContentDialog { Title = "Open this link yourself", Content = body, PrimaryButtonText = "Copy address", CloseButtonText = "Close", XamlRoot = Content.XamlRoot };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                var package = new Windows.ApplicationModel.DataTransfer.DataPackage();
+                package.SetText(address);
+                Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(package);
+            }
+        }
+        finally { _linkDialogOpen = false; }
     }
 
     private async void OnClosing(AppWindow sender, AppWindowClosingEventArgs args)
