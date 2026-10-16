@@ -115,8 +115,16 @@ public sealed class JournalOwnerTests : IDisposable
         var reg = new FakeRegistry();
         var tweak = new Tweak
         {
-            Id = "u.one", Category = "Test", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-            Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe, Apply = [UserValue("A")],
+            Id = "u.one",
+            Category = "Test",
+            Name = "n",
+            Summary = "s",
+            What = "w",
+            Benefit = "b",
+            Risk = "r",
+            Evidence = Evidence.Cosmetic,
+            RiskLevel = RiskLevel.Safe,
+            Apply = [UserValue("A")],
         };
 
         // Alice applies. Her hive holds the value, and so does the fake store she was reading.

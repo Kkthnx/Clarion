@@ -25,8 +25,16 @@ public sealed class BatchTests : IDisposable
         var hive = scope == TweakScope.User ? RegistryHive.CurrentUser : RegistryHive.LocalMachine;
         return new Tweak
         {
-            Id = id, Category = "T", Name = id, Summary = "s", What = "w", Benefit = "b", Risk = "r",
-            Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe, Scope = scope,
+            Id = id,
+            Category = "T",
+            Name = id,
+            Summary = "s",
+            What = "w",
+            Benefit = "b",
+            Risk = "r",
+            Evidence = Evidence.Cosmetic,
+            RiskLevel = RiskLevel.Safe,
+            Scope = scope,
             Requires = new Requirements { MinBuild = minBuild },
             Apply = [new SetRegistryValue(new RegistryTarget(hive, "Software\\T", id), new RegistryData(RegistryKind.DWord, "1"))],
         };

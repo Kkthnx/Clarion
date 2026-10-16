@@ -48,8 +48,17 @@ public sealed class ActionTests : IDisposable
 
     private static ActionDef Make(IReadOnlyList<ActionStep> steps, IReadOnlyList<ActionStep>? always = null) => new()
     {
-        Id = "a.one", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r", RiskLevel = RiskLevel.Safe,
-        Advice = "a", Facts = ["one", "two"], Steps = steps, Always = always ?? [],
+        Id = "a.one",
+        Name = "n",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        RiskLevel = RiskLevel.Safe,
+        Advice = "a",
+        Facts = ["one", "two"],
+        Steps = steps,
+        Always = always ?? [],
     };
 
     [Fact]

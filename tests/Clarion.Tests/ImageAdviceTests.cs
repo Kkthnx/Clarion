@@ -8,8 +8,16 @@ public sealed class ImageAdviceTests
 {
     private static Tweak Of(string topic, params Operation[] ops) => new()
     {
-        Id = "t." + topic, Category = "Test", Topic = topic, Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe,
+        Id = "t." + topic,
+        Category = "Test",
+        Topic = topic,
+        Name = "n",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Cosmetic,
+        RiskLevel = RiskLevel.Safe,
         Apply = ops.Length > 0 ? ops : [new SetRegistryValue(new RegistryTarget(RegistryHive.CurrentUser, "Software\\T", "x"), new RegistryData(RegistryKind.DWord, "0"))],
     };
 
@@ -81,7 +89,11 @@ public sealed class ImageAdviceTests
     {
         var verdict = Verdict(new InstallInputs
         {
-            Branding = ["Ghost Spectre"], EdgeMissing = true, DefenderServiceMissing = true, UpdateServiceDisabled = true, StoreMissing = true,
+            Branding = ["Ghost Spectre"],
+            EdgeMissing = true,
+            DefenderServiceMissing = true,
+            UpdateServiceDisabled = true,
+            StoreMissing = true,
         });
 
         var notes = ImageAdvice.Notes(CatalogLoader.LoadEmbedded(), verdict);

@@ -100,9 +100,15 @@ public sealed class UpdateStateTests
     {
         var v = UpdateState.Evaluate(new UpdateInputs
         {
-            WindowsUpdateServiceDisabled = true, OrchestratorMissing = true, MedicMissing = true,
-            AccessBlockedByPolicy = true, NoConnectPolicy = true, AutoUpdateOff = true,
-            UseUpdateServer = true, UpdateServer = "localhost", SettingsPageHidden = true,
+            WindowsUpdateServiceDisabled = true,
+            OrchestratorMissing = true,
+            MedicMissing = true,
+            AccessBlockedByPolicy = true,
+            NoConnectPolicy = true,
+            AutoUpdateOff = true,
+            UseUpdateServer = true,
+            UpdateServer = "localhost",
+            SettingsPageHidden = true,
         }, Now);
 
         Assert.Equal(UpdateLevel.Held, v.Level);

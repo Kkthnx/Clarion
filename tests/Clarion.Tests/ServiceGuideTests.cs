@@ -91,8 +91,16 @@ public sealed class ServiceGuideTests
 
     private static Tweak Setting(string id, string name, params string[] services) => new()
     {
-        Id = id, Category = "System", Name = name, Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Situational, RiskLevel = RiskLevel.Low, Scope = TweakScope.Machine,
+        Id = id,
+        Category = "System",
+        Name = name,
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Situational,
+        RiskLevel = RiskLevel.Low,
+        Scope = TweakScope.Machine,
         Apply = [.. services.Select(s => (Operation)new SetServiceStartType(s, ServiceStartType.Disabled))],
     };
 

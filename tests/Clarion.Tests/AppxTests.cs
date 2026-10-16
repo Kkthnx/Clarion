@@ -60,8 +60,15 @@ public sealed class AppxTests : IDisposable
 
     private static Tweak Make(string name, bool all = false, bool deprov = false) => new()
     {
-        Id = "app." + name, Category = "Debloat", Name = name, Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Situational, RiskLevel = RiskLevel.Low,
+        Id = "app." + name,
+        Category = "Debloat",
+        Name = name,
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Situational,
+        RiskLevel = RiskLevel.Low,
         Scope = all || deprov ? TweakScope.Machine : TweakScope.User,
         Apply = [new RemoveAppxPackage(name, all, deprov)],
     };

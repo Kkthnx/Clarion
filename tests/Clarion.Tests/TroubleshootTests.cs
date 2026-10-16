@@ -38,8 +38,16 @@ public sealed class TroubleshootTests : IDisposable
 
     private static Tweak Make(string id, string topic) => new()
     {
-        Id = id, Category = "Test", Topic = topic, Name = id, Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe,
+        Id = id,
+        Category = "Test",
+        Topic = topic,
+        Name = id,
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Cosmetic,
+        RiskLevel = RiskLevel.Safe,
         Apply = [new SetRegistryValue(new RegistryTarget(RegistryHive.CurrentUser, "Software\\Test", id), new RegistryData(RegistryKind.DWord, "0"))],
     };
 

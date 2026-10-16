@@ -296,8 +296,11 @@ public static class CatalogSite
         var rows = pages.SelectMany(g => g.Entries.Select(e => new { n = e.Name, s = e.Summary, i = e.Id, g = g.Title, u = $"{g.File}#{e.Id}" }))
             .Concat(guide.Entries.Select(e => new
             {
-                n = e.Display, s = $"Windows service. Starts {ServiceGuide.StartLabel(e.Default).ToLowerInvariant()} by default. Microsoft: {ServiceGuide.Label(e.Advice).ToLowerInvariant()}.",
-                i = e.Name, g = "Services", u = $"services.html#{ServiceAnchor(e.Name)}",
+                n = e.Display,
+                s = $"Windows service. Starts {ServiceGuide.StartLabel(e.Default).ToLowerInvariant()} by default. Microsoft: {ServiceGuide.Label(e.Advice).ToLowerInvariant()}.",
+                i = e.Name,
+                g = "Services",
+                u = $"services.html#{ServiceAnchor(e.Name)}",
             }));
         return JsonSerializer.Serialize(rows);
     }

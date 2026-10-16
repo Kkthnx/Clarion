@@ -227,8 +227,17 @@ public sealed class WingetTests : IDisposable
 
     private static Tweak AppTweak(string id = "app.7zip", string package = "7zip.7zip") => new()
     {
-        Id = id, Category = "Install", Topic = "Files", Name = "7-Zip", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Proven, RiskLevel = RiskLevel.Safe, Scope = TweakScope.Machine,
+        Id = id,
+        Category = "Install",
+        Topic = "Files",
+        Name = "7-Zip",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Proven,
+        RiskLevel = RiskLevel.Safe,
+        Scope = TweakScope.Machine,
         Apply = [new InstallWingetPackage(package)],
         Undo = [new UninstallWingetPackage(package)],
     };

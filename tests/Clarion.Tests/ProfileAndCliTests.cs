@@ -111,8 +111,16 @@ public sealed class ProfileAndCliTests
 
     private static Tweak Make(string id, string? group = null, int minBuild = 0) => new()
     {
-        Id = id, Category = "T", Name = id, Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe, ExclusiveGroup = group,
+        Id = id,
+        Category = "T",
+        Name = id,
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Cosmetic,
+        RiskLevel = RiskLevel.Safe,
+        ExclusiveGroup = group,
         Requires = new Requirements { MinBuild = minBuild },
         Apply = [new SetRegistryValue(new RegistryTarget(RegistryHive.CurrentUser, "Software\\T", id), new RegistryData(RegistryKind.DWord, "1"))],
     };

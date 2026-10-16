@@ -151,11 +151,26 @@ public sealed partial class CatalogSiteTests
         };
         var pairs = new Dictionary<string, string>
         {
-            ["base"] = "ClBase", ["sidebar"] = "ClSidebar", ["s1"] = "ClSurface1", ["s2"] = "ClSurface2", ["s3"] = "ClSurface3",
-            ["border"] = "ClBorder", ["divider"] = "ClDivider", ["text"] = "ClTextPrimary", ["text2"] = "ClTextSecondary", ["muted"] = "ClTextMuted",
-            ["accent"] = "ClAccent", ["accent-tint"] = "ClAccentTint", ["on-accent"] = "ClOnAccent", ["accent-text"] = "ClAccentText",
-            ["ok"] = "ClOkText", ["ok-tint"] = "ClOkTint", ["warn"] = "ClWarnText", ["warn-tint"] = "ClWarnTint",
-            ["danger-text"] = "ClDangerText", ["danger-tint"] = "ClDangerTint",
+            ["base"] = "ClBase",
+            ["sidebar"] = "ClSidebar",
+            ["s1"] = "ClSurface1",
+            ["s2"] = "ClSurface2",
+            ["s3"] = "ClSurface3",
+            ["border"] = "ClBorder",
+            ["divider"] = "ClDivider",
+            ["text"] = "ClTextPrimary",
+            ["text2"] = "ClTextSecondary",
+            ["muted"] = "ClTextMuted",
+            ["accent"] = "ClAccent",
+            ["accent-tint"] = "ClAccentTint",
+            ["on-accent"] = "ClOnAccent",
+            ["accent-text"] = "ClAccentText",
+            ["ok"] = "ClOkText",
+            ["ok-tint"] = "ClOkTint",
+            ["warn"] = "ClWarnText",
+            ["warn-tint"] = "ClWarnTint",
+            ["danger-text"] = "ClDangerText",
+            ["danger-tint"] = "ClDangerTint",
         };
         foreach (var theme in app.Keys)
         {

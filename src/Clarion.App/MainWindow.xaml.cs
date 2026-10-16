@@ -449,7 +449,7 @@ public sealed partial class MainWindow : Window
                     block.Children.Add(details);
                     var links = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
                     var shown = item.SourceLinks.Where(l => !l.Link.AbsoluteUri.Contains("winget-pkgs", StringComparison.Ordinal))
-                        
+
                         // The same page is often listed once as http and once as https, so the scheme is left out of the comparison.
                         .DistinctBy(l => (l.Link.Host + l.Link.PathAndQuery).TrimEnd('/').ToLowerInvariant()).ToList();
                     // Some records name no homepage or licence page. The package record on GitHub is then the one place to read from.

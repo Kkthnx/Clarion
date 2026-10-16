@@ -29,8 +29,17 @@ public sealed class RealSystemTests(ITestOutputHelper output) : IDisposable
 
     private static Tweak Make(params Operation[] ops) => new()
     {
-        Id = "real.sys", Category = "T", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe, Scope = TweakScope.Machine, Apply = ops,
+        Id = "real.sys",
+        Category = "T",
+        Name = "n",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Cosmetic,
+        RiskLevel = RiskLevel.Safe,
+        Scope = TweakScope.Machine,
+        Apply = ops,
     };
 
     [Fact]

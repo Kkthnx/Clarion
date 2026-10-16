@@ -72,8 +72,17 @@ public sealed class DnsTests : IDisposable
 
     private static Tweak Make(string provider, bool encrypted) => new()
     {
-        Id = "dns.t", Category = "Network", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Situational, RiskLevel = RiskLevel.Low, Scope = TweakScope.Machine, Apply = [new SetDnsProvider(provider, encrypted)],
+        Id = "dns.t",
+        Category = "Network",
+        Name = "n",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Situational,
+        RiskLevel = RiskLevel.Low,
+        Scope = TweakScope.Machine,
+        Apply = [new SetDnsProvider(provider, encrypted)],
     };
 
     [Fact]

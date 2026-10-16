@@ -42,7 +42,12 @@ public static class InstallCheck
 
     private static readonly Dictionary<string, string> KnownImages = new()
     {
-        ["ghost spectre"] = "Ghost Spectre", ["tiny11"] = "Tiny11", ["tiny10"] = "Tiny10", ["atlasos"] = "AtlasOS", ["atlas playbook"] = "AtlasOS", ["revios"] = "ReviOS",
+        ["ghost spectre"] = "Ghost Spectre",
+        ["tiny11"] = "Tiny11",
+        ["tiny10"] = "Tiny10",
+        ["atlasos"] = "AtlasOS",
+        ["atlas playbook"] = "AtlasOS",
+        ["revios"] = "ReviOS",
     };
 
     private static readonly string[] KnownImageNames = [.. KnownImages.Keys];

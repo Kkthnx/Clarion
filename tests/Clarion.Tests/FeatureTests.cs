@@ -55,8 +55,17 @@ public sealed class FeatureTests : IDisposable
 
     private static Tweak Make(params Operation[] ops) => new()
     {
-        Id = "feat.one", Category = "Features", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Situational, RiskLevel = RiskLevel.Low, Scope = TweakScope.Machine, Apply = ops,
+        Id = "feat.one",
+        Category = "Features",
+        Name = "n",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Situational,
+        RiskLevel = RiskLevel.Low,
+        Scope = TweakScope.Machine,
+        Apply = ops,
     };
 
     [Fact]

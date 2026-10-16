@@ -77,7 +77,8 @@ public sealed partial class SafetyPage : Page
                 item?.Name ?? id,
                 $"Applied {first.Time.LocalDateTime:g}",
                 string.Join("\n", outstanding.Select(o => o.Operation.Describe())),
-                item is { IsApplied: true }) { AppliedAt = first.Time });
+                item is { IsApplied: true })
+            { AppliedAt = first.Time });
         }
         // Newest first by the real time. Sorting the text "Applied 10/9/2026" is alphabetical, not chronological.
         History.ItemsSource = rows.OrderByDescending(r => r.AppliedAt).ToList();

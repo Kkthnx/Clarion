@@ -75,8 +75,15 @@ public sealed class WindowsRegistryStoreTests : IDisposable
             var target = new RegistryTarget(RegistryHive.CurrentUser, _root + "\\Created\\Deep", "");
             var tweak = new Tweak
             {
-                Id = "real.one", Category = "T", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-                Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe,
+                Id = "real.one",
+                Category = "T",
+                Name = "n",
+                Summary = "s",
+                What = "w",
+                Benefit = "b",
+                Risk = "r",
+                Evidence = Evidence.Cosmetic,
+                RiskLevel = RiskLevel.Safe,
                 Apply = [new SetRegistryValue(target, new RegistryData(RegistryKind.String, ""))],
             };
 

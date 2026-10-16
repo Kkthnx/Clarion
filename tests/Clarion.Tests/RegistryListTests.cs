@@ -27,8 +27,16 @@ public sealed class RegistryListTests : IDisposable
 
     private static Tweak Make(string key = "SwapEffectUpgradeEnable", string value = "1") => new()
     {
-        Id = "t.list", Category = "System", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Situational, RiskLevel = RiskLevel.Low, Apply = [new SetRegistryListEntry(Target, key, value)],
+        Id = "t.list",
+        Category = "System",
+        Name = "n",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Situational,
+        RiskLevel = RiskLevel.Low,
+        Apply = [new SetRegistryListEntry(Target, key, value)],
     };
 
     private string? Text() => _reg.Read(Target).Data?.Value;

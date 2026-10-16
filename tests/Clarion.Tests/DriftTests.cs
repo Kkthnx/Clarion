@@ -35,8 +35,16 @@ public sealed class DriftTests : IDisposable
 
     private static Tweak Make(string id, params Operation[] ops) => new()
     {
-        Id = id, Category = "Test", Name = id, Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe, Apply = ops,
+        Id = id,
+        Category = "Test",
+        Name = id,
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Cosmetic,
+        RiskLevel = RiskLevel.Safe,
+        Apply = ops,
     };
 
     private static SetRegistryValue Dword(string name, string v) => new(T(name), new RegistryData(RegistryKind.DWord, v));

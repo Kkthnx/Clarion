@@ -42,8 +42,14 @@ public sealed class UserSettingsTests : IDisposable
 
         Assert.True(store.Save(new UserSettings
         {
-            Theme = "Dark", ExpertMode = true, CompactLists = true, FirstRunDone = true, CheckForUpdates = true,
-            LastUpdateCheck = when, DismissedUpdate = "v0.1.0-beta.5", MonthlyVerify = true,
+            Theme = "Dark",
+            ExpertMode = true,
+            CompactLists = true,
+            FirstRunDone = true,
+            CheckForUpdates = true,
+            LastUpdateCheck = when,
+            DismissedUpdate = "v0.1.0-beta.5",
+            MonthlyVerify = true,
         }));
 
         var loaded = new UserSettingsStore(FilePath).Load();

@@ -33,7 +33,10 @@ public static class ChangelogParser
 {
     private static readonly Dictionary<string, ChangeKind> Headings = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["New"] = ChangeKind.New, ["Safer"] = ChangeKind.Safer, ["Fixed"] = ChangeKind.Fixed, ["Polish"] = ChangeKind.Polish,
+        ["New"] = ChangeKind.New,
+        ["Safer"] = ChangeKind.Safer,
+        ["Fixed"] = ChangeKind.Fixed,
+        ["Polish"] = ChangeKind.Polish,
     };
 
     /// <summary>The groups in a block of text, in the order of the kinds above. Empty groups are dropped.</summary>

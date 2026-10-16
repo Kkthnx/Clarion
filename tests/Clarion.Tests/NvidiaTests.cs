@@ -38,8 +38,17 @@ public sealed class NvidiaTests : IDisposable
 
     private static Tweak Make(params Operation[] ops) => new()
     {
-        Id = "gpu.test", Category = "System", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Situational, RiskLevel = RiskLevel.Low, Scope = TweakScope.Machine, Apply = ops,
+        Id = "gpu.test",
+        Category = "System",
+        Name = "n",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Situational,
+        RiskLevel = RiskLevel.Low,
+        Scope = TweakScope.Machine,
+        Apply = ops,
     };
 
     private static readonly SetNvidiaSetting LowLatency = new(NvidiaSettings.MaxPreRenderedFrames, 1);

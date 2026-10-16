@@ -29,8 +29,16 @@ public sealed class TweakEngineTests : IDisposable
 
     private static Tweak Make(params Operation[] ops) => new()
     {
-        Id = "t.one", Category = "Test", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe, Apply = ops,
+        Id = "t.one",
+        Category = "Test",
+        Name = "n",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Cosmetic,
+        RiskLevel = RiskLevel.Safe,
+        Apply = ops,
     };
 
     private static SetRegistryValue Dword(RegistryTarget t, string v) => new(t, new RegistryData(RegistryKind.DWord, v));

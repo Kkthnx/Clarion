@@ -100,13 +100,19 @@ public sealed partial class RepairPage : Page
 
         var logBox = new TextBlock
         {
-            IsTextSelectionEnabled = true, TextWrapping = TextWrapping.NoWrap,
-            FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"), FontSize = 12,
+            IsTextSelectionEnabled = true,
+            TextWrapping = TextWrapping.NoWrap,
+            FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"),
+            FontSize = 12,
         };
         var scroller = new ScrollViewer
         {
-            Content = logBox, Width = 640, Height = 300, Padding = new Thickness(8),
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            Content = logBox,
+            Width = 640,
+            Height = 300,
+            Padding = new Thickness(8),
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
         };
         var ring = new ProgressRing { IsActive = true, Width = 20, Height = 20 };
         var status = new TextBlock { Text = "Starting", VerticalAlignment = VerticalAlignment.Center };

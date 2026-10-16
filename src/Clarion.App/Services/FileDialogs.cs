@@ -61,9 +61,14 @@ public static class FileDialogs
 
             var ofn = new OpenFileName
             {
-                StructSize = Marshal.SizeOf<OpenFileName>(), Owner = owner,
-                Filter = filter.Replace('|', '\0') + "\0\0", FilterIndex = 1, File = buffer, MaxFile = MaxPath,
-                Title = title, DefExt = "json",
+                StructSize = Marshal.SizeOf<OpenFileName>(),
+                Owner = owner,
+                Filter = filter.Replace('|', '\0') + "\0\0",
+                FilterIndex = 1,
+                File = buffer,
+                MaxFile = MaxPath,
+                Title = title,
+                DefExt = "json",
                 Flags = OfnExplorer | OfnNoChangeDir | OfnPathMustExist | (save ? OfnOverwritePrompt : OfnFileMustExist),
             };
             var ok = save ? GetSaveFileName(ref ofn) : GetOpenFileName(ref ofn);

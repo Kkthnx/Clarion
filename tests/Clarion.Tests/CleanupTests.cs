@@ -78,8 +78,19 @@ public sealed class CleanupTests : IDisposable
 
     private static CleanTarget Target(string id, int age = 0, bool queue = false, string[]? procs = null, params CleanRule[] rules) => new()
     {
-        Id = id, Group = "g", Name = id, Summary = "s", Advice = "a", Benefit = "b", Risk = "r", RiskLevel = RiskLevel.Safe,
-        Facts = ["one", "two"], MinAgeHours = age, QueueLockedAtRestart = queue, Processes = procs ?? [], Rules = rules,
+        Id = id,
+        Group = "g",
+        Name = id,
+        Summary = "s",
+        Advice = "a",
+        Benefit = "b",
+        Risk = "r",
+        RiskLevel = RiskLevel.Safe,
+        Facts = ["one", "two"],
+        MinAgeHours = age,
+        QueueLockedAtRestart = queue,
+        Processes = procs ?? [],
+        Rules = rules,
     };
 
     private string Make(string relative, int bytes = 100, DateTime? written = null)

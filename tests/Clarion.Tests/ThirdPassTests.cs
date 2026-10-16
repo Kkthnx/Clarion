@@ -41,8 +41,16 @@ public sealed class ThirdPassTests : IDisposable
 
     private static Tweak Make(string id, string topic = "Search") => new()
     {
-        Id = id, Category = "Test", Topic = topic, Name = id, Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe,
+        Id = id,
+        Category = "Test",
+        Topic = topic,
+        Name = id,
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Cosmetic,
+        RiskLevel = RiskLevel.Safe,
         Apply = [new SetRegistryValue(T(id), new RegistryData(RegistryKind.DWord, "0"))],
     };
 

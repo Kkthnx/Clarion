@@ -21,8 +21,16 @@ public sealed class RobustnessTests : IDisposable
 
     private static Tweak Make(string id, params Operation[] ops) => new()
     {
-        Id = id, Category = "T", Name = id, Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Cosmetic, RiskLevel = RiskLevel.Safe, Apply = ops,
+        Id = id,
+        Category = "T",
+        Name = id,
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Cosmetic,
+        RiskLevel = RiskLevel.Safe,
+        Apply = ops,
     };
 
     private static SetRegistryValue Set(string name, string v = "1") => new(T(name), new RegistryData(RegistryKind.DWord, v));
@@ -121,8 +129,16 @@ public sealed class RobustnessTests : IDisposable
         var engine = new CleanupEngine(platform);
         var target = new CleanTarget
         {
-            Id = "big", Group = "g", Name = "n", Summary = "s", Advice = "a", Benefit = "b", Risk = "r", RiskLevel = RiskLevel.Safe,
-            Facts = ["a", "b"], Rules = [new FolderRule("%LOCALAPPDATA%\\cache")],
+            Id = "big",
+            Group = "g",
+            Name = "n",
+            Summary = "s",
+            Advice = "a",
+            Benefit = "b",
+            Risk = "r",
+            RiskLevel = RiskLevel.Safe,
+            Facts = ["a", "b"],
+            Rules = [new FolderRule("%LOCALAPPDATA%\\cache")],
         };
 
         var sw = Stopwatch.StartNew();

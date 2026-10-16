@@ -62,8 +62,17 @@ public sealed class PowerTests : IDisposable
 
     private static Tweak Make(params Operation[] ops) => new()
     {
-        Id = "pw.one", Category = "Power", Name = "n", Summary = "s", What = "w", Benefit = "b", Risk = "r",
-        Evidence = Evidence.Situational, RiskLevel = RiskLevel.Low, Scope = TweakScope.Machine, Apply = ops,
+        Id = "pw.one",
+        Category = "Power",
+        Name = "n",
+        Summary = "s",
+        What = "w",
+        Benefit = "b",
+        Risk = "r",
+        Evidence = Evidence.Situational,
+        RiskLevel = RiskLevel.Low,
+        Scope = TweakScope.Machine,
+        Apply = ops,
     };
 
     [Fact]
