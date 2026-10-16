@@ -117,38 +117,62 @@ public sealed partial class AppMark : UserControl
         var small = (double.IsNaN(Width) ? ActualWidth : Width) < 32;
         var icon = Icon is { } i && (IsWatermark || i.Shape == LogoShape.Square || (i.Shape == LogoShape.Wide && !small)) ? i : null;
 
-        if (icon is not null)
-        {
-            // A wide outline sits inside a plain tile so it reads as a mark and not a stray line.
-            _tiled = !IsWatermark && icon.Shape == LogoShape.Wide;
-            Tile.Visibility = _tiled ? Visibility.Visible : Visibility.Collapsed;
-            Letter.Visibility = Visibility.Collapsed;
-            Glyph.Margin = _tiled ? new Thickness(_padding) : new Thickness(0);
-            Glyph.Visibility = Visibility.Visible;
-            Photo.Visibility = Visibility.Collapsed;
-            if (_shownPath != icon.Path)
-            {
-                // F1 is the non-zero fill rule, which is what SVG uses and what the outlines were drawn for.
-                Glyph.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "F1" + icon.Path);
-                _shownPath = icon.Path;
-            }
-            // A dark logo on a dark card, or a pale one on a light card, would disappear, so the text colour stands in.
-            var dark = ActualTheme != ElementTheme.Light;
-            // In a High Contrast theme the colours are the person's own choice, so a brand colour is not used at all.
-            var highContrast = Accessibility.HighContrast;
-            Glyph.Visibility = IsWatermark && highContrast ? Visibility.Collapsed : Visibility.Visible;
-            if (!highContrast && icon.ReadableOn(dark))
-            {
-                var (r, g, b) = icon.Rgb;
-                Glyph.Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(255, r, g, b));
-            }
-            else
-            {
-                Glyph.Fill = ThemeBrushes.Get("ClTextPrimary", ActualTheme);
-            }
-            return;
-        }
+        if (icon is not null && TryShowOutline(icon)) return;
+        ShowLetterOrPhoto();
+    }
 
+    /// <summary>
+    /// Draws the logo's outline. A bad outline or colour in the catalog, for example after a careless merge, falls back to the letter tile
+    /// and is logged with the app's name, because this runs on the UI thread and an error here would otherwise reach every row that shows it.
+    /// </summary>
+    private bool TryShowOutline(AppIcon icon)
+    {
+        try
+        {
+            ShowOutline(icon);
+            return true;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            Log.Write($"The logo for {icon.Title} could not be drawn, so the letter tile is used: {ex.Message}");
+            _shownPath = null;
+            return false;
+        }
+    }
+
+    private void ShowOutline(AppIcon icon)
+    {
+        // A wide outline sits inside a plain tile so it reads as a mark and not a stray line.
+        _tiled = !IsWatermark && icon.Shape == LogoShape.Wide;
+        Tile.Visibility = _tiled ? Visibility.Visible : Visibility.Collapsed;
+        Letter.Visibility = Visibility.Collapsed;
+        Glyph.Margin = _tiled ? new Thickness(_padding) : new Thickness(0);
+        Glyph.Visibility = Visibility.Visible;
+        Photo.Visibility = Visibility.Collapsed;
+        if (_shownPath != icon.Path)
+        {
+            // F1 is the non-zero fill rule, which is what SVG uses and what the outlines were drawn for.
+            Glyph.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "F1" + icon.Path);
+            _shownPath = icon.Path;
+        }
+        // A dark logo on a dark card, or a pale one on a light card, would disappear, so the text colour stands in.
+        var dark = ActualTheme != ElementTheme.Light;
+        // In a High Contrast theme the colours are the person's own choice, so a brand colour is not used at all.
+        var highContrast = Accessibility.HighContrast;
+        Glyph.Visibility = IsWatermark && highContrast ? Visibility.Collapsed : Visibility.Visible;
+        if (!highContrast && icon.ReadableOn(dark))
+        {
+            var (r, g, b) = icon.Rgb;
+            Glyph.Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(255, r, g, b));
+        }
+        else
+        {
+            Glyph.Fill = ThemeBrushes.Get("ClTextPrimary", ActualTheme);
+        }
+    }
+
+    private void ShowLetterOrPhoto()
+    {
         _tiled = false;
         Glyph.Visibility = Visibility.Collapsed;
         _shownPath = null;
