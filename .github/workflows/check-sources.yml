@@ -17,7 +17,7 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Check the source links
         shell: powershell
@@ -39,7 +39,7 @@ jobs:
   winget-ids:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Winget's community source is the microsoft/winget-pkgs repository, so each exact ID is looked up there. winget is not needed.
       - name: Check the winget package IDs
