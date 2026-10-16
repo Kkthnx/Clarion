@@ -86,6 +86,27 @@ public sealed partial class SafetyPage : Page
         RevertAll.IsEnabled = rows.Any(r => r.CanRevert);
     }
 
+    private void OnSaveChanges(object sender, RoutedEventArgs e)
+    {
+        var names = _app.Items.GroupBy(i => i.Id).ToDictionary(g => g.Key, g => g.First().Name);
+        var text = Clarion.Core.Feedback.Sanitizer.Clean(
+            Clarion.Core.Reports.ChangeReport.Build(_app.Runtime.Journal.OutstandingByTweak(), names, DateTimeOffset.Now, AppServices.Version),
+            Environment.UserName, Environment.MachineName);
+        var path = FileDialogs.Save(((App)Application.Current).WindowHandle, "Save the change report", "Text file (*.txt)|*.txt", "clarion-change-report.txt");
+        if (path is null) return;
+        try
+        {
+            File.WriteAllText(path, text);
+            ReportStatus.Text = $"Saved to {path}, with the computer name, user name and network addresses removed.";
+            ReportStatus.Visibility = Visibility.Visible;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            ReportStatus.Text = $"Could not save the file: {ex.Message}";
+            ReportStatus.Visibility = Visibility.Visible;
+        }
+    }
+
     private void OnRevertOne(object sender, RoutedEventArgs e)
     {
         if (sender is Button { Tag: string id }) QueueRevert(id);

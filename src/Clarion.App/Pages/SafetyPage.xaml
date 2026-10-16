@@ -45,7 +45,11 @@
                 <TextBlock Text="Changes made by .Clarion" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"
                            Foreground="{ThemeResource ClTextPrimaryBrush}" />
                 <Button x:Name="RevertAll" Content="Queue revert for all" Click="OnRevertAll" />
+                <Button x:Name="SaveChanges" Content="Save change report" Click="OnSaveChanges"
+                        ToolTipService.ToolTip="Saves what .Clarion changed and how each change is undone as a text file, with the computer name, user name and network addresses removed." />
             </StackPanel>
+            <TextBlock x:Name="ReportStatus" Visibility="Collapsed" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
+
 
             <StackPanel Orientation="Horizontal" Spacing="12">
                 <TextBlock Text="Go back to how it was on" VerticalAlignment="Center" Foreground="{ThemeResource ClTextSecondaryBrush}" />
