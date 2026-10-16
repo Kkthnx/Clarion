@@ -375,6 +375,8 @@ public sealed class WindowsStreamingRunner : Clarion.Core.Actions.IStreamingRunn
             try { process.Kill(entireProcessTree: true); } catch (InvalidOperationException) { }
         });
 
+        // Each pipe is read on a thread of its own. On a busy machine the thread pool can take longer than the grace period below to start a
+        // queued reader, and the output of a tool that had already finished would then be dropped.
         var readers = Task.WhenAll(Pump(process.StandardOutput, onLine), Pump(process.StandardError, onLine));
         await process.WaitForExitAsync(CancellationToken.None);
         // A tool can start a helper and exit, and the helper then keeps both pipes open. The job is over when the tool is, so the
@@ -385,12 +387,15 @@ public sealed class WindowsStreamingRunner : Clarion.Core.Actions.IStreamingRunn
     }
 
     /// <summary>Splits on line feeds and carriage returns so progress lines that overwrite themselves still show.</summary>
-    private static async Task Pump(StreamReader reader, Action<string> onLine)
+    private static Task Pump(StreamReader reader, Action<string> onLine) =>
+        Task.Factory.StartNew(() => PumpBlocking(reader, onLine), CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+
+    private static void PumpBlocking(StreamReader reader, Action<string> onLine)
     {
         var line = new System.Text.StringBuilder();
         var buffer = new char[512];
         int read;
-        while ((read = await reader.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        while ((read = reader.Read(buffer, 0, buffer.Length)) > 0)
         {
             for (var i = 0; i < read; i++)
             {

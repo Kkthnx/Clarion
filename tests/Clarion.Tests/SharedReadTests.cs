@@ -64,7 +64,7 @@ public sealed class SharedReadTests
             if (Interlocked.Increment(ref runs) == 1)
             {
                 oldStarted.Set();
-                releaseOld.Wait(TimeSpan.FromSeconds(10));
+                releaseOld.Wait(TimeSpan.FromSeconds(60));
                 return "old";
             }
             return "new";
@@ -72,7 +72,7 @@ public sealed class SharedReadTests
 
         var old = shared.GetAsync();
         // The thread pool may start either read first, so the refresh waits until the older one is really running.
-        Assert.True(oldStarted.Wait(TimeSpan.FromSeconds(10)));
+        Assert.True(oldStarted.Wait(TimeSpan.FromSeconds(30)));
         Assert.Equal("new", await shared.GetAsync(refresh: true));
         releaseOld.Set();
         Assert.Equal("old", await old);

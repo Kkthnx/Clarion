@@ -61,8 +61,9 @@ public sealed class StopAndLaunchTests
         var runner = new WaitingRunner();
         var store = new WindowsWingetStore(runner, Cmd) { AcceptPackageAgreements = true };
 
-        var install = Task.Run(() => store.Install("7zip.7zip"));
-        Assert.True(runner.Started.Wait(TimeSpan.FromSeconds(5)));
+        // A thread of its own: the runner blocks, and a busy thread pool on a small CI machine can take seconds to start a queued task.
+        var install = Task.Factory.StartNew(() => store.Install("7zip.7zip"), CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        Assert.True(runner.Started.Wait(TimeSpan.FromSeconds(30)));
         store.CancelRunning();
 
         var outcome = await install.WaitAsync(TimeSpan.FromSeconds(10));
