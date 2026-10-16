@@ -32,6 +32,13 @@ jobs:
       - name: Publish app
         run: dotnet publish src/Clarion.App -c Release -p:Platform=x64 -r win-x64 --self-contained -o artifacts/publish
 
+      # The files that go into the setup program and the zip, not the ones the tests started, must answer on the command line.
+      - name: Smoke test the published program
+        shell: pwsh
+        run: |
+          $version = ([xml](Get-Content Directory.Build.props)).Project.PropertyGroup.Version
+          ./scripts/smoke-published.ps1 -PublishDir artifacts/publish -Version $version
+
       - name: Upload app files for signing
         id: unsigned-app
         if: env.SIGNING == 'true'

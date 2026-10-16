@@ -12,4 +12,13 @@ jobs:
         with:
           dotnet-version: 9.0.x
       - run: dotnet build src/Clarion.App -p:Platform=x64
+      # Whitespace only, so a formatting slip fails here and a style opinion does not.
+      - run: dotnet format whitespace Clarion.sln --verify-no-changes --no-restore
       - run: dotnet test tests/Clarion.Tests
+
+  # The workflows run with permission to write releases and sign files, so a mistake in one is worth catching before it runs.
+  workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
