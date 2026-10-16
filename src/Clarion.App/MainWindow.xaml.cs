@@ -425,7 +425,8 @@ public sealed partial class MainWindow : Window
 
         var list = new StackPanel { Spacing = 12 };
         var installs = new List<(TweakItem Item, TextBlock Details)>();
-        foreach (var item in _app.Pending)
+        var rows = new List<(TweakItem Item, FrameworkElement Row, HyperlinkButton LeaveOut)>();
+        foreach (var item in _app.Pending.ToList())
         {
             var block = new StackPanel { Spacing = 2 };
             var verb = item.InstallsApps ? (item.IsOn ? "install" : "uninstall") : item.IsOn ? "turn on" : "revert";
@@ -467,7 +468,18 @@ public sealed partial class MainWindow : Window
             {
                 block.Children.Add(new TextBlock { Text = "Puts back the value that was recorded before the change.", FontSize = 12, Opacity = 0.8 });
             }
-            list.Children.Add(block);
+
+            // One item can be taken out here without clearing the rest of the queue.
+            var leaveOut = new HyperlinkButton { Content = "Leave out", VerticalAlignment = VerticalAlignment.Top, Padding = new Thickness(8, 2, 8, 2), FontSize = 12 };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(leaveOut, $"Leave out {item.Name}");
+            var row = new Grid { ColumnSpacing = 8 };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            row.Children.Add(block);
+            Grid.SetColumn(leaveOut, 1);
+            row.Children.Add(leaveOut);
+            rows.Add((item, row, leaveOut));
+            list.Children.Add(row);
         }
 
         // A restore point before a few installs costs minutes, so it starts unticked when nothing in the queue changes Windows settings.
@@ -503,14 +515,35 @@ public sealed partial class MainWindow : Window
             agree.Unchecked += (_, _) => dialog.IsPrimaryButtonEnabled = false;
         }
 
+        foreach (var (item, row, leaveOut) in rows)
+        {
+            leaveOut.Click += (_, _) =>
+            {
+                // Back to what is on this PC now, which is what Clear queue does for every item.
+                item.IsOn = item.IsApplied;
+                row.Visibility = Visibility.Collapsed;
+                var left = rows.Where(r => r.Row.Visibility == Visibility.Visible).ToList();
+                if (left.Count == 0) { dialog.Hide(); return; }
+                dialog.Title = $"Apply {left.Count} change{(left.Count == 1 ? "" : "s")}?";
+                if (agree is not null && left.All(r => !r.Item.InstallsApps || !r.Item.IsOn))
+                {
+                    // Nothing left to install, so there are no terms to accept.
+                    agree.IsChecked = false;
+                    agree.Visibility = Visibility.Collapsed;
+                    dialog.IsPrimaryButtonEnabled = true;
+                }
+            };
+        }
+
         using var stopReading = new CancellationTokenSource();
         if (installs.Count > 0) _ = ReadAppDetailsAsync(installs, agree!, stopReading.Token);
         var answer = await dialog.ShowAsync();
         stopReading.Cancel();
-        if (answer != ContentDialogResult.Primary) return;
+        if (answer != ContentDialogResult.Primary || _app.PendingCount == 0) return;
 
-        // Consent holds for this run only.
-        _app.Runtime.Winget.AcceptPackageAgreements = agree?.IsChecked == true;
+        // Consent holds for this run only, and only while an app install is still in the queue.
+        var stillInstalling = _app.Pending.Any(p => p.InstallsApps && p.IsOn);
+        _app.Runtime.Winget.AcceptPackageAgreements = stillInstalling && agree?.IsChecked == true;
         try { await RunAsync(restore.IsChecked == true); }
         finally { _app.Runtime.Winget.AcceptPackageAgreements = false; }
     }

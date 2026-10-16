@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+Safer
+- An unexpected error no longer carries on as if nothing happened. The global handler used to log it and mark it handled. While .Clarion is idle it now empties the queue, reads every setting again from Windows and tells you. During a run, the run ends with its own read of Windows. Five errors in a minute end the program.
+- The command line apply no longer installs apps into the wrong account. A preset with apps run from an elevated terminal of another account is left out of the install, with the reason, and the exit code is 1. The Apps page already refused this. The account check also looked at the first Explorer it could open, which on a PC with more than one session can be another person's. It uses the Explorer of this session.
+- A web link is no longer opened with administrator rights. If the launch through the signed in shell failed, the link fell back to an ordinary launch and the browser started elevated. A dialog now shows the address to copy.
+- The restart of Explorer says what it does: it closes every open folder window, interrupts a file copy running in one and removes the taskbar for a moment.
+
+Fixed
+- The review reads app details from winget four at a time, with 60 seconds for the whole read, instead of one at a time with up to two minutes each. A row that is still waiting says winget took too long, and the licence box no longer stays locked behind it.
+- An app logo that cannot be drawn is logged with the app's name and the row shows the letter tile.
+
+New
+- Each item in the review has Leave out. It takes that one item out of the queue and leaves the rest. Before, the choice was to apply everything or clear everything. If it was the last app install, the licence box goes away.
+
+Polish
+- Continuous integration lints the workflow files with actionlint and checks whitespace formatting. The release workflow starts the published program and checks that --version, --list-presets and --list-settings answer, since the tests start the built program and not the files that ship.
+- docs/DESIGN.md no longer lists static analysis, a script linter, virtual machine tests or ARM64 builds. It says what CI runs and what is not built yet.
+
 ## 1.0.1
 
 New
