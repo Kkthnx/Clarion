@@ -222,5 +222,12 @@
     "tip": "These settings hide the switch in classic Outlook and block the automatic move. Revert them if you want to try the new Outlook. Restart classic Outlook for the change to show.",
     "topics": ["Outlook"],
     "tweakIds": []
+  },
+  {
+    "id": "runtime-missing",
+    "title": "A program will not start, or says a runtime, .NET or a Visual C++ file is missing",
+    "tip": "These are the runtimes that programs and games rely on. Installing the one the message names usually fixes it, and turning one off later can cause the same message. Revert a runtime only if you know nothing needs it.",
+    "topics": ["Runtimes"],
+    "tweakIds": []
   }
 ]
