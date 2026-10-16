@@ -2084,7 +2084,7 @@ A tool for building and managing virtual machine environments.
 
 `app.visual-studio-2022-community` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
 
-Microsoft's full IDE, free for individuals and small teams.
+Microsoft's full IDE, the 2022 version, free for individuals and small teams.
 
 - **What it does:** Installs Visual Studio 2022 Community with winget, pinned to the package Microsoft.VisualStudio.2022.Community in winget's community source. Turning it off runs the program's own uninstaller through winget.
 - **Benefit:** You get Visual Studio 2022 Community without hunting for the right download page, and winget checks the installer's checksum before it runs.
@@ -2098,7 +2098,7 @@ Microsoft's full IDE, free for individuals and small teams.
 
 `app.visual-studio-2026-community` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
 
-Microsoft's full IDE, free for individuals and small teams.
+Microsoft's full IDE, the 2026 version, free for individuals and small teams.
 
 - **What it does:** Installs Visual Studio 2026 Community with winget, pinned to the package Microsoft.VisualStudio.Community in winget's community source. Turning it off runs the program's own uninstaller through winget.
 - **Benefit:** You get Visual Studio 2026 Community without hunting for the right download page, and winget checks the installer's checksum before it runs.
@@ -2930,7 +2930,7 @@ A vector graphics editor.
 
 `app.irfanview` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
 
-A small, fast image viewer.
+A small, fast image viewer with batch conversion.
 
 - **What it does:** Installs IrfanView with winget, pinned to the package IrfanSkiljan.IrfanView in winget's community source. Turning it off runs the program's own uninstaller through winget.
 - **Benefit:** You get IrfanView without hunting for the right download page, and winget checks the installer's checksum before it runs.
@@ -2944,7 +2944,7 @@ A small, fast image viewer.
 
 `app.jpegview` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
 
-A small, fast image viewer.
+A small, fast image viewer for JPEG and other pictures.
 
 - **What it does:** Installs JPEGView with winget, pinned to the package sylikc.JPEGView in winget's community source. Turning it off runs the program's own uninstaller through winget.
 - **Benefit:** You get JPEGView without hunting for the right download page, and winget checks the installer's checksum before it runs.
@@ -3622,7 +3622,7 @@ The Microsoft C++ runtime that many programs and games need.
 
 `app.1password` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
 
-A password manager.
+A password manager that runs as a subscription.
 
 - **What it does:** Installs 1Password with winget, pinned to the package AgileBits.1Password in winget's community source. Turning it off runs the program's own uninstaller through winget.
 - **Benefit:** You get 1Password without hunting for the right download page, and winget checks the installer's checksum before it runs.
@@ -3636,7 +3636,7 @@ A password manager.
 
 `app.bitwarden` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
 
-A password manager.
+An open source password manager.
 
 - **What it does:** Installs Bitwarden with winget, pinned to the package Bitwarden.Bitwarden in winget's community source. Turning it off runs the program's own uninstaller through winget.
 - **Benefit:** You get Bitwarden without hunting for the right download page, and winget checks the installer's checksum before it runs.
@@ -3918,7 +3918,7 @@ Shows everything that starts with Windows.
 
 `app.blur-autoclicker` · Medium · Documented by the vendor · Optional: your choice · checked on build 26200
 
-Clicks the mouse for you at a rate you set.
+An open source auto clicker that clicks at a rate you set.
 
 - **What it does:** Installs Blur AutoClicker with winget, pinned to the package Blur009.BlurAutoClicker in winget's community source. Turning it off runs the program's own uninstaller through winget.
 - **Benefit:** You get Blur AutoClicker without hunting for the right download page, and winget checks the installer's checksum before it runs.
@@ -4296,7 +4296,7 @@ Turns off the ads Windows shows in its own screens.
 
 `app.op-auto-clicker` · Medium · Documented by the vendor · Optional: your choice · checked on build 26200
 
-Clicks the mouse for you at a rate you set.
+Clicks the mouse for you at a rate you set. Free for non commercial use.
 
 - **What it does:** Installs OP Auto Clicker with winget, pinned to the package OPAutoClicker.OPAutoClicker in winget's community source. Turning it off runs the program's own uninstaller through winget.
 - **Benefit:** You get OP Auto Clicker without hunting for the right download page, and winget checks the installer's checksum before it runs.

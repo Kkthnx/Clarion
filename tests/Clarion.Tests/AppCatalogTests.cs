@@ -27,6 +27,14 @@ public sealed class AppCatalogTests
     }
 
     [Fact]
+    public void No_two_settings_share_a_name_or_a_summary_so_a_list_can_always_tell_them_apart()
+    {
+        var all = CatalogLoader.LoadEmbedded();
+        Assert.Empty(all.GroupBy(t => t.Name.Trim(), StringComparer.OrdinalIgnoreCase).Where(g => g.Count() > 1).Select(g => $"name: {g.Key}"));
+        Assert.Empty(all.GroupBy(t => t.Summary.Trim(), StringComparer.OrdinalIgnoreCase).Where(g => g.Count() > 1).Select(g => $"summary: {g.Key} ({string.Join(", ", g.Select(t => t.Id))})"));
+    }
+
+    [Fact]
     public void Every_app_undoes_with_the_uninstall_of_the_same_package()
     {
         foreach (var app in Apps())
