@@ -28,6 +28,8 @@ The build treats warnings as errors. Some tests touch the real system (registry,
 
 ## Adding a setting
 
+Not ready to write the JSON? Open a [setting request](https://github.com/Kkthnx/Clarion/issues/new?template=setting_request.md) and say what it changes, the source, and how to put it back. For using the app, see [docs/GUIDES.md](docs/GUIDES.md).
+
 The catalog is JSON under `src/Clarion.Core/Catalog/Data/`. The fields are described in [docs/DESIGN.md](docs/DESIGN.md), and every existing entry is a worked example. The list of all of them is [docs/CATALOG.md](docs/CATALOG.md).
 
 1. Find the Microsoft documentation for the setting. Prefer a policy that is documented (`Evidence: Proven`) to a value people found by looking. Put the address under `sources`.
