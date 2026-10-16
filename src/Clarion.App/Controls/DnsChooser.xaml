@@ -27,6 +27,8 @@
             <StackPanel Orientation="Horizontal" Spacing="12">
                 <Button x:Name="SpeedButton" Content="Test the speed of each provider" Click="OnTestSpeed"
                         ToolTipService.ToolTip="Sends three small lookups for well known sites to each provider and times the answers. Nothing is changed." />
+                <Button x:Name="FlushButton" Content="Flush the DNS cache" Click="OnFlush"
+                        ToolTipService.ToolTip="Empties the list of website addresses this PC remembers, so they are looked up again. Changes no setting." />
                 <ProgressRing x:Name="SpeedRing" Width="18" Height="18" IsActive="False" />
                 <TextBlock x:Name="SpeedStatus" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
             </StackPanel>

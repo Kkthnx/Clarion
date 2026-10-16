@@ -131,6 +131,33 @@ public sealed partial class DnsChooser : UserControl
         }
     }
 
+    /// <summary>Runs the same repair job as the Repair page, so a changed provider takes effect at once. It changes no setting.</summary>
+    private async void OnFlush(object sender, RoutedEventArgs e)
+    {
+        var app = AppServices.Instance;
+        if (app.IsBusy || app.RepairRunning) { SpeedStatus.Text = "Wait for the current job to finish, then try again."; return; }
+        var job = Clarion.Core.Catalog.CatalogLoader.LoadActions().FirstOrDefault(a => a.Id == "repair.flush-dns");
+        if (job is null) return;
+
+        FlushButton.IsEnabled = false;
+        app.RepairRunning = true;
+        try
+        {
+            var result = await app.Runtime.Actions.RunAsync(job, line => Log.Write($"repair {job.Id}: {line}"), CancellationToken.None);
+            SpeedStatus.Text = result.Success ? "The DNS cache is empty. Addresses are looked up again." : $"The cache was not flushed. {result.Error}";
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            Log.Write($"repair {job.Id}: {ex}");
+            SpeedStatus.Text = $"The cache was not flushed. {ex.Message}";
+        }
+        finally
+        {
+            app.RepairRunning = false;
+            FlushButton.IsEnabled = true;
+        }
+    }
+
     private void ShowSpeed(IReadOnlyList<DnsSpeedResult> results)
     {
         SpeedResults.Children.Clear();
