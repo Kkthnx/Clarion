@@ -131,6 +131,10 @@ public static class CatalogLoader
                     case Actions.DeleteFolder d:
                         if (!Actions.ActionRules.IsAllowedFolder(d.Folder)) errors.Add($"{a.Id}: {d.Folder} is not an allowed folder.");
                         break;
+                    case Actions.RestartDisplayAdapters:
+                        // Restarting a driver can interrupt what is on screen, so the job must say so and ask first.
+                        if (a.RiskLevel < Model.RiskLevel.Medium) errors.Add($"{a.Id}: restarting the graphics driver must be marked Medium risk or higher.");
+                        break;
                 }
             }
         }

@@ -8,6 +8,7 @@ namespace Clarion.Core.Actions;
 [JsonDerivedType(typeof(CleanFolders), "clean-folders")]
 [JsonDerivedType(typeof(RenameFolder), "rename-folder")]
 [JsonDerivedType(typeof(DeleteFolder), "delete-folder")]
+[JsonDerivedType(typeof(RestartDisplayAdapters), "restart-display-adapters")]
 public abstract record ActionStep
 {
     public abstract string Describe();
@@ -33,6 +34,15 @@ public sealed record RenameFolder(string Folder, string NewName) : ActionStep
 public sealed record DeleteFolder(string Folder) : ActionStep
 {
     public override string Describe() => $"Delete {Folder}";
+}
+
+/// <summary>
+/// Asks Windows to restart the driver of each running graphics adapter, which is what Device Manager does after a device's properties change. The screen goes
+/// black for a moment. It names no device, so it cannot be pointed at anything but the display adapters.
+/// </summary>
+public sealed record RestartDisplayAdapters : ActionStep
+{
+    public override string Describe() => "Restart the graphics driver";
 }
 
 /// <summary>A one time job, such as a repair, that is not a setting and so has no on or off state.</summary>

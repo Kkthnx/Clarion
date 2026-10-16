@@ -11,8 +11,20 @@ public interface IStreamingRunner
 
 public sealed record ActionResult(bool Success, string? Error, long BytesFreed, TimeSpan Duration, bool Cancelled = false);
 
+/// <summary>One graphics adapter that is present in the PC, and whether its driver is running now.</summary>
+public sealed record DisplayAdapter(string InstanceId, string Name, bool Running);
+
+/// <summary>The graphics adapters of this PC and the means to restart the driver of one.</summary>
+public interface IDisplayAdapters
+{
+    IReadOnlyList<DisplayAdapter> Present();
+
+    /// <summary>Restarts the driver. Returns null on success, or a sentence saying why it did not work.</summary>
+    string? Restart(DisplayAdapter adapter);
+}
+
 /// <summary>Runs the steps of an action in order, enforcing the tool and folder allow lists.</summary>
-public sealed class ActionRunner(IStreamingRunner runner, Func<string, string>? expand = null)
+public sealed class ActionRunner(IStreamingRunner runner, Func<string, string>? expand = null, IDisplayAdapters? adapters = null)
 {
     private readonly Func<string, string> _expand = expand ?? Environment.ExpandEnvironmentVariables;
 
@@ -79,10 +91,31 @@ public sealed class ActionRunner(IStreamingRunner runner, Func<string, string>? 
                 if (!ActionRules.IsAllowedFolder(d.Folder, _expand)) return $"{d.Folder} is not an allowed folder.";
                 freed(FolderCleaner.DeleteTree(_expand(d.Folder), log));
                 return null;
+            case RestartDisplayAdapters:
+                return RestartGraphics(log);
             default:
                 return "Unknown step.";
         }
     }
+
+    /// <summary>Restarts every graphics adapter that is running. An adapter that is off or has a problem is left alone, since restarting it would not fix anything.</summary>
+    private string? RestartGraphics(Action<string> log)
+    {
+        if (adapters is null) return "This PC cannot restart the graphics driver from here.";
+        var running = adapters.Present().Where(a => a.Running).ToList();
+        if (running.Count == 0) return "No graphics adapter with a running driver was found.";
+
+        string? failure = null;
+        foreach (var adapter in running)
+        {
+            log($"Restarting {adapter.Name}");
+            var problem = adapters.Restart(adapter);
+            if (problem is null) log($"{adapter.Name} is running again.");
+            else { log($"{adapter.Name}: {problem}"); failure ??= $"{adapter.Name} did not restart. {problem}"; }
+        }
+        return failure;
+    }
+
     private static ActionResult Fail(string error, long freed, DateTime started) =>
         new(false, error, freed, DateTime.UtcNow - started);
 }

@@ -499,6 +499,34 @@
     ]
   },
   {
+    "id": "repair.restart-graphics",
+    "category": "System",
+    "name": "Restart the graphics driver",
+    "summary": "Bring back a screen that is black, frozen, stretched or glitching without restarting the PC.",
+    "what": "Asks Windows to stop and start the driver of each graphics adapter that is running. This is the request Device Manager makes when a device's properties change, and Microsoft's documentation says Windows then stops and restarts the device. A graphics adapter that is switched off, or that already has a problem, is left alone.",
+    "benefit": "Often fixes a display that went black or garbled after sleep, a driver crash, or plugging in a monitor, and it is quicker than a restart.",
+    "risk": "Medium. The screen goes black for a second or two. A game, a video or a program drawing with the graphics card may close or stop working, and unsaved work in it can be lost.",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when the picture is wrong and a restart would be the next step. Save your work and close games first.",
+    "facts": [
+      "Takes a few seconds",
+      "Changes no setting and installs nothing",
+      "Windows has no separate step to confirm the picture came back, so look at the screen afterwards",
+      "A PC with two graphics adapters restarts both, one after the other"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "restart-display-adapters"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/win32/api/setupapi/ns-setupapi-sp_propchange_params",
+      "https://learn.microsoft.com/en-us/windows-hardware/drivers/install/dif-propertychange"
+    ]
+  },
+  {
     "id": "repair.resync-clock",
     "category": "System",
     "name": "Resync the clock",
