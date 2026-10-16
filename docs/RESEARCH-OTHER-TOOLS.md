@@ -336,6 +336,10 @@ The five Burn packages and one WiX package are listed because their manifests de
 
 **What .Clarion does.** The review has **Install for this account only** for an app on that list, unticked, with the reason it is offered. It is a choice for one run. The step is recorded for that account, so another administrator opening .Clarion does not see it as theirs, and Revert removes it from the same account. `--user-scope` does the same on the command line, and lists the apps that have no such option and are installed for everyone. winget is still run with administrator rights, which is what Microsoft documents as working, and which keeps the rest of the flow the same.
 
+## List layout
+
+Looked at on 16 October 2026. Sparkle's Tweaks page (`src/renderer/src/pages/Tweaks.tsx`) puts its cards in a CSS grid that is one column, then two at 640 pixels, three at 1024 and four at 1536, and a grid row is as tall as its tallest card. .Clarion's list was one wide card per row at every size. On the default window the list is 789 device independent pixels wide, which would give two cards of 390, too narrow for a name, a summary and a switch, so a fixed breakpoint list copied from a web page would be wrong here. The rule used is the width the list really has: as many columns as give each card at least 480, up to three. A first try with a wrap grid showed the problem with equal cells (every cell takes the first card's height, so a card with a two line summary lost its bottom row), so a list row holds two or three cards instead. The row is as tall as its tallest card, the list still creates only the rows on screen, and the compact list is unchanged. The summaries in the catalog are at most 91 characters, so two lines is the most a card needs, and 61 names are longer than 40 characters, so names wrap too.
+
 ## Sources
 
 - winutil: `config/tweaks.json`, `config/feature.json`, `config/appx.json`, `config/applications.json`, `config/preset.json`, `functions/`, `README.md` on the main branch, read 2026-10-11. Licence MIT.

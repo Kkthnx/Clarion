@@ -27,6 +27,7 @@ New
 - A setting request template for issues, and docs/GUIDES.md with task by task guides.
 
 Polish
+- Two or three cards across in a wide window. On a maximized window each setting card used to stretch over the whole width with most of it empty. The list now fits as many cards as have room for their name, summary and switch (480 wide each, up to three), and one wide card in a narrow window, as before. Each row is as tall as its tallest card, so no card is cut off when its summary takes two lines, and the list still creates only the rows on screen. The compact list stays one line per setting. Sparkle's Tweaks page does the same with a grid that goes from one to four columns at fixed window widths, which .Clarion replaces with the width the list really has.
 - A check of every winget package ID in the app list against winget's own source (scripts/check-winget-ids.ps1) runs monthly and on any pull request that changes the list. All 255 pass. scripts/new-app-entry.ps1 writes a catalog entry from winget's record, and scripts/add-simple-icon.ps1 and scripts/fetch-app-logos.ps1 add logos.
 - Continuous integration lints the workflow files with actionlint and checks whitespace formatting. The release workflow starts the published program and checks that --version, --list-presets and --list-settings answer, since the tests start the built program and not the files that ship.
 - docs/DESIGN.md no longer lists static analysis, a script linter, virtual machine tests or ARM64 builds. It says what CI runs and what is not built yet.

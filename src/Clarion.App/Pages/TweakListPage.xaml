@@ -5,6 +5,30 @@
     xmlns:controls="using:Clarion.App.Controls"
     xmlns:svc="using:Clarion.App.Services">
     <Page.Resources>
+        <!-- The same card, for a row that holds two. The row carries no card of its own, so each side draws its own. -->
+        <Style x:Key="PairCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource ClSurface1Brush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource ClBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+        <Style x:Key="PairRowItemStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <!-- The roomy row: the summary is shown under the name. -->
         <DataTemplate x:Key="RoomyRow" x:DataType="svc:TweakItem">
                         <Border Padding="18,14,16,14" Opacity="{x:Bind RowOpacity, Mode=OneWay}">
@@ -69,7 +93,41 @@
                           </Grid>
                         </Border>
                     </DataTemplate>
-        <!-- One line per setting, for scanning a long list. The summary and the detail are under the i. -->
+        <DataTemplate x:Key="TwoColumnRow" x:DataType="svc:CardRow">
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource PairCardStyle}" PointerEntered="OnCardEntered" PointerExited="OnCardExited">
+                    <ContentControl Content="{x:Bind First}" ContentTemplate="{StaticResource RoomyRow}" HorizontalContentAlignment="Stretch" />
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource PairCardStyle}" Visibility="{x:Bind HasSecond}"
+                        PointerEntered="OnCardEntered" PointerExited="OnCardExited">
+                    <ContentControl Content="{x:Bind Second}" ContentTemplate="{StaticResource RoomyRow}" HorizontalContentAlignment="Stretch" />
+                </Border>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="ThreeColumnRow" x:DataType="svc:CardRow">
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource PairCardStyle}" PointerEntered="OnCardEntered" PointerExited="OnCardExited">
+                    <ContentControl Content="{x:Bind First}" ContentTemplate="{StaticResource RoomyRow}" HorizontalContentAlignment="Stretch" />
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource PairCardStyle}" Visibility="{x:Bind HasSecond}"
+                        PointerEntered="OnCardEntered" PointerExited="OnCardExited">
+                    <ContentControl Content="{x:Bind Second}" ContentTemplate="{StaticResource RoomyRow}" HorizontalContentAlignment="Stretch" />
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource PairCardStyle}" Visibility="{x:Bind HasThird}"
+                        PointerEntered="OnCardEntered" PointerExited="OnCardExited">
+                    <ContentControl Content="{x:Bind Third}" ContentTemplate="{StaticResource RoomyRow}" HorizontalContentAlignment="Stretch" />
+                </Border>
+            </Grid>
+        </DataTemplate>        <!-- One line per setting, for scanning a long list. The summary and the detail are under the i. -->
         <DataTemplate x:Key="CompactRow" x:DataType="svc:TweakItem">
             <Border Padding="14,5,10,5" Opacity="{x:Bind RowOpacity, Mode=OneWay}">
                 <Grid>
@@ -151,8 +209,8 @@
 
         <controls:DnsChooser x:Name="Chooser" Grid.Row="2" Visibility="Collapsed" />
 
-        <ListView x:Name="List" Grid.Row="3" Padding="0,0,14,0" SelectionMode="None"
-                  IsItemClickEnabled="False" ItemsSource="{x:Bind Visible}"
+        <ListView x:Name="List" Grid.Row="3" Padding="0,0,14,0" SelectionMode="None" SizeChanged="OnListSizeChanged"
+                  IsItemClickEnabled="False"
                   ItemTemplate="{StaticResource RoomyRow}" ItemContainerStyle="{StaticResource CardListViewItemStyle}" />
     </Grid>
 </Page>

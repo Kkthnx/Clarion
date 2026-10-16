@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using Clarion.App.Controls;
 using Clarion.App.Services;
+using Clarion.Core.Layout;
 using Clarion.Core.Model;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -57,10 +58,58 @@ public sealed partial class TweakListPage : Page
     private void ApplyDensity()
     {
         CompactToggle.IsChecked = _compact;
-        List.ItemTemplate = (DataTemplate)Resources[_compact ? "CompactRow" : "RoomyRow"];
-        List.ItemContainerStyle = (Style)Application.Current.Resources[_compact ? "CompactListViewItemStyle" : "CardListViewItemStyle"];
+        // The columns decide the template, since two cards in a row use another one. A change of density asks again.
+        _columns = 0;
+        ApplyColumns();
     }
 
+    // More than one card across when the window is wide enough, and never in the compact list. Each card needs about CardColumns.MinCardWidth for its
+    // name, summary and switch, so a narrower list keeps one wide card, which reads better.
+    private int _columns;
+
+    public ObservableCollection<CardRow> Rows { get; } = [];
+
+    private void OnListSizeChanged(object sender, SizeChangedEventArgs e) => ApplyColumns();
+
+    private void ApplyColumns()
+    {
+        var wanted = CardColumns.For(List.ActualWidth, _compact);
+        if (wanted == _columns && List.ItemsSource is not null) return;
+        _columns = wanted;
+        if (wanted > 1)
+        {
+            FillRows();
+            List.ItemTemplate = (DataTemplate)Resources[wanted == 2 ? "TwoColumnRow" : "ThreeColumnRow"];
+            List.ItemContainerStyle = (Style)Resources["PairRowItemStyle"];
+            List.ItemsSource = Rows;
+        }
+        else
+        {
+            List.ItemTemplate = (DataTemplate)Resources[_compact ? "CompactRow" : "RoomyRow"];
+            List.ItemContainerStyle = (Style)Application.Current.Resources[_compact ? "CompactListViewItemStyle" : "CardListViewItemStyle"];
+            List.ItemsSource = Visible;
+        }
+    }
+
+    private void FillRows()
+    {
+        Rows.Clear();
+        foreach (var row in CardRow.Of(Visible, _columns)) Rows.Add(row);
+    }
+    // A card in a row of several lights up under the pointer like a card in the single column does.
+    private void OnCardEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        if (sender is not Border card) return;
+        card.Background = ThemeBrushes.Get("ClSurface2", ActualTheme);
+        card.BorderBrush = ThemeBrushes.Get("ClAccent", ActualTheme);
+    }
+
+    private void OnCardExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        if (sender is not Border card) return;
+        card.Background = ThemeBrushes.Get("ClSurface1", ActualTheme);
+        card.BorderBrush = ThemeBrushes.Get("ClBorder", ActualTheme);
+    }
     private void OnCompactClicked(object sender, RoutedEventArgs e)
     {
         _compact = CompactToggle.IsChecked == true;
@@ -168,6 +217,7 @@ public sealed partial class TweakListPage : Page
 
             Visible.Clear();
             foreach (var i in items) Visible.Add(i);
+            if (_columns > 1) FillRows();
             var total = useChooser ? inScope.Count - dns.Count + 1 : inScope.Count;
             var shown = items.Count + (Chooser.Visibility == Visibility.Visible ? 1 : 0);
             CountText.Text = shown == total ? $"{shown} settings" : $"{shown} of {total} settings";
