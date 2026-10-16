@@ -9,11 +9,25 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
-        UnhandledException += (_, e) =>
+        UnhandledException += OnUnhandledException;
+    }
+
+    private readonly Clarion.Core.Diagnostics.CrashPolicy _crashPolicy = new();
+
+    // Logging an error and carrying on would leave a state that may no longer be right. Idle, the queue is emptied and every setting is
+    // read again. During a run the run ends with its own read of Windows. A run of errors ends the program.
+    private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    {
+        LogCrash(e.Exception);
+        var services = Services.AppServices.Instance;
+        var action = _crashPolicy.Next(services.IsChangingThisPc);
+        if (action == Clarion.Core.Diagnostics.CrashAction.Terminate)
         {
-            LogCrash(e.Exception);
-            e.Handled = true;
-        };
+            e.Handled = false;
+            return;
+        }
+        e.Handled = true;
+        if (action == Clarion.Core.Diagnostics.CrashAction.SafeState) _window?.DispatcherQueue.TryEnqueue(services.EnterSafeState);
     }
 
     public IntPtr WindowHandle => _window is null ? IntPtr.Zero : WinRT.Interop.WindowNative.GetWindowHandle(_window);

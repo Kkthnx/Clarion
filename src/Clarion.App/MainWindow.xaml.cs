@@ -25,6 +25,7 @@ public sealed partial class MainWindow : Window
         ResizeToFit();
         AppWindow.Closing += OnClosing;
         Shell.LinkNotOpened += address => DispatcherQueue.TryEnqueue(() => ShowLinkNotOpened(address));
+        _app.SafeStateEntered += (_, _) => DispatcherQueue.TryEnqueue(ShowSafeState);
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets", "Clarion.ico"));
         Root.ActualThemeChanged += (_, _) => { ThemeBrushes.Current = Root.ActualTheme; UpdateCaptionButtons(); };
         // Before the window is shown, the theme may still read as the system default, so it is read again once it is loaded.
@@ -65,6 +66,21 @@ public sealed partial class MainWindow : Window
         _ = _app.LoadImageNotesAsync();
         _ = _app.StartupUpdateCheckAsync();
         _ = _app.CheckMonthlyTaskAsync();
+    }
+
+    private bool _safeStateDialogOpen;
+
+    private async void ShowSafeState()
+    {
+        if (_safeStateDialogOpen || Content?.XamlRoot is null) return;
+        _safeStateDialogOpen = true;
+        try
+        {
+            await Dialogs.Say(Content.XamlRoot, "Something unexpected happened",
+                ".Clarion hit an error it did not expect. To be safe it emptied the queue and read every setting again from Windows. The error itself changed nothing. " +
+                "The details are in crash.log in the .Clarion data folder. If this keeps happening, close .Clarion and open it again.");
+        }
+        finally { _safeStateDialogOpen = false; }
     }
 
     private bool _linkDialogOpen;

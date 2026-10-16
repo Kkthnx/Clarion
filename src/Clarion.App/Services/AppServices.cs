@@ -616,6 +616,21 @@ public sealed partial class AppServices : UiObservableObject
         OnPropertyChanged(nameof(PendingCount));
     }
 
+    /// <summary>Raised after an unexpected error, so the window can tell the person what was done.</summary>
+    public event EventHandler? SafeStateEntered;
+
+    /// <summary>
+    /// What follows an error nothing caught while idle: the queue is emptied and every setting is read again from Windows, so nothing
+    /// that was queued or shown before the error is acted on.
+    /// </summary>
+    public void EnterSafeState()
+    {
+        ClearPending();
+        Runtime.Engine.Invalidate();
+        _ = RefreshStatesAsync(fresh: true);
+        SafeStateEntered?.Invoke(this, EventArgs.Empty);
+    }
+
     public void ClearPending()
     {
         foreach (var item in Items.Where(i => i.IsPending).ToList()) item.IsOn = item.IsApplied;
