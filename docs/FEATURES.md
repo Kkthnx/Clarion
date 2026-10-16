@@ -230,11 +230,11 @@ Four presets ship in the catalog. They never include High risk or Unproven items
 
 ## 17. Apps
 
-- 135 programs installed with winget, each pinned to one exact package ID from the winget source, never a search. An app is an ordinary setting, so queue, review, apply, Revert, Verify, setup files and the command line all work for it. Revert runs the app's own uninstaller through winget.
+- 255 programs installed with winget, each pinned to one exact package ID from the winget source, never a search. An app is an ordinary setting, so queue, review, apply, Revert, Verify, setup files and the command line all work for it. Revert runs the app's own uninstaller through winget.
 - The review reads the version, publisher, licence, installer host and SHA-256 from winget while the dialog is open. Apply stays off until the person ticks that they accept the licence terms, and that covers one run. On the command line, apps are skipped unless --accept-package-agreements is given.
 - Winget is found at its fixed per-user path, never by searching PATH, and .Clarion does not install it. It is not started until the Apps page is opened or an app is asked for, because it may contact Microsoft's package source.
 - An app whose winget record needs an install folder carries one in the catalog. Apps whose installer refuses to run as administrator are left out.
-- Logos come from Simple Icons and are credited on the About page. An installed app without a usable logo shows the icon Windows lists for it, found by the code its winget record names. Otherwise it gets a letter tile.
+- Logos are saved inside the program and nothing is fetched while it runs: a Simple Icons outline (CC0) where there is one, otherwise a picture taken once from a curated collection, the project's GitHub organization or its own website, with each address written down and credited on the About page. An installed app without an outline shows the icon Windows lists for it. Otherwise it gets a letter tile.
 
 ## 18. Not yet included
 

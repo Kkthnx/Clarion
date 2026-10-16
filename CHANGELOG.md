@@ -13,9 +13,18 @@ Fixed
 - An app logo that cannot be drawn is logged with the app's name and the row shows the letter tile.
 
 New
+- 120 more apps, 255 in all, each one an exact winget package ID read from winget's own record. Windows runtimes (.NET Desktop Runtime 6 to 10, Visual C++ 2015 to 2022, Amazon Corretto), remote access tools, driver tools, Windows shell mods and auto clickers are in, each with its risk written plainly: turning a runtime off later runs its uninstaller and any program that needs it stops starting, a remote access tool lets someone connect once you set it up, a driver tool can leave a driver that does not work, and many online games ban an auto clicker. A new Runtimes topic and a symptom for a program that will not start for want of a runtime lead to them.
+- Logos on the Apps page for most apps: 106 outlines and 84 pictures, 190 of the 255. They are saved inside the program, so nothing is fetched while it runs. Where each picture came from is written down, checked by a test, and credited on the About page. An app with none shows its first letter. See docs/RESEARCH-OTHER-TOOLS.md for how winutil and Sparkle get theirs and why Icons8 was not used.
+- Save my apps as a winget file and Load a winget file in Settings, in the shape winget export and winget import use. Loading queues only the apps .Clarion lists, and names the others it did not queue.
+- Restart the graphics driver, a repair job. It makes one request to Windows per running adapter, the property change request Device Manager makes, which Microsoft documents as stopping and restarting the device. Sparkle's version turns each device off and on again, which leaves the adapter off if the second call fails. Tried on a PC with two adapters: both restarted in 3.2 seconds, and Windows shows both arriving again at that moment.
+- Ten shortcuts on the Repair page to classic Windows tools: Programs and Features, Network connections, Sound, Power options, Date and time, Region, System properties, Device Manager, Disk Management and Event Viewer. Each is started as the signed in user, so the tool asks for administrator rights itself.
+- Flush the DNS cache beside the DNS provider choice, so a changed provider takes effect at once.
+- Save report on the System page. Copy report and Save report both remove the computer name, user name, network addresses and account IDs first.
 - Each item in the review has Leave out. It takes that one item out of the queue and leaves the rest. Before, the choice was to apply everything or clear everything. If it was the last app install, the licence box goes away.
+- A setting request template for issues, and docs/GUIDES.md with task by task guides.
 
 Polish
+- A check of every winget package ID in the app list against winget's own source (scripts/check-winget-ids.ps1) runs monthly and on any pull request that changes the list. All 255 pass. scripts/new-app-entry.ps1 writes a catalog entry from winget's record, and scripts/add-simple-icon.ps1 and scripts/fetch-app-logos.ps1 add logos.
 - Continuous integration lints the workflow files with actionlint and checks whitespace formatting. The release workflow starts the published program and checks that --version, --list-presets and --list-settings answer, since the tests start the built program and not the files that ship.
 - docs/DESIGN.md no longer lists static analysis, a script linter, virtual machine tests or ARM64 builds. It says what CI runs and what is not built yet.
 

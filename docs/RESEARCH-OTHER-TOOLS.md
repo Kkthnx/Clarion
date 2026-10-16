@@ -167,7 +167,7 @@ Left out on purpose: every service Microsoft marks Don't disable (SysMain, DoSvc
 
 ## What the tools do that .Clarion does not
 
-- **Install and update apps.** Both tools do it. winutil has 236 entries and Sparkle 162, each with a winget ID and most with a Chocolatey name. .Clarion now has an Apps page (added in beta 12, 135 apps now), with winget only, one exact package ID each, a licence step and no Chocolatey. It does not update installed apps yet. The "Installing apps" section below looks at how they do it.
+- **Install and update apps.** Both tools do it. winutil has 236 entries and Sparkle 162, each with a winget ID and most with a Chocolatey name. .Clarion now has an Apps page (added in beta 12, 255 apps now), with winget only, one exact package ID each, a licence step and no Chocolatey. It does not update installed apps yet. The "Installing apps" section below looks at how they do it.
 - **Uninstall any installed program.** Sparkle's Debloat page lists every installed program, Store apps and desktop programs alike, minus an exclusion list, and uninstalls the ones picked. .Clarion removes a curated list of 25 Store apps and can put them back.
 - **Quick fixes.** Sparkle has one-click jobs for releasing and renewing the IP address, restarting the audio service, restarting Bluetooth services, restarting the graphics driver and restarting Explorer and Search. .Clarion's Repair page has flush DNS, network reset, Windows Update reset, Store reset, system file and DISM repair, disk check and drive optimize, and it also restarts the audio services, the Bluetooth service and Explorer and resyncs the clock. It also restarts the graphics driver, with one request to Windows that stops and starts each running adapter (Sparkle turns the device off and then on, which leaves the adapter off if the second call fails).
 - **Shortcuts to classic Windows tools.** winutil has buttons that open Control Panel items such as Programs and Features, Region, Sound and Power. .Clarion now has ten, on the Repair page, started as the signed in user so each asks for administrator rights itself.
@@ -237,7 +237,7 @@ Every winget ID in both catalogs was looked up. winutil's 234 winget IDs all exi
 3. **Show before installing.** For each app, the review screen shows the version, publisher, licence, the host the installer comes from and its SHA-256, taken from `winget show`. Agreements are accepted per app by the person, on that screen, with the licence link, not on their behalf.
 4. **Plain results.** The documented return codes become sentences, such as "Windows blocked this by policy" or "The download did not match its checksum and was stopped", with the winget log path.
 5. **A record and a way back.** An install goes in the same journal as a setting: the ID, version, source and time. Revert uninstalls exactly that package. Verify says if it has gone, and What broke includes recent installs.
-6. **A catalog that stays true.** The aim was about 100 apps, and there are 135, each with an honest one-line description, licence type, and flags for offers in the installer or needing administrator rights. A monthly check, like the source link check, looks up every ID. Neither tool does that, and 7 of Sparkle's have rotted.
+6. **A catalog that stays true.** The aim was about 100 apps, and there are 255, each with an honest one-line description, licence type, and flags for offers in the installer or needing administrator rights. A monthly check, like the source link check, looks up every ID. Neither tool does that, and 7 of Sparkle's have rotted.
 7. **Per-user installs when the package allows it** (`--scope user`), so a copy running without administrator rights can still install what does not need them. Microsoft lists known scope issues, so this needs testing per app.
 8. **Updates the person picks.** A list of what can be upgraded, with the version change, and nothing is upgraded blind.
 9. **A list that works outside .Clarion.** Saving and loading a set of apps uses the same JSON as `winget export` and `winget import`, which Microsoft documents, so the file is not locked to .Clarion.
@@ -261,6 +261,38 @@ Sparkle's model asks a contributor to write PowerShell. The better version is da
 7. **Labelled honestly.** Custom settings show as "Custom, not reviewed by .Clarion", graded Unproven, like any setting without a source.
 
 Not built. It needs a decision on the points above before work starts.
+
+## App logos
+
+Looked at on 15 October 2026, because a list of apps with no pictures is hard to scan.
+
+**How winutil does it.** Its app data has no icon field (the fields are category, choco, content, description, foss, link and winget). The window builds each row's picture at run time from `https://www.google.com/s2/favicons?sz=64&domain_url=` plus the app's link (`functions/private/Initialize-InstallAppEntry.ps1`), and shows the first letter if the picture fails to load. So the home page address of every app in the list goes to Google when the Install tab is drawn. What comes back depends on what Google holds for that site: Rufus and WinSCP gave 64 pixels, HandBrake gave 32 pixels that are stretched to 64, Slack gave 35, and a site Google has no icon for gives a generic 16 pixel image with the status 404.
+
+**How Sparkle does it.** Each of the 162 entries in `src/renderer/src/assets/apps.json` has an `icon` address on `assets.getsparkle.net`. All 162 answered with 200 to a HEAD request. The Apps page loads them at run time, shows the Sparkle logo when one fails, and has a setting to hide them. The list itself is also loaded at run time, from raw.githubusercontent.com. The pictures are good and the coverage is complete, but every one is a request to Sparkle's server, and the app depends on that server staying up and staying the same.
+
+**Whether winget has them.** The manifest schema does have an `Icons` list (IconUrl, IconFileType of png, jpeg or ico, IconResolution, IconTheme and IconSha256; see `schemas/JSON/manifests/v1.28.0/manifest.defaultLocale.1.28.0.json` in winget-cli). None of the 255 packages in the catalog uses it, and a code search of microsoft/winget-pkgs for `IconUrl` finds nothing. There is no official source to read.
+
+**Collections of logos.** Licences are read from each repository.
+
+| Collection | Licence | What it is |
+|---|---|---|
+| Simple Icons 16.34.0 | CC0-1.0 | 3,464 single colour brand outlines, one SVG path each |
+| gilbarbara/logos | CC0-1.0 | SVG logos |
+| homarr-labs/dashboard-icons | Apache-2.0 | curated PNG, SVG and WebP icons for apps and services |
+| selfhst/icons | CC-BY-4.0 | curated icons, mostly self hosted software, credit required |
+
+Matched by exact name against the 179 apps that had no Simple Icons outline when this was measured: gilbarbara 15, Dashboard Icons 36, selfh.st 27, and 45 for any of the three. They are strong for well known and self hosted software and thin for Windows utilities such as HWiNFO, Autoruns or CrystalDiskInfo. A name that only looks alike matches the wrong program (Flux for f.lux, SnappyMail for Snappy Driver Installer, the collection's `codex` logo, which is not OpenAI's, for Codex CLI), so a match is only used after the picture has been looked at.
+
+**Icons8 is not used.** Its help pages say the free plan needs a link back and gives PNG files up to 100 pixels, that Icons8 holds no rights in logo icons and that their use is for the trademark owners to allow, that its Universal Multimedia License does not allow distributing icons as separate files, and that its API licence needs an active subscription and does not allow caching. Saving PNG files inside the program would be separate files, and fetching them at run time would need a subscription and would send each request out. Its logos would also have the same trademark question as the free collections, so a paid plan would add cost without adding anything. I could not open icons8.com/license (the server refused the request), so these points come from its help centre pages as found by search. A paid plan may read differently.
+
+**What .Clarion does.** Nothing is fetched while the program runs. The logos are saved inside it, in this order:
+
+1. The Simple Icons outline, drawn in the brand's colour (`scripts/add-simple-icon.ps1`). 106 apps.
+2. A picture saved inside the program (`scripts/fetch-app-logos.ps1`), 84 apps: 11 from Dashboard Icons and 3 from selfh.st chosen by hand in `scripts/app-logo-sources.json`, 33 from the picture of the project's GitHub organization, and 37 from the program's own website. A picture is kept only if it is at least 48 pixels on each side, close to square and not blank, and it is never enlarged, so a blurry 16 pixel favicon is left out. One with a see through background is put on a white or dark plate, so it reads the same on a light card and a dark one. Where each came from is written in `app-logo-files.json` and checked by a test.
+3. For an app that is installed, the icon Windows itself lists for it.
+4. The first letter on a plain tile. 65 apps are here today, nearly all Windows utilities.
+
+The first run of the script saved 142 pictures. Looking at every one found 45 wrong ones, and they are not used: GitHub's own icon (a repository page names it), a company wide Microsoft or Amazon Web Services icon, the publisher's mark where the program has its own, a picture of a different program, and one blank image. Each is in `scripts/app-logo-rejected.json` with the reason, and the script skips it on the next run.
 
 ## Sources
 
