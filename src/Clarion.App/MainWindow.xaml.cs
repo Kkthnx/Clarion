@@ -145,16 +145,22 @@ public sealed partial class MainWindow : Window
     private void UpdateCaptionButtons()
     {
         var bar = AppWindow.TitleBar;
-        var dark = Root.ActualTheme != ElementTheme.Light;
-        var fg = dark ? Windows.UI.Color.FromArgb(255, 230, 235, 242) : Windows.UI.Color.FromArgb(255, 19, 26, 36);
-        var hover = dark ? Windows.UI.Color.FromArgb(255, 36, 48, 64) : Windows.UI.Color.FromArgb(255, 214, 222, 232);
+        // In High Contrast the person's own colors apply, so the buttons go back to the system's.
+        if (new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast)
+        {
+            bar.ButtonBackgroundColor = bar.ButtonInactiveBackgroundColor = bar.ButtonForegroundColor = bar.ButtonHoverForegroundColor = null;
+            bar.ButtonHoverBackgroundColor = bar.ButtonPressedForegroundColor = bar.ButtonInactiveForegroundColor = null;
+            return;
+        }
+        var theme = Root.ActualTheme;
+        var fg = Clarion.App.Controls.ThemeBrushes.Color("ClTextPrimary", theme);
         bar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
         bar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
         bar.ButtonForegroundColor = fg;
         bar.ButtonHoverForegroundColor = fg;
-        bar.ButtonHoverBackgroundColor = hover;
+        bar.ButtonHoverBackgroundColor = Clarion.App.Controls.ThemeBrushes.Color("ClBorder", theme);
         bar.ButtonPressedForegroundColor = fg;
-        bar.ButtonInactiveForegroundColor = Windows.UI.Color.FromArgb(255, 122, 135, 153);
+        bar.ButtonInactiveForegroundColor = Clarion.App.Controls.ThemeBrushes.Color("ClTextMuted", theme);
     }
 
     [System.Runtime.InteropServices.DllImport("user32.dll")]

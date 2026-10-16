@@ -40,15 +40,22 @@ public static class ThemeBrushes
     public static ElementTheme Current { get; set; } = ElementTheme.Default;
 
     /// <summary>Looks up a brand brush for the given theme so code can color things the same as XAML does.</summary>
-    public static Brush Get(string name, ElementTheme theme)
+    public static Brush Get(string name, ElementTheme theme) =>
+        Find(name + "Brush", theme) as Brush ?? new SolidColorBrush(Microsoft.UI.Colors.Gray);
+
+    /// <summary>The color behind a brand brush, for the few places that take a color and not a brush, such as the caption buttons.</summary>
+    public static Windows.UI.Color Color(string name, ElementTheme theme) =>
+        Find(name + "Color", theme) is Windows.UI.Color color ? color : Microsoft.UI.Colors.Gray;
+
+    private static object? Find(string key, ElementTheme theme)
     {
-        var key = new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast ? "HighContrast"
+        var set = new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast ? "HighContrast"
             : theme == ElementTheme.Light ? "Light" : "Default";
         foreach (var dict in Application.Current.Resources.MergedDictionaries)
         {
-            if (dict.ThemeDictionaries.TryGetValue(key, out var found) && found is ResourceDictionary rd && rd.TryGetValue(name + "Brush", out var brush))
-                return (Brush)brush;
+            if (dict.ThemeDictionaries.TryGetValue(set, out var found) && found is ResourceDictionary rd && rd.TryGetValue(key, out var value))
+                return value;
         }
-        return new SolidColorBrush(Microsoft.UI.Colors.Gray);
+        return null;
     }
 }

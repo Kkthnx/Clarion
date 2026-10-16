@@ -46,6 +46,11 @@
                             <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="#E9EDF2" />
                             <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#E9EDF2" />
                         </ResourceDictionary>
+                        <!-- Without this the pane keeps the dark colour above while its text follows the person's High Contrast theme. -->
+                        <ResourceDictionary x:Key="HighContrast">
+                            <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="{StaticResource SystemColorWindowColor}" />
+                            <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="{StaticResource SystemColorWindowColor}" />
+                        </ResourceDictionary>
                     </ResourceDictionary.ThemeDictionaries>
                 </ResourceDictionary>
             </NavigationView.Resources>
