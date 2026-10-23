@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
 Fixed
 - App logos drawn from an outline came out with some pieces in the wrong place. A logo made of several pieces, such as a word or a mark with a hole in it, writes its second and later pieces with a relative move after the close of the one before. SVG puts that move at the start of the shape just closed, and the drawing code of WinUI does not, so those pieces were displaced or went missing. The .NET mark showed as .NFT. 80 of the 110 outlines are written this way. Every outline is now made absolute once when it loads, which means the same thing everywhere, and the result was checked against an independent SVG library: the shape of all 110 is unchanged.
