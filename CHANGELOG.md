@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+Fixed
+- Pressing the window's close button while a repair job or an app update was running threw an error each time. WinUI shows one dialog at a time, and the notice that .Clarion is still working was a second one on top of the job's log. The error was written to crash.log twice in a row when tried, and the window stayed open with no word. The notice now waits its turn or is left out when another dialog is already in front of you, and the same care is taken for the unexpected-error notice and the link dialog.
+- Turn off the Sticky Keys shortcut showed as changed back, and was offered again by presets, on a PC where the shortcut was already off. The setting wrote the whole flags value (506), and Windows can leave that value as 498 when the shortcut is turned off in Settings, because it also clears the confirm bit. Only bit 4, the one that opens the prompt, matters, so the setting now owns that bit alone, checks it alone and leaves the other bits as they are. Revert still puts back the whole value that was there. History written before this is checked the same way.
+- Restart Explorer now closes only the Explorer of your own sign in. With a second account signed in at the same time, its Explorer was closed too.
+
+New
+- Safe Mode is recognised. Windows apps, scheduled tasks and Windows features cannot be read there, so their settings used to show as not available with nothing said, and the log held raw error codes. Home now says that Windows is in Safe Mode, what stops working, that settings kept in the registry still work, and that a restart brings everything back. The status line says so too.
+- Browser caches in Clean up: Google Chrome, Microsoft Edge, Brave and Firefox. Each one clears the cache folders of every profile (Cache, Code Cache and GPUCache for the Chromium browsers, cache2 for Firefox) and leaves logins, history, bookmarks and passwords alone. A row is skipped while its browser is running. The README already listed browser caches, and until now only game launcher caches were there. On the PC this was tried on, Chrome held 418 MB, the same as the folders add up to by hand.
+- A cleanup rule that names folders inside every profile of a program, so a second browser profile is found without being listed.
 ## 1.1.0
 
 Safer
