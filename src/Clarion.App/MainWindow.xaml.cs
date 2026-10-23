@@ -353,7 +353,7 @@ public sealed partial class MainWindow : Window
         var dialog = new ContentDialog
         {
             Title = "Welcome to .Clarion",
-            Content = new ScrollViewer { Content = body, MaxHeight = 460 },
+            Content = new ScrollViewer { Content = body, MaxHeight = DialogBodyHeight(300, 620) },
             PrimaryButtonText = "Queue this and show me",
             SecondaryButtonText = "I will look around myself",
             DefaultButton = ContentDialogButton.Primary,
@@ -366,6 +366,12 @@ public sealed partial class MainWindow : Window
         var key = Clarion.Core.Catalog.PresetInfo.All[Math.Max(0, choices.SelectedIndex)].Key;
         if (_app.QueuePreset(key) > 0) _app.RequestReview();
     }
+
+    /// <summary>
+    /// How tall the scrolling part of a dialog may be: what the window has left once the title, the buttons and the room around the dialog
+    /// are taken off, kept between a floor and a ceiling. A fixed height cut the list short in a tall window and overflowed a small one.
+    /// </summary>
+    private int DialogBodyHeight(int floor, int ceiling) => (int)Math.Clamp(Root.ActualHeight - 340, floor, ceiling);
 
     private string? _pageTag;
 
@@ -554,7 +560,7 @@ public sealed partial class MainWindow : Window
         var onlyApps = _app.Pending.All(p => p.InstallsApps);
         var restore = new CheckBox { Content = onlyApps ? "Create a restore point first" : "Create a restore point first (recommended)", IsChecked = !onlyApps };
         var body = new StackPanel { Spacing = 14 };
-        body.Children.Add(new ScrollViewer { MaxHeight = 380, Content = list });
+        body.Children.Add(new ScrollViewer { MaxHeight = DialogBodyHeight(240, 520), Content = list });
 
         // The licence terms are the publishers', and they are accepted here by the person, never on their behalf.
         CheckBox? agree = null;
