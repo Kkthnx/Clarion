@@ -211,6 +211,9 @@ public sealed partial class TweakListPage : Page
 
             Visible.Clear();
             foreach (var i in items) Visible.Add(i);
+            // Which apps are installed is read the first time a list shows one, not only on the Apps page. A search or a link can show an app
+            // anywhere, and its switch stays on Checking until the read has been asked for.
+            if (items.Any(i => i.InstallsApps)) _ = _app.EnsureAppsReadAsync();
             if (_columns > 1) FillRows();
             var total = useChooser ? inScope.Count - dns.Count + 1 : inScope.Count;
             var shown = items.Count + (Chooser.Visibility == Visibility.Visible ? 1 : 0);

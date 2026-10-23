@@ -3,6 +3,7 @@
 ## Unreleased
 
 Fixed
+- An app found by the search box stayed on Checking for good, with its switch locked. Which apps are installed was only read when the Apps page was opened, so a search for 7-zip from any other page never got an answer. Any list that shows an app now starts the read.
 - A search with no answer left a blank page. It now says what was looked for and what to try, and mentions Expert mode when some settings are hidden in Simple mode.
 - Pressing the window's close button while a repair job or an app update was running threw an error each time. WinUI shows one dialog at a time, and the notice that .Clarion is still working was a second one on top of the job's log. The error was written to crash.log twice in a row when tried, and the window stayed open with no word. The notice now waits its turn or is left out when another dialog is already in front of you, and the same care is taken for the unexpected-error notice and the link dialog.
 - Turn off the Sticky Keys shortcut showed as changed back, and was offered again by presets, on a PC where the shortcut was already off. The setting wrote the whole flags value (506), and Windows can leave that value as 498 when the shortcut is turned off in Settings, because it also clears the confirm bit. Only bit 4, the one that opens the prompt, matters, so the setting now owns that bit alone, checks it alone and leaves the other bits as they are. Revert still puts back the whole value that was there. History written before this is checked the same way.
