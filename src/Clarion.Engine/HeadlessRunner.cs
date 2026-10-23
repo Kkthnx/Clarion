@@ -55,6 +55,9 @@ public static class HeadlessRunner
             case CliMode.ListSettings:
                 Say(Core.Reports.CliReports.Settings(CatalogLoader.LoadEmbedded()));
                 return 0;
+            case CliMode.ListStartup:
+                Say(Core.Reports.CliReports.StartupEntries(Core.Startup.StartupList.Build(new WindowsStartupSource())));
+                return 0;
             case CliMode.ListCleanups:
                 Say(Core.Reports.CliReports.Cleanups(CatalogLoader.LoadCleanup()));
                 return 0;
@@ -146,7 +149,7 @@ public static class HeadlessRunner
         switch (o.Mode)
         {
             case CliMode.Verify:
-                var report = runtime.Drift.Scan(catalog, runtime.Profile);
+                var report = runtime.Drift.Scan(catalog.Concat(Core.Startup.StartupTweaks.ForIds(runtime.Journal.OutstandingByTweak().Keys)).ToList(), runtime.Profile);
                 if (o.SaveReport)
                     new Core.Scheduling.ScheduledVerifyStore(Path.Combine(EngineFactory.DefaultDataDirectory, "scheduled-verify.json"))
                         .Save(Core.Scheduling.ScheduledVerifyResult.From(report, DateTimeOffset.Now));

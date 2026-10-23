@@ -490,10 +490,7 @@ public sealed partial class AppServices : UiObservableObject
 
     /// <summary>The startup changes .Clarion made that are still on, so Verify can check that they hold.</summary>
     private IEnumerable<Tweak> StartupTweaksInHistory() =>
-        Runtime.Journal.OutstandingByTweak().Keys
-            .Select(Clarion.Core.Startup.StartupTweaks.EntryFromId).OfType<Clarion.Core.Startup.StartupEntry>()
-            .Where(e => Items.All(i => i.Id != e.Id))
-            .Select(Clarion.Core.Startup.StartupTweaks.TurnOff);
+        Clarion.Core.Startup.StartupTweaks.ForIds(Runtime.Journal.OutstandingByTweak().Keys);
 
     /// <summary>Turns off again the startup entries that came back on. Null when it worked, otherwise the first reason.</summary>
     public async Task<string?> FixStartupAsync(IEnumerable<string> ids)

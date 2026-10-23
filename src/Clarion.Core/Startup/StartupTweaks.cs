@@ -41,6 +41,10 @@ public static class StartupTweaks
         return false;
     }
 
+    /// <summary>The startup changes among these ids, for Verify and the history to check like any other setting.</summary>
+    public static IReadOnlyList<Tweak> ForIds(IEnumerable<string> ids) =>
+        ids.Select(EntryFromId).OfType<StartupEntry>().Select(TurnOff).ToList();
+
     /// <summary>An entry rebuilt from its id alone, enough to turn it back on from the history when the list has not been read.</summary>
     public static StartupEntry? EntryFromId(string id) =>
         TryParse(id, out var origin, out var name) ? new StartupEntry(origin, name, "", true, null, new StartupProgram(null, false, "", ""), null) : null;

@@ -61,6 +61,13 @@ public static class CliReports
     public static string Cleanups(IEnumerable<Clarion.Core.Cleanup.CleanTarget> targets) =>
         string.Join(Environment.NewLine, targets.Select(t => $"{t.Id,-28} {t.Name}"));
 
+    /// <summary>What starts with Windows, one line each, with whether it is on and where it comes from.</summary>
+    public static string StartupEntries(IEnumerable<Startup.StartupEntry> entries)
+    {
+        var rows = entries.Select(e => $"{(e.Enabled ? "on " : "off")}  {e.Name,-34} {e.Source}{(e.Program.Found || e.Program.Path is null ? "" : "  (program not found)")}").ToList();
+        return rows.Count == 0 ? "Nothing is set to start with Windows from the Run keys or the Startup folders." : string.Join(Environment.NewLine, rows);
+    }
+
     public static string Symptoms(IEnumerable<Symptom> symptoms) =>
         string.Join(Environment.NewLine, symptoms.Select(s => $"{s.Id,-22} {s.Title}"));
 
@@ -85,7 +92,7 @@ public static class CliReports
     {
         var names = catalog.ToDictionary(t => t.Id, t => t.Name, StringComparer.OrdinalIgnoreCase);
         var rows = outstanding
-            .Select(kv => (Id: kv.Key, When: kv.Value[0].Time, Name: names.TryGetValue(kv.Key, out var n) ? n : kv.Key))
+            .Select(kv => (Id: kv.Key, When: kv.Value[0].Time, Name: names.TryGetValue(kv.Key, out var n) ? n : Startup.StartupTweaks.NameOf(kv.Key)))
             .OrderByDescending(r => r.When)
             .Select(r => $"{r.When.LocalDateTime:yyyy-MM-dd HH:mm}  {r.Name}  ({r.Id})")
             .ToList();

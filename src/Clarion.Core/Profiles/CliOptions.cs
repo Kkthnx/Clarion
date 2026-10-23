@@ -1,6 +1,6 @@
 namespace Clarion.Core.Profiles;
 
-public enum CliMode { None, Help, Version, Apply, Clean, ListPresets, Verify, WhatBroke, ListSymptoms, History, ListSettings, ListCleanups, CatalogDoc, UpdateApps }
+public enum CliMode { None, Help, Version, Apply, Clean, ListPresets, Verify, WhatBroke, ListSymptoms, History, ListSettings, ListCleanups, ListStartup, CatalogDoc, UpdateApps }
 
 public sealed record CliOptions(
     CliMode Mode,
@@ -74,6 +74,7 @@ public sealed record CliOptions(
                 case "--list-symptoms": mode = CliMode.ListSymptoms; break;
                 case "--list-settings": mode = CliMode.ListSettings; break;
                 case "--list-cleanups": mode = CliMode.ListCleanups; break;
+                case "--list-startup": mode = CliMode.ListStartup; break;
                 case "--catalog-doc": mode = CliMode.CatalogDoc; break;
                 case "--what-broke":
                     mode = CliMode.WhatBroke;
@@ -112,6 +113,7 @@ public sealed record CliOptions(
           Clarion.exe --list-presets
           Clarion.exe --list-settings
           Clarion.exe --list-cleanups
+          Clarion.exe --list-startup
           Clarion.exe --catalog-doc
           Clarion.exe --version
 
@@ -130,6 +132,7 @@ public sealed record CliOptions(
         --what-broke        read only: list the changes that could explain a symptom, newest first
         --since             with --what-broke, only changes made on or after this date
         --history           read only: list what .Clarion changed that is still on
+        --list-startup      read only: list the programs that start with Windows, from the Run keys and the Startup folders, and whether each one is on
 
         The read only commands need no administrator rights, though some checks cannot be read without them.
         Exit codes: 0 done, 1 some items did not finish or something changed back, 2 bad input, 3 needs administrator rights.
