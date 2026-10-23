@@ -64,3 +64,14 @@ Per account settings (winutil 4637, .Clarion records the account), "already remo
 - Sticky Notes data location and recovery (community): https://learn.microsoft.com/en-us/answers/questions/5784300/how-to-restore-the-overwritten-sticky-notes-using
 - Windscribe, deGDID (vendor blog): https://windscribe.com/blog/windows-tracks-you-with-a-hidden-id-so-we-built-degdid-to-block-it/
 - Windows App SDK 1.8 release notes (metapackage split): https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-1-8
+
+## Startup entries (read on a real PC, October 2026)
+
+How Windows 11 build 26200 keeps the list that the Startup tab of Task Manager shows, read from the registry of the PC this was built on. Microsoft does not document it, so everything below was measured, and the feature relies on nothing else.
+
+- **Where the programs are.** `HKCU` and `HKLM` `Software\Microsoft\Windows\CurrentVersion\Run`, the 32 bit view of the `HKLM` one (`WOW6432Node`), and the two Startup folders (`%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup` and the one under `%ProgramData%`). All of them were present with entries on this PC.
+- **Where on and off is kept.** Under `...\Explorer\StartupApproved`, in `Run` (for both `Run` keys of one hive), `Run32` (the 32 bit `HKLM` one) and `StartupFolder`, as a binary value named like the entry (the file name with its extension for a folder item). It is 12 bytes. The first byte was `02` or `06` for the entries that start and `03` for the one that does not (`ShareX.lnk`), and the last eight bytes of the `03` mark are a FILETIME, which decoded to the day that entry was turned off (2025-08-17). An even first byte is read as on and an odd one as off. A program with no mark is on, which is what Discord's `Run` entry showed.
+- **Stale marks exist.** Marks for programs whose `Run` entry or shortcut is gone were present, so the list is built from the places that start programs and the marks only add state.
+- **What was done with it.** The Startup tab writes a `03` mark with the current time, and puts back the exact bytes it replaced (or removes the value when there was none). A real entry of this PC was turned off from the window and back on, and its mark was byte for byte the same afterward. A program that rewrites the mark with a different time still counts as turned off, since only the first byte decides.
+- **Not checked.** That the Settings app's own Startup page agrees with these marks, and whether Task Manager shows a startup impact for an entry turned off this way. Windows keeps no startup impact number that a program can read, so none is shown.
+- **Left out on purpose.** Scheduled tasks and services that start at sign in, and `RunOnce`. The page says that some programs start from those.
