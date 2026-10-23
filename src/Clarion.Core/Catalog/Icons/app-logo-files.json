@@ -1,597 +1,562 @@
 {
-    "app.adobe-acrobat-reader":  {
-                                     "source":  "https://raw.githubusercontent.com/selfhst/icons/1d65d45a42e6323b54b8096967b1ea4b65321f97/png/adobe-acrobat.png",
-                                     "width":  128,
-                                     "original":  "512x512",
-                                     "plate":  "none",
-                                     "sha256":  "481386eb2a1a2a11a6f3d67310672881051775b9d00b001baa51618f0588c79e"
-                                 },
-    "app.advanced-ip-scanner":  {
-                                    "source":  "https://www.advanced-ip-scanner.com/favicon.ico",
-                                    "width":  128,
-                                    "original":  "128x128",
-                                    "plate":  "none",
-                                    "sha256":  "d2abd471e561dfd0446d9dbf07850f97585d96d99b8abbf875d66a4add449fd7"
-                                },
-    "app.aimp":  {
-                     "source":  "https://aimp.ru/v2/theme/images/tile180.png",
-                     "width":  128,
-                     "original":  "180x180",
-                     "plate":  "none",
-                     "sha256":  "9e5fc16438b3a07ec0fd810822eef63a93a02e6cea2432dc0efb75b41f533f25"
-                 },
-    "app.angry-ip-scanner":  {
-                                 "source":  "https://github.com/angryip.png?size=128",
-                                 "width":  128,
-                                 "original":  "128x128",
-                                 "plate":  "dark",
-                                 "sha256":  "9305aa95465a98d947c3261d4f421fc9f1b79b11016249e9f3740ef973421988"
-                             },
-    "app.balena-etcher":  {
-                              "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/balena-etcher.png",
-                              "width":  128,
-                              "original":  "465x512",
-                              "plate":  "dark",
-                              "sha256":  "77e0e5f8bf4770c1357ab685331ccdd31eb15f9cc8cac67673a9d1ed972155bd"
-                          },
-    "app.bulk-crap-uninstaller":  {
-                                      "source":  "https://github.com/BCUninstaller.png?size=128",
-                                      "width":  128,
-                                      "original":  "128x128",
-                                      "plate":  "white",
-                                      "sha256":  "0b2a55cfcdfaf2e6971be81ea8e3f96e33f6277ab20f3105411f000fbca9a36d"
-                                  },
-    "app.calibre":  {
-                        "source":  "https://calibre-ebook.com/favicon.ico",
-                        "width":  128,
-                        "original":  "256x256",
-                        "plate":  "white",
-                        "sha256":  "fd4d46b00777eaa753492c1750c92f48b0cd5258a39b62e3d97b26b49c7c3642"
-                    },
-    "app.cemu":  {
-                     "source":  "https://github.com/cemu-project.png?size=128",
-                     "width":  128,
-                     "original":  "128x128",
-                     "plate":  "none",
-                     "sha256":  "13e03260a332d570c3dd29a03d1e337d21f6795aeb09099a95316ef9d882a929"
-                 },
-    "app.chatterino":  {
-                           "source":  "https://github.com/Chatterino.png?size=128",
-                           "width":  128,
-                           "original":  "128x128",
-                           "plate":  "dark",
-                           "sha256":  "e32d3524b82188d80ae73a31f5b0f6b500d11dc474b3d8588ee0d0d15065203d"
-                       },
-    "app.chromium-hibbiki-build":  {
-                                       "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/chromium.png",
-                                       "width":  128,
-                                       "original":  "512x512",
-                                       "plate":  "white",
-                                       "sha256":  "26c489c78b35fa887e4d251e721e67d81b26977e8f6205f2ae5111e8095408bf"
-                                   },
-    "app.cinebench-r23":  {
-                              "source":  "https://www.maxon.net/app-icons/apple-touch-icon-152x152.png",
-                              "width":  128,
-                              "original":  "152x152",
-                              "plate":  "white",
-                              "sha256":  "57bb0afd157908a8f5d79560f5a1e98ad894fa8650801216e58a4ec7310cd0ad"
-                          },
-    "app.cloudflare-warp":  {
-                                "source":  "https://one.one.one.one/favicon.ico",
-                                "width":  48,
-                                "original":  "48x48",
-                                "plate":  "none",
-                                "sha256":  "f6c0227e0c72cf2088367562e6a4507ada446828645d97ed1f676153cc45275f"
-                            },
-    "app.deskflow":  {
-                         "source":  "https://github.com/deskflow.png?size=128",
-                         "width":  128,
-                         "original":  "128x128",
-                         "plate":  "white",
-                         "sha256":  "10aae74271a4273a31e82d8aeaf65a3231d57681bee10ff5c0ee52fb4475081e"
-                     },
-    "app.dotnet-sdk":  {
-                           "source":  "https://dotnet.microsoft.com/apple-touch-icon.png",
-                           "width":  128,
-                           "original":  "180x180",
-                           "plate":  "none",
-                           "sha256":  "038091a840f33b62dd6bbf87ff8f8bbbda031741ef81e4bc6d4f93c9f6cdeec3"
-                       },
-    "app.emulationstation-desktop-edition":  {
-                                                 "source":  "https://impro.usercontent.one/appid/oneComWsb/domain/es-de.org/media/es-de.org/onewebmedia/ES-DE_logo_small.png?etag=%22ba8-60428863%22\u0026amp;sourceContentType=image%2Fpng\u0026amp;resize=120,120\u0026amp;ignoreAspectRatio",
-                                                 "width":  128,
-                                                 "original":  "128x128",
-                                                 "plate":  "white",
-                                                 "sha256":  "8f4e7e6da02d28150f93d8199331f1609734ac718626bd0678359c9d2d03ef65"
-                                             },
-    "app.ente-auth":  {
-                          "source":  "https://github.com/ente-io.png?size=128",
-                          "width":  128,
-                          "original":  "128x128",
-                          "plate":  "none",
-                          "sha256":  "84a4ee1ffb1c543645678ab2781719005af2b99ac4835170caffee4221f32897"
-                      },
-    "app.firefox-esr":  {
-                            "source":  "https://www.firefox.com/media/img/favicons/firefox/browser/apple-touch-icon.79c2abeb4e35.png",
-                            "width":  128,
-                            "original":  "180x180",
-                            "plate":  "white",
-                            "sha256":  "bc866d0a07e62e112efb0a37b1c95fecd0cfe7e8531f2d7d8ee6e3d9b1f1bb31"
-                        },
-    "app.flow-launcher":  {
-                              "source":  "https://github.com/Flow-Launcher.png?size=128",
-                              "width":  128,
-                              "original":  "128x128",
-                              "plate":  "white",
-                              "sha256":  "3cd0360be7f7ccb582932176012c1258faa081de85138824fccff4226e89b866"
-                          },
-    "app.foxit-pdf-reader":  {
-                                 "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/foxit-icon.png",
-                                 "width":  128,
-                                 "original":  "512x512",
-                                 "plate":  "none",
-                                 "sha256":  "d1944ab5419788d06ed7ee62093183df673386b240e0664f668dafbc4f352994"
-                             },
-    "app.greenshot":  {
-                          "source":  "https://github.com/greenshot.png?size=128",
-                          "width":  90,
-                          "original":  "90x90",
-                          "plate":  "none",
-                          "sha256":  "361f2a36852a1b4aea0956bae4857b43fb94e8215ddd80045be969b74498b3ce"
-                      },
-    "app.handbrake":  {
-                          "source":  "https://github.com/HandBrake.png?size=128",
-                          "width":  128,
-                          "original":  "128x128",
-                          "plate":  "white",
-                          "sha256":  "bcd90d004e148f03d0af9cc730cdd252c51e2a0ce5184ff64a795d0d6e269888"
-                      },
-    "app.imageglass":  {
-                           "source":  "https://imageglass.org/favicon.ico?favicon.448-tycfsh_ur.ico",
-                           "width":  48,
-                           "original":  "48x48",
-                           "plate":  "none",
-                           "sha256":  "f0db800143d83c5398b2fa7f2a67b02982c462768b9ebbeb3ac74359a8131e3e"
-                       },
-    "app.jellyfin-media-player":  {
-                                      "source":  "https://github.com/jellyfin.png?size=128",
-                                      "width":  128,
-                                      "original":  "128x128",
-                                      "plate":  "none",
-                                      "sha256":  "c33142971efb1af2539d2377e62c9d0d390e2884d12a8e9d421bdd87ac23a3ca"
-                                  },
-    "app.jellyfin-server":  {
-                                "source":  "https://github.com/jellyfin.png?size=128",
-                                "width":  128,
-                                "original":  "128x128",
-                                "plate":  "none",
-                                "sha256":  "c33142971efb1af2539d2377e62c9d0d390e2884d12a8e9d421bdd87ac23a3ca"
-                            },
-    "app.k-lite-codec-pack-standard":  {
-                                           "source":  "https://codecguide.com/mpc_logo.png",
-                                           "width":  64,
-                                           "original":  "64x64",
-                                           "plate":  "white",
-                                           "sha256":  "fbf796c3be43ff637fbd57befc53ba57b2190d651afbe2e9e4547055c8e684ff"
-                                       },
-    "app.libre-hardware-monitor":  {
-                                       "source":  "https://github.com/LibreHardwareMonitor.png?size=128",
-                                       "width":  128,
-                                       "original":  "128x128",
-                                       "plate":  "white",
-                                       "sha256":  "16edb4b3222cd53ab3b925044fd26b1f5e5fc7e59936376f1ab8a494c90e16fa"
-                                   },
-    "app.media-player-classic-qute-theater":  {
-                                                  "source":  "https://github.com/mpc-qt.png?size=128",
-                                                  "width":  128,
-                                                  "original":  "128x128",
-                                                  "plate":  "none",
-                                                  "sha256":  "2ff8c4854ccff5b66d0458285afb8e45c506516442a25870a4e080433a7f75b0"
-                                              },
-    "app.microsoft-edge":  {
-                               "source":  "https://explore.microsoft.com/apple-touch-icon.png",
-                               "width":  128,
-                               "original":  "180x180",
-                               "plate":  "none",
-                               "sha256":  "d25efc21ce692a7ec3f401fc46f6a9d58b80e99d7707a2ac1965f2282d78eede"
-                           },
-    "app.microsoft-teams":  {
-                                "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/microsoft-teams.png",
-                                "width":  128,
-                                "original":  "550x512",
-                                "plate":  "white",
-                                "sha256":  "4af07b28ffb366c1abe04d74545a769aa7023f8ad45d119cc2f6f7aa3a35fcce"
-                            },
-    "app.mkvtoolnix":  {
-                           "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/mkvtoolnix.png",
-                           "width":  128,
-                           "original":  "235x256",
-                           "plate":  "white",
-                           "sha256":  "6383f39b92516fc1d6eaeaf50fbe60122c46a8916b2075fa1c1e202ccdab9c80"
-                       },
-    "app.moonlight":  {
-                          "source":  "https://github.com/moonlight-stream.png?size=128",
-                          "width":  128,
-                          "original":  "128x128",
-                          "plate":  "dark",
-                          "sha256":  "df3985acb7e1244bfb885378f5a9f6de2002dacd92112acfcddcd6ec8bb4a74e"
-                      },
-    "app.mullvad-browser":  {
-                                "source":  "https://github.com/mullvad.png?size=128",
-                                "width":  128,
-                                "original":  "128x128",
-                                "plate":  "none",
-                                "sha256":  "78d0d08318808b7e5e638bd1a7a9850b1c761f2afdc87c5ecf28a6e8c475cabe"
-                            },
-    "app.nanazip":  {
-                        "source":  "https://github.com/M2Team.png?size=128",
-                        "width":  128,
-                        "original":  "128x128",
-                        "plate":  "none",
-                        "sha256":  "b2ca0826a564f11192b3fa34c5f70ffc61393f67e587562a23b452209657e72b"
-                    },
-    "app.naps2":  {
-                      "source":  "https://www.naps2.com/images/favicon.ico",
-                      "width":  128,
-                      "original":  "128x128",
-                      "plate":  "dark",
-                      "sha256":  "837438292b4c3685522cd9c6b15c8822a7f6a1630a91dd2c2b3f10d6549ea30e"
-                  },
-    "app.netbird":  {
-                        "source":  "https://github.com/netbirdio.png?size=128",
-                        "width":  128,
-                        "original":  "128x128",
-                        "plate":  "none",
-                        "sha256":  "8d0b1135fcf641c32f28983f0a6eeb326bcedd1b4b206ccd9aa1b6d98dfe86bf"
-                    },
-    "app.net-desktop-runtime-10":  {
-                                       "source":  "https://dotnet.microsoft.com/apple-touch-icon.png",
-                                       "width":  128,
-                                       "original":  "180x180",
-                                       "plate":  "none",
-                                       "sha256":  "038091a840f33b62dd6bbf87ff8f8bbbda031741ef81e4bc6d4f93c9f6cdeec3"
-                                   },
-    "app.net-desktop-runtime-6":  {
-                                      "source":  "https://dotnet.microsoft.com/apple-touch-icon.png",
-                                      "width":  128,
-                                      "original":  "180x180",
-                                      "plate":  "none",
-                                      "sha256":  "038091a840f33b62dd6bbf87ff8f8bbbda031741ef81e4bc6d4f93c9f6cdeec3"
-                                  },
-    "app.net-desktop-runtime-8":  {
-                                      "source":  "https://dotnet.microsoft.com/apple-touch-icon.png",
-                                      "width":  128,
-                                      "original":  "180x180",
-                                      "plate":  "none",
-                                      "sha256":  "038091a840f33b62dd6bbf87ff8f8bbbda031741ef81e4bc6d4f93c9f6cdeec3"
-                                  },
-    "app.net-desktop-runtime-9":  {
-                                      "source":  "https://dotnet.microsoft.com/apple-touch-icon.png",
-                                      "width":  128,
-                                      "original":  "180x180",
-                                      "plate":  "none",
-                                      "sha256":  "038091a840f33b62dd6bbf87ff8f8bbbda031741ef81e4bc6d4f93c9f6cdeec3"
-                                  },
-    "app.nilesoft-shell":  {
-                               "source":  "https://nilesoft.org/favicon.ico",
-                               "width":  128,
-                               "original":  "256x256",
-                               "plate":  "white",
-                               "sha256":  "e0bee84a2addca7187f42bac122e7aa581053b7fd7d9c9bda2d0a9c46442a55c"
-                           },
-    "app.nomacs":  {
-                       "source":  "https://github.com/nomacs.png?size=128",
-                       "width":  128,
-                       "original":  "128x128",
-                       "plate":  "dark",
-                       "sha256":  "bc62c1f8c39f8d8c2214dd8fd93aa839bc27aa9ce631e58a48d373e7bcd59ad4"
-                   },
-    "app.ntlite":  {
-                       "source":  "https://ntlite.com/images/icon-128.png",
-                       "width":  128,
-                       "original":  "128x128",
-                       "plate":  "none",
-                       "sha256":  "5a6a26465470f054ee7c789ec0a0ef481bb999420f59dfb167c739438ddc4e93"
-                   },
-    "app.oh-my-posh":  {
-                           "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/oh-my-posh.png",
-                           "width":  128,
-                           "original":  "597x512",
-                           "plate":  "white",
-                           "sha256":  "12a4ab48eebbadecd3ff9b0c1059b5c466d1bcf7f7b54728c645b495ea60f64d"
-                       },
-    "app.okular":  {
-                       "source":  "https://okular.kde.org/favicon.ico",
-                       "width":  48,
-                       "original":  "48x48",
-                       "plate":  "none",
-                       "sha256":  "09f2fb352bf7f6083ee3d88ced768bd2e8e26a37122b5e97256769bca2d557a8"
-                   },
-    "app.paint-net":  {
-                          "source":  "https://paint.net/apple-touch-icon.png",
-                          "width":  128,
-                          "original":  "180x180",
-                          "plate":  "dark",
-                          "sha256":  "99b62a3f169a0864da906bd36fbe84cae2abfb32c76706cdbb9531f0e062f00f"
-                      },
-    "app.parsec":  {
-                       "source":  "https://parsec.app/favicon.ico",
-                       "width":  128,
-                       "original":  "256x256",
-                       "plate":  "white",
-                       "sha256":  "54ddacc5aa2f607820bb70e4c990909dbf1f2adadde218260ee715c43d736dd2"
-                   },
-    "app.pdf24-creator":  {
-                              "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/pdf24.png",
-                              "width":  128,
-                              "original":  "512x512",
-                              "plate":  "dark",
-                              "sha256":  "846cf971b9c380ea206158ae821c5375e1ea102c9423f0d76e97b3a039b7b6b3"
-                          },
-    "app.pdfsam-basic":  {
-                             "source":  "https://pdfsam.org/icns/apple-touch-icon-180x180.png",
-                             "width":  128,
-                             "original":  "180x180",
-                             "plate":  "dark",
-                             "sha256":  "583ff9c124b4d372ac914e7b362f2db0b2bf8955b5c7117d36809a1b3eda7375"
-                         },
-    "app.pdf-xchange-editor":  {
-                                   "source":  "https://cdn.pdf-xchange.com/static/common/images/apple-touch-icon-114x114.png",
-                                   "width":  114,
-                                   "original":  "114x114",
-                                   "plate":  "dark",
-                                   "sha256":  "abb5f2633cb6add53c8eb23e8a93d838751d5f71fd5d51fe97c75621b9af539d"
-                               },
-    "app.playnite":  {
-                         "source":  "https://playnite.link/favicon.ico",
-                         "width":  48,
-                         "original":  "48x48",
-                         "plate":  "white",
-                         "sha256":  "1c535d7f99576c6577de03d5993bcceb809f269cb5f1561d2291849c0a0ba4da"
-                     },
-    "app.plex-media-server":  {
-                                  "source":  "https://watch.plex.tv/icons/plex-180.png",
-                                  "width":  128,
-                                  "original":  "180x180",
-                                  "plate":  "none",
-                                  "sha256":  "74f03a97f3f6937e4b8b467d71bc2a4e4d141214132e1112e8d27688809caf76"
-                              },
-    "app.powershell":  {
-                           "source":  "https://github.com/PowerShell.png?size=128",
-                           "width":  128,
-                           "original":  "128x128",
-                           "plate":  "white",
-                           "sha256":  "02ae653ea8a70148eeb2cf10f666fa8beee6d4cfd4831f601fe79b1ae960611d"
-                       },
-    "app.powertoys":  {
-                          "source":  "https://raw.githubusercontent.com/selfhst/icons/1d65d45a42e6323b54b8096967b1ea4b65321f97/png/microsoft-powertoys.png",
-                          "width":  128,
-                          "original":  "512x512",
-                          "plate":  "none",
-                          "sha256":  "e4d4a0d8b587d59a5d958f8535b7435aa11980fd61a5898bbeabf060647295c0"
-                      },
-    "app.prism-launcher":  {
-                               "source":  "https://github.com/PrismLauncher.png?size=128",
-                               "width":  128,
-                               "original":  "128x128",
-                               "plate":  "none",
-                               "sha256":  "7eff41c04491f178f2c27c2f58da4df15b40dc120bf5df48cac605116a61ddb3"
-                           },
-    "app.proton-pass":  {
-                            "source":  "https://github.com/protonpass.png?size=128",
-                            "width":  128,
-                            "original":  "128x128",
-                            "plate":  "none",
-                            "sha256":  "1e96bd80f9163efcab871ce80abc9963d47b35a723f2f22cd2350b8fd8271b87"
-                        },
-    "app.putty":  {
-                      "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/putty.png",
-                      "width":  128,
-                      "original":  "512x512",
-                      "plate":  "white",
-                      "sha256":  "f1ed8e6f12b0c87fb617471809823a54775e878433748953b20a09932299f108"
-                  },
-    "app.python-3-14":  {
-                            "source":  "https://www.python.org/static/apple-touch-icon-144x144-precomposed.png",
-                            "width":  128,
-                            "original":  "144x144",
-                            "plate":  "dark",
-                            "sha256":  "12d8645f5b9147c25611c8e5916b111cbd3172b7bd6e5ab3b41f790c20228382"
-                        },
-    "app.qtox":  {
-                     "source":  "https://github.com/TokTok.png?size=128",
-                     "width":  128,
-                     "original":  "128x128",
-                     "plate":  "none",
-                     "sha256":  "1e27da0822dabe0a302d5ead8850ee6fe6cd04f84f519769c9d735a5b0183000"
-                 },
-    "app.ruby-4-0":  {
-                         "source":  "https://github.com/oneclick.png?size=128",
-                         "width":  128,
-                         "original":  "128x128",
-                         "plate":  "none",
-                         "sha256":  "8d88becdb4ba228813a2762d829a0dbf75024335bbb69548ef8117dc98da738e"
-                     },
-    "app.rufus":  {
-                      "source":  "https://rufus.ie/favicon.ico",
-                      "width":  64,
-                      "original":  "64x64",
-                      "plate":  "white",
-                      "sha256":  "d252d309844026eb08997d1191c9af19c458385b728626b7033cda2f3d1671dd"
-                  },
-    "app.slack":  {
-                      "source":  "https://slack.com/favicon.ico",
-                      "width":  128,
-                      "original":  "256x256",
-                      "plate":  "white",
-                      "sha256":  "7a7e3d242db938a49411b369dbfe0fe1c717ccf34b3ab2e132009aafb79dbe37"
-                  },
-    "app.startallback":  {
-                             "source":  "https://www.startallback.com/favicon.ico",
-                             "width":  64,
-                             "original":  "64x64",
-                             "plate":  "dark",
-                             "sha256":  "148e122a3d88b149adc81a77984e0915edec62356c84b9a5c1ddc4c289ad5007"
-                         },
-    "app.sumatrapdf":  {
-                           "source":  "https://github.com/sumatrapdfreader.png?size=128",
-                           "width":  128,
-                           "original":  "128x128",
-                           "plate":  "white",
-                           "sha256":  "9a14aab2ea12605d4009adedbd7b995eff2ed887e9dc3c76bbefdfdd624da0b2"
-                       },
-    "app.sunshine":  {
-                         "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/sunshine.png",
-                         "width":  128,
-                         "original":  "493x512",
-                         "plate":  "dark",
-                         "sha256":  "a4d16f7dfb11f458b26a1becc98c88b00c5a27cea144f83910dac3609a260197"
-                     },
-    "app.teamspeak-3":  {
-                            "source":  "https://www.teamspeak.com/user/themes/teamspeak/images/favicon.png",
-                            "width":  128,
-                            "original":  "180x180",
-                            "plate":  "white",
-                            "sha256":  "12484d1b52bd4ae19913e8136c63d7225e95e8b870fecf9dac68df77ea9eea5f"
-                        },
-    "app.teamspeak-6-beta":  {
-                                 "source":  "https://teamspeak.com/user/themes/teamspeak/images/favicon.png",
-                                 "width":  128,
-                                 "original":  "180x180",
-                                 "plate":  "white",
-                                 "sha256":  "12484d1b52bd4ae19913e8136c63d7225e95e8b870fecf9dac68df77ea9eea5f"
-                             },
-    "app.tightvnc":  {
-                         "source":  "https://www.tightvnc.com/apple-touch-icon.png",
-                         "width":  128,
-                         "original":  "180x180",
-                         "plate":  "none",
-                         "sha256":  "da820fed7a0f4c23f7a6b84aa18892a9652204f3a0d35b6952fe079e0a993edd"
-                     },
-    "app.total-commander":  {
-                                "source":  "https://www.ghisler.com/favicon.ico",
-                                "width":  48,
-                                "original":  "48x48",
-                                "plate":  "none",
-                                "sha256":  "be7366facad77b6227ec258edc94c44d7d719167041d88f9894b18cf17fc1ba5"
-                            },
-    "app.translucenttb":  {
-                              "source":  "https://github.com/TranslucentTB.png?size=128",
-                              "width":  128,
-                              "original":  "128x128",
-                              "plate":  "dark",
-                              "sha256":  "384faf95dbc863f9d7c108dd33733eefba9a9b6234674bf489b80c8913fd6be6"
-                          },
-    "app.treesize-free":  {
-                              "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/treesize.png",
-                              "width":  128,
-                              "original":  "512x512",
-                              "plate":  "dark",
-                              "sha256":  "e69eec4a69d99971fa6be0a95fd27e9a28e69438b1e5b8ce1c6bc67f0a972808"
-                          },
-    "app.ungoogled-chromium":  {
-                                   "source":  "https://github.com/ungoogled-software.png?size=128",
-                                   "width":  128,
-                                   "original":  "420x420",
-                                   "plate":  "none",
-                                   "sha256":  "b0f52ef7d779436ee5aff2cd9cb31267b2a005fdcab30f5c5a0e33d866b26fe3"
-                               },
-    "app.unity-hub":  {
-                          "source":  "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/unity.png",
-                          "width":  128,
-                          "original":  "453x512",
-                          "plate":  "white",
-                          "sha256":  "b6495687028725ae3c1f44227d84d63326aff361daa75d904beba7b724c7657a"
-                      },
-    "app.ventoy":  {
-                       "source":  "https://www.ventoy.net/favicon.ico",
-                       "width":  48,
-                       "original":  "48x48",
-                       "plate":  "white",
-                       "sha256":  "b72d6d57bfbc89fe7173c3992f823f9f5a1b89708a34e1bd0b453c55c9e2ee50"
-                   },
-    "app.vesktop":  {
-                        "source":  "https://github.com/Vencord.png?size=128",
-                        "width":  128,
-                        "original":  "128x128",
-                        "plate":  "dark",
-                        "sha256":  "256874a7c989d8347c25137ae20669620bc8ba57d43d90c49ba3d8e35539cf97"
-                    },
-    "app.vscode":  {
-                       "source":  "https://code.visualstudio.com/assets/apple-touch-icon.png",
-                       "width":  128,
-                       "original":  "256x256",
-                       "plate":  "white",
-                       "sha256":  "d167e79fbe002d034dc3c5781ab863de36aec534c9403bbdefa9dcf27d5d852f"
-                   },
-    "app.windirstat":  {
-                           "source":  "https://github.com/windirstat.png?size=128",
-                           "width":  128,
-                           "original":  "128x128",
-                           "plate":  "white",
-                           "sha256":  "f8e20bbb98700984dd97dba5a8527b3c0895575df5a522cfecd62b35aa804ea6"
-                       },
-    "app.windows-terminal":  {
-                                 "source":  "https://raw.githubusercontent.com/selfhst/icons/1d65d45a42e6323b54b8096967b1ea4b65321f97/png/windows-terminal.png",
-                                 "width":  128,
-                                 "original":  "512x512",
-                                 "plate":  "white",
-                                 "sha256":  "f3f75cccfc30edd997cb7ea27333274a1a50eaf376bd17f4cd1e8a51a0d2246d"
-                             },
-    "app.winmerge":  {
-                         "source":  "https://github.com/WinMerge.png?size=128",
-                         "width":  128,
-                         "original":  "128x128",
-                         "plate":  "dark",
-                         "sha256":  "96e486728ca9c7830edb690400db31bc8ad369e756f81fd4ee9728ca3ab7e733"
-                     },
-    "app.winrar":  {
-                       "source":  "https://www.win-rar.com/fileadmin/images/apple-touch-icon.png",
-                       "width":  128,
-                       "original":  "180x180",
-                       "plate":  "none",
-                       "sha256":  "931feb80553e0b555a2fbf548085ef29844cf7dda6daaa8cfd75ecd36b7c930f"
-                   },
-    "app.winscp":  {
-                       "source":  "https://github.com/winscp.png?size=128",
-                       "width":  128,
-                       "original":  "128x128",
-                       "plate":  "white",
-                       "sha256":  "24cd46df665998511a2e9b5490ba138e2518093f0311e9c42260320e5a327029"
-                   },
-    "app.wise-program-uninstaller":  {
-                                         "source":  "https://www.wisecleaner.com/favicon.ico",
-                                         "width":  48,
-                                         "original":  "48x48",
-                                         "plate":  "white",
-                                         "sha256":  "df90746aa84b5fb30bd29cb3dfe21aeb42c34639756ddfa3492353c404a803d8"
-                                     },
-    "app.wiztree":  {
-                        "source":  "https://diskanalyzer.com/apple-touch-icon.png",
-                        "width":  128,
-                        "original":  "180x180",
-                        "plate":  "dark",
-                        "sha256":  "48228866e4852ecad5f2b73e8b3316936e5cf225ffa91ecec23ba7080e3daf31"
-                    },
-    "app.xournal":  {
-                        "source":  "https://github.com/xournalpp.png?size=128",
-                        "width":  128,
-                        "original":  "128x128",
-                        "plate":  "dark",
-                        "sha256":  "d809496662bc84cfe696e9e2c02c6879024885f266341d2992a81868c5c3088e"
-                    },
-    "app.yt-dlp":  {
-                       "source":  "https://github.com/yt-dlp.png?size=128",
-                       "width":  128,
-                       "original":  "128x128",
-                       "plate":  "none",
-                       "sha256":  "071f1addd8b9a9353efe9814a25cdb68f1412c957787e385b1082a124cce3cea"
-                   },
-    "app.zed":  {
-                    "source":  "https://github.com/zed-industries.png?size=128",
-                    "width":  128,
-                    "original":  "128x128",
-                    "plate":  "none",
-                    "sha256":  "8d6e01fd4189f3081382eb419b9c5eb5b91d5674c34a096517e2dd2872de96df"
-                }
+  "app.adobe-acrobat-reader": {
+    "source": "https://raw.githubusercontent.com/selfhst/icons/1d65d45a42e6323b54b8096967b1ea4b65321f97/png/adobe-acrobat.png",
+    "width": 128,
+    "original": "512x512",
+    "plate": "none",
+    "sha256": "481386eb2a1a2a11a6f3d67310672881051775b9d00b001baa51618f0588c79e"
+  },
+  "app.advanced-ip-scanner": {
+    "source": "https://www.advanced-ip-scanner.com/favicon.ico",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "d2abd471e561dfd0446d9dbf07850f97585d96d99b8abbf875d66a4add449fd7"
+  },
+  "app.aimp": {
+    "source": "https://aimp.ru/v2/theme/images/tile180.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "none",
+    "sha256": "9e5fc16438b3a07ec0fd810822eef63a93a02e6cea2432dc0efb75b41f533f25"
+  },
+  "app.angry-ip-scanner": {
+    "source": "https://github.com/angryip.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "dark",
+    "sha256": "9305aa95465a98d947c3261d4f421fc9f1b79b11016249e9f3740ef973421988"
+  },
+  "app.balena-etcher": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/balena-etcher.png",
+    "width": 128,
+    "original": "465x512",
+    "plate": "dark",
+    "sha256": "77e0e5f8bf4770c1357ab685331ccdd31eb15f9cc8cac67673a9d1ed972155bd"
+  },
+  "app.bulk-crap-uninstaller": {
+    "source": "https://github.com/BCUninstaller.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "0b2a55cfcdfaf2e6971be81ea8e3f96e33f6277ab20f3105411f000fbca9a36d"
+  },
+  "app.calibre": {
+    "source": "https://calibre-ebook.com/favicon.ico",
+    "width": 128,
+    "original": "256x256",
+    "plate": "white",
+    "sha256": "fd4d46b00777eaa753492c1750c92f48b0cd5258a39b62e3d97b26b49c7c3642"
+  },
+  "app.cemu": {
+    "source": "https://github.com/cemu-project.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "13e03260a332d570c3dd29a03d1e337d21f6795aeb09099a95316ef9d882a929"
+  },
+  "app.chatterino": {
+    "source": "https://github.com/Chatterino.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "dark",
+    "sha256": "e32d3524b82188d80ae73a31f5b0f6b500d11dc474b3d8588ee0d0d15065203d"
+  },
+  "app.chromium-hibbiki-build": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/chromium.png",
+    "width": 128,
+    "original": "512x512",
+    "plate": "white",
+    "sha256": "26c489c78b35fa887e4d251e721e67d81b26977e8f6205f2ae5111e8095408bf"
+  },
+  "app.cinebench-r23": {
+    "source": "https://www.maxon.net/app-icons/apple-touch-icon-152x152.png",
+    "width": 128,
+    "original": "152x152",
+    "plate": "white",
+    "sha256": "57bb0afd157908a8f5d79560f5a1e98ad894fa8650801216e58a4ec7310cd0ad"
+  },
+  "app.cloudflare-warp": {
+    "source": "https://one.one.one.one/favicon.ico",
+    "width": 48,
+    "original": "48x48",
+    "plate": "none",
+    "sha256": "f6c0227e0c72cf2088367562e6a4507ada446828645d97ed1f676153cc45275f"
+  },
+  "app.deskflow": {
+    "source": "https://github.com/deskflow.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "10aae74271a4273a31e82d8aeaf65a3231d57681bee10ff5c0ee52fb4475081e"
+  },
+  "app.emulationstation-desktop-edition": {
+    "source": "https://impro.usercontent.one/appid/oneComWsb/domain/es-de.org/media/es-de.org/onewebmedia/ES-DE_logo_small.png?etag=%22ba8-60428863%22&amp;sourceContentType=image%2Fpng&amp;resize=120,120&amp;ignoreAspectRatio",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "8f4e7e6da02d28150f93d8199331f1609734ac718626bd0678359c9d2d03ef65"
+  },
+  "app.ente-auth": {
+    "source": "https://github.com/ente-io.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "84a4ee1ffb1c543645678ab2781719005af2b99ac4835170caffee4221f32897"
+  },
+  "app.firefox-esr": {
+    "source": "https://www.firefox.com/media/img/favicons/firefox/browser/apple-touch-icon.79c2abeb4e35.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "white",
+    "sha256": "bc866d0a07e62e112efb0a37b1c95fecd0cfe7e8531f2d7d8ee6e3d9b1f1bb31"
+  },
+  "app.flow-launcher": {
+    "source": "https://github.com/Flow-Launcher.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "3cd0360be7f7ccb582932176012c1258faa081de85138824fccff4226e89b866"
+  },
+  "app.foxit-pdf-reader": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/foxit-icon.png",
+    "width": 128,
+    "original": "512x512",
+    "plate": "none",
+    "sha256": "d1944ab5419788d06ed7ee62093183df673386b240e0664f668dafbc4f352994"
+  },
+  "app.greenshot": {
+    "source": "https://github.com/greenshot.png?size=128",
+    "width": 90,
+    "original": "90x90",
+    "plate": "none",
+    "sha256": "361f2a36852a1b4aea0956bae4857b43fb94e8215ddd80045be969b74498b3ce"
+  },
+  "app.handbrake": {
+    "source": "https://github.com/HandBrake.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "bcd90d004e148f03d0af9cc730cdd252c51e2a0ce5184ff64a795d0d6e269888"
+  },
+  "app.imageglass": {
+    "source": "https://imageglass.org/favicon.ico?favicon.448-tycfsh_ur.ico",
+    "width": 48,
+    "original": "48x48",
+    "plate": "none",
+    "sha256": "f0db800143d83c5398b2fa7f2a67b02982c462768b9ebbeb3ac74359a8131e3e"
+  },
+  "app.jellyfin-media-player": {
+    "source": "https://github.com/jellyfin.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "c33142971efb1af2539d2377e62c9d0d390e2884d12a8e9d421bdd87ac23a3ca"
+  },
+  "app.jellyfin-server": {
+    "source": "https://github.com/jellyfin.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "c33142971efb1af2539d2377e62c9d0d390e2884d12a8e9d421bdd87ac23a3ca"
+  },
+  "app.k-lite-codec-pack-standard": {
+    "source": "https://codecguide.com/mpc_logo.png",
+    "width": 64,
+    "original": "64x64",
+    "plate": "white",
+    "sha256": "fbf796c3be43ff637fbd57befc53ba57b2190d651afbe2e9e4547055c8e684ff"
+  },
+  "app.libre-hardware-monitor": {
+    "source": "https://github.com/LibreHardwareMonitor.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "16edb4b3222cd53ab3b925044fd26b1f5e5fc7e59936376f1ab8a494c90e16fa"
+  },
+  "app.media-player-classic-qute-theater": {
+    "source": "https://github.com/mpc-qt.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "2ff8c4854ccff5b66d0458285afb8e45c506516442a25870a4e080433a7f75b0"
+  },
+  "app.microsoft-edge": {
+    "source": "https://explore.microsoft.com/apple-touch-icon.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "none",
+    "sha256": "d25efc21ce692a7ec3f401fc46f6a9d58b80e99d7707a2ac1965f2282d78eede"
+  },
+  "app.microsoft-teams": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/microsoft-teams.png",
+    "width": 128,
+    "original": "550x512",
+    "plate": "white",
+    "sha256": "4af07b28ffb366c1abe04d74545a769aa7023f8ad45d119cc2f6f7aa3a35fcce"
+  },
+  "app.mkvtoolnix": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/mkvtoolnix.png",
+    "width": 128,
+    "original": "235x256",
+    "plate": "white",
+    "sha256": "6383f39b92516fc1d6eaeaf50fbe60122c46a8916b2075fa1c1e202ccdab9c80"
+  },
+  "app.moonlight": {
+    "source": "https://github.com/moonlight-stream.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "dark",
+    "sha256": "df3985acb7e1244bfb885378f5a9f6de2002dacd92112acfcddcd6ec8bb4a74e"
+  },
+  "app.mullvad-browser": {
+    "source": "https://github.com/mullvad.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "78d0d08318808b7e5e638bd1a7a9850b1c761f2afdc87c5ecf28a6e8c475cabe"
+  },
+  "app.nanazip": {
+    "source": "https://github.com/M2Team.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "b2ca0826a564f11192b3fa34c5f70ffc61393f67e587562a23b452209657e72b"
+  },
+  "app.naps2": {
+    "source": "https://www.naps2.com/images/favicon.ico",
+    "width": 128,
+    "original": "128x128",
+    "plate": "dark",
+    "sha256": "837438292b4c3685522cd9c6b15c8822a7f6a1630a91dd2c2b3f10d6549ea30e"
+  },
+  "app.netbird": {
+    "source": "https://github.com/netbirdio.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "8d0b1135fcf641c32f28983f0a6eeb326bcedd1b4b206ccd9aa1b6d98dfe86bf"
+  },
+  "app.nilesoft-shell": {
+    "source": "https://nilesoft.org/favicon.ico",
+    "width": 128,
+    "original": "256x256",
+    "plate": "white",
+    "sha256": "e0bee84a2addca7187f42bac122e7aa581053b7fd7d9c9bda2d0a9c46442a55c"
+  },
+  "app.nomacs": {
+    "source": "https://github.com/nomacs.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "dark",
+    "sha256": "bc62c1f8c39f8d8c2214dd8fd93aa839bc27aa9ce631e58a48d373e7bcd59ad4"
+  },
+  "app.ntlite": {
+    "source": "https://ntlite.com/images/icon-128.png",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "5a6a26465470f054ee7c789ec0a0ef481bb999420f59dfb167c739438ddc4e93"
+  },
+  "app.oh-my-posh": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/oh-my-posh.png",
+    "width": 128,
+    "original": "597x512",
+    "plate": "white",
+    "sha256": "12a4ab48eebbadecd3ff9b0c1059b5c466d1bcf7f7b54728c645b495ea60f64d"
+  },
+  "app.okular": {
+    "source": "https://okular.kde.org/favicon.ico",
+    "width": 48,
+    "original": "48x48",
+    "plate": "none",
+    "sha256": "09f2fb352bf7f6083ee3d88ced768bd2e8e26a37122b5e97256769bca2d557a8"
+  },
+  "app.paint-net": {
+    "source": "https://paint.net/apple-touch-icon.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "dark",
+    "sha256": "99b62a3f169a0864da906bd36fbe84cae2abfb32c76706cdbb9531f0e062f00f"
+  },
+  "app.parsec": {
+    "source": "https://parsec.app/favicon.ico",
+    "width": 128,
+    "original": "256x256",
+    "plate": "white",
+    "sha256": "54ddacc5aa2f607820bb70e4c990909dbf1f2adadde218260ee715c43d736dd2"
+  },
+  "app.pdf24-creator": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/pdf24.png",
+    "width": 128,
+    "original": "512x512",
+    "plate": "dark",
+    "sha256": "846cf971b9c380ea206158ae821c5375e1ea102c9423f0d76e97b3a039b7b6b3"
+  },
+  "app.pdfsam-basic": {
+    "source": "https://pdfsam.org/icns/apple-touch-icon-180x180.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "dark",
+    "sha256": "583ff9c124b4d372ac914e7b362f2db0b2bf8955b5c7117d36809a1b3eda7375"
+  },
+  "app.pdf-xchange-editor": {
+    "source": "https://cdn.pdf-xchange.com/static/common/images/apple-touch-icon-114x114.png",
+    "width": 114,
+    "original": "114x114",
+    "plate": "dark",
+    "sha256": "abb5f2633cb6add53c8eb23e8a93d838751d5f71fd5d51fe97c75621b9af539d"
+  },
+  "app.playnite": {
+    "source": "https://playnite.link/favicon.ico",
+    "width": 48,
+    "original": "48x48",
+    "plate": "white",
+    "sha256": "1c535d7f99576c6577de03d5993bcceb809f269cb5f1561d2291849c0a0ba4da"
+  },
+  "app.plex-media-server": {
+    "source": "https://watch.plex.tv/icons/plex-180.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "none",
+    "sha256": "74f03a97f3f6937e4b8b467d71bc2a4e4d141214132e1112e8d27688809caf76"
+  },
+  "app.powershell": {
+    "source": "https://github.com/PowerShell.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "02ae653ea8a70148eeb2cf10f666fa8beee6d4cfd4831f601fe79b1ae960611d"
+  },
+  "app.powertoys": {
+    "source": "https://raw.githubusercontent.com/selfhst/icons/1d65d45a42e6323b54b8096967b1ea4b65321f97/png/microsoft-powertoys.png",
+    "width": 128,
+    "original": "512x512",
+    "plate": "none",
+    "sha256": "e4d4a0d8b587d59a5d958f8535b7435aa11980fd61a5898bbeabf060647295c0"
+  },
+  "app.prism-launcher": {
+    "source": "https://github.com/PrismLauncher.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "7eff41c04491f178f2c27c2f58da4df15b40dc120bf5df48cac605116a61ddb3"
+  },
+  "app.proton-pass": {
+    "source": "https://github.com/protonpass.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "1e96bd80f9163efcab871ce80abc9963d47b35a723f2f22cd2350b8fd8271b87"
+  },
+  "app.putty": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/putty.png",
+    "width": 128,
+    "original": "512x512",
+    "plate": "white",
+    "sha256": "f1ed8e6f12b0c87fb617471809823a54775e878433748953b20a09932299f108"
+  },
+  "app.python-3-14": {
+    "source": "https://www.python.org/static/apple-touch-icon-144x144-precomposed.png",
+    "width": 128,
+    "original": "144x144",
+    "plate": "dark",
+    "sha256": "12d8645f5b9147c25611c8e5916b111cbd3172b7bd6e5ab3b41f790c20228382"
+  },
+  "app.qtox": {
+    "source": "https://github.com/TokTok.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "1e27da0822dabe0a302d5ead8850ee6fe6cd04f84f519769c9d735a5b0183000"
+  },
+  "app.ruby-4-0": {
+    "source": "https://github.com/oneclick.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "8d88becdb4ba228813a2762d829a0dbf75024335bbb69548ef8117dc98da738e"
+  },
+  "app.rufus": {
+    "source": "https://rufus.ie/favicon.ico",
+    "width": 64,
+    "original": "64x64",
+    "plate": "white",
+    "sha256": "d252d309844026eb08997d1191c9af19c458385b728626b7033cda2f3d1671dd"
+  },
+  "app.slack": {
+    "source": "https://slack.com/favicon.ico",
+    "width": 128,
+    "original": "256x256",
+    "plate": "white",
+    "sha256": "7a7e3d242db938a49411b369dbfe0fe1c717ccf34b3ab2e132009aafb79dbe37"
+  },
+  "app.startallback": {
+    "source": "https://www.startallback.com/favicon.ico",
+    "width": 64,
+    "original": "64x64",
+    "plate": "dark",
+    "sha256": "148e122a3d88b149adc81a77984e0915edec62356c84b9a5c1ddc4c289ad5007"
+  },
+  "app.sumatrapdf": {
+    "source": "https://github.com/sumatrapdfreader.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "9a14aab2ea12605d4009adedbd7b995eff2ed887e9dc3c76bbefdfdd624da0b2"
+  },
+  "app.sunshine": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/sunshine.png",
+    "width": 128,
+    "original": "493x512",
+    "plate": "dark",
+    "sha256": "a4d16f7dfb11f458b26a1becc98c88b00c5a27cea144f83910dac3609a260197"
+  },
+  "app.teamspeak-3": {
+    "source": "https://www.teamspeak.com/user/themes/teamspeak/images/favicon.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "white",
+    "sha256": "12484d1b52bd4ae19913e8136c63d7225e95e8b870fecf9dac68df77ea9eea5f"
+  },
+  "app.teamspeak-6-beta": {
+    "source": "https://teamspeak.com/user/themes/teamspeak/images/favicon.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "white",
+    "sha256": "12484d1b52bd4ae19913e8136c63d7225e95e8b870fecf9dac68df77ea9eea5f"
+  },
+  "app.tightvnc": {
+    "source": "https://www.tightvnc.com/apple-touch-icon.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "none",
+    "sha256": "da820fed7a0f4c23f7a6b84aa18892a9652204f3a0d35b6952fe079e0a993edd"
+  },
+  "app.total-commander": {
+    "source": "https://www.ghisler.com/favicon.ico",
+    "width": 48,
+    "original": "48x48",
+    "plate": "none",
+    "sha256": "be7366facad77b6227ec258edc94c44d7d719167041d88f9894b18cf17fc1ba5"
+  },
+  "app.translucenttb": {
+    "source": "https://github.com/TranslucentTB.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "dark",
+    "sha256": "384faf95dbc863f9d7c108dd33733eefba9a9b6234674bf489b80c8913fd6be6"
+  },
+  "app.treesize-free": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/treesize.png",
+    "width": 128,
+    "original": "512x512",
+    "plate": "dark",
+    "sha256": "e69eec4a69d99971fa6be0a95fd27e9a28e69438b1e5b8ce1c6bc67f0a972808"
+  },
+  "app.ungoogled-chromium": {
+    "source": "https://github.com/ungoogled-software.png?size=128",
+    "width": 128,
+    "original": "420x420",
+    "plate": "none",
+    "sha256": "b0f52ef7d779436ee5aff2cd9cb31267b2a005fdcab30f5c5a0e33d866b26fe3"
+  },
+  "app.unity-hub": {
+    "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/6d31345986eba2067a63eb41c1a5a87d4e8e850a/png/unity.png",
+    "width": 128,
+    "original": "453x512",
+    "plate": "white",
+    "sha256": "b6495687028725ae3c1f44227d84d63326aff361daa75d904beba7b724c7657a"
+  },
+  "app.ventoy": {
+    "source": "https://www.ventoy.net/favicon.ico",
+    "width": 48,
+    "original": "48x48",
+    "plate": "white",
+    "sha256": "b72d6d57bfbc89fe7173c3992f823f9f5a1b89708a34e1bd0b453c55c9e2ee50"
+  },
+  "app.vesktop": {
+    "source": "https://github.com/Vencord.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "dark",
+    "sha256": "256874a7c989d8347c25137ae20669620bc8ba57d43d90c49ba3d8e35539cf97"
+  },
+  "app.vscode": {
+    "source": "https://code.visualstudio.com/assets/apple-touch-icon.png",
+    "width": 128,
+    "original": "256x256",
+    "plate": "white",
+    "sha256": "d167e79fbe002d034dc3c5781ab863de36aec534c9403bbdefa9dcf27d5d852f"
+  },
+  "app.windirstat": {
+    "source": "https://github.com/windirstat.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "f8e20bbb98700984dd97dba5a8527b3c0895575df5a522cfecd62b35aa804ea6"
+  },
+  "app.windows-terminal": {
+    "source": "https://raw.githubusercontent.com/selfhst/icons/1d65d45a42e6323b54b8096967b1ea4b65321f97/png/windows-terminal.png",
+    "width": 128,
+    "original": "512x512",
+    "plate": "white",
+    "sha256": "f3f75cccfc30edd997cb7ea27333274a1a50eaf376bd17f4cd1e8a51a0d2246d"
+  },
+  "app.winmerge": {
+    "source": "https://github.com/WinMerge.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "dark",
+    "sha256": "96e486728ca9c7830edb690400db31bc8ad369e756f81fd4ee9728ca3ab7e733"
+  },
+  "app.winrar": {
+    "source": "https://www.win-rar.com/fileadmin/images/apple-touch-icon.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "none",
+    "sha256": "931feb80553e0b555a2fbf548085ef29844cf7dda6daaa8cfd75ecd36b7c930f"
+  },
+  "app.winscp": {
+    "source": "https://github.com/winscp.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "white",
+    "sha256": "24cd46df665998511a2e9b5490ba138e2518093f0311e9c42260320e5a327029"
+  },
+  "app.wise-program-uninstaller": {
+    "source": "https://www.wisecleaner.com/favicon.ico",
+    "width": 48,
+    "original": "48x48",
+    "plate": "white",
+    "sha256": "df90746aa84b5fb30bd29cb3dfe21aeb42c34639756ddfa3492353c404a803d8"
+  },
+  "app.wiztree": {
+    "source": "https://diskanalyzer.com/apple-touch-icon.png",
+    "width": 128,
+    "original": "180x180",
+    "plate": "dark",
+    "sha256": "48228866e4852ecad5f2b73e8b3316936e5cf225ffa91ecec23ba7080e3daf31"
+  },
+  "app.xournal": {
+    "source": "https://github.com/xournalpp.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "dark",
+    "sha256": "d809496662bc84cfe696e9e2c02c6879024885f266341d2992a81868c5c3088e"
+  },
+  "app.yt-dlp": {
+    "source": "https://github.com/yt-dlp.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "071f1addd8b9a9353efe9814a25cdb68f1412c957787e385b1082a124cce3cea"
+  },
+  "app.zed": {
+    "source": "https://github.com/zed-industries.png?size=128",
+    "width": 128,
+    "original": "128x128",
+    "plate": "none",
+    "sha256": "8d6e01fd4189f3081382eb419b9c5eb5b91d5674c34a096517e2dd2872de96df"
+  }
 }

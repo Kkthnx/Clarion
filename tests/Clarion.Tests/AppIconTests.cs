@@ -26,7 +26,7 @@ public sealed class AppIconTests
             Assert.StartsWith("https://", icon.Source, StringComparison.Ordinal);
             // The path is drawn as given, so it may hold only path commands and numbers.
             Assert.Matches(new Regex(@"^[MmLlHhVvCcSsQqTtAaZz0-9eE.,\s\-+]+$"), icon.Path);
-            Assert.True(icon.Path.Length is > 50 and < 8000, id);
+            Assert.True(icon.Path.Length is > 50 and < 12000, id);
         }
     }
 

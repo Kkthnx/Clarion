@@ -73,7 +73,9 @@ public sealed class AppIcons
     public static AppIcons Parse(Stream json)
     {
         var file = JsonSerializer.Deserialize<IconFile>(json, Catalog.CatalogLoader.Options) ?? throw new InvalidDataException("Empty icon file");
-        return new AppIcons(file.Set, file.SetUrl, new Dictionary<string, AppIcon>(file.Icons, StringComparer.Ordinal));
+        // Every outline is made absolute here, once, so the drawing code never has to agree with SVG about what a relative move means.
+        var icons = file.Icons.ToDictionary(p => p.Key, p => p.Value with { Path = SvgPath.ToAbsolute(p.Value.Path) }, StringComparer.Ordinal);
+        return new AppIcons(file.Set, file.SetUrl, icons);
     }
 
     private static AppIcons LoadEmbedded()
