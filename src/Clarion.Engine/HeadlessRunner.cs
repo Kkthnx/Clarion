@@ -159,7 +159,7 @@ public static class HeadlessRunner
             case CliMode.WhatBroke:
                 var symptom = CatalogLoader.LoadSymptoms().FirstOrDefault(s => s.Id.Equals(o.Symptom, StringComparison.OrdinalIgnoreCase));
                 if (symptom is null) { say($"There is no symptom called {o.Symptom}. Use --list-symptoms."); return 2; }
-                var suspects = new Core.Troubleshoot.Troubleshooter(runtime.Journal).Suspects(symptom, catalog, o.Since);
+                var suspects = new Core.Troubleshoot.Troubleshooter(runtime.Journal).Suspects(symptom, catalog.Concat(Core.Startup.StartupTweaks.ForIds(runtime.Journal.OutstandingByTweak().Keys)).ToList(), o.Since);
                 say(Core.Reports.CliReports.WhatBroke(symptom, suspects, o.Since));
                 return 0;
 

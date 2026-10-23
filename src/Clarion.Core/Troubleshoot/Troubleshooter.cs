@@ -41,7 +41,8 @@ public sealed class Troubleshooter(ChangeJournal journal)
     {
         var errors = new List<string>();
         var ids = catalog.Select(t => t.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var topics = catalog.Select(t => t.Topic).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        // Startup changes are made for programs the catalog cannot know, so their topic is always allowed.
+        var topics = catalog.Select(t => t.Topic).Append(Startup.StartupTweaks.Topic).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var s in symptoms)

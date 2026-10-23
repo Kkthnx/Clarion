@@ -1,5 +1,12 @@
 [
   {
+    "id": "program-not-starting",
+    "title": "A program no longer starts when Windows starts",
+    "tip": "A program you stopped from starting with Windows is turned off in the list Task Manager's Startup tab reads. Turn it back on from the Startup tab or from Safety. Some programs also have their own Start with Windows option.",
+    "topics": ["Startup"],
+    "tweakIds": []
+  },
+  {
     "id": "search-broken",
     "title": "Search in Start or the taskbar finds nothing or shows no web results",
     "tip": "Search settings and the Bing Search app control what the search box can show. Reverting the newest one first is the quickest test.",

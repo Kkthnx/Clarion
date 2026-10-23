@@ -54,4 +54,27 @@ public sealed class StartupCliTests
         var tweak = Assert.Single(tweaks);
         Assert.Equal("startup.machine-run32.Lightshot", tweak.Id);
     }
+
+    [Fact]
+    public void The_what_broke_symptom_for_a_program_that_does_not_start_points_at_startup_changes()
+    {
+        var dir = Path.Combine(Path.GetTempPath(), "clarion-startup-symptom-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var journal = new Clarion.Core.Journal.ChangeJournal(Path.Combine(dir, "journal.jsonl"));
+            var id = StartupTweaks.IdOf(StartupOrigin.UserRun, "Spotify");
+            journal.Append(new Clarion.Core.Journal.JournalEntry(Guid.NewGuid(), id, Clarion.Core.Journal.JournalAction.Apply, DateTimeOffset.Now,
+                new Clarion.Core.Model.SetStartupEnabled(StartupOrigin.UserRun, "Spotify", false), new Clarion.Core.Model.SetStartupEnabled(StartupOrigin.UserRun, "Spotify", true)));
+            var symptom = Clarion.Core.Catalog.CatalogLoader.LoadSymptoms().Single(s => s.Id == "program-not-starting");
+
+            var suspects = new Clarion.Core.Troubleshoot.Troubleshooter(journal).Suspects(symptom, StartupTweaks.ForIds(journal.OutstandingByTweak().Keys));
+
+            Assert.Equal(id, Assert.Single(suspects).Tweak.Id);
+            Assert.Empty(Clarion.Core.Troubleshoot.Troubleshooter.Validate(Clarion.Core.Catalog.CatalogLoader.LoadSymptoms(), Clarion.Core.Catalog.CatalogLoader.LoadEmbedded()));
+        }
+        finally
+        {
+            if (Directory.Exists(dir)) Directory.Delete(dir, true);
+        }
+    }
 }

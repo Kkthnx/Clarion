@@ -10,6 +10,9 @@ public static class StartupTweaks
 {
     private const string Prefix = "startup.";
 
+    /// <summary>The topic of every startup change, so a symptom can name them all without listing each program.</summary>
+    public const string Topic = "Startup";
+
     private static string Key(StartupOrigin origin) => origin switch
     {
         StartupOrigin.UserRun => "user-run",
@@ -63,6 +66,7 @@ public static class StartupTweaks
         {
             Id = entry.Id,
             Category = "Startup",
+            Topic = Topic,
             Name = $"Stop {entry.Name} starting with Windows",
             Summary = "It no longer starts when you sign in.",
             What = $"Marks {entry.Name} as turned off in the list Task Manager's Startup tab reads. The entry and the program are not deleted.",

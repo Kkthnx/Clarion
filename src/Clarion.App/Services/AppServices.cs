@@ -472,7 +472,7 @@ public sealed partial class AppServices : UiObservableObject
 
     /// <summary>Settings Clarion changed that could explain a symptom, named ones first, newest first.</summary>
     public IReadOnlyList<Suspect> SuspectsFor(Symptom symptom, DateTimeOffset? since = null) =>
-        (_troubleshooter ??= new Troubleshooter(Runtime.Journal)).Suspects(symptom, Items.Select(i => i.Tweak).ToList(), since);
+        (_troubleshooter ??= new Troubleshooter(Runtime.Journal)).Suspects(symptom, Items.Select(i => i.Tweak).Concat(StartupTweaksInHistory()).ToList(), since);
 
     /// <summary>Settings the person told Clarion to stop checking, with when they were applied.</summary>
     public IReadOnlyList<(string Id, string Name, DateTimeOffset Applied)> StoppedChecking() =>
