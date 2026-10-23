@@ -129,6 +129,10 @@ public sealed partial class SafetyPage : Page
         var tracked = _app.Runtime.Journal.OutstandingByTweak();
         foreach (var id in _app.Items.Where(i => i.IsApplied && tracked.ContainsKey(i.Id)).Select(i => i.Id).ToList())
             QueueRevert(id);
+        // A startup change is turned back on at once and one at a time, so it is not part of the queue.
+        var startup = tracked.Keys.Count(Clarion.Core.Startup.StartupTweaks.IsStartupId);
+        if (startup > 0)
+            SinceStatus.Text = $"{startup} startup change{(startup == 1 ? " is" : "s are")} not in the queue. Turn {(startup == 1 ? "it" : "them")} back on with the button beside {(startup == 1 ? "it" : "each one")}.";
     }
 
     private void OnRevertSince(object sender, RoutedEventArgs e)
