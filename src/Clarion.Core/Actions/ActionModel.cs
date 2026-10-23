@@ -9,6 +9,7 @@ namespace Clarion.Core.Actions;
 [JsonDerivedType(typeof(RenameFolder), "rename-folder")]
 [JsonDerivedType(typeof(DeleteFolder), "delete-folder")]
 [JsonDerivedType(typeof(RestartDisplayAdapters), "restart-display-adapters")]
+[JsonDerivedType(typeof(RegisterAppInstaller), "register-app-installer")]
 public abstract record ActionStep
 {
     public abstract string Describe();
@@ -43,6 +44,15 @@ public sealed record DeleteFolder(string Folder) : ActionStep
 public sealed record RestartDisplayAdapters : ActionStep
 {
     public override string Describe() => "Restart the graphics driver";
+}
+
+/// <summary>
+/// Registers App Installer, the package that holds winget, for the signed in account again, with the command Microsoft documents for a package that is
+/// on the PC but not registered. It names no package but that one, and downloads nothing: a package that is not on the PC stays missing.
+/// </summary>
+public sealed record RegisterAppInstaller : ActionStep
+{
+    public override string Describe() => "Register App Installer for this account";
 }
 
 /// <summary>A one time job, such as a repair, that is not a setting and so has no on or off state.</summary>

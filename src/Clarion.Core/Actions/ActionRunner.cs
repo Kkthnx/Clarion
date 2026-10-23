@@ -24,7 +24,10 @@ public interface IDisplayAdapters
 }
 
 /// <summary>Runs the steps of an action in order, enforcing the tool and folder allow lists.</summary>
-public sealed class ActionRunner(IStreamingRunner runner, Func<string, string>? expand = null, IDisplayAdapters? adapters = null)
+/// <param name="accountProblem">
+/// Says why a step that works on the signed in account's own apps must not run now, or null when it may. It is asked before each such step.
+/// </param>
+public sealed class ActionRunner(IStreamingRunner runner, Func<string, string>? expand = null, IDisplayAdapters? adapters = null, Func<string?>? accountProblem = null)
 {
     private readonly Func<string, string> _expand = expand ?? Environment.ExpandEnvironmentVariables;
 
@@ -93,9 +96,27 @@ public sealed class ActionRunner(IStreamingRunner runner, Func<string, string>? 
                 return null;
             case RestartDisplayAdapters:
                 return RestartGraphics(log);
+            case RegisterAppInstaller:
+                return await RegisterAppInstallerAsync(log, cancel);
             default:
                 return "Unknown step.";
         }
+    }
+
+    /// <summary>
+    /// Registers App Installer for the account that is signed in. When .Clarion was started with another administrator account, the package would be
+    /// registered for that account and the person's own winget would stay as broken as it was, so nothing is run.
+    /// </summary>
+    private async Task<string?> RegisterAppInstallerAsync(Action<string> log, CancellationToken cancel)
+    {
+        if (accountProblem?.Invoke() is { } problem) return problem;
+        var code = await runner.RunAsync(AppInstallerRegistration.Tool, Engine.PowerShellHost.ToArguments(AppInstallerRegistration.Script, utf8Output: false), false, log, cancel);
+        return code switch
+        {
+            0 => null,
+            2 => "App Installer is not on this PC. Install it from the Microsoft Store, then run this again.",
+            _ => "Windows could not register App Installer. Read the log for the reason.",
+        };
     }
 
     /// <summary>Restarts every graphics adapter that is running. An adapter that is off or has a problem is left alone, since restarting it would not fix anything.</summary>

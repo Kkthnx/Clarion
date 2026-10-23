@@ -16,6 +16,9 @@
             <InfoBar.ActionButton>
                 <HyperlinkButton x:Name="WingetLink" Content="About winget" Click="OnWingetLink" />
             </InfoBar.ActionButton>
+            <InfoBar.Content>
+                <Button x:Name="RepairLink" Content="Open Repair" Click="OnOpenRepair" Visibility="Collapsed" Margin="0,0,0,12" />
+            </InfoBar.Content>
         </InfoBar>
 
         <!-- Updates are not part of the queue, because an update cannot be reverted. They have their own list, with nothing ticked at first. -->

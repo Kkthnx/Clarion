@@ -32,6 +32,8 @@ public sealed partial class AppsPage : Page
         _ = _app.EnsureAppsReadAsync();
     }
 
+    private void OnOpenRepair(object sender, RoutedEventArgs e) => _app.RequestNavigate("repair");
+
     private void OnAppChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(ShowBanner);
 
     private void ShowBanner()
@@ -41,8 +43,9 @@ public sealed partial class AppsPage : Page
         {
             WingetBar.Severity = InfoBarSeverity.Warning;
             WingetBar.Title = "winget was not found for this account";
-            WingetBar.Message = "Apps are installed with winget, Microsoft's package manager, which comes with App Installer. It is not at its usual place for this account, so the apps below are dimmed. Install or repair App Installer from Microsoft, then press Re-check. .Clarion does not install it for you.";
+            WingetBar.Message = "Apps are installed with winget, Microsoft's package manager, which comes with App Installer. It is not at its usual place for this account, so the apps below are dimmed. If App Installer is on this PC, the Repair page has a job that registers it again. If it is not, install it from the Microsoft Store. Then press Re-check. .Clarion does not install it for you.";
             WingetLink.Visibility = Visibility.Visible;
+            RepairLink.Visibility = Visibility.Visible;
             WingetBar.IsClosable = false;
             WingetBar.IsOpen = true;
             WingetBar.Visibility = Visibility.Visible;
@@ -56,6 +59,7 @@ public sealed partial class AppsPage : Page
             WingetBar.Message = problem;
             WingetBar.IsClosable = false;
             WingetLink.Visibility = Visibility.Collapsed;
+            RepairLink.Visibility = Visibility.Collapsed;
             WingetBar.IsOpen = true;
             WingetBar.Visibility = Visibility.Visible;
             return;

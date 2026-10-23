@@ -11,9 +11,14 @@ public static class PowerShellHost
 {
     public const string Prelude = "$ErrorActionPreference='Stop'; [Console]::OutputEncoding=[Text.Encoding]::UTF8; ";
 
-    public static string ToArguments(string script) =>
+    public static string ToArguments(string script) => ToArguments(script, utf8Output: true);
+
+    /// <summary>
+    /// With utf8Output off the prelude leaves the output encoding alone, for a caller that reads the text in the console code page of the PC.
+    /// </summary>
+    public static string ToArguments(string script, bool utf8Output) =>
         "-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand " +
-        Convert.ToBase64String(Encoding.Unicode.GetBytes(Prelude + script));
+        Convert.ToBase64String(Encoding.Unicode.GetBytes((utf8Output ? Prelude : "$ErrorActionPreference='Stop'; ") + script));
 
     /// <summary>The script inside an encoded command line, for tests and logs.</summary>
     public static string Decode(string arguments)

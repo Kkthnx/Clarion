@@ -335,6 +335,33 @@
     ]
   },
   {
+    "id": "repair.winget",
+    "category": "Repair",
+    "name": "Repair winget (register App Installer again)",
+    "summary": "Bring back winget when the Apps page says it was not found.",
+    "what": "Registers App Installer, the Microsoft package that provides winget, for your account again, with the command Microsoft documents for a package that is on the PC but not registered. Nothing is downloaded and no app is installed or removed.",
+    "benefit": "Fixes winget for your account when App Installer is on the PC but Windows lost its registration, as it can after a profile change or a failed update.",
+    "risk": "None. It only registers a package Windows already has. If App Installer is not on the PC, it says so and changes nothing.",
+    "riskLevel": "Safe",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested when the Apps page says winget was not found and the winget command is not recognised in a terminal.",
+    "facts": [
+      "Takes a few seconds",
+      "Downloads nothing",
+      "Cannot install App Installer when it is missing, only register it again",
+      "Works for the account that is signed in"
+    ],
+    "estimatedMinutes": 1,
+    "steps": [
+      {
+        "type": "register-app-installer"
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/powershell/module/appx/add-appxpackage"
+    ]
+  },
+  {
     "id": "maintain.optimize-drives",
     "category": "Repair",
     "name": "Optimize the system drive",

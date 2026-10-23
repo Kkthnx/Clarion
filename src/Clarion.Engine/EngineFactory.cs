@@ -25,6 +25,12 @@ public static class EngineFactory
 
     private static int _folderChecked;
 
+    /// <summary>Why a job that works on the signed in account's own apps must not run now, or null when .Clarion runs as that account.</summary>
+    private static string? WrongAccount() =>
+        AccountCheck.Detect() is { Differs: true } account
+            ? $".Clarion was started with {account.ElevatedAs}, but {account.SignedInAs} is signed in, so this would repair the wrong account. Close .Clarion and start it again from your own account."
+            : null;
+
     public static BatchRunner CreateBatchRunner(string? dataDirectory = null) => Create(dataDirectory).Runner;
 
     public static ClarionRuntime Create(string? dataDirectory = null)
@@ -55,7 +61,7 @@ public static class EngineFactory
         var drift = new Core.Drift.DriftScanner(engine, journal, new Core.Drift.DriftState(Path.Combine(dir, "drift.json")), history: new Core.Drift.DriftHistory(Path.Combine(dir, "drift-history.jsonl")));
         var batch = new BatchRunner(engine, new RestorePointService(registry, runner), WindowsMachine.IsElevated);
         var restorePoints = new RestorePointService(registry, runner);
-        return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect(), restorePoints, new Core.Actions.ActionRunner(new WindowsStreamingRunner(), null, new WindowsDisplayAdapters()),
+        return new ClarionRuntime(batch, engine, journal, WindowsMachine.Detect(), restorePoints, new Core.Actions.ActionRunner(new WindowsStreamingRunner(), null, new WindowsDisplayAdapters(), WrongAccount),
             new Core.SystemInfo.SystemProbe(registry, new WindowsServiceStore(runner), runner, new WindowsTaskStore()), drift, winget, new WindowsServiceLister());
     }
 }
