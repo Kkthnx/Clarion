@@ -222,7 +222,7 @@ public static class HeadlessRunner
 
         say($"{plan.ToApply.Count} to turn on, {plan.AlreadyOn.Count} already on, {plan.NotSupported.Count} not available here, {plan.Unknown.Count} unknown.");
         foreach (var id in plan.Unknown) say($"  unknown setting: {id}");
-        foreach (var id in plan.NotSupported) say($"  not available here: {id}");
+        foreach (var id in plan.NotSupported) say($"  not available here: {id}{(plan.Reasons.TryGetValue(id, out var why) ? $" ({why})" : "")}");
         foreach (var t in plan.ToApply)
             say($"  {(o.Preview ? "would turn on" : "turning on")}: {t.Name}{(t.Apply.OfType<InstallWingetPackage>().Any(i => i.Scope == "user") ? " (for this account only)" : "")}");
         foreach (var t in forEveryone) say($"  {t.Name} has no option for one account, so it is installed for everyone.");

@@ -45,4 +45,13 @@ public sealed record MachineProfile(int Build, string Edition)
     public bool Supports(Requirements r) =>
         Build >= r.MinBuild &&
         (r.Editions.Count == 0 || r.Editions.Contains(Edition, StringComparer.OrdinalIgnoreCase));
+
+    /// <summary>Why a setting with these requirements cannot be used on this PC, in plain words, or null when it can.</summary>
+    public string? WhyNotSupported(Requirements r)
+    {
+        if (Build < r.MinBuild)
+            return r.MinBuild >= 22000 ? "Needs Windows 11" : $"Needs Windows build {r.MinBuild} or later";
+        if (Supports(r)) return null;
+        return $"Not supported on {Edition}. Works on {string.Join(", ", r.Editions)}";
+    }
 }

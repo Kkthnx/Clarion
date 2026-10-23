@@ -11,6 +11,8 @@ New
 - Safe Mode is recognised. Windows apps, scheduled tasks and Windows features cannot be read there, so their settings used to show as not available with nothing said, and the log held raw error codes. Home now says that Windows is in Safe Mode, what stops working, that settings kept in the registry still work, and that a restart brings everything back. The status line says so too.
 - Browser caches in Clean up: Google Chrome, Microsoft Edge, Brave and Firefox. Each one clears the cache folders of every profile (Cache, Code Cache and GPUCache for the Chromium browsers, cache2 for Firefox) and leaves logins, history, bookmarks and passwords alone. A row is skipped while its browser is running. The README already listed browser caches, and until now only game launcher caches were there. On the PC this was tried on, Chrome held 418 MB, the same as the folders add up to by hand.
 - A cleanup rule that names folders inside every profile of a program, so a second browser profile is found without being listed.
+- A cleanup row that waits for a program now says its name. It showed the process name, so Battle.net asked you to close Agent and Epic asked for EpicWebHelper. It now says Close Battle.net first.
+- The command line says why a setting is not available here, for example Not supported on Professional, works on Enterprise, Education, or that the app or task it changes is not on this PC. The window already said this, and both now use the same sentence.
 ## 1.1.0
 
 Safer

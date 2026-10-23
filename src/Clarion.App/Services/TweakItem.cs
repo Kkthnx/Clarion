@@ -262,12 +262,7 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
 
     public void MarkChecking() => IsChecking = true;
 
-    private static string BuildLockReason(Tweak t, MachineProfile p)
-    {
-        if (p.Build < t.Requires.MinBuild)
-            return t.Requires.MinBuild >= 22000 ? "Needs Windows 11" : $"Needs Windows build {t.Requires.MinBuild} or later";
-        return $"Not supported on {p.Edition}. Works on {string.Join(", ", t.Requires.Editions)}";
-    }
+    private static string BuildLockReason(Tweak t, MachineProfile p) => p.WhyNotSupported(t.Requires) ?? "";
 }
 
 public sealed record SourceLink(string Text, Uri Link);
