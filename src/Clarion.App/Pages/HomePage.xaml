@@ -29,6 +29,8 @@
                 </InfoBar.ActionButton>
             </InfoBar>
 
+            <InfoBar x:Name="SafeModeBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False" />
+
             <InfoBar x:Name="MovedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
                      Title="The monthly check starts a different copy of .Clarion"
                      Message="It was set up from another folder, so it may not run. Set it up again from this copy to fix it.">

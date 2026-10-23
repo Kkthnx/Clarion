@@ -204,6 +204,7 @@ public sealed partial class AppServices : UiObservableObject
     public ObservableCollection<TweakItem> Items { get; } = [];
     public ObservableCollection<TweakItem> Pending { get; } = [];
     public bool IsElevated => Runtime.Runner.IsElevated;
+    public Clarion.Core.SystemInfo.BootMode BootMode { get; } = Clarion.Engine.WindowsBootMode.Detect();
 
     private bool _expertMode;
     private bool _isBusy;
@@ -307,6 +308,7 @@ public sealed partial class AppServices : UiObservableObject
             waitingOnFeatures = !_featureRead.IsCompleted;
             Log.Write($"State read in {started.ElapsedMilliseconds} ms for {Items.Count} settings{(waitingOnFeatures ? ", slower settings still reading" : "")}");
             Status = !IsElevated ? "Not running as administrator. Machine wide changes are locked."
+                : BootMode != Clarion.Core.SystemInfo.BootMode.Normal ? "Safe Mode. Apps, scheduled tasks and Windows features cannot be read here."
                 : waitingOnFeatures ? (_appsWanted ? "Ready. Windows features and apps are still being read." : "Ready. Windows features are still being read.") : "Ready";
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
@@ -390,7 +392,7 @@ public sealed partial class AppServices : UiObservableObject
         if (!ReferenceEquals(read, _featureRead) || IsBusy) return;
         AppliedCount = Items.Count(i => i.IsApplied && !i.InstallsApps);
         RefreshPending();
-        if (IsElevated) Status = "Ready";
+        if (IsElevated && BootMode == Clarion.Core.SystemInfo.BootMode.Normal) Status = "Ready";
         StatesRefreshed?.Invoke(this, EventArgs.Empty);
     }
 

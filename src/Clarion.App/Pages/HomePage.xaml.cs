@@ -79,6 +79,13 @@ public sealed partial class HomePage : Page
         MovedBar.Visibility = MovedBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
         LimitedBar.IsOpen = !_app.IsElevated;
         LimitedBar.Visibility = LimitedBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        SafeModeBar.IsOpen = _app.BootMode != Clarion.Core.SystemInfo.BootMode.Normal;
+        SafeModeBar.Visibility = SafeModeBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        if (SafeModeBar.IsOpen)
+        {
+            SafeModeBar.Title = Clarion.Core.SystemInfo.SafeModeNotice.Title;
+            SafeModeBar.Message = Clarion.Core.SystemInfo.SafeModeNotice.Message(_app.BootMode);
+        }
         ShowUpdated();
         ShowUpdate();
         ShowScheduled();
