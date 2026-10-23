@@ -25,7 +25,7 @@
                 <TextBlock Text="{x:Bind svc:AppServices.Version}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" VerticalAlignment="Center" />
             </StackPanel>
             <AutoSuggestBox x:Name="GlobalSearch" Grid.Column="2" Width="340" Height="32" Margin="0,4,0,4"
-                            PlaceholderText="Search every setting" QueryIcon="Find"
+                            PlaceholderText="Search every setting (Ctrl+F)" QueryIcon="Find"
                             AutomationProperties.Name="Search every setting"
                             QuerySubmitted="OnGlobalSearch" />
         </Grid>
