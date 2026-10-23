@@ -32,7 +32,7 @@ public sealed class StartupTests : IDisposable
     public StartupTests()
     {
         _journal = new ChangeJournal(Path.Combine(_dir, "journal.jsonl"));
-        _engine = new TweakEngine([new RegistryHandler(_reg)], _journal);
+        _engine = new TweakEngine([new RegistryHandler(_reg), new StartupHandler(_reg)], _journal);
     }
 
     public void Dispose()
@@ -207,7 +207,7 @@ public sealed class StartupTests : IDisposable
         var entry = Entry(StartupOrigin.UserRun, "Spotify");
         _reg.Write(MarkOf(entry), new RegistryData(RegistryKind.Binary, StartupApproval.EnabledHex));
 
-        var result = _engine.Apply(StartupTweaks.TurnOff(entry, DateTimeOffset.Now), Guid.NewGuid());
+        var result = _engine.Apply(StartupTweaks.TurnOff(entry), Guid.NewGuid());
 
         Assert.True(result.Success);
         Assert.False(StartupApproval.IsEnabled(Bytes(_reg.Read(MarkOf(entry)).Data!.Value)));
@@ -218,7 +218,7 @@ public sealed class StartupTests : IDisposable
     {
         var entry = Entry(StartupOrigin.MachineRun, "Logi Tune");
         _reg.Write(MarkOf(entry), new RegistryData(RegistryKind.Binary, "060000000000000000000000"));
-        var tweak = StartupTweaks.TurnOff(entry, DateTimeOffset.Now);
+        var tweak = StartupTweaks.TurnOff(entry);
 
         Assert.True(_engine.Apply(tweak, Guid.NewGuid()).Success);
         Assert.True(_engine.Revert(tweak, Guid.NewGuid()).Success);
@@ -231,7 +231,7 @@ public sealed class StartupTests : IDisposable
     public void An_entry_that_had_no_mark_goes_back_to_having_none()
     {
         var entry = Entry(StartupOrigin.UserRun, "Fresh");
-        var tweak = StartupTweaks.TurnOff(entry, DateTimeOffset.Now);
+        var tweak = StartupTweaks.TurnOff(entry);
 
         Assert.True(_engine.Apply(tweak, Guid.NewGuid()).Success);
         Assert.True(_reg.Read(MarkOf(entry)).Exists);
@@ -247,17 +247,77 @@ public sealed class StartupTests : IDisposable
         _reg.Write(MarkOf(entry), new RegistryData(RegistryKind.Binary, "030000002BAE0723330FDC01"));
 
         // Nothing of .Clarion's is recorded for it, so Revert uses the on mark in Undo.
-        Assert.True(_engine.Revert(StartupTweaks.TurnOff(entry, DateTimeOffset.Now), Guid.NewGuid()).Success);
+        Assert.True(_engine.Revert(StartupTweaks.TurnOff(entry), Guid.NewGuid()).Success);
 
         Assert.True(StartupApproval.IsEnabled(Bytes(_reg.Read(MarkOf(entry)).Data!.Value)));
+    }
+
+    // ---- Checking that a change still holds. ----
+
+    [Fact]
+    public void A_turned_off_entry_still_holds_when_a_program_rewrites_the_mark_with_another_time()
+    {
+        var entry = Entry(StartupOrigin.UserRun, "Chatty");
+        var tweak = StartupTweaks.TurnOff(entry);
+        Assert.True(_engine.Apply(tweak, Guid.NewGuid()).Success);
+
+        _reg.Write(MarkOf(entry), new RegistryData(RegistryKind.Binary, "030000002BAE0723330FDC01"));
+
+        Assert.Empty(_engine.CheckRecorded(tweak).Broken);
+    }
+
+    [Fact]
+    public void An_entry_that_a_program_turned_back_on_is_reported_in_plain_words()
+    {
+        var entry = Entry(StartupOrigin.UserRun, "Spotify");
+        var tweak = StartupTweaks.TurnOff(entry);
+        Assert.True(_engine.Apply(tweak, Guid.NewGuid()).Success);
+
+        _reg.Write(MarkOf(entry), new RegistryData(RegistryKind.Binary, StartupApproval.EnabledHex));
+
+        var broken = Assert.Single(_engine.CheckRecorded(tweak).Broken);
+        Assert.Equal("Spotify is set to start with Windows again. A program can turn its own entry back on.", broken.Reason);
+    }
+
+    [Fact]
+    public void An_entry_whose_mark_was_deleted_counts_as_turned_on_again()
+    {
+        var entry = Entry(StartupOrigin.UserRun, "Gone");
+        var tweak = StartupTweaks.TurnOff(entry);
+        Assert.True(_engine.Apply(tweak, Guid.NewGuid()).Success);
+
+        _reg.DeleteValue(MarkOf(entry));
+
+        Assert.Single(_engine.CheckRecorded(tweak).Broken);
+    }
+
+    [Fact]
+    public void The_step_survives_the_history_file_and_belongs_to_the_account_that_made_it()
+    {
+        var mine = new SetStartupEnabled(StartupOrigin.UserRun, "App", false);
+        var ours = new SetStartupEnabled(StartupOrigin.MachineRun, "App", false);
+
+        Assert.Equal(mine, System.Text.Json.JsonSerializer.Deserialize<Operation>(System.Text.Json.JsonSerializer.Serialize<Operation>(mine)));
+        Assert.True(ChangeJournal.IsPerUser(mine));
+        Assert.False(ChangeJournal.IsPerUser(ours));
+        Assert.Equal("Stop App starting with Windows", mine.Describe());
+        Assert.Equal("Start App with Windows", (mine with { Enabled = true }).Describe());
     }
 
     [Fact]
     public void An_entry_for_every_account_is_changed_in_the_machine_hive_and_one_for_you_in_yours()
     {
-        Assert.Equal(RegistryHive.LocalMachine, ((SetRegistryValue)StartupTweaks.TurnOff(Entry(StartupOrigin.MachineRun32, "A"), DateTimeOffset.Now).Apply[0]).Target.Hive);
-        Assert.Equal(TweakScope.Machine, StartupTweaks.TurnOff(Entry(StartupOrigin.MachineFolder, "A.lnk"), DateTimeOffset.Now).Scope);
-        Assert.Equal(RegistryHive.CurrentUser, ((SetRegistryValue)StartupTweaks.TurnOff(Entry(StartupOrigin.UserFolder, "A.lnk"), DateTimeOffset.Now).Apply[0]).Target.Hive);
-        Assert.Equal(TweakScope.User, StartupTweaks.TurnOff(Entry(StartupOrigin.UserRun, "A"), DateTimeOffset.Now).Scope);
+        Assert.Equal(TweakScope.Machine, StartupTweaks.TurnOff(Entry(StartupOrigin.MachineRun32, "A")).Scope);
+        Assert.Equal(TweakScope.Machine, StartupTweaks.TurnOff(Entry(StartupOrigin.MachineFolder, "A.lnk")).Scope);
+        Assert.Equal(TweakScope.User, StartupTweaks.TurnOff(Entry(StartupOrigin.UserFolder, "A.lnk")).Scope);
+        Assert.Equal(TweakScope.User, StartupTweaks.TurnOff(Entry(StartupOrigin.UserRun, "A")).Scope);
+
+        // The mark is written in the hive the entry belongs to.
+        var user = Entry(StartupOrigin.UserRun, "Mine");
+        var machine = Entry(StartupOrigin.MachineRun, "Ours");
+        Assert.True(_engine.Apply(StartupTweaks.TurnOff(user), Guid.NewGuid()).Success);
+        Assert.True(_engine.Apply(StartupTweaks.TurnOff(machine), Guid.NewGuid()).Success);
+        Assert.True(_reg.Read(new RegistryTarget(RegistryHive.CurrentUser, StartupApproval.KeyOf(user.Origin), "Mine")).Exists);
+        Assert.True(_reg.Read(new RegistryTarget(RegistryHive.LocalMachine, StartupApproval.KeyOf(machine.Origin), "Ours")).Exists);
     }
 }

@@ -43,7 +43,7 @@ public sealed class RealStartupTests : IDisposable
         Assert.Contains("Microsoft", before.Program.Publisher, StringComparison.Ordinal);
 
         var runtime = EngineFactory.Create(_dir);
-        var tweak = StartupTweaks.TurnOff(before, DateTimeOffset.Now);
+        var tweak = StartupTweaks.TurnOff(before);
         Assert.True(runtime.Engine.Apply(tweak, Guid.NewGuid()).Success);
 
         var off = StartupList.Build(new WindowsStartupSource()).Single(e => e.Name == _name);

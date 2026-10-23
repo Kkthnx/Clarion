@@ -53,10 +53,8 @@ public static class StartupTweaks
     /// The change that turns an entry off. Turning it back on is its Revert, which puts back exactly what was there when .Clarion recorded
     /// the change, and otherwise the on mark in Undo, for an entry something else had turned off.
     /// </summary>
-    public static Tweak TurnOff(StartupEntry entry, DateTimeOffset now)
+    public static Tweak TurnOff(StartupEntry entry)
     {
-        var hex = StartupApproval.DisabledHex(now);
-        var target = new RegistryTarget(entry.NeedsAdmin ? RegistryHive.LocalMachine : RegistryHive.CurrentUser, StartupApproval.KeyOf(entry.Origin), entry.Name);
         return new Tweak
         {
             Id = entry.Id,
@@ -69,9 +67,9 @@ public static class StartupTweaks
             Evidence = Evidence.Situational,
             RiskLevel = RiskLevel.Safe,
             Scope = entry.NeedsAdmin ? TweakScope.Machine : TweakScope.User,
-            Apply = [new SetRegistryValue(target, new RegistryData(RegistryKind.Binary, hex))],
+            Apply = [new SetStartupEnabled(entry.Origin, entry.Name, false)],
             // Used when nothing was recorded, for example when Task Manager turned it off. A recorded change puts back exactly what was there.
-            Undo = [new SetRegistryValue(target, new RegistryData(RegistryKind.Binary, StartupApproval.EnabledHex))],
+            Undo = [new SetStartupEnabled(entry.Origin, entry.Name, true)],
         };
     }
 }

@@ -102,7 +102,7 @@ From the command line, `Clarion.exe --update-apps --preview` lists what would be
 
 ## Stop a program starting with Windows
 
-Open Windows, then the Startup tab. Each program that starts when you sign in has a switch. Turn it off and it stops starting, but it is not uninstalled and you can still open it by hand. The change takes effect the next time you sign in. To undo it, turn the switch on again, or press Turn back on beside it in Safety. Programs that start from a scheduled task or a service, or from a setting inside the program, are not on this list.
+Open Windows, then the Startup tab. Each program that starts when you sign in has a switch. Turn it off and it stops starting, but it is not uninstalled and you can still open it by hand. The change takes effect the next time you sign in. To undo it, turn the switch on again, or press Turn back on beside it in Safety. Verify checks it too, because some programs turn their own entry back on, and offers Turn off again when one has. Programs that start from a scheduled task or a service, or from a setting inside the program, are not on this list.
 
 ## Fix a problem
 

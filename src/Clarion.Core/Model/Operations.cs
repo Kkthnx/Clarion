@@ -8,6 +8,7 @@ public enum ServiceStartType { Automatic, AutomaticDelayed, Manual, Disabled }
 [JsonDerivedType(typeof(SetRegistryValue), "registry.set")]
 [JsonDerivedType(typeof(DeleteRegistryValue), "registry.delete")]
 [JsonDerivedType(typeof(SetRegistryListEntry), "registry.list-entry")]
+[JsonDerivedType(typeof(SetStartupEnabled), "startup.set")]
 [JsonDerivedType(typeof(SetServiceStartType), "service.start-type")]
 [JsonDerivedType(typeof(SetTaskEnabled), "task.set-enabled")]
 [JsonDerivedType(typeof(RemoveAppxPackage), "appx.remove")]
@@ -42,6 +43,15 @@ public sealed record SetRegistryValue(RegistryTarget Target, RegistryData Data, 
 public sealed record DeleteRegistryValue(RegistryTarget Target, string? PruneTo = null) : Operation
 {
     public override string Describe() => $"Delete {Target}";
+}
+
+/// <summary>
+/// Turns a program that starts with Windows on or off by changing Windows' own mark for it, the one Task Manager reads. The entry and the
+/// program are left alone. It holds while the entry is in the state asked for, whatever else the mark carries, such as the time.
+/// </summary>
+public sealed record SetStartupEnabled(Startup.StartupOrigin Origin, string Name, bool Enabled) : Operation
+{
+    public override string Describe() => $"{(Enabled ? "Start" : "Stop")} {Name} {(Enabled ? "with" : "starting with")} Windows";
 }
 
 public sealed record SetServiceStartType(string Name, ServiceStartType StartType) : Operation

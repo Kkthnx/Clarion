@@ -76,7 +76,7 @@ public sealed partial class VerifyPage : Page
         if (pending is { IsPending: true })
             RestartBar.Message = Clarion.Core.Reports.RestartNotice.Message(pending.Reasons, report.Checked, scanAgain: true);
 
-        var stopped = _app.StoppedChecking().Select(x => new StoppedRow(x.Item.Id, x.Item.Name, $"Applied {x.Applied.LocalDateTime:g}")).ToList();
+        var stopped = _app.StoppedChecking().Select(x => new StoppedRow(x.Id, x.Name, $"Applied {x.Applied.LocalDateTime:g}")).ToList();
         StoppedRows.ItemsSource = stopped;
         StoppedSection.Visibility = stopped.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
@@ -91,13 +91,14 @@ public sealed partial class VerifyPage : Page
             UnreadableBar.Message = $"{string.Join(", ", report.Unreadable.Select(NameOf))} could not be checked this time. Scan again in a moment.";
     }
 
-    private string NameOf(string id) => _app.Items.FirstOrDefault(i => i.Id == id)?.Name ?? id;
+    private string NameOf(string id) => _app.TweakFor(id)?.Name ?? id;
 
     private static DriftRow Row(DriftItem item, DriftReport report)
     {
         // The exact registry and service steps are for Expert mode. Everyone else gets one plain sentence.
         var steps = string.Join("\n", item.Changed);
-        var detail = item.IsReturnedApp || item.Changed.Any(c => c.Contains("installed", StringComparison.OrdinalIgnoreCase)) ? steps
+        var startup = Clarion.Core.Startup.StartupTweaks.IsStartupId(item.Tweak.Id);
+        var detail = item.IsReturnedApp || startup || item.Changed.Any(c => c.Contains("installed", StringComparison.OrdinalIgnoreCase)) ? steps
             : AppServices.Instance.ExpertMode ? "No longer in effect. Windows or another program put it back.\n" + steps
             : "No longer in effect. Windows or another program put it back.";
         if (report.AdviceFor(item.Tweak.Id) is { } advice) detail += "\n" + advice;
@@ -105,19 +106,34 @@ public sealed partial class VerifyPage : Page
         // One time is news. A setting Windows keeps undoing is worth knowing about, and fixing it again may not last.
         if (report.TimesChangedBack.TryGetValue(item.Tweak.Id, out var times) && times >= 2)
             when += (when.Length > 0 ? ". " : "") + $"Changed back {times} times so far.";
-        return new DriftRow(item.Tweak.Id, item.Tweak.Name, when, detail, item.Tweak.Apply.Any(o => o is Clarion.Core.Model.RemoveAppxPackage) ? "Remove again" : "Put back");
+        return new DriftRow(item.Tweak.Id, item.Tweak.Name, when, detail, item.Tweak.Apply.Any(o => o is Clarion.Core.Model.RemoveAppxPackage) ? "Remove again" : startup ? "Turn off again" : "Put back");
     }
 
-    private void OnFixOne(object sender, RoutedEventArgs e)
+    private async void OnFixOne(object sender, RoutedEventArgs e)
     {
-        if (sender is Button { Tag: string id }) _app.QueueFix([id]);
+        if (sender is not Button { Tag: string id }) return;
+        if (Clarion.Core.Startup.StartupTweaks.IsStartupId(id)) await FixStartupAsync([id]);
+        else _app.QueueFix([id]);
+    }
+
+    /// <summary>A startup entry is turned off again at once, as it was the first time, and the check is run again.</summary>
+    private async Task FixStartupAsync(IEnumerable<string> ids)
+    {
+        var problem = await _app.FixStartupAsync(ids);
+        if (problem is not null) SummaryText.Text = problem;
+        else await ScanAsync(fresh: true);
     }
 
     private void OnFixApps(object sender, RoutedEventArgs e) =>
         _app.QueueFix(_app.Drift?.ReturnedApps.Select(i => i.Tweak.Id) ?? []);
 
-    private void OnFixSettings(object sender, RoutedEventArgs e) =>
-        _app.QueueFix(_app.Drift?.ChangedBack.Select(i => i.Tweak.Id) ?? []);
+    private async void OnFixSettings(object sender, RoutedEventArgs e)
+    {
+        var ids = _app.Drift?.ChangedBack.Select(i => i.Tweak.Id).ToList() ?? [];
+        var startup = ids.Where(Clarion.Core.Startup.StartupTweaks.IsStartupId).ToList();
+        if (startup.Count > 0) await FixStartupAsync(startup);
+        _app.QueueFix(ids.Except(startup));
+    }
 
     private async void OnWatchAgain(object sender, RoutedEventArgs e)
     {

@@ -221,7 +221,7 @@ public sealed partial class AppServices : UiObservableObject
         if (!IsElevated) return "Changing what starts needs administrator rights, because .Clarion records every change. Use Restart as administrator on Home.";
         if (IsChangingThisPc) return "Wait for the job that is running to finish first.";
 
-        var tweak = Clarion.Core.Startup.StartupTweaks.TurnOff(entry, DateTimeOffset.Now);
+        var tweak = Clarion.Core.Startup.StartupTweaks.TurnOff(entry);
         TweakResult result;
         try
         {
@@ -475,20 +475,43 @@ public sealed partial class AppServices : UiObservableObject
         (_troubleshooter ??= new Troubleshooter(Runtime.Journal)).Suspects(symptom, Items.Select(i => i.Tweak).ToList(), since);
 
     /// <summary>Settings the person told Clarion to stop checking, with when they were applied.</summary>
-    public IReadOnlyList<(TweakItem Item, DateTimeOffset Applied)> StoppedChecking() =>
+    public IReadOnlyList<(string Id, string Name, DateTimeOffset Applied)> StoppedChecking() =>
         Runtime.Journal.ReleasedByTweak()
-            .Select(kv => (Item: Items.FirstOrDefault(i => i.Id.Equals(kv.Key, StringComparison.OrdinalIgnoreCase)), Applied: kv.Value[0].Time))
-            .Where(x => x.Item is not null)
-            .Select(x => (x.Item!, x.Applied))
+            .Select(kv => (Tweak: TweakFor(kv.Key), Applied: kv.Value[0].Time))
+            .Where(x => x.Tweak is not null)
+            .Select(x => (x.Tweak!.Id, x.Tweak.Name, x.Applied))
             .OrderByDescending(x => x.Applied)
             .ToList();
+
+    /// <summary>The change for an id: a catalog setting, or a startup change worked out from the id itself. Null for anything else.</summary>
+    public Tweak? TweakFor(string id) =>
+        Items.FirstOrDefault(i => i.Id == id)?.Tweak
+        ?? (Clarion.Core.Startup.StartupTweaks.EntryFromId(id) is { } entry ? Clarion.Core.Startup.StartupTweaks.TurnOff(entry) : null);
+
+    /// <summary>The startup changes .Clarion made that are still on, so Verify can check that they hold.</summary>
+    private IEnumerable<Tweak> StartupTweaksInHistory() =>
+        Runtime.Journal.OutstandingByTweak().Keys
+            .Select(Clarion.Core.Startup.StartupTweaks.EntryFromId).OfType<Clarion.Core.Startup.StartupEntry>()
+            .Where(e => Items.All(i => i.Id != e.Id))
+            .Select(Clarion.Core.Startup.StartupTweaks.TurnOff);
+
+    /// <summary>Turns off again the startup entries that came back on. Null when it worked, otherwise the first reason.</summary>
+    public async Task<string?> FixStartupAsync(IEnumerable<string> ids)
+    {
+        foreach (var entry in ids.Select(Clarion.Core.Startup.StartupTweaks.EntryFromId).OfType<Clarion.Core.Startup.StartupEntry>())
+        {
+            var problem = await SetStartupAsync(entry, enabled: false);
+            if (problem is not null) return problem;
+        }
+        return null;
+    }
 
     /// <summary>Starts checking a setting again. Windows is not changed.</summary>
     public async Task WatchAgainAsync(string id)
     {
-        var item = Items.FirstOrDefault(i => i.Id == id);
-        if (item is null) return;
-        await Task.Run(() => Runtime.Engine.Resume(item.Tweak, Guid.NewGuid()));
+        var tweak = TweakFor(id);
+        if (tweak is null) return;
+        await Task.Run(() => Runtime.Engine.Resume(tweak, Guid.NewGuid()));
         Log.Write($"{id}: checking again");
         await RefreshStatesAsync();
     }
@@ -535,7 +558,8 @@ public sealed partial class AppServices : UiObservableObject
     public async Task<DriftReport> VerifyAsync(bool fresh, IProgress<(int Done, int Total)>? progress = null)
     {
         var previous = Drift;
-        var tweaks = Items.Select(i => i.Tweak).ToList();
+        // A startup change is not in the catalog, so the ones in the history are added here to be checked like any other.
+        var tweaks = Items.Select(i => i.Tweak).Concat(StartupTweaksInHistory()).ToList();
         var report = await Task.Run(() => Runtime.Drift.Scan(tweaks, Profile, fresh, progress));
         PendingRestartNow = Clarion.Core.SystemInfo.PendingRestart.Check(new WindowsPendingRestartProbe());
         // A scan saves the build it saw, so the next one would forget a feature update that already happened this session.
@@ -583,9 +607,9 @@ public sealed partial class AppServices : UiObservableObject
     /// <summary>Accepts a change made outside Clarion. Windows is left as it is and the setting is no longer checked.</summary>
     public async Task StopTrackingAsync(string id)
     {
-        var item = Items.FirstOrDefault(i => i.Id == id);
-        if (item is null) return;
-        await Task.Run(() => Runtime.Engine.Release(item.Tweak, Guid.NewGuid()));
+        var tweak = TweakFor(id);
+        if (tweak is null) return;
+        await Task.Run(() => Runtime.Engine.Release(tweak, Guid.NewGuid()));
         Log.Write($"{id}: stopped tracking");
         await RefreshStatesAsync();
     }

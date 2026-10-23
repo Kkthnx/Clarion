@@ -47,6 +47,7 @@ public static class EngineFactory
             new DnsHandler(new WindowsDnsStore(runner)),
             new WingetHandler(winget),
             new RegistryListHandler(registry),
+            new StartupHandler(registry),
             new NvidiaHandler(new NvapiDriverStore()),
         };
         var journal = new ChangeJournal(Path.Combine(dir, "journal.jsonl"), System.Security.Principal.WindowsIdentity.GetCurrent().User?.Value);

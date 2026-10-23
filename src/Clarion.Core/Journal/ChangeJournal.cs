@@ -40,6 +40,7 @@ public sealed class ChangeJournal
         SetRegistryValue s => s.Target.Hive == RegistryHive.CurrentUser,
         DeleteRegistryValue d => d.Target.Hive == RegistryHive.CurrentUser,
         SetRegistryListEntry l => l.Target.Hive == RegistryHive.CurrentUser,
+        SetStartupEnabled s => s.Origin is Startup.StartupOrigin.UserRun or Startup.StartupOrigin.UserFolder,
         RemoveAppxPackage r => !r.AllUsers,
         RestoreAppxPackage => true,
         // An app installed for one account is in that account's profile, so another administrator must not see it as theirs or revert it.

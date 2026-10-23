@@ -32,7 +32,7 @@ public sealed record StartupEntry(
     public string Id => StartupTweaks.IdOf(Origin, Name);
 
     /// <summary>Entries kept for every account need administrator rights to change.</summary>
-    public bool NeedsAdmin => Origin is StartupOrigin.MachineRun or StartupOrigin.MachineRun32 or StartupOrigin.MachineFolder;
+    public bool NeedsAdmin => !StartupApproval.IsPerUser(Origin);
 
     /// <summary>A part of Windows or its security that .Clarion does not offer to stop. The reason is in <see cref="Warning"/>.</summary>
     public bool IsProtected => StartupList.IsProtected(this);
@@ -70,6 +70,9 @@ public static class StartupApproval
         BitConverter.GetBytes(when.ToFileTime()).CopyTo(bytes, 4);
         return Convert.ToHexString(bytes);
     }
+
+    /// <summary>True for the places that belong to the signed in account. The others are for every account.</summary>
+    public static bool IsPerUser(StartupOrigin origin) => origin is StartupOrigin.UserRun or StartupOrigin.UserFolder;
 
     /// <summary>The key under the hive's Explorer folder that holds the mark for entries of this origin.</summary>
     public static string KeyOf(StartupOrigin origin) =>
