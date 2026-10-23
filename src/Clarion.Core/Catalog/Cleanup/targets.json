@@ -145,6 +145,7 @@
     "benefit": "Frees disk space, often several gigabytes.",
     "risk": "None. Games stay installed.",
     "riskLevel": "Safe",
+    "appName": "Steam",
     "processes": [
       "steam"
     ],
@@ -169,6 +170,7 @@
     "benefit": "Frees disk space and fixes a stuck or damaged cache.",
     "risk": "None.",
     "riskLevel": "Safe",
+    "appName": "Discord",
     "processes": [
       "Discord",
       "DiscordPTB",
@@ -227,6 +229,7 @@
     "benefit": "Fixes a stuck store page and frees space.",
     "risk": "None.",
     "riskLevel": "Safe",
+    "appName": "the Epic Games Launcher",
     "processes": [
       "EpicGamesLauncher",
       "EpicWebHelper"
@@ -252,6 +255,7 @@
     "benefit": "Fixes a stuck app and frees space.",
     "risk": "None.",
     "riskLevel": "Safe",
+    "appName": "Battle.net",
     "processes": [
       "Battle.net",
       "Agent"
@@ -281,6 +285,7 @@
     "benefit": "Fixes blank Steam pages and frees space.",
     "risk": "None.",
     "riskLevel": "Safe",
+    "appName": "Steam",
     "processes": [
       "steam",
       "steamwebhelper"
@@ -306,6 +311,7 @@
     "benefit": "Fixes a stuck app and frees space.",
     "risk": "None.",
     "riskLevel": "Safe",
+    "appName": "the EA app",
     "processes": [
       "EADesktop",
       "EABackgroundService"
@@ -331,6 +337,7 @@
     "benefit": "Fixes a stuck app and frees space.",
     "risk": "None.",
     "riskLevel": "Safe",
+    "appName": "Ubisoft Connect",
     "processes": [
       "UbisoftConnect",
       "upc",
@@ -357,6 +364,7 @@
     "benefit": "Fixes a stuck app and frees space.",
     "risk": "None.",
     "riskLevel": "Safe",
+    "appName": "GOG Galaxy",
     "processes": [
       "GalaxyClient"
     ],
@@ -382,6 +390,7 @@
     "benefit": "Clears stale data after patches and frees space.",
     "risk": "None. The first launch loads a little slower.",
     "riskLevel": "Safe",
+    "appName": "World of Warcraft",
     "processes": [
       "Wow",
       "WowClassic",
@@ -410,6 +419,7 @@
     "benefit": "Frees disk space and can fix a page that will not load properly.",
     "risk": "None. Only files the browser downloads again are removed.",
     "riskLevel": "Safe",
+    "appName": "Google Chrome",
     "processes": [
       "chrome"
     ],
@@ -444,6 +454,7 @@
     "benefit": "Frees disk space and can fix a page that will not load properly.",
     "risk": "None. Only files the browser downloads again are removed.",
     "riskLevel": "Safe",
+    "appName": "Microsoft Edge",
     "processes": [
       "msedge"
     ],
@@ -478,6 +489,7 @@
     "benefit": "Frees disk space and can fix a page that will not load properly.",
     "risk": "None. Only files the browser downloads again are removed.",
     "riskLevel": "Safe",
+    "appName": "Brave",
     "processes": [
       "brave"
     ],
@@ -512,6 +524,7 @@
     "benefit": "Frees disk space and can fix a page that will not load properly.",
     "risk": "None. Only files the browser downloads again are removed.",
     "riskLevel": "Safe",
+    "appName": "Firefox",
     "processes": [
       "firefox"
     ],

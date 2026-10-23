@@ -48,7 +48,7 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
     {
         var running = RunningFor(target);
         if (running.Count > 0)
-            return new TargetClean(target.Id, 0, 0, 0, 0, [$"Close {string.Join(", ", running)} first."], Skipped: true);
+            return new TargetClean(target.Id, 0, 0, 0, 0, [$"Close {target.CloseLabel(running)} first."], Skipped: true);
 
         long freed = 0;
         var deleted = 0;

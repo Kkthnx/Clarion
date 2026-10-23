@@ -127,7 +127,7 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
             if (_busy) return "Cleaning";
             if (_result is not null) return string.Join(" ", _result.Notes.Count > 0 ? _result.Notes : [$"{_result.FilesDeleted} files removed."]);
             if (_scan is null) return "";
-            if (_scan.RunningApps.Count > 0) return $"Close {string.Join(", ", _scan.RunningApps)} first";
+            if (_scan.RunningApps.Count > 0) return $"Close {Target.CloseLabel(_scan.RunningApps)} first";
             return _scan.Present ? $"{_scan.Files} files" : "Not on this PC";
         }
     }
@@ -135,7 +135,7 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
     private static IReadOnlyList<string> BuildNotes(CleanTarget t)
     {
         var notes = new List<string>();
-        if (t.Processes.Count > 0) notes.Add($"Skipped while {t.Processes[0]} is running, so no open file is touched.");
+        if (t.Processes.Count > 0) notes.Add($"Skipped while {t.CloseLabel(t.Processes)} is running, so no open file is touched.");
         if (t.MinAgeHours > 0) notes.Add($"Only files untouched for {t.MinAgeHours} hours are removed.");
         if (t.QueueLockedAtRestart) notes.Add("Files held open by the driver are removed at the next restart.");
         notes.Add(".Clarion shows a preview first and counts only files it really deleted.");

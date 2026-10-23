@@ -62,6 +62,12 @@ public sealed record CleanTarget
     /// <summary>Process names that keep these files open. The row is skipped while one is running.</summary>
     public IReadOnlyList<string> Processes { get; init; } = [];
 
+    /// <summary>The program as a person knows it, for "Close Battle.net first". A process name such as Agent means nothing to most people.</summary>
+    public string? AppName { get; init; }
+
+    /// <summary>What to ask the person to close: the program's name, or the running process names when the row has none.</summary>
+    public string CloseLabel(IReadOnlyList<string> running) => AppName ?? string.Join(", ", running);
+
     /// <summary>Only files untouched for this many hours are removed. Zero removes everything.</summary>
     public int MinAgeHours { get; init; }
 
