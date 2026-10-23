@@ -212,5 +212,8 @@
         <ListView x:Name="List" Grid.Row="3" Padding="0,0,14,0" SelectionMode="None" SizeChanged="OnListSizeChanged"
                   IsItemClickEnabled="False"
                   ItemTemplate="{StaticResource RoomyRow}" ItemContainerStyle="{StaticResource CardListViewItemStyle}" />
+        <TextBlock x:Name="EmptyText" Grid.Row="3" Visibility="Collapsed" TextWrapping="Wrap" MaxWidth="520" Margin="0,24,0,0"
+                   HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center"
+                   Foreground="{ThemeResource ClTextMutedBrush}" />
     </Grid>
 </Page>

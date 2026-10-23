@@ -215,6 +215,9 @@ public sealed partial class TweakListPage : Page
             var total = useChooser ? inScope.Count - dns.Count + 1 : inScope.Count;
             var shown = items.Count + (Chooser.Visibility == Visibility.Visible ? 1 : 0);
             CountText.Text = shown == total ? $"{shown} settings" : $"{shown} of {total} settings";
+            var hidesRiskier = !_app.ExpertMode;
+            EmptyText.Text = shown == 0 ? SearchMatch.EmptyMessage(_query, _filter != "all" || _topic.Length > 0, hidesRiskier) : "";
+            EmptyText.Visibility = shown == 0 ? Visibility.Visible : Visibility.Collapsed;
         }
         finally
         {
@@ -223,10 +226,7 @@ public sealed partial class TweakListPage : Page
     }
 
     private bool Matches(TweakItem i) =>
-        _query.Length == 0 ||
-        i.Name.Contains(_query, StringComparison.CurrentCultureIgnoreCase) ||
-        i.Summary.Contains(_query, StringComparison.CurrentCultureIgnoreCase) ||
-        i.ExactChanges.Any(c => c.Contains(_query, StringComparison.CurrentCultureIgnoreCase));
+        _query.Length == 0 || SearchMatch.Matches(_query, [i.Name, i.Summary, i.Tweak.Topic, i.Category, .. i.ExactChanges]);
 
     private bool PassesFilter(TweakItem i) => _filter switch
     {

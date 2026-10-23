@@ -147,7 +147,7 @@ public sealed partial class AppMark : UserControl
                 {
                     // A file that is gone, cannot be read or has no usable icon leaves the letter tile. This runs in an async void method,
                     // where an exception that escapes would end the app, and a missing picture is never worth that.
-                    Log.Write($"Icon {path} could not be read: {ex.Message}");
+                    Log.Write($"Icon {path} could not be read: {(ex.Message.Length > 0 ? ex.Message : ex.GetType().Name)} (0x{ex.HResult:X8})");
                 }
             }
         }
