@@ -1117,7 +1117,7 @@ Stop the pop-up when Shift is pressed five times.
 - **Benefit:** No interruptions in games and fast typing.
 - **Risk:** None. Sticky Keys can still be turned on from Settings.
 - **Changes:**
-  - `Set HKCU\Control Panel\Accessibility\StickyKeys\Flags to 506 (String)`
+  - `Turn bit 0x4 off in HKCU\Control Panel\Accessibility\StickyKeys\Flags (String)`
 - **Needs:** signing out
 
 ## Install

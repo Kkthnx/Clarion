@@ -15,9 +15,10 @@ public sealed class RegistryHandler(IRegistryStore store) : IOperationHandler
         {
             case SetRegistryValue set:
                 var now = store.Read(set.Target);
-                return now.Exists && now.Data is not null
-                       && now.Data.Kind == set.Data.Kind
-                       && string.Equals(now.Data.Value, set.Data.Value, StringComparison.OrdinalIgnoreCase);
+                if (!now.Exists || now.Data is null || now.Data.Kind != set.Data.Kind) return false;
+                return set.Mask is null
+                    ? string.Equals(now.Data.Value, set.Data.Value, StringComparison.OrdinalIgnoreCase)
+                    : RegistryBits.Matches(now.Data.Value, set.Data.Value, set.Mask);
             case DeleteRegistryValue del:
                 return !store.Read(del.Target).Exists;
             default:
@@ -47,13 +48,25 @@ public sealed class RegistryHandler(IRegistryStore store) : IOperationHandler
         switch (op)
         {
             case SetRegistryValue set:
-                store.Write(set.Target, set.Data);
+                store.Write(set.Target, WithOtherBitsKept(set));
                 break;
             case DeleteRegistryValue del:
                 store.DeleteValue(del.Target);
                 if (del.PruneTo is not null) store.PruneEmptyKeys(del.Target, del.PruneTo);
                 break;
         }
+    }
+
+    /// <summary>
+    /// What to write for a step that owns only some bits: the value now in Windows with those bits changed. When there is no value yet,
+    /// or it is a different kind, the step's own value is written whole.
+    /// </summary>
+    private RegistryData WithOtherBitsKept(SetRegistryValue set)
+    {
+        if (set.Mask is null) return set.Data;
+        var now = store.Read(set.Target);
+        if (!now.Exists || now.Data is null || now.Data.Kind != set.Data.Kind) return set.Data;
+        return RegistryBits.Merge(now.Data.Value, set.Data.Value, set.Mask) is { } merged ? set.Data with { Value = merged } : set.Data;
     }
 }
 

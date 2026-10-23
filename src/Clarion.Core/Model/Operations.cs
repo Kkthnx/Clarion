@@ -27,9 +27,15 @@ public abstract record Operation
     public abstract string Describe();
 }
 
-public sealed record SetRegistryValue(RegistryTarget Target, RegistryData Data) : Operation
+/// <summary>
+/// Sets a value. When Mask is set, the value holds flags and only the bits of the mask are this step's business: they are checked and
+/// written, and every other bit is left as Windows or the person has it.
+/// </summary>
+public sealed record SetRegistryValue(RegistryTarget Target, RegistryData Data, string? Mask = null) : Operation
 {
-    public override string Describe() => $"Set {Target} to {Data.Value} ({Data.Kind})";
+    public override string Describe() => Mask is null
+        ? $"Set {Target} to {Data.Value} ({Data.Kind})"
+        : $"Turn {RegistryBits.Describe(Data.Value, Mask)} in {Target} ({Data.Kind})";
 }
 
 /// <summary>Deletes a value. When PruneTo is set, empty keys below that path are removed too.</summary>

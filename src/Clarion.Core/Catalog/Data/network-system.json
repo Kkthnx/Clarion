@@ -458,7 +458,8 @@
         "data": {
           "kind": "String",
           "value": "506"
-        }
+        },
+        "mask": "4"
       }
     ],
     "undo": [
@@ -472,14 +473,15 @@
         "data": {
           "kind": "String",
           "value": "510"
-        }
+        },
+        "mask": "4"
       }
     ],
     "recommendation": "Recommended",
     "advice": "Suggested for everyone who does not use Sticky Keys, especially gamers.",
     "facts": [
       "The usual default flag value is 510",
-      "Setting 506 clears only the hotkey bit that opens the prompt",
+      "Only the hotkey bit (4) is changed, so any other flags kept in the value stay as they are",
       "Sticky Keys can still be turned on in Settings",
       "Sign out to apply"
     ],

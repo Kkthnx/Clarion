@@ -118,7 +118,7 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
     /// </summary>
     public DriftCheck CheckRecorded(Tweak tweak, IReadOnlyList<JournalEntry>? recorded = null)
     {
-        var ops = (recorded ?? journal.OutstandingFor(tweak.Id)).Select(e => e.Operation).ToList();
+        var ops = (recorded ?? journal.OutstandingFor(tweak.Id)).Select(e => WithCatalogMask(e.Operation, tweak)).ToList();
         if (ops.Count == 0) ops = tweak.Apply.ToList();
         var applicable = ops.Where(o => _handlers.Any(h => h.Handles(o)) && HandlerFor(o).IsApplicable(o)).ToList();
         var broken = applicable.Where(o => !HandlerFor(o).IsSatisfied(o))
@@ -126,6 +126,15 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
             .ToList();
         return new DriftCheck(applicable.Count, broken);
     }
+
+    /// <summary>
+    /// A step recorded before the catalog learned which bits of a value it owns has no mask. It is checked with the catalog's mask when the
+    /// catalog has the same step with one, so a value of flags that Windows rewrote in bits that are not ours does not show as changed back.
+    /// </summary>
+    private static Operation WithCatalogMask(Operation recorded, Tweak tweak) =>
+        recorded is SetRegistryValue { Mask: null } step
+            ? tweak.Apply.OfType<SetRegistryValue>().FirstOrDefault(c => c.Mask is not null && c.Target == step.Target && c.Data == step.Data) ?? recorded
+            : recorded;
 
     /// <summary>
     /// Starts checking a setting again that the person had told Clarion to stop checking. Windows is not changed. The earlier

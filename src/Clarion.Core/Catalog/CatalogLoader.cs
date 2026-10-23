@@ -177,6 +177,13 @@ public static class CatalogLoader
                             errors.Add($"{t.Id}: QWord value is not a valid unsigned number: {s.Data.Value}");
                         if (s.Data.Kind is RegistryKind.Binary && !IsHex(s.Data.Value))
                             errors.Add($"{t.Id}: Binary value is not whole bytes in hex: {s.Data.Value}");
+                        if (s.Mask is not null)
+                        {
+                            if (s.Data.Kind is not (RegistryKind.String or RegistryKind.DWord or RegistryKind.QWord))
+                                errors.Add($"{t.Id}: a bit mask needs a String, DWord or QWord value.");
+                            else if (!RegistryBits.TryParse(s.Mask, out var mask) || mask == 0 || !RegistryBits.TryParse(s.Data.Value, out _))
+                                errors.Add($"{t.Id}: a bit mask and its value must be plain numbers, and the mask cannot be 0: {s.Mask}");
+                        }
                         break;
                     case DeleteRegistryValue d:
                         CheckRegistry(t, d.Target, errors);
