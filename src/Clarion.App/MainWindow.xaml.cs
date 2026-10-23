@@ -102,7 +102,7 @@ public sealed partial class MainWindow : Window
             });
             body.Children.Add(box);
             var dialog = new ContentDialog { Title = "Open this link yourself", Content = body, PrimaryButtonText = "Copy address", CloseButtonText = "Close", XamlRoot = Content.XamlRoot };
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            if (await Dialogs.ShowWhenFree(dialog) == ContentDialogResult.Primary)
             {
                 var package = new Windows.ApplicationModel.DataTransfer.DataPackage();
                 package.SetText(address);
@@ -116,13 +116,15 @@ public sealed partial class MainWindow : Window
     {
         if (!_app.IsChangingThisPc) return;
         args.Cancel = true;
-        await new ContentDialog
+        // A job's log or a question may be open already, and WinUI shows one dialog at a time. That one is in front of the person, so it
+        // is left alone and the window just stays open.
+        await Dialogs.ShowIfFree(new ContentDialog
         {
             Title = ".Clarion is still working",
             Content = "Closing now could leave a change half done. Wait for it to finish, then close the window.",
             CloseButtonText = "OK",
             XamlRoot = Content.XamlRoot,
-        }.ShowAsync();
+        });
     }
 
     private void OnGlobalSearch(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) => OpenSearch(args.QueryText.Trim());
@@ -789,11 +791,14 @@ public sealed partial class MainWindow : Window
 
     private static void RestartExplorer()
     {
+        // Only the Explorer of this sign in. With another account signed in at the same time, its Explorer is not ours to close.
+        using var self = Process.GetCurrentProcess();
+        var session = self.SessionId;
         foreach (var p in Process.GetProcessesByName("explorer"))
         {
             using (p)
             {
-                try { p.Kill(); } catch (InvalidOperationException) { } catch (System.ComponentModel.Win32Exception) { }
+                try { if (p.SessionId == session) p.Kill(); } catch (InvalidOperationException) { } catch (System.ComponentModel.Win32Exception) { }
             }
         }
     }
