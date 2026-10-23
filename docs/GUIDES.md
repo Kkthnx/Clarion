@@ -100,6 +100,10 @@ An update cannot be undone from .Clarion, because winget keeps no copy of the ol
 
 From the command line, `Clarion.exe --update-apps --preview` lists what would be updated and changes nothing. `--only app.git,app.vscode` limits it to the apps named, and `--accept-package-agreements` is the licence box.
 
+## Stop a program starting with Windows
+
+Open Windows, then the Startup tab. Each program that starts when you sign in has a switch. Turn it off and it stops starting, but it is not uninstalled and you can still open it by hand. The change takes effect the next time you sign in. To undo it, turn the switch on again, or press Turn back on beside it in Safety. Programs that start from a scheduled task or a service, or from a setting inside the program, are not on this list.
+
 ## Fix a problem
 
 - **Something stopped working after a change.** Open **What broke**, pick the symptom, and optionally the date it last worked. You get the changes .Clarion made that could explain it, newest first, each with a **Queue revert** button.

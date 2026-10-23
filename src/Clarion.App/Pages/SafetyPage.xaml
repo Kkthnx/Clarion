@@ -78,7 +78,7 @@
                                     <TextBlock Text="{x:Bind Detail}" FontSize="12" TextWrapping="Wrap" FontFamily="Cascadia Mono"
                                                Foreground="{ThemeResource ClTextSecondaryBrush}" />
                                 </StackPanel>
-                                <Button Grid.Column="1" Content="Queue revert" VerticalAlignment="Center"
+                                <Button Grid.Column="1" Content="{x:Bind RevertText}" VerticalAlignment="Center"
                                         Click="OnRevertOne" Tag="{x:Bind TweakId}" IsEnabled="{x:Bind CanRevert}" />
                             </Grid>
                         </Border>

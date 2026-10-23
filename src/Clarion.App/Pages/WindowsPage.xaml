@@ -17,6 +17,7 @@
             <SelectorBarItem Text="Network" Tag="network" />
             <SelectorBarItem Text="Windows features" Tag="features" />
             <SelectorBarItem Text="Updates" Tag="updates" />
+            <SelectorBarItem Text="Startup" Tag="startup" />
             <SelectorBarItem Text="Services" Tag="services" />
         </SelectorBar>
         <Frame x:Name="Inner" Grid.Row="1" />

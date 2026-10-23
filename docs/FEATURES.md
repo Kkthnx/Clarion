@@ -63,7 +63,7 @@ Exact values below are the intended implementation. Each must be re-verified aga
 | Menu show delay | `MenuShowDelay` | C | Safe |
 | Animations | Presets for visual effects, with reduced motion option | S | Safe |
 | Startup delay | Remove the artificial startup app delay (`Serialize` key) | S | Low |
-| Startup items manager | List, measure impact, disable user choices | P | Low |
+| Startup items manager | Lists the Run keys and both Startup folders with a switch for each. Writes the same on and off mark Task Manager does, so nothing is deleted. Recorded and revertible. Impact is not measured, since Windows keeps no number a program can read. Windows Security is not offered. | P | Safe |
 | Game Mode and hardware scheduling | Toggle with a note that benefit depends on GPU and driver | S | Low |
 | Windowed game optimizations | Toggle the per user setting | S | Safe |
 | Fast Startup | Toggle `HiberbootEnabled`, explained as a cause of stale boot state | S | Safe |

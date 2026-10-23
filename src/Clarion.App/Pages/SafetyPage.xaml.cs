@@ -72,13 +72,15 @@ public sealed partial class SafetyPage : Page
         {
             var item = _app.Items.FirstOrDefault(i => i.Id == id);
             var first = outstanding[0];
+            // A startup change is not in the catalog. It is made at once and is turned back on at once, from here or from the Startup tab.
+            var startup = item is null && Clarion.Core.Startup.StartupTweaks.IsStartupId(id);
             rows.Add(new HistoryRow(
                 id,
-                item?.Name ?? id,
+                item?.Name ?? Clarion.Core.Startup.StartupTweaks.NameOf(id),
                 $"Applied {first.Time.LocalDateTime:g}",
                 string.Join("\n", outstanding.Select(o => o.Operation.Describe())),
-                item is { IsApplied: true })
-            { AppliedAt = first.Time });
+                item is { IsApplied: true } || startup)
+            { AppliedAt = first.Time, RevertText = startup ? "Turn back on" : "Queue revert" });
         }
         // Newest first by the real time. Sorting the text "Applied 10/9/2026" is alphabetical, not chronological.
         History.ItemsSource = rows.OrderByDescending(r => r.AppliedAt).ToList();
@@ -89,6 +91,8 @@ public sealed partial class SafetyPage : Page
     private void OnSaveChanges(object sender, RoutedEventArgs e)
     {
         var names = _app.Items.GroupBy(i => i.Id).ToDictionary(g => g.Key, g => g.First().Name);
+        foreach (var id in _app.Runtime.Journal.OutstandingByTweak().Keys.Where(Clarion.Core.Startup.StartupTweaks.IsStartupId))
+            names.TryAdd(id, Clarion.Core.Startup.StartupTweaks.NameOf(id));
         var text = Clarion.Core.Feedback.Sanitizer.Clean(
             Clarion.Core.Reports.ChangeReport.Build(_app.Runtime.Journal.OutstandingByTweak(), names, DateTimeOffset.Now, AppServices.Version),
             Environment.UserName, Environment.MachineName);
@@ -107,9 +111,16 @@ public sealed partial class SafetyPage : Page
         }
     }
 
-    private void OnRevertOne(object sender, RoutedEventArgs e)
+    private async void OnRevertOne(object sender, RoutedEventArgs e)
     {
-        if (sender is Button { Tag: string id }) QueueRevert(id);
+        if (sender is not Button { Tag: string id } button) return;
+        if (Clarion.Core.Startup.StartupTweaks.EntryFromId(id) is { } entry && _app.Items.All(i => i.Id != id))
+        {
+            button.IsEnabled = false;
+            var problem = await _app.SetStartupAsync(entry, enabled: true);
+            if (problem is not null) SinceStatus.Text = problem;
+        }
+        else QueueRevert(id);
         Rebuild();
     }
 
@@ -164,4 +175,5 @@ public sealed record RestoreRow(string Description, string When);
 public sealed record HistoryRow(string TweakId, string Name, string When, string Detail, bool CanRevert)
 {
     public DateTimeOffset AppliedAt { get; init; }
+    public string RevertText { get; init; } = "Queue revert";
 }

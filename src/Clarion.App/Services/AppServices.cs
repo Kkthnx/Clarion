@@ -206,6 +206,37 @@ public sealed partial class AppServices : UiObservableObject
     public bool IsElevated => Runtime.Runner.IsElevated;
     public Clarion.Core.SystemInfo.BootMode BootMode { get; } = Clarion.Engine.WindowsBootMode.Detect();
 
+    /// <summary>What starts with Windows on this PC, read from the Run keys and the Startup folders.</summary>
+    public Task<IReadOnlyList<Clarion.Core.Startup.StartupEntry>> ReadStartupAsync() =>
+        Task.Run(() => Clarion.Core.Startup.StartupList.Build(new WindowsStartupSource()));
+
+    /// <summary>
+    /// Turns a startup entry on or off at once, through the engine, so it is recorded and can be reverted like any other change. Nothing is
+    /// deleted. Null when it worked, otherwise the reason in plain words.
+    /// </summary>
+    public async Task<string?> SetStartupAsync(Clarion.Core.Startup.StartupEntry entry, bool enabled)
+    {
+        if (entry.IsProtected) return "This is part of Windows Security, so .Clarion leaves it as it is.";
+        // The history lives in a folder only administrators can write to, and a change that cannot be recorded is not made.
+        if (!IsElevated) return "Changing what starts needs administrator rights, because .Clarion records every change. Use Restart as administrator on Home.";
+        if (IsChangingThisPc) return "Wait for the job that is running to finish first.";
+
+        var tweak = Clarion.Core.Startup.StartupTweaks.TurnOff(entry, DateTimeOffset.Now);
+        TweakResult result;
+        try
+        {
+            result = await Task.Run(() => enabled ? Runtime.Engine.Revert(tweak, Guid.NewGuid()) : Runtime.Engine.Apply(tweak, Guid.NewGuid()));
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            Log.Write($"{entry.Id}: {ex.Message}");
+            return ex.Message;
+        }
+        Log.Write($"{entry.Id}: {(enabled ? "turned on" : "turned off")}{(result.Success ? "" : " failed " + result.Error)}");
+        if (result.Success) OnPropertyChanged(nameof(DriftCount));
+        return result.Success ? null : result.Error ?? "It did not work.";
+    }
+
     private bool _expertMode;
     private bool _isBusy;
     private string _status = "Reading your system";

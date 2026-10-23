@@ -12,7 +12,7 @@ public sealed partial class WindowsPage : Page
     /// <summary>The tab shown last, so coming back to the page lands where the person left it. Also how another page asks for one.</summary>
     public static string Tab { get; set; } = DefaultTab;
 
-    private static readonly string[] TabNames = ["tweaks", "power", "network", "features", "updates", "services"];
+    private static readonly string[] TabNames = ["tweaks", "power", "network", "features", "updates", "startup", "services"];
 
     /// <summary>True for the names of the tabs this page shows.</summary>
     public static bool IsTab(string tag) => TabNames.Contains(tag);
@@ -39,6 +39,12 @@ public sealed partial class WindowsPage : Page
 
     private void Show(string tag)
     {
+        if (tag == "startup")
+        {
+            Inner.Navigate(typeof(StartupPage));
+            Inner.BackStack.Clear();
+            return;
+        }
         if (tag == "services")
         {
             Inner.Navigate(typeof(ServicesPage));
