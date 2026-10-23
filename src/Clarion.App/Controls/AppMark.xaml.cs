@@ -19,9 +19,6 @@ public sealed partial class AppMark : UserControl
     public static readonly DependencyProperty LabelProperty =
         DependencyProperty.Register(nameof(Label), typeof(string), typeof(AppMark), new PropertyMetadata("", (d, _) => ((AppMark)d).Refresh()));
 
-    public static readonly DependencyProperty IsWatermarkProperty =
-        DependencyProperty.Register(nameof(IsWatermark), typeof(bool), typeof(AppMark), new PropertyMetadata(false, (d, _) => ((AppMark)d).Refresh()));
-
     public static readonly DependencyProperty ImagePathProperty =
         DependencyProperty.Register(nameof(ImagePath), typeof(string), typeof(AppMark), new PropertyMetadata(null, (d, _) => ((AppMark)d).OnImagePathChanged()));
     public static readonly DependencyProperty LogoFileProperty =
@@ -54,9 +51,6 @@ public sealed partial class AppMark : UserControl
 
     /// <summary>The app's name. Its first character is shown when there is no logo.</summary>
     public string Label { get => (string)GetValue(LabelProperty); set => SetValue(LabelProperty, value); }
-
-    /// <summary>A faded mark behind other content. With no logo nothing is drawn, since a lone letter would only be noise.</summary>
-    public bool IsWatermark { get => (bool)GetValue(IsWatermarkProperty); set => SetValue(IsWatermarkProperty, value); }
 
     /// <summary>The icon file of the installed app. It stands in for the letter tile when there is no logo.</summary>
     public string? ImagePath { get => (string?)GetValue(ImagePathProperty); set => SetValue(ImagePathProperty, value); }
@@ -105,9 +99,13 @@ public sealed partial class AppMark : UserControl
     {
         var side = Math.Min(e.NewSize.Width, e.NewSize.Height);
         Letter.FontSize = Math.Max(10, side * 0.45);
-        _padding = side * 0.17;
+        // A mark in a tile is wide, so it gets less room around it than a square one has, and its words stay readable.
+        _padding = side * 0.06;
         if (_tiled) Glyph.Margin = new Thickness(_padding);
     }
+
+    /// <summary>The widest outline, as width over height, that is drawn inside a tile. Wider than this it would be a sliver at icon size.</summary>
+    private const double MostWideAspect = 3.0;
 
     private double _padding;
     private bool _tiled;
@@ -157,10 +155,10 @@ public sealed partial class AppMark : UserControl
     {
         // Drawing waits for the control to be in the tree, where the theme is known. Loaded draws it once with every property already set.
         if (!_loaded) return;
-        // A thin outline is not readable at icon size, so it gives way to the letter tile: a very thin one everywhere, and a wide one
-        // in a small slot. A faded watermark has the room, so it always shows the real outline.
+        // A thin outline is not readable at icon size, so it gives way to the letter tile: a very thin one everywhere, and any wide one
+        // in a small slot. A wide or word shaped outline up to three times as wide as it is tall sits in a tile, and is readable in a full size slot.
         var small = (double.IsNaN(Width) ? ActualWidth : Width) < 32;
-        var icon = Icon is { } i && (IsWatermark || i.Shape == LogoShape.Square || (i.Shape == LogoShape.Wide && !small)) ? i : null;
+        var icon = Icon is { } i && (i.Shape == LogoShape.Square || (!small && i.Aspect < MostWideAspect)) ? i : null;
 
         if (icon is not null && TryShowOutline(icon)) return;
         ShowLetterOrPhoto();
@@ -187,8 +185,20 @@ public sealed partial class AppMark : UserControl
 
     private void ShowOutline(AppIcon icon)
     {
-        // A wide outline sits inside a plain tile so it reads as a mark and not a stray line.
-        _tiled = !IsWatermark && icon.Shape == LogoShape.Wide;
+        // A wide outline sits inside a tile so it reads as a mark and not a stray line.
+        _tiled = icon.Shape != LogoShape.Square;
+        // In a High Contrast theme the colours are the person's own choice, so a brand colour is not used at all.
+        var highContrast = Accessibility.HighContrast;
+        // A brand colour dark enough for white to read on it fills the tile and the mark is white, the way an app icon usually looks. Any other
+        // colour keeps the plain tile and its own colour for the mark.
+        var onBrand = _tiled && !highContrast && icon.Luminance <= 0.30;
+        if (_tiled)
+        {
+            var (br, bg, bb) = icon.Rgb;
+            var brand = new SolidColorBrush(Windows.UI.Color.FromArgb(255, br, bg, bb));
+            Tile.Background = onBrand ? brand : ThemeBrushes.Get("ClSurface2", ActualTheme);
+            Tile.BorderBrush = onBrand ? brand : ThemeBrushes.Get("ClBorder", ActualTheme);
+        }
         Tile.Visibility = _tiled ? Visibility.Visible : Visibility.Collapsed;
         Letter.Visibility = Visibility.Collapsed;
         Glyph.Margin = _tiled ? new Thickness(_padding) : new Thickness(0);
@@ -203,10 +213,12 @@ public sealed partial class AppMark : UserControl
         }
         // A dark logo on a dark card, or a pale one on a light card, would disappear, so the text colour stands in.
         var dark = ActualTheme != ElementTheme.Light;
-        // In a High Contrast theme the colours are the person's own choice, so a brand colour is not used at all.
-        var highContrast = Accessibility.HighContrast;
-        Glyph.Visibility = IsWatermark && highContrast ? Visibility.Collapsed : Visibility.Visible;
-        if (!highContrast && icon.ReadableOn(dark))
+        Glyph.Visibility = Visibility.Visible;
+        if (onBrand)
+        {
+            Glyph.Fill = new SolidColorBrush(Microsoft.UI.Colors.White);
+        }
+        else if (!highContrast && icon.ReadableOn(dark))
         {
             var (r, g, b) = icon.Rgb;
             Glyph.Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(255, r, g, b));
@@ -223,12 +235,27 @@ public sealed partial class AppMark : UserControl
         Glyph.Visibility = Visibility.Collapsed;
         _shownPath = null;
         // No outline: the picture saved inside the program, which was looked at one by one, then the icon of the installed app if Windows lists one (some are a generic installer icon), and last the letter tile.
-        var bundled = !IsWatermark && Bundled.Source is not null;
-        var photo = !IsWatermark && !bundled && Photo.Source is not null;
+        var bundled = Bundled.Source is not null;
+        var photo = !bundled && Photo.Source is not null;
         Photo.Visibility = photo ? Visibility.Visible : Visibility.Collapsed;
         Bundled.Visibility = bundled ? Visibility.Visible : Visibility.Collapsed;
-        Tile.Visibility = IsWatermark || photo || bundled ? Visibility.Collapsed : Visibility.Visible;
+        Tile.Visibility = photo || bundled ? Visibility.Collapsed : Visibility.Visible;
         Letter.Visibility = Visibility.Visible;
-        Letter.Text = Label.Length > 0 ? char.ToUpperInvariant(Label[0]).ToString() : "";
+        var letter = AppTileColors.LetterOf(Label);
+        Letter.Text = letter;
+        // A tile of its own tint for each app, so a list of them is told apart at a glance and none looks like a missing picture.
+        if (!Accessibility.HighContrast && letter.Length > 0)
+        {
+            var (tile, ink) = AppTileColors.For(Label, ActualTheme != ElementTheme.Light);
+            Tile.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, tile.R, tile.G, tile.B));
+            Tile.BorderBrush = ThemeBrushes.Get("ClBorder", ActualTheme);
+            Letter.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, ink.R, ink.G, ink.B));
+        }
+        else
+        {
+            Tile.Background = ThemeBrushes.Get("ClSurface2", ActualTheme);
+            Tile.BorderBrush = ThemeBrushes.Get("ClBorder", ActualTheme);
+            Letter.Foreground = ThemeBrushes.Get("ClTextSecondary", ActualTheme);
+        }
     }
 }

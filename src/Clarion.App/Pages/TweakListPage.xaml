@@ -33,10 +33,6 @@
         <DataTemplate x:Key="RoomyRow" x:DataType="svc:TweakItem">
                         <Border Padding="18,14,16,14" Opacity="{x:Bind RowOpacity, Mode=OneWay}">
                           <Grid>
-                            <!-- For an app, its logo faded far back behind the card, behind the switch, so it never sits under the text. -->
-                            <controls:AppMark Icon="{x:Bind Icon}" Label="{x:Bind Name}" IsWatermark="True" Width="84" Height="84"
-                                              Opacity="0.07" IsHitTestVisible="False" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                              Margin="0,0,6,0" Visibility="{x:Bind IsApp}" />
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
