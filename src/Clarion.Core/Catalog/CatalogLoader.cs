@@ -86,8 +86,10 @@ public static class CatalogLoader
             if (t.Irreversible && t.RiskLevel < RiskLevel.Medium) errors.Add($"{t.Id}: an irreversible row must be Medium risk or higher.");
             foreach (var rule in t.Rules)
             {
-                var path = rule switch { Cleanup.FolderRule f => f.Path, Cleanup.FilePatternRule p => p.Folder, _ => null };
+                var path = rule switch { Cleanup.FolderRule f => f.Path, Cleanup.FilePatternRule p => p.Folder, Cleanup.ProfileFoldersRule r => r.Root, _ => null };
                 if (path is null) continue;
+                if (rule is Cleanup.ProfileFoldersRule pf && (pf.Folders.Count == 0 || pf.Folders.Any(f => !Actions.ActionRules.IsPlainName(f))))
+                    errors.Add($"{t.Id}: the folders of a profile rule must be plain folder names.");
                 if (path.Contains("..", StringComparison.Ordinal)) errors.Add($"{t.Id}: path must not contain .. : {path}");
                 if (!CleanupTokens.Any(tok => path.StartsWith(tok, StringComparison.OrdinalIgnoreCase)))
                     errors.Add($"{t.Id}: path must start with a known folder token: {path}");

@@ -148,6 +148,7 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
         FilePatternRule p => $"{p.Folder}\\{p.Pattern}",
         SteamShaderRule => "steamapps\\shadercache in every Steam library",
         WowCacheRule => "Cache folder of each World of Warcraft version",
+        ProfileFoldersRule r => $"{string.Join(", ", r.Folders)} in every profile of {r.Root}",
         RecycleBinRule => "The Recycle Bin on every drive",
         EventLogsRule => "Classic Windows event logs, never Security",
         _ => rule.GetType().Name,

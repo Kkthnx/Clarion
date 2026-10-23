@@ -8,6 +8,7 @@ namespace Clarion.Core.Cleanup;
 [JsonDerivedType(typeof(FilePatternRule), "files")]
 [JsonDerivedType(typeof(SteamShaderRule), "steam-shaders")]
 [JsonDerivedType(typeof(WowCacheRule), "wow-cache")]
+[JsonDerivedType(typeof(ProfileFoldersRule), "profile-folders")]
 [JsonDerivedType(typeof(RecycleBinRule), "recycle-bin")]
 [JsonDerivedType(typeof(EventLogsRule), "event-logs")]
 public abstract record CleanRule;
@@ -23,6 +24,12 @@ public sealed record SteamShaderRule : CleanRule;
 
 /// <summary>The Cache folder of each installed World of Warcraft version.</summary>
 public sealed record WowCacheRule : CleanRule;
+
+/// <summary>
+/// Named folders inside every profile folder of a program, such as the Cache and Code Cache folders in each profile of a browser.
+/// The profile folders are whatever sits directly below Root, so a second profile is found without being listed.
+/// </summary>
+public sealed record ProfileFoldersRule(string Root, IReadOnlyList<string> Folders) : CleanRule;
 
 public sealed record RecycleBinRule : CleanRule;
 

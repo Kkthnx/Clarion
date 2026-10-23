@@ -395,6 +395,140 @@
     ]
   },
   {
+    "id": "browsers.chrome",
+    "group": "Browser caches",
+    "name": "Google Chrome cache",
+    "summary": "Web files Chrome keeps so pages load faster.",
+    "advice": "Suggested when pages look broken or out of date, or to free space. Close Chrome first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your logins, history, bookmarks and passwords are kept",
+      "Pages load a little slower once while the cache fills again",
+      "Covers every profile, in its Cache, Code Cache and GPUCache folders",
+      "Skipped while Chrome is open, including in the background"
+    ],
+    "benefit": "Frees disk space and can fix a page that will not load properly.",
+    "risk": "None. Only files the browser downloads again are removed.",
+    "riskLevel": "Safe",
+    "processes": [
+      "chrome"
+    ],
+    "rules": [
+      {
+        "type": "profile-folders",
+        "root": "%LOCALAPPDATA%\\Google\\Chrome\\User Data",
+        "folders": [
+          "Cache",
+          "Code Cache",
+          "GPUCache"
+        ]
+      }
+    ],
+    "sources": [
+      "https://chromium.googlesource.com/chromium/src/+/HEAD/docs/user_data_dir.md"
+    ]
+  },
+  {
+    "id": "browsers.edge",
+    "group": "Browser caches",
+    "name": "Microsoft Edge cache",
+    "summary": "Web files Edge keeps so pages load faster.",
+    "advice": "Suggested when pages look broken or out of date, or to free space. Close Edge first. It can keep running in the background after its window closes.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your logins, history, bookmarks and passwords are kept",
+      "Pages load a little slower once while the cache fills again",
+      "Covers every profile, in its Cache, Code Cache and GPUCache folders",
+      "Skipped while Edge is open, including in the background"
+    ],
+    "benefit": "Frees disk space and can fix a page that will not load properly.",
+    "risk": "None. Only files the browser downloads again are removed.",
+    "riskLevel": "Safe",
+    "processes": [
+      "msedge"
+    ],
+    "rules": [
+      {
+        "type": "profile-folders",
+        "root": "%LOCALAPPDATA%\\Microsoft\\Edge\\User Data",
+        "folders": [
+          "Cache",
+          "Code Cache",
+          "GPUCache"
+        ]
+      }
+    ],
+    "sources": [
+      "https://chromium.googlesource.com/chromium/src/+/HEAD/docs/user_data_dir.md"
+    ]
+  },
+  {
+    "id": "browsers.brave",
+    "group": "Browser caches",
+    "name": "Brave cache",
+    "summary": "Web files Brave keeps so pages load faster.",
+    "advice": "Suggested when pages look broken or out of date, or to free space. Close Brave first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your logins, history, bookmarks and passwords are kept",
+      "Pages load a little slower once while the cache fills again",
+      "Covers every profile, in its Cache, Code Cache and GPUCache folders",
+      "Skipped while Brave is open, including in the background"
+    ],
+    "benefit": "Frees disk space and can fix a page that will not load properly.",
+    "risk": "None. Only files the browser downloads again are removed.",
+    "riskLevel": "Safe",
+    "processes": [
+      "brave"
+    ],
+    "rules": [
+      {
+        "type": "profile-folders",
+        "root": "%LOCALAPPDATA%\\BraveSoftware\\Brave-Browser\\User Data",
+        "folders": [
+          "Cache",
+          "Code Cache",
+          "GPUCache"
+        ]
+      }
+    ],
+    "sources": [
+      "https://chromium.googlesource.com/chromium/src/+/HEAD/docs/user_data_dir.md"
+    ]
+  },
+  {
+    "id": "browsers.firefox",
+    "group": "Browser caches",
+    "name": "Firefox cache",
+    "summary": "Web files Firefox keeps so pages load faster.",
+    "advice": "Suggested when pages look broken or out of date, or to free space. Close Firefox first.",
+    "recommendation": "Optional",
+    "facts": [
+      "Your logins, history, bookmarks and passwords are kept, they live in a different folder",
+      "Pages load a little slower once while the cache fills again",
+      "Covers the cache2 folder of every profile",
+      "The Microsoft Store version of Firefox keeps its cache elsewhere and is not covered"
+    ],
+    "benefit": "Frees disk space and can fix a page that will not load properly.",
+    "risk": "None. Only files the browser downloads again are removed.",
+    "riskLevel": "Safe",
+    "processes": [
+      "firefox"
+    ],
+    "rules": [
+      {
+        "type": "profile-folders",
+        "root": "%LOCALAPPDATA%\\Mozilla\\Firefox\\Profiles",
+        "folders": [
+          "cache2"
+        ]
+      }
+    ],
+    "sources": [
+      "https://support.mozilla.org/en-US/questions/1336259"
+    ]
+  },
+  {
     "id": "windows.temp",
     "group": "Windows",
     "name": "Temporary files",

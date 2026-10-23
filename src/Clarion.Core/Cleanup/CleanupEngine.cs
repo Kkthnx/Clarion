@@ -136,6 +136,13 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
                 foreach (var version in platform.WowVersionFolders())
                     yield return (Path.Combine(version, "Cache"), "*", IsWowFolder(version));
                 break;
+            case ProfileFoldersRule p:
+                var root = platform.Expand(p.Root);
+                if (!Directory.Exists(root)) break;
+                foreach (var profile in Directory.EnumerateDirectories(root))
+                    foreach (var name in p.Folders)
+                        yield return (Path.Combine(profile, name), "*", false);
+                break;
         }
     }
 

@@ -136,6 +136,7 @@ public static class CatalogSite
         FilePatternRule p => $"Files named {p.Pattern} in {p.Folder}",
         SteamShaderRule => "The shader cache folder in every Steam library",
         WowCacheRule => "The Cache folder of each installed World of Warcraft version",
+        ProfileFoldersRule r => $"{string.Join(", ", r.Folders)} inside each profile folder of {r.Root}",
         RecycleBinRule => "The Recycle Bin",
         EventLogsRule => "Windows event logs. The Security log is never cleared.",
         _ => rule.GetType().Name,
