@@ -57,11 +57,21 @@ public sealed record BatchResult(Guid BatchId, IReadOnlyList<BatchItem> Items, s
 public sealed class BatchRunner(TweakEngine engine, IRestorePointService restorePoints, Func<bool> isElevated)
 {
     public TweakEngine Engine => engine;
+
+    /// <summary>Forgets what was read earlier and reads what these settings need again, together, so slow lookups overlap.</summary>
+    private void Refresh(IEnumerable<Tweak> tweaks)
+    {
+        engine.Invalidate();
+        engine.WarmUp(tweaks.ToList());
+    }
     public bool IsElevated => isElevated();
 
     /// <summary>Applies the first list and reverts the second as one run, with a single restore point.</summary>
     public BatchResult Execute(IReadOnlyList<Tweak> toApply, IReadOnlyList<Tweak> toRevert, MachineProfile profile, BatchOptions options, Action<string>? log = null)
     {
+        // What was read when the window opened may be out of date by now, since Windows or the person can change a setting in between. A run
+        // decides what to skip and what to put back from a read of its own, and each kind of setting is only read again when the run needs it.
+        Refresh(toApply.Concat(toRevert));
         var counter = new StepCounter(toApply.Count + toRevert.Count, options.Step);
         var gate = new RestorePointGate(restorePoints, options, log);
         var applied = toApply.Count > 0 ? ApplyCore(toApply, profile, options, log, counter, gate) : new BatchResult(Guid.NewGuid(), []);
@@ -77,8 +87,11 @@ public sealed class BatchRunner(TweakEngine engine, IRestorePointService restore
         return new BatchResult(applied.BatchId, applied.Items.Concat(reverted.Items).ToList(), null, applied.NotStarted + reverted.NotStarted);
     }
 
-    public BatchResult Apply(IReadOnlyList<Tweak> tweaks, MachineProfile profile, BatchOptions options, Action<string>? log = null) =>
-        ApplyCore(tweaks, profile, options, log, new StepCounter(tweaks.Count, options.Step), new RestorePointGate(restorePoints, options, log));
+    public BatchResult Apply(IReadOnlyList<Tweak> tweaks, MachineProfile profile, BatchOptions options, Action<string>? log = null)
+    {
+        Refresh(tweaks);
+        return ApplyCore(tweaks, profile, options, log, new StepCounter(tweaks.Count, options.Step), new RestorePointGate(restorePoints, options, log));
+    }
 
     /// <summary>Makes the restore point once per run, the first time something is about to change, and remembers the answer.</summary>
     private sealed class RestorePointGate(IRestorePointService service, BatchOptions options, Action<string>? log)
@@ -147,8 +160,11 @@ public sealed class BatchRunner(TweakEngine engine, IRestorePointService restore
         return new BatchResult(batch, items, null, notStarted);
     }
 
-    public BatchResult Revert(IReadOnlyList<Tweak> tweaks, Action<string>? log = null, Action<BatchStep>? step = null) =>
-        RevertCore(tweaks, log, new StepCounter(tweaks.Count, step));
+    public BatchResult Revert(IReadOnlyList<Tweak> tweaks, Action<string>? log = null, Action<BatchStep>? step = null)
+    {
+        Refresh(tweaks);
+        return RevertCore(tweaks, log, new StepCounter(tweaks.Count, step));
+    }
 
     private BatchResult RevertCore(IReadOnlyList<Tweak> tweaks, Action<string>? log, StepCounter counter, CancellationToken stop = default)
     {

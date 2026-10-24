@@ -166,24 +166,30 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
         foreach (var file in Walk(folder, pattern))
         {
             cancel.ThrowIfCancellationRequested();
-            try
-            {
-                var info = new FileInfo(file);
-                if (minAgeHours > 0 && info.LastWriteTimeUtc > cutoff) continue;
-                bytes += info.Length;
-                count++;
-            }
-            catch (IOException) { }
-            catch (UnauthorizedAccessException) { }
+            if (minAgeHours > 0 && file.LastWriteUtc > cutoff) continue;
+            bytes += file.Length;
+            count++;
         }
         return (bytes, count);
     }
 
-    /// <summary>Files under a folder. Links are never followed.</summary>
-    private static IEnumerable<string> Walk(string folder, string pattern)
+    /// <summary>A file found by <see cref="Walk"/>, with what the folder listing already says about it.</summary>
+    private readonly record struct Found(string Path, long Length, DateTime LastWriteUtc, FileAttributes Attributes);
+
+    /// <summary>
+    /// Files under a folder. Links are never followed. The size, the time and the attributes come with the listing of the folder, because
+    /// asking Windows about each file on its own took about a millisecond a file in a temp folder of 16 000 files, which was 14 seconds
+    /// for a scan that the listing itself does in a third of a second.
+    /// </summary>
+    private static IEnumerable<Found> Walk(string folder, string pattern)
     {
         var options = new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true, AttributesToSkip = FileAttributes.ReparsePoint };
-        return Directory.EnumerateFiles(folder, pattern, options);
+        return new System.IO.Enumeration.FileSystemEnumerable<Found>(
+            folder, (ref System.IO.Enumeration.FileSystemEntry e) => new Found(e.ToFullPath(), e.Length, e.LastWriteTimeUtc.UtcDateTime, e.Attributes), options)
+        {
+            ShouldIncludePredicate = (ref System.IO.Enumeration.FileSystemEntry e) =>
+                !e.IsDirectory && (pattern == "*" || System.IO.Enumeration.FileSystemName.MatchesSimpleExpression(pattern, e.FileName, ignoreCase: true)),
+        };
     }
 
     private static string SafeFileName(string name) =>
@@ -202,30 +208,30 @@ public sealed class CleanupEngine(ICleanupPlatform platform)
         foreach (var file in Walk(folder, pattern).ToList())
         {
             cancel.ThrowIfCancellationRequested();
+            var path = file.Path;
             try
             {
-                var info = new FileInfo(file);
-                if (minAgeHours > 0 && info.LastWriteTimeUtc > cutoff) continue;
-                currentFile?.Invoke(file);
-                var size = info.Length;
+                if (minAgeHours > 0 && file.LastWriteUtc > cutoff) continue;
+                currentFile?.Invoke(path);
+                var size = file.Length;
                 if (preview)
                 {
                     // The preview cannot delete, so it asks Windows whether the file could be deleted right now.
-                    if (queueLocked && platform.IsLocked(file)) { locked++; queuedFiles.Add(file); continue; }
+                    if (queueLocked && platform.IsLocked(path)) { locked++; queuedFiles.Add(path); continue; }
                     freed += size;
                     deleted++;
                     continue;
                 }
 
-                if ((info.Attributes & FileAttributes.ReadOnly) != 0) info.Attributes &= ~FileAttributes.ReadOnly;
-                info.Delete();
+                if ((file.Attributes & FileAttributes.ReadOnly) != 0) File.SetAttributes(path, file.Attributes & ~FileAttributes.ReadOnly);
+                File.Delete(path);
                 freed += size;
                 deleted++;
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
                 locked++;
-                if (queueLocked && platform.QueueDeleteAtRestart(file)) { queued++; queuedFiles.Add(file); }
+                if (queueLocked && platform.QueueDeleteAtRestart(path)) { queued++; queuedFiles.Add(path); }
             }
         }
 

@@ -52,6 +52,28 @@ public sealed unsafe class NvapiDriverStore : INvidiaDriverStore
         }
     }
 
+    public IReadOnlyDictionary<uint, uint?> ReadMany(IEnumerable<uint> ids)
+    {
+        var wanted = ids.Distinct().ToList();
+        lock (_gate)
+        {
+            RequireLoaded();
+            return InSession(save: false, (session, profile) =>
+            {
+                var found = new Dictionary<uint, uint?>();
+                foreach (var id in wanted)
+                {
+                    var setting = NewSetting();
+                    var status = _getSetting(session, profile, id, &setting);
+                    if (status == SettingNotFound) { found[id] = null; continue; }
+                    Check(status, "read the setting");
+                    found[id] = setting.CurrentValue;
+                }
+                return found;
+            });
+        }
+    }
+
     public void Write(uint id, uint value)
     {
         lock (_gate)

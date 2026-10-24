@@ -12,6 +12,12 @@ public interface INvidiaDriverStore
     /// <summary>The stored value, or null when the profile holds none and the driver default applies.</summary>
     uint? Read(uint id);
 
+    /// <summary>
+    /// The stored values of several settings. A store that has to open the driver's settings for every read can override this to open them
+    /// once, which is what makes reading a handful of settings quick.
+    /// </summary>
+    IReadOnlyDictionary<uint, uint?> ReadMany(IEnumerable<uint> ids) => ids.Distinct().ToDictionary(id => id, Read);
+
     void Write(uint id, uint value);
 
     /// <summary>Removes the stored value, so the driver default applies again.</summary>

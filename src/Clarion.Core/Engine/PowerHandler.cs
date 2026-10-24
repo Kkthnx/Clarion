@@ -7,11 +7,31 @@ namespace Clarion.Core.Engine;
 /// <summary>Switches the active power plan and the hibernation setting, and remembers the previous choice.</summary>
 public sealed class PowerHandler(IPowerStore store) : IOperationHandler
 {
+    private readonly object _gate = new();
+    private IReadOnlyList<PowerPlan>? _plans;
+
     public bool Handles(Operation op) => op is SetPowerPlan or SetHibernation;
+
+    // Listing the plans starts powercfg, and every power setting asks twice, so the list is kept until something is written or Invalidate
+    // is called. What an undo records is read fresh, so a plan switched since the last read is never put back wrongly.
+    private IReadOnlyList<PowerPlan> Plans()
+    {
+        lock (_gate) return _plans ??= store.List();
+    }
+
+    public void Warm(IReadOnlyList<Operation> operations)
+    {
+        if (operations.Any(o => o is SetPowerPlan)) Plans();
+    }
+
+    public void Invalidate()
+    {
+        lock (_gate) _plans = null;
+    }
 
     public bool IsApplicable(Operation op) => op switch
     {
-        SetPowerPlan p => p.Plan == "ultimate" || PowerPlans.Resolve(p.Plan, store.List()) is not null,
+        SetPowerPlan p => p.Plan == "ultimate" || PowerPlans.Resolve(p.Plan, Plans()) is not null,
         SetHibernation => store.IsHibernationEnabled() is not null,
         _ => false,
     };
@@ -21,7 +41,7 @@ public sealed class PowerHandler(IPowerStore store) : IOperationHandler
         switch (op)
         {
             case SetPowerPlan p:
-                var plans = store.List();
+                var plans = Plans();
                 var target = PowerPlans.Resolve(p.Plan, plans);
                 var active = plans.FirstOrDefault(x => x.IsActive);
                 return target is not null && active is not null && active.Guid == target.Guid;
@@ -41,6 +61,12 @@ public sealed class PowerHandler(IPowerStore store) : IOperationHandler
     };
 
     public void Execute(Operation op)
+    {
+        try { Run(op); }
+        finally { Invalidate(); }
+    }
+
+    private void Run(Operation op)
     {
         switch (op)
         {

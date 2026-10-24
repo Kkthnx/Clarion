@@ -209,6 +209,37 @@ public sealed class CleanupTests : IDisposable
     }
 
     [Fact]
+    public void The_pattern_ignores_case_and_a_read_only_file_is_still_removed_and_counted()
+    {
+        var upper = Make("Explorer\\THUMBCACHE_32.DB", 100);
+        var locked = Make("Explorer\\thumbcache_idx.db", 250);
+        File.SetAttributes(locked, FileAttributes.ReadOnly);
+        var t = Target("th", rules: [new FilePatternRule("%LOCALAPPDATA%\\Explorer", "thumbcache_*.db")]);
+
+        var scan = _engine.Scan(t);
+        var result = _engine.Clean(t, false, false, null, default);
+
+        Assert.Equal((350, 2), (scan.Bytes, scan.Files));
+        Assert.Equal((350, 2), (result.BytesFreed, result.FilesDeleted));
+        Assert.False(File.Exists(upper));
+        Assert.False(File.Exists(locked));
+    }
+
+    [Fact]
+    public void The_age_limit_uses_the_time_the_folder_listing_reports()
+    {
+        var old = Make("Tmp\\old.bin", 100, DateTime.UtcNow.AddHours(-48));
+        var fresh = Make("Tmp\\fresh.bin", 100, DateTime.UtcNow.AddHours(-1));
+        var t = Target("t", age: 24, rules: [new FolderRule("%LOCALAPPDATA%\\Tmp")]);
+
+        Assert.Equal((100, 1), (_engine.Scan(t).Bytes, _engine.Scan(t).Files));
+        _engine.Clean(t, false, false, null, default);
+
+        Assert.False(File.Exists(old));
+        Assert.True(File.Exists(fresh));
+    }
+
+    [Fact]
     public void Folder_wildcard_in_the_last_segment_matches_numbered_folders()
     {
         var a = Make("Epic\\webcache\\x.bin");
