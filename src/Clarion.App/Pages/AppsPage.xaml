@@ -8,7 +8,6 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -21,18 +20,13 @@
             </InfoBar.Content>
         </InfoBar>
 
-        <!-- Updates are not part of the queue, because an update cannot be reverted. They have their own list, with nothing ticked at first. -->
-        <Grid Grid.Row="1" Margin="32,12,32,0" ColumnSpacing="12">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button x:Name="UpdatesButton" Content="Check for app updates" Click="OnCheckUpdates"
-                    ToolTipService.ToolTip="Asks winget which of your installed apps have a newer version. You choose which to update. Nothing changes until you do." />
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}"
-                       Text="You pick which installed apps to update. An update cannot be undone from .Clarion." />
-        </Grid>
+        <Frame x:Name="Inner" Grid.Row="1" />
 
-        <Frame x:Name="Inner" Grid.Row="2" />
+        <!-- Updates are not part of the queue, because an update cannot be reverted. They have their own list, with nothing ticked at first.
+             The button sits at the right end of the page title, where there is room, so the list below it keeps its height. -->
+        <Button x:Name="UpdatesButton" Grid.Row="1" Content="Check for app updates" Click="OnCheckUpdates"
+                HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,30,32,0"
+                AutomationProperties.HelpText="You pick which installed apps to update. An update cannot be undone from .Clarion."
+                ToolTipService.ToolTip="Asks winget which of your installed apps have a newer version. You choose which to update. Nothing changes until you do. An update cannot be undone from .Clarion." />
     </Grid>
 </Page>

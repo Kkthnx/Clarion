@@ -359,7 +359,7 @@ public sealed partial class MainWindow : Window
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = Content.XamlRoot,
         };
-        var result = await dialog.ShowAsync();
+        var result = await Dialogs.ShowWhenFree(dialog);
         _app.UpdateSettings(s => s with { FirstRunDone = true });
 
         if (result != ContentDialogResult.Primary) return;
@@ -613,7 +613,7 @@ public sealed partial class MainWindow : Window
 
         using var stopReading = new CancellationTokenSource();
         if (installs.Count > 0) _ = ReadAppDetailsAsync(installs, agree!, stopReading.Token);
-        var answer = await dialog.ShowAsync();
+        var answer = await Dialogs.ShowWhenFree(dialog);
         stopReading.Cancel();
         // Installing for one account only is a choice for this run, so it starts unticked again the next time.
         if (answer != ContentDialogResult.Primary || _app.PendingCount == 0)
@@ -754,7 +754,7 @@ public sealed partial class MainWindow : Window
                 DefaultButton = turnOnProtection ? ContentDialogButton.Close : ContentDialogButton.Primary,
                 XamlRoot = Content.XamlRoot,
             };
-            var choice = await retry.ShowAsync();
+            var choice = await Dialogs.ShowWhenFree(retry);
             if (choice == ContentDialogResult.Primary) await RunAsync(restorePoint: true, turnOnProtection: true);
             else if (choice == ContentDialogResult.Secondary) await RunAsync(restorePoint: false);
             return;
@@ -796,7 +796,7 @@ public sealed partial class MainWindow : Window
             body.Children.Add(new TextBlock { Text = "Explorer needs a restart to show some changes. Restarting it closes every open folder window, interrupts a file copy running in one, and makes the taskbar and desktop icons disappear for a moment.", TextWrapping = TextWrapping.Wrap });
             dialog.PrimaryButtonText = "Restart Explorer now";
         }
-        if (await dialog.ShowAsync() == ContentDialogResult.Primary) RestartExplorer();
+        if (await Dialogs.ShowWhenFree(dialog) == ContentDialogResult.Primary) RestartExplorer();
     }
 
     private static void RestartExplorer()

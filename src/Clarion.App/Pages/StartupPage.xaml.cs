@@ -80,7 +80,11 @@ public sealed partial class StartupPage : Page
         {
             Notice.IsOpen = false;
             Notice.Visibility = Visibility.Collapsed;
+            // The list is read again to show what Windows now says, and that must not throw a long list back to the top.
+            var offset = ListScroll.VerticalOffset;
             await LoadAsync();
+            List.UpdateLayout();
+            ListScroll.ChangeView(null, offset, null, disableAnimation: true);
             return;
         }
         Notice.Title = "That did not change";

@@ -74,7 +74,7 @@
         </Grid>
 
         <Grid Grid.Row="4">
-            <ScrollViewer>
+            <ScrollViewer x:Name="ListScroll">
                 <ItemsControl x:Name="List" ItemTemplate="{StaticResource StartupRowTemplate}" AutomationProperties.Name="Programs that start with Windows" />
             </ScrollViewer>
             <StackPanel x:Name="ReadingPanel" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">

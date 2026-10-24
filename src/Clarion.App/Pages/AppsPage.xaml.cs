@@ -10,9 +10,6 @@ public sealed partial class AppsPage : Page
 {
     private const string WingetDocs = "https://learn.microsoft.com/en-us/windows/package-manager/winget/install";
 
-    // The notice about winget's source terms is shown until it is closed, then not again during this run.
-    private static bool _noticeClosed;
-
     private readonly AppServices _app = AppServices.Instance;
 
     public AppsPage()
@@ -65,7 +62,8 @@ public sealed partial class AppsPage : Page
             return;
         }
 
-        if (_noticeClosed)
+        // The note about winget's source terms stays closed once it has been, since it is the same every time.
+        if (_app.Settings.AppsNoticeClosed)
         {
             WingetBar.IsOpen = false;
             WingetBar.Visibility = Visibility.Collapsed;
@@ -89,7 +87,7 @@ public sealed partial class AppsPage : Page
 
     private void OnNoticeClosed(InfoBar sender, InfoBarClosedEventArgs args)
     {
-        if (args.Reason == InfoBarCloseReason.CloseButton) _noticeClosed = true;
+        if (args.Reason == InfoBarCloseReason.CloseButton) _app.UpdateSettings(s => s with { AppsNoticeClosed = true });
         WingetBar.Visibility = Visibility.Collapsed;
     }
 

@@ -27,6 +27,9 @@ public sealed record UserSettings
     /// <summary>The version that was running the last time the person saw the "what changed" notice. A newer one running now means Clarion was updated.</summary>
     public string? LastSeenVersion { get; init; }
 
+    /// <summary>The note at the top of the Apps page about where apps come from was closed, so it does not take room on the page again.</summary>
+    public bool AppsNoticeClosed { get; init; }
+
     /// <summary>A scheduled task runs a read only check after Windows Update's monthly patch day.</summary>
     public bool MonthlyVerify { get; init; }
 

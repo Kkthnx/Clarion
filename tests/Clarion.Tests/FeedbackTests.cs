@@ -24,6 +24,7 @@ public sealed class FeedbackTests
     [InlineData("driver 32.0.16.1692 build 26200.9457")]
     [InlineData("Windows 11 Pro, 25H2")]
     [InlineData("Ryzen 7 7800X3D, 8 cores")]
+    [InlineData("Spotify 1.2.94.576 and 999.1.1.1 and 10.0.300.4")]
     public void Version_numbers_and_hardware_names_are_left_alone(string input) =>
         Assert.Equal(input, Sanitizer.Clean(input, User, Machine));
 

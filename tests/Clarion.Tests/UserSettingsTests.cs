@@ -31,6 +31,7 @@ public sealed class UserSettingsTests : IDisposable
         Assert.False(s.FirstRunDone);
         Assert.False(s.CheckForUpdates);
         Assert.False(s.MonthlyVerify);
+        Assert.False(s.AppsNoticeClosed);
         Assert.Null(s.LastUpdateCheck);
     }
 
@@ -50,11 +51,12 @@ public sealed class UserSettingsTests : IDisposable
             LastUpdateCheck = when,
             DismissedUpdate = "v0.1.0-beta.5",
             MonthlyVerify = true,
+            AppsNoticeClosed = true,
         }));
 
         var loaded = new UserSettingsStore(FilePath).Load();
         Assert.Equal("Dark", loaded.Theme);
-        Assert.True(loaded.ExpertMode && loaded.FirstRunDone && loaded.CheckForUpdates && loaded.MonthlyVerify && loaded.CompactLists);
+        Assert.True(loaded.ExpertMode && loaded.FirstRunDone && loaded.CheckForUpdates && loaded.MonthlyVerify && loaded.CompactLists && loaded.AppsNoticeClosed);
         Assert.Equal(when, loaded.LastUpdateCheck);
         Assert.Equal("v0.1.0-beta.5", loaded.DismissedUpdate);
     }

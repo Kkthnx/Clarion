@@ -25,7 +25,8 @@ public static partial class Sanitizer
         t = Email().Replace(t, "<email>");
         t = Mac().Replace(t, "<mac address>");
         t = Ipv6Candidate().Replace(t, m => IsIpv6(m.Value) ? "<ip address>" : m.Value);
-        t = Ipv4().Replace(t, "<ip address>");
+        // Four numbers with dots are an address only when each is at most 255. A version such as 1.2.94.576 is not, and stays readable.
+        t = Ipv4().Replace(t, m => IPAddress.TryParse(m.Value, out var ip) && ip.AddressFamily == AddressFamily.InterNetwork ? "<ip address>" : m.Value);
         t = UserFolder().Replace(t, "$1<user>");
         t = UncServer().Replace(t, @"\\<server>");
         if (!GenericAccountNames.Contains(userName.Trim())) t = Replace(t, userName, "<user>");
