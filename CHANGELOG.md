@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.0
 
 Fixed
 - Prefer IPv4 over IPv6 wrote 32 over the whole DisabledComponents value. That value is a set of flags, and a PC that already had another one on, such as the tunnel bit (a stored 1 became 32), lost it, and one with IPv6 switched off in it (255) got IPv6 back. The setting now owns only its own bit, 0x20, checks only that bit and leaves the others as they were. Revert puts back the whole value that was there.
