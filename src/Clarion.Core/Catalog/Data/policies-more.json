@@ -142,13 +142,17 @@
     "facts": [
       "Microsoft recommends this over disabling IPv6 or unbinding it",
       "Applies to every network adapter on this PC",
+      "Only the prefer IPv4 bit (0x20) is changed, so any other IPv6 choice already stored in the value stays as it is",
       "Restart required",
       "Revert puts back the value that was there before"
     ],
     "scope": "Machine",
     "needsReboot": true,
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters", "name": "DisabledComponents" }, "data": { "kind": "DWord", "value": "32" } }
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters", "name": "DisabledComponents" }, "data": { "kind": "DWord", "value": "32" }, "mask": "32" }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters", "name": "DisabledComponents" }, "data": { "kind": "DWord", "value": "0" }, "mask": "32" }
     ],
     "sources": [ "https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-ipv6-in-windows" ]
   },

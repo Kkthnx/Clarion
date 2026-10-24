@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+Fixed
+- Prefer IPv4 over IPv6 wrote 32 over the whole DisabledComponents value. That value is a set of flags, and a PC that already had another one on, such as the tunnel bit (a stored 1 became 32), lost it, and one with IPv6 switched off in it (255) got IPv6 back. The setting now owns only its own bit, 0x20, checks only that bit and leaves the others as they were. Revert puts back the whole value that was there.
+
 New
 - Check for app updates now lists every app on the PC that winget can update, and not only the 255 on the Apps page. On the PC this was built on winget had 25 updates waiting and the old list showed 14 of them, missing Google Chrome, Spotify, the .NET runtimes and the Visual Studio build tools among others. The Apps page ones come first, and the others follow under their own heading with the name winget prints for them and a Package record link to what winget's repository holds. Nothing is ticked at first, one app is updated at a time, and an update that fails does not stop the next. Every update is still pinned by the exact ID winget printed with --exact and the winget source, and an ID that does not look like a real one is never used.
 - An app winget lists with an installed version it could only read as older than the one shown, such as Ubisoft Connect, is now offered and says older than that version. It used to be dropped, because the two versions looked equal.

@@ -4884,7 +4884,7 @@ Make Windows try IPv4 first when a site offers both.
 - **Benefit:** Can avoid slow page loads and timeouts on networks where IPv6 is broken or slow, without turning IPv6 off, which Microsoft advises against.
 - **Risk:** Low. Needs a restart. Sites and services that only offer IPv6 still work, because IPv6 stays on.
 - **Changes:**
-  - `Set HKLM\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\DisabledComponents to 32 (DWord)`
+  - `Turn bit 0x20 on in HKLM\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\DisabledComponents (DWord)`
 - **Needs:** administrator rights, applies to every account; a restart
 - **Sources:** <https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-ipv6-in-windows>
 
