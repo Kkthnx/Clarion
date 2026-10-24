@@ -11,6 +11,14 @@ public static partial class WingetIds
     private static partial Regex Pattern();
 
     public static bool IsValid(string id) => id.Length <= 128 && Pattern().IsMatch(id);
+
+    /// <summary>
+    /// Where winget's community repository keeps the package's records: one folder per dot separated part of the ID, under the lower case first
+    /// letter. Null when the ID is not a valid one.
+    /// </summary>
+    public static string? RecordAddress(string id) => IsValid(id)
+        ? $"https://github.com/microsoft/winget-pkgs/tree/master/manifests/{char.ToLowerInvariant(id[0])}/{string.Join('/', id.Split('.'))}"
+        : null;
 }
 
 /// <summary>
@@ -326,6 +334,12 @@ public interface IWingetStore
     /// An app whose installed version winget cannot read, or that is pinned, is not listed.
     /// </summary>
     IReadOnlyList<AppUpdate> AvailableUpdates(IReadOnlySet<string> catalogIds);
+
+    /// <summary>
+    /// Every installed app that has a newer version in the winget source, whether or not it is on the Apps page. Nothing is changed. Throws when
+    /// winget cannot answer. An app whose installed version winget cannot read, or that is pinned, is not listed.
+    /// </summary>
+    IReadOnlyList<AppUpdate> AllAvailableUpdates();
 
     /// <summary>Updates one installed package to its newest version. The licence terms are accepted only when the flag says the person has.</summary>
     WingetOutcome Upgrade(string id, bool acceptPackageAgreements);

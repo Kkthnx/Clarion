@@ -91,14 +91,14 @@ For about half the apps the review also offers **Install for this account only**
 
 ## Update your apps
 
-1. Open **Apps** and click **Check for app updates**. winget is asked which of your installed apps have a newer version. Nothing changes yet.
+1. Open **Apps** and click **Check for app updates**. winget is asked which of your installed apps have a newer version, the ones from the Apps page and any other it knows. Nothing changes yet.
 2. Tick the apps you want to update, or **Select all**. Nothing is ticked at first. **Package record** opens the app's page in winget's repository.
 3. Tick the licence box only if you accept the terms of an app whose new version asks for them again. Without it, such an app is not updated and the log says why.
 4. Click **Update**. The apps are updated one at a time with a live log. **Stop** ends the run and tells winget to stop the installer that is running.
 
 An update cannot be undone from .Clarion, because winget keeps no copy of the old version. Close an app before you update it, or its installer may wait for you. winget does not list an app whose installed version it cannot read, or one that is pinned.
 
-From the command line, `Clarion.exe --update-apps --preview` lists what would be updated and changes nothing. `--only app.git,app.vscode` limits it to the apps named, and `--accept-package-agreements` is the licence box.
+From the command line, `Clarion.exe --update-apps --preview` lists what would be updated and changes nothing. `--only app.git,app.vscode` limits it to the apps named, `--all-apps` adds the apps that are not on the Apps page, and `--accept-package-agreements` is the licence box.
 
 ## Stop a program starting with Windows
 

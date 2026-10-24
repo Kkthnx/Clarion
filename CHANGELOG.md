@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+New
+- Check for app updates now lists every app on the PC that winget can update, and not only the 255 on the Apps page. On the PC this was built on winget had 25 updates waiting and the old list showed 14 of them, missing Google Chrome, Spotify, the .NET runtimes and the Visual Studio build tools among others. The Apps page ones come first, and the others follow under their own heading with the name winget prints for them and a Package record link to what winget's repository holds. Nothing is ticked at first, one app is updated at a time, and an update that fails does not stop the next. Every update is still pinned by the exact ID winget printed with --exact and the winget source, and an ID that does not look like a real one is never used.
+- An app winget lists with an installed version it could only read as older than the one shown, such as Ubisoft Connect, is now offered and says older than that version. It used to be dropped, because the two versions looked equal.
+- `--update-apps --all-apps` does the same from the command line. `--preview` lists them, and `--all-apps` cannot be mixed with `--only`.
+
 ## 1.2.0
 
 Fixed

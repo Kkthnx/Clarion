@@ -89,8 +89,9 @@ public static class HeadlessRunner
     }
 
     /// <summary>
-    /// Updates the installed apps of the Apps page that have a newer version in winget, or with --preview only lists them. It acts on the
-    /// catalog's packages, never on a name from the command line, and leaves apps alone when the command runs as another account than the one
+    /// Updates the installed apps of the Apps page that have a newer version in winget, or with --preview only lists them. With --all-apps it
+    /// takes every app winget lists as out of date, each one pinned by the exact ID winget printed. It never acts on a name from the command
+    /// line, and leaves apps alone when the command runs as another account than the one
     /// signed in, since winget would then work on that account's apps.
     /// </summary>
     private static int RunUpdateApps(CliOptions o, Action<string> say)
@@ -114,7 +115,12 @@ public static class HeadlessRunner
 
         var byPackage = chosen.ToDictionary(a => a.Apply.OfType<InstallWingetPackage>().First().Id, a => a, StringComparer.OrdinalIgnoreCase);
         IReadOnlyList<AppUpdate> updates;
-        try { updates = runtime.Winget.AvailableUpdates(byPackage.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase)); }
+        try
+        {
+            updates = o.AllApps
+                ? runtime.Winget.AllAvailableUpdates()
+                : runtime.Winget.AvailableUpdates(byPackage.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase));
+        }
         catch (InvalidOperationException ex) { say($"winget could not say what is out of date. {ex.Message}"); return 1; }
 
         if (updates.Count == 0)
@@ -123,7 +129,7 @@ public static class HeadlessRunner
             return 0;
         }
         say($"{updates.Count} {(updates.Count == 1 ? "app has" : "apps have")} a newer version:");
-        foreach (var u in updates) say($"  {byPackage[u.Id].Name}: {u.Current} -> {u.Available}");
+        foreach (var u in updates) say($"  {(byPackage.TryGetValue(u.Id, out var known) ? known.Name : u.Name.Length > 0 ? u.Name : u.Id)}: {u.Current} -> {u.Available}");
         if (o.Preview) return 0;
 
         if (AccountCheck.Detect() is { Differs: true } account)

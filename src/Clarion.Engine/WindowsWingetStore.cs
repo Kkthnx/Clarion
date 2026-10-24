@@ -72,13 +72,17 @@ public sealed class WindowsWingetStore(IProcessRunner runner, string? wingetPath
     /// Asks winget for the table of available updates and keeps the rows of the apps given. When nothing is out of date winget prints a sentence
     /// and no table, which is an empty answer. Any other failure without a table is an error, so a broken winget is not read as "all up to date".
     /// </summary>
-    public IReadOnlyList<AppUpdate> AvailableUpdates(IReadOnlySet<string> catalogIds)
+    public IReadOnlyList<AppUpdate> AvailableUpdates(IReadOnlySet<string> catalogIds) => ReadUpdates(text => WingetUpgrades.Parse(text, catalogIds));
+
+    public IReadOnlyList<AppUpdate> AllAvailableUpdates() => ReadUpdates(WingetUpgrades.ParseAll);
+
+    private IReadOnlyList<AppUpdate> ReadUpdates(Func<string, IReadOnlyList<AppUpdate>> parse)
     {
         ProcessResult result;
         try { result = runner.Run(_path, WingetCommands.ListUpgrades(), QueryTimeout); }
         catch (System.ComponentModel.Win32Exception ex) { throw new InvalidOperationException(ex.Message, ex); }
 
-        var updates = WingetUpgrades.Parse(result.Output, catalogIds);
+        var updates = parse(result.Output);
         if (updates.Count > 0) return updates;
         var hasTable = result.Output.Contains("----------", StringComparison.Ordinal);
         if (hasTable || result.ExitCode is WingetCodes.Success or WingetCodes.NoPackagesFound) return updates;

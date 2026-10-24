@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace Clarion.App.Services;
 
 /// <summary>
-/// Check for app updates: ask winget which installed apps have a newer version, let the person pick which to update, update those one at a
+/// Check for app updates: ask winget which installed apps (the Apps page ones and any other app winget knows) have a newer version, let the person pick which to update, update those one at a
 /// time with a live log and a Stop button, and say what happened. Nothing is ticked at first, because an update changes a program that may
 /// be open and cannot be undone from here.
 /// </summary>
@@ -60,7 +60,7 @@ public static class AppUpdatesFlow
         var waitShown = waiting.ShowAsync();
         try
         {
-            updates = await Task.Run(() => app.Runtime.Winget.AvailableUpdates(byPackage.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase)));
+            updates = await Task.Run(() => app.Runtime.Winget.AllAvailableUpdates());
         }
         catch (InvalidOperationException ex)
         {
@@ -76,7 +76,7 @@ public static class AppUpdatesFlow
         if (updates.Count == 0)
         {
             await Dialogs.Say(root, "Your apps are up to date",
-                "Every app from this page that winget can read the version of is on its newest version. winget does not list an app whose installed version it cannot read, or one that is pinned.");
+                "Every app that winget can read the version of is on its newest version. winget does not list an app whose installed version it cannot read, one that is pinned, or one that did not come from its community source, such as a Microsoft Store app.");
             return;
         }
 
@@ -90,23 +90,36 @@ public static class AppUpdatesFlow
     {
         var boxes = new List<(CheckBox Box, AppUpdate Update)>();
         var list = new StackPanel { Spacing = 4 };
-        foreach (var update in updates)
+        // The apps from the Apps page come first, since their records were checked here. Any other app winget found follows, under its own heading.
+        var onPage = updates.Where(u => byPackage.ContainsKey(u.Id)).OrderBy(u => byPackage[u.Id].Name, StringComparer.CurrentCultureIgnoreCase).ToList();
+        var others = updates.Where(u => !byPackage.ContainsKey(u.Id)).OrderBy(u => u.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
+        void Group(string heading, IReadOnlyList<AppUpdate> group)
         {
-            var item = byPackage[update.Id];
-            var row = Ui.StarAutoRow(8);
-            var box = new CheckBox { Content = $"{item.Name}   {update.Current} → {update.Available}", IsChecked = false };
-            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(box, $"Update {item.Name} from {update.Current} to {update.Available}");
-            row.Children.Add(box);
-            if (item.SourceLinks.FirstOrDefault(l => l.Link.AbsoluteUri.Contains("winget-pkgs", StringComparison.Ordinal)) is { } record)
+            if (group.Count == 0) return;
+            if (onPage.Count > 0 && others.Count > 0)
+                list.Children.Add(new TextBlock { Text = heading, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Margin = new Thickness(0, list.Children.Count == 0 ? 0 : 10, 0, 2) });
+            foreach (var update in group)
             {
-                var link = new HyperlinkButton { Content = "Package record", FontSize = 12, Padding = new Thickness(4, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center };
-                link.Click += (_, _) => Shell.Open(record.Link.AbsoluteUri);
-                Grid.SetColumn(link, 1);
-                row.Children.Add(link);
+                var name = byPackage.TryGetValue(update.Id, out var item) ? item.Name : update.Name.Length > 0 ? update.Name : update.Id;
+                var row = Ui.StarAutoRow(8);
+                var box = new CheckBox { Content = $"{name}   {update.Current} → {update.Available}", IsChecked = false };
+                Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(box, $"Update {name} from {update.Current} to {update.Available}");
+                row.Children.Add(box);
+                var record = item?.SourceLinks.FirstOrDefault(l => l.Link.AbsoluteUri.Contains("winget-pkgs", StringComparison.Ordinal))?.Link.AbsoluteUri
+                             ?? WingetIds.RecordAddress(update.Id);
+                if (record is not null)
+                {
+                    var link = new HyperlinkButton { Content = "Package record", FontSize = 12, Padding = new Thickness(4, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center };
+                    link.Click += (_, _) => Shell.Open(record);
+                    Grid.SetColumn(link, 1);
+                    row.Children.Add(link);
+                }
+                boxes.Add((box, update));
+                list.Children.Add(row);
             }
-            boxes.Add((box, update));
-            list.Children.Add(row);
         }
+        Group("From the Apps page", onPage);
+        Group("Other apps on this PC that winget knows", others);
 
         var all = new HyperlinkButton { Content = "Select all", Padding = new Thickness(0) };
         var none = new HyperlinkButton { Content = "Select none", Padding = new Thickness(0) };
@@ -116,7 +129,7 @@ public static class AppUpdatesFlow
             TextWrapping = Microsoft.UI.Xaml.TextWrapping.Wrap,
             FontSize = 12,
             Opacity = 0.8,
-            Text = "An update cannot be undone from .Clarion, because winget keeps no copy of the old version. Close an app before you update it, or its installer may wait for you. An app whose version winget cannot read, or that is pinned in winget, is not listed.",
+            Text = "An update cannot be undone from .Clarion, because winget keeps no copy of the old version. Close an app before you update it, or its installer may wait for you. An app whose version winget cannot read, or that is pinned in winget, is not listed. Apps that are not on the Apps page come from winget's own list for this PC, and Package record shows what winget holds for each.",
         };
         var body = new StackPanel { Spacing = 12, MaxWidth = 560 };
         body.Children.Add(new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12, Children = { all, none } });

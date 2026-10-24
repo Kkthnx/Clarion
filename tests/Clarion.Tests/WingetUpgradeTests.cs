@@ -1,4 +1,5 @@
 using Clarion.Core.Apps;
+using Clarion.Core.Profiles;
 
 namespace Clarion.Tests;
 
@@ -108,6 +109,93 @@ public sealed class WingetUpgradeTests
         Assert.Equal("Git.Git", Assert.Single(WingetUpgrades.Parse(text, Known)).Id);
     }
 
+    // winget upgrade --source winget as it printed on a Windows 11 PC with programs installed by hand. The last row has a sign before its
+    // installed version, and the two sentences at the end are the ones winget wrote.
+    private const string ManyApps =
+        "Name                                             Id                                     Version              Available\r\n" +
+        "-------------------------------------------------------------------------------------------------------------------------------------\r\n" +
+        "BCUninstaller 6.2.0.0                            Klocman.BulkCrapUninstaller            6.2.0.0              6.3.0.0\r\n" +
+        "Git                                              Git.Git                                2.55.0.3             2.56.0.3\r\n" +
+        "Microsoft Windows Desktop Runtime 10.0.12 (x64)  Microsoft.DotNet.DesktopRuntime.10     10.0.12              10.0.13\r\n" +
+        "Node.js                                          OpenJS.NodeJS.LTS                      24.19.0              24.22.1\r\n" +
+        "Spotify                                          Spotify.Spotify                        1.2.94.576.g8c0e69ee 1.3.6.1921.g7086c071a617\r\n" +
+        "Ubisoft Connect                                  Ubisoft.Connect                        < 174.2.0.13389      174.2.0.13389\r\n" +
+        "Visual Studio Community 2022                     Microsoft.VisualStudio.2022.Community  17.14.41             17.14.42\r\n" +
+        "7 upgrades available.\r\n" +
+        "3 package(s) have version numbers that cannot be determined. Use --include-unknown to see all results.\r\n";
+
+    [Fact]
+    public void Every_row_is_read_with_its_name_whether_or_not_the_catalog_knows_the_app()
+    {
+        var updates = WingetUpgrades.ParseAll(ManyApps);
+
+        Assert.Equal(
+            [
+                "Klocman.BulkCrapUninstaller 6.2.0.0 6.3.0.0 BCUninstaller 6.2.0.0",
+                "Git.Git 2.55.0.3 2.56.0.3 Git",
+                "Microsoft.DotNet.DesktopRuntime.10 10.0.12 10.0.13 Microsoft Windows Desktop Runtime 10.0.12 (x64)",
+                "OpenJS.NodeJS.LTS 24.19.0 24.22.1 Node.js",
+                "Spotify.Spotify 1.2.94.576.g8c0e69ee 1.3.6.1921.g7086c071a617 Spotify",
+                "Ubisoft.Connect older than 174.2.0.13389 174.2.0.13389 Ubisoft Connect",
+                "Microsoft.VisualStudio.2022.Community 17.14.41 17.14.42 Visual Studio Community 2022",
+            ],
+            updates.Select(u => $"{u.Id} {u.Current} {u.Available} {u.Name}").ToArray());
+    }
+
+    [Fact]
+    public void A_name_that_looks_like_an_id_is_not_taken_for_one_and_the_closing_sentences_are_never_rows()
+    {
+        // Node.js is a valid package ID by shape, so the ID is the word before the two versions, not the first word that fits.
+        var node = Assert.Single(WingetUpgrades.ParseAll(ManyApps), u => u.Name == "Node.js");
+        Assert.Equal("OpenJS.NodeJS.LTS", node.Id);
+        Assert.DoesNotContain(WingetUpgrades.ParseAll(ManyApps), u => u.Name.Contains("upgrades") || u.Id.Contains("results"));
+    }
+
+    [Theory]
+    [InlineData("Foo Foo.Bar 1.2.3 1.3.0 winget", "Foo.Bar", "Foo")]
+    [InlineData("Foo Foo.Bar < 1.2.3 1.3.0 msstore", "Foo.Bar", "Foo")]
+    [InlineData("Foo.Bar 1.2.3 1.3.0", null, null)]
+    [InlineData("Some name Foo… 1.2.3 1.3.0", null, null)]
+    [InlineData("Some name Foo.Bar 1.2.3 1.2.3", null, null)]
+    [InlineData("Some name Foo.Bar unknown 1.3.0", null, null)]
+    public void A_row_is_taken_only_when_its_id_and_two_versions_can_be_told_apart_for_sure(string row, string? id, string? name)
+    {
+        var text = "Name Id Version Available Source\r\n" + new string('-', 60) + "\r\n" + row + "\r\n";
+        var found = WingetUpgrades.ParseAll(text);
+        if (id is null) { Assert.Empty(found); return; }
+        Assert.Equal((id, name), (found.Single().Id, found.Single().Name));
+    }
+
+    [Fact]
+    public void Reading_every_row_does_not_depend_on_the_language_of_the_titles_or_sentences()
+    {
+        var spanish = ManyApps.Replace("Name   ", "Nombre ").Replace("7 upgrades available.", "7 actualizaciones disponibles.")
+            .Replace("3 package(s) have version numbers that cannot be determined. Use --include-unknown to see all results.", "No se pudo determinar la versión de 3 paquetes.");
+        Assert.Equal(7, WingetUpgrades.ParseAll(spanish).Count);
+        Assert.Empty(WingetUpgrades.ParseAll("No installed package found matching input criteria.\r\n"));
+        Assert.Empty(WingetUpgrades.ParseAll(""));
+    }
+
+    [Fact]
+    public void The_record_of_a_package_is_in_the_folder_winget_keeps_it_under()
+    {
+        Assert.Equal("https://github.com/microsoft/winget-pkgs/tree/master/manifests/g/Git/Git", WingetIds.RecordAddress("Git.Git"));
+        Assert.Equal("https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudio/2022/Community", WingetIds.RecordAddress("Microsoft.VisualStudio.2022.Community"));
+        Assert.Equal("https://github.com/microsoft/winget-pkgs/tree/master/manifests/7/7zip/7zip", WingetIds.RecordAddress("7zip.7zip"));
+        Assert.Null(WingetIds.RecordAddress("Git.Git --all"));
+    }
+
+    [Fact]
+    public void All_apps_is_a_switch_of_the_update_command_and_cannot_be_mixed_with_a_list_of_names()
+    {
+        var all = CliOptions.Parse(["--update-apps", "--all-apps", "--preview"]);
+        Assert.True(all.AllApps);
+        Assert.Equal(CliMode.UpdateApps, all.Mode);
+        Assert.False(CliOptions.Parse(["--update-apps"]).AllApps);
+        Assert.NotNull(CliOptions.Parse(["--update-apps", "--all-apps", "--only", "app.git"]).Error);
+        Assert.Contains("--all-apps", CliOptions.HelpText);
+    }
+
     [Fact]
     public void The_commands_pin_the_package_and_accept_licence_terms_only_when_told_to()
     {
@@ -193,6 +281,7 @@ public sealed class WingetUpgradeTests
         public bool TakeRestartNeeded() => Inner.TakeRestartNeeded();
         public WingetPackageInfo? Show(string id) => Inner.Show(id);
         public IReadOnlyList<AppUpdate> AvailableUpdates(IReadOnlySet<string> ids) => Inner.AvailableUpdates(ids);
+        public IReadOnlyList<AppUpdate> AllAvailableUpdates() => Inner.AllAvailableUpdates();
         public virtual WingetOutcome Upgrade(string id, bool accept) => Inner.Upgrade(id, accept);
     }
 

@@ -76,6 +76,12 @@ public sealed class FakeWingetStore : IWingetStore
         return Updates.Where(u => catalogIds.Contains(u.Id)).ToList();
     }
 
+    public IReadOnlyList<AppUpdate> AllAvailableUpdates()
+    {
+        if (UpdatesFailure is not null) throw new InvalidOperationException(UpdatesFailure);
+        return Updates.ToList();
+    }
+
     public WingetOutcome Upgrade(string id, bool acceptPackageAgreements)
     {
         Calls.Add("upgrade " + id);
