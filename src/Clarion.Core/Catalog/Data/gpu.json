@@ -50,6 +50,8 @@
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Only if a game shows low clock speeds with uneven frame rates, which is the case NVIDIA's own support article gives for it. Skip it on a laptop that runs on battery.",
+    "portable": "Avoid",
+    "portableNote": "On a laptop this keeps the graphics chip at high speed whenever a 3D program is open, which adds heat to a cooling system shared with the processor and drains the battery faster. If one game needs the strong graphics chip, set it for that game in Settings, System, Display, Graphics instead.",
     "facts": [
       "NVIDIA says it uses the GPU only at maximum performance in most 3D programs",
       "NVIDIA's support article offers it when the card throttles clock speeds",

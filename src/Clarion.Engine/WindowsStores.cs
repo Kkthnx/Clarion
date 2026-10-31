@@ -174,7 +174,7 @@ public static class WindowsMachine
     {
         using var key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion");
         var edition = key?.GetValue("EditionID") as string ?? "Unknown";
-        return new MachineProfile(Environment.OSVersion.Version.Build, edition);
+        return new MachineProfile(Environment.OSVersion.Version.Build, edition) { Traits = WindowsMachineTraits.Detect() };
     }
 }
 

@@ -18,6 +18,10 @@ public interface IDetailSource
     string RiskText { get; }
     ChipKind RiskKind { get; }
     string EvidenceText { get; }
+
+    /// <summary>What a laptop needs to know about this item, or empty on a desktop and for an item with nothing to say.</summary>
+    string PortableWarning { get; }
+    bool HasPortableWarning { get; }
     TooltipContent Tooltip { get; }
     IReadOnlyList<string> ExactChanges { get; }
     IReadOnlyList<string> Provenance { get; }

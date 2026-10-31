@@ -140,9 +140,10 @@ public sealed partial class SettingsPage : Page
         var load = Clarion.Core.Profiles.ProfileFile.Load(path);
         if (load.Profile is null) { await Say("That file cannot be used", load.Error ?? "Unknown problem."); return; }
 
-        var (queued, unknown, notAvailable) = await _app.QueueIdsAsync(load.Profile.Tweaks);
+        var (queued, unknown, notAvailable) = await _app.QueueIdsAsync(load.Profile.Tweaks, holdBack: true);
         var text = $"{queued} settings were queued. Review them with Review and apply at the bottom.";
         if (notAvailable > 0) text += $" {notAvailable} are not available on this PC.";
+        if (_app.LastHeldBack > 0) text += $" {_app.LastHeldBack} {(_app.LastHeldBack == 1 ? "was" : "were")} left out because this is a laptop and {(_app.LastHeldBack == 1 ? "it is" : "they are")} better skipped there. You can still turn {(_app.LastHeldBack == 1 ? "it" : "them")} on by hand.";
         if (unknown.Count > 0) text += $" {unknown.Count} are not known to this version of .Clarion.";
         await Say("Setup loaded", text);
     }

@@ -690,18 +690,25 @@ public sealed partial class AppServices : UiObservableObject
         foreach (var item in Items.Where(i => i.IsPending).ToList()) item.IsOn = item.IsApplied;
     }
 
-    public int QueuePreset(string name) => Presets.TryGetValue(name, out var ids) ? QueueIds(ids).Queued : 0;
+    public int QueuePreset(string name) => Presets.TryGetValue(name, out var ids) ? QueueIds(ids, holdBack: true).Queued : 0;
+
+    /// <summary>How many settings the last <see cref="QueueIds"/> left out because this is a laptop and they are better skipped there.</summary>
+    public int LastHeldBack { get; private set; }
 
     /// <summary>Queues the listed settings to be turned on. Returns how many were queued and which names are not in this catalog.</summary>
-    public (int Queued, IReadOnlyList<string> Unknown, int NotAvailable) QueueIds(IEnumerable<string> ids)
+    public (int Queued, IReadOnlyList<string> Unknown, int NotAvailable) QueueIds(IEnumerable<string> ids, bool holdBack = false)
     {
         var wanted = ids.ToHashSet(StringComparer.OrdinalIgnoreCase);
         var queued = 0;
         var notAvailable = 0;
+        LastHeldBack = 0;
         foreach (var item in Items.Where(i => wanted.Contains(i.Id)))
         {
             if (item.IsApplied) continue;
             if (!item.CanToggle) { notAvailable++; continue; }
+            // A preset or a loaded setup is a list somebody else may have written, so on a laptop it does not turn on what is better skipped there. Switching the
+            // setting on by hand in its own row still works, with the warning in front of the person.
+            if (holdBack && item.HoldsBackOnThisPc) { LastHeldBack++; continue; }
             item.IsOn = true;
             queued++;
         }
@@ -710,11 +717,11 @@ public sealed partial class AppServices : UiObservableObject
     }
 
     /// <summary>Like <see cref="QueueIds"/>, but first reads which apps are installed when the list has any, since that is not known until then.</summary>
-    public async Task<(int Queued, IReadOnlyList<string> Unknown, int NotAvailable)> QueueIdsAsync(IEnumerable<string> ids)
+    public async Task<(int Queued, IReadOnlyList<string> Unknown, int NotAvailable)> QueueIdsAsync(IEnumerable<string> ids, bool holdBack = false)
     {
         var list = ids.ToList();
         if (Items.Any(i => i.InstallsApps && list.Contains(i.Id, StringComparer.OrdinalIgnoreCase))) await EnsureAppsReadAsync();
-        return QueueIds(list);
+        return QueueIds(list, holdBack);
     }
 
     private readonly Clarion.Core.Profiles.QueueCarry _carry = new(Clarion.Core.Profiles.QueueCarry.DefaultPath);

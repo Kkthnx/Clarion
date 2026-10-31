@@ -197,7 +197,7 @@ public static class HeadlessRunner
         // for settings that are not part of this run.
         var wanted = ids.ToHashSet(StringComparer.OrdinalIgnoreCase);
         runtime.Engine.WarmUp(catalog.Where(t => wanted.Contains(t.Id)));
-        var plan = CliPlanner.Plan(ids, catalog, runtime.Profile, runtime.Engine.Detect);
+        var plan = CliPlanner.Plan(ids, catalog, runtime.Profile, runtime.Engine.Detect, o.AllowOnLaptop);
 
         // Apps are installed only when the person has said, on the command line, that they accept the publishers' licence terms.
         var skippedApps = new List<Tweak>();
@@ -232,6 +232,7 @@ public static class HeadlessRunner
         say($"{plan.ToApply.Count} to turn on, {plan.AlreadyOn.Count} already on, {plan.NotSupported.Count} not available here, {plan.Unknown.Count} unknown.");
         foreach (var id in plan.Unknown) say($"  unknown setting: {id}");
         foreach (var id in plan.NotSupported) say($"  not available here: {id}{(plan.Reasons.TryGetValue(id, out var why) ? $" ({why})" : "")}");
+        foreach (var (id, note) in plan.HeldBack) say($"  left out on a laptop: {id} ({note}) Add --allow-on-laptop to include it.");
         foreach (var t in plan.ToApply)
             say($"  {(o.Preview ? "would turn on" : "turning on")}: {t.Name}{(t.Apply.OfType<InstallWingetPackage>().Any(i => i.Scope == "user") ? " (for this account only)" : "")}");
         foreach (var t in forEveryone) say($"  {t.Name} has no option for one account, so it is installed for everyone.");

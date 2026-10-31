@@ -43,6 +43,8 @@
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested for desktops that stay plugged in. Skip it on laptops that run on battery.",
+    "portable": "Avoid",
+    "portableNote": "This laptop shares one cooling system between the processor and the graphics chip. This plan keeps the processor ready at all times, so it runs hotter and the battery drains faster. In Settings, System, Power and battery, Power mode lets you pick Best performance for when it is plugged in and something lighter on battery.",
     "facts": [
       "Favors speed over saving energy",
       "Uses more power and can run hotter",
@@ -75,6 +77,8 @@
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested for plugged in desktops and workstations. Skip it on laptops and for everyday use.",
+    "portable": "Avoid",
+    "portableNote": "Ultimate Performance is built for workstations. On a laptop it removes the power saving that keeps heat and battery drain down, so the fans run harder and the battery empties fast. Use Power mode in Settings, System, Power and battery instead.",
     "facts": [
       "Made from a built in template and named Ultimate Performance",
       "Aimed at workstations and high end PCs",
@@ -138,6 +142,8 @@
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested for desktops that never hibernate, or when disk space is tight. Skip it on laptops that hibernate to save battery.",
+    "portable": "Caution",
+    "portableNote": "A laptop that is asleep keeps drawing from its battery. With hibernation on, Windows can save your work and power off when the battery runs low. With it off, a long sleep can end in a sudden power loss and unsaved work lost.",
     "facts": [
       "Deletes the hiberfil.sys file",
       "Sleep still works",

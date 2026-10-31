@@ -24,6 +24,14 @@
             <controls:Chip Text="{x:Bind Item.RiskText, Mode=OneWay}" Kind="{x:Bind Item.RiskKind, Mode=OneWay}" />
         </StackPanel>
 
+        <Border Visibility="{x:Bind Item.HasPortableWarning, Mode=OneWay}" Background="{ThemeResource ClWarnTintBrush}" BorderBrush="{ThemeResource ClWarnBrush}"
+                BorderThickness="1" CornerRadius="6" Padding="10,8">
+            <StackPanel Spacing="2">
+                <TextBlock Text="On this laptop" FontWeight="SemiBold" Foreground="{ThemeResource ClWarnTextBrush}" />
+                <TextBlock Text="{x:Bind Item.PortableWarning, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+            </StackPanel>
+        </Border>
+
         <TextBlock Text="{x:Bind Item.Tooltip.Advice, Mode=OneWay}" TextWrapping="Wrap"
                    Foreground="{ThemeResource ClTextPrimaryBrush}" />
 

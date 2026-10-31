@@ -79,6 +79,9 @@ public static partial class AppxSafety
         "MicrosoftCorporationII.WinAppRuntime", "Microsoft.Services.Store", "Microsoft.DirectXRuntime",
         "Microsoft.WebpImageExtension", "Microsoft.Windows.Search", "Microsoft.Windows.Apprep",
         "Microsoft.Windows.Client", "MicrosoftWindows.Client.", "Windows.", "Microsoft.Windows.XGpuEjectDialog",
+        // The control apps of audio and graphics drivers, named by their publisher. On a laptop the speakers, the headphone jack and the
+        // graphics switch can stop working without them, and reinstalling the driver does not always bring them back.
+        "RealtekSemiconductorCorp.", "DolbyLaboratories.", "NVIDIACorp.", "AppUp.Intel", "AdvancedMicroDevicesInc", "A-Volute.",
     ];
 
     public static bool IsValidName(string name) => NamePattern().IsMatch(name);

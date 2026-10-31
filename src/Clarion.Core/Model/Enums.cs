@@ -13,3 +13,6 @@ public enum RegistryKind { String, ExpandString, DWord, QWord, Binary }
 public enum TweakState { NotApplied, Applied, Partial, Unavailable }
 
 public enum Recommendation { Recommended, Optional, OnlyIf, Avoid }
+
+/// <summary>How a setting sits on a laptop, tablet or handheld. Any means it needs no special care there.</summary>
+public enum PortableFit { Any, Caution, Avoid }

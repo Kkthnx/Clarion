@@ -245,7 +245,9 @@ public sealed partial class HomePage : Page
             queue.Click += (_, _) =>
             {
                 var added = _app.QueuePreset(key);
-                ToolTipService.SetToolTip(queue, added == 0 ? "Everything in this preset is already on" : $"{added} settings queued");
+                var held = _app.LastHeldBack;
+                var heldNote = held == 0 ? "" : $". {held} left out because this is a laptop and {(held == 1 ? "it is" : "they are")} better skipped there";
+                ToolTipService.SetToolTip(queue, added == 0 ? $"Everything in this preset is already on or left out{heldNote}" : $"{added} settings queued{heldNote}");
                 // The answer is on the button itself. A tooltip alone left a press that queued nothing looking like a dead button.
                 queue.Content = added == 0 ? "Already on" : $"{added} queued";
                 queue.IsEnabled = added != 0;

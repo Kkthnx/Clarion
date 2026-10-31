@@ -1558,6 +1558,8 @@
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
     "advice": "Suggested for desktops that stay at home. Skip it on laptops you could lose.",
+    "portable": "Caution",
+    "portableNote": "Find my device is the way to locate or lock a laptop that is lost or stolen. Once it is off that is not possible from your Microsoft account.",
     "facts": [
       "Also removes the last location stored in the cloud for active pens",
       "Enforced by a machine policy, so it applies to every account",

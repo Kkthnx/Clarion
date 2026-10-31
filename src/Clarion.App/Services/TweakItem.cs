@@ -14,6 +14,8 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
         Tooltip = TweakTooltip.Build(tweak);
         IsSupported = profile.Supports(tweak.Requires);
         LockReason = IsSupported ? "" : BuildLockReason(tweak, profile);
+        PortableWarning = profile.PortableWarning(tweak) ?? "";
+        HoldsBackOnThisPc = profile.HoldsBack(tweak);
         if (InstallsApps && Icon is null)
             _logoFilePath = Clarion.Core.Apps.AppLogoFiles.Default.PathFor(Id, System.IO.Path.Combine(AppContext.BaseDirectory, "Assets"));
     }
@@ -22,6 +24,13 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     public TooltipContent Tooltip { get; }
     public bool IsSupported { get; }
     public string LockReason { get; }
+
+    /// <summary>The note for a laptop, empty on a desktop. Shown in the details so the person knows before turning it on.</summary>
+    public string PortableWarning { get; }
+    public bool HasPortableWarning => PortableWarning.Length > 0;
+
+    /// <summary>True on a laptop for a setting that presets leave out, so a preset does not queue it behind the person's back.</summary>
+    public bool HoldsBackOnThisPc { get; }
 
     /// <summary>False for apps, where every row would say the same "Optional" and that tells nothing.</summary>
     public bool ShowRecommendation => !InstallsApps;

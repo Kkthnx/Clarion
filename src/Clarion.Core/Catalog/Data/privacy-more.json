@@ -40,6 +40,8 @@
     ],
     "recommendation": "OnlyIf",
     "advice": "Suggested for desktops that do not need location. Skip it on laptops and tablets that use maps or find my device.",
+    "portable": "Caution",
+    "portableNote": "Location is also what sets the time zone by itself when you travel, and what Find my device uses to show where a lost laptop is. Turning it off for the whole PC removes both.",
     "facts": [
       "Applies to every account and cannot be changed in Settings afterward",
       "The policy is documented by the vendor",

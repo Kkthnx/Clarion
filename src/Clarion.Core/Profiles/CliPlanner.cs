@@ -10,14 +10,18 @@ public sealed record ApplyPlan(
 {
     /// <summary>Why each setting in <see cref="NotSupported"/> cannot be turned on here, keyed by its name.</summary>
     public IReadOnlyDictionary<string, string> Reasons { get; init; } = new Dictionary<string, string>();
+
+    /// <summary>Settings left out because this PC is a laptop and they are better skipped there, keyed by name, with the reason.</summary>
+    public IReadOnlyDictionary<string, string> HeldBack { get; init; } = new Dictionary<string, string>();
 }
 
 /// <summary>Works out what a setup file or a preset would change on this PC, without changing anything.</summary>
 public static class CliPlanner
 {
     public static ApplyPlan Plan(
-        IEnumerable<string> ids, IReadOnlyList<Tweak> catalog, MachineProfile machine, Func<Tweak, TweakState> detect)
+        IEnumerable<string> ids, IReadOnlyList<Tweak> catalog, MachineProfile machine, Func<Tweak, TweakState> detect, bool allowOnLaptop = false)
     {
+        var heldBack = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var byId = catalog.ToDictionary(t => t.Id, StringComparer.OrdinalIgnoreCase);
         var apply = new List<Tweak>();
         var already = new List<string>();
@@ -36,7 +40,10 @@ public static class CliPlanner
                     unsupported.Add(id);
                     reasons[id] = "the app, feature or task it changes is not on this PC";
                     break;
-                default: apply.Add(t); break;
+                default:
+                    if (!allowOnLaptop && machine.HoldsBack(t)) heldBack[id] = t.PortableNote;
+                    else apply.Add(t);
+                    break;
             }
         }
 
@@ -44,6 +51,6 @@ public static class CliPlanner
         var chosen = new Dictionary<string, Tweak>(StringComparer.OrdinalIgnoreCase);
         foreach (var t in apply.Where(t => t.ExclusiveGroup is not null)) chosen[t.ExclusiveGroup!] = t;
         var final = apply.Where(t => t.ExclusiveGroup is null || ReferenceEquals(chosen[t.ExclusiveGroup], t)).ToList();
-        return new ApplyPlan(final, already, unsupported, unknown) { Reasons = reasons };
+        return new ApplyPlan(final, already, unsupported, unknown) { Reasons = reasons, HeldBack = heldBack };
     }
 }

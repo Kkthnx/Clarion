@@ -17,6 +17,7 @@ public sealed record CliOptions(
     bool AcceptPackageAgreements = false,
     bool UserScope = false,
     bool AllApps = false,
+    bool AllowOnLaptop = false,
     string? Error = null)
 {
     public bool IsCli => Mode != CliMode.None;
@@ -38,6 +39,7 @@ public sealed record CliOptions(
         var acceptPackages = false;
         var userScope = false;
         var allApps = false;
+        var allowOnLaptop = false;
 
         for (var i = 0; i < args.Count; i++)
         {
@@ -73,6 +75,7 @@ public sealed record CliOptions(
                 case "--accept-package-agreements": acceptPackages = true; break;
                 case "--user-scope": userScope = true; break;
                 case "--all-apps": allApps = true; break;
+                case "--allow-on-laptop": allowOnLaptop = true; break;
                 case "--history": mode = CliMode.History; break;
                 case "--list-symptoms": mode = CliMode.ListSymptoms; break;
                 case "--list-settings": mode = CliMode.ListSettings; break;
@@ -95,7 +98,7 @@ public sealed record CliOptions(
             }
         }
         if (allApps && mode == CliMode.UpdateApps && only.Count > 0) return Fail("--all-apps and --only cannot be used together. --only names apps from the Apps page.");
-        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection, symptom, since, saveReport, acceptPackages, userScope, allApps);
+        return new CliOptions(mode, file, preset, only, include, preview, noRp, enableProtection, symptom, since, saveReport, acceptPackages, userScope, allApps, allowOnLaptop);
     }
 
     private static IEnumerable<string> Split(string? value) =>
@@ -123,6 +126,7 @@ public sealed record CliOptions(
 
         --preview           show what would change and change nothing
         --no-restore-point  skip the System Restore point
+        --allow-on-laptop   with --apply, also turn on the settings that are better skipped on a laptop, such as the Ultimate Performance power plan. Without it a laptop leaves them out and says which
         --accept-package-agreements  with --apply, install the apps in the setup. You are accepting the publishers licence terms yourself, so read them first. Without it apps are skipped
         --user-scope        with --apply or --apply-preset, install each app that supports it for your account only, in your profile and not in Program Files. Apps that do not support it are installed for everyone, as without this switch, and are listed
         --enable-protection turn on System Protection if it is off, so the restore point can be made
