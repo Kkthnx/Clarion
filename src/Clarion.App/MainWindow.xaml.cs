@@ -14,6 +14,7 @@ public sealed partial class MainWindow : Window
     private readonly AppServices _app = AppServices.Instance;
 
     public ActivityLog Activity => _app.Activity;
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer? _leakTimer;
 
     public MainWindow()
     {
@@ -59,7 +60,23 @@ public sealed partial class MainWindow : Window
         // like a stray button. The Re-check button's own tooltip already says F5.
         Root.KeyboardAcceleratorPlacementMode = Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode.Hidden;
         // There is no back button, so keep the frame from collecting a history entry for every page opened.
-        ContentFrame.Navigated += (_, _) => ContentFrame.BackStack.Clear();
+        ContentFrame.Navigated += (_, _) =>
+        {
+            ContentFrame.BackStack.Clear();
+            LeakProbe.Track(ContentFrame.Content);
+        };
+        if (LeakProbe.Enabled)
+        {
+            // Held in a field, since a timer nothing refers to is collected, and the probe's own collections would end it.
+            LeakProbe.Watch("cleanup row", CleanupService.Instance.Items.FirstOrDefault());
+            foreach (var prefix in new[] { "debloat.app.", "privacy.", "app.", "services.", "power." })
+                LeakProbe.Watch(prefix + " row", _app.Items.FirstOrDefault(i => i.Id.StartsWith(prefix, StringComparison.Ordinal)));
+            LeakProbe.Watch("app", _app);
+            _leakTimer = DispatcherQueue.CreateTimer();
+            _leakTimer.Interval = TimeSpan.FromSeconds(10);
+            _leakTimer.Tick += (_, _) => Log.Write(LeakProbe.Report());
+            _leakTimer.Start();
+        }
         Nav.SelectedItem = Nav.MenuItems[0];
         UpdateBar();
         // Left alone, focus lands on the first control that can take it, which is the search box in the title bar, so a caret sits in a

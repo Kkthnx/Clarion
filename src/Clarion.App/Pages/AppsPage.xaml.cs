@@ -1,3 +1,4 @@
+using Clarion.App.Controls;
 using Clarion.App.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,7 +18,11 @@ public sealed partial class AppsPage : Page
         InitializeComponent();
         _app.PropertyChanged += OnAppChanged;
         // A new page is made on every visit, so the handler on the app-wide object must go when the page does.
-        Unloaded += (_, _) => _app.PropertyChanged -= OnAppChanged;
+        Unloaded += (_, _) =>
+        {
+            _app.PropertyChanged -= OnAppChanged;
+            PageRelease.Lists(this);
+        };
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)

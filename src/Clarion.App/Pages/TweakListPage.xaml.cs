@@ -35,6 +35,8 @@ public sealed partial class TweakListPage : Page
         {
             _app.ExpertModeChangedByUser -= OnModeChanged;
             _app.StatesRefreshed -= OnModeChanged;
+            // The rows are the program's own settings, so the bindings in them must be told to stop listening. See PageRelease.
+            PageRelease.Lists(this);
         };
     }
 

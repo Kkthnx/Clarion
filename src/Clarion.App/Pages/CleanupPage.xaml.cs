@@ -30,6 +30,7 @@ public sealed partial class CleanupPage : Page
             AppServices.Instance.ExpertModeChangedByUser -= OnExpertChanged;
             foreach (var i in _svc.Items) i.CheckedChanged -= OnCheckedChanged;
             _svc.PropertyChanged -= OnServiceChanged;
+            PageRelease.Lists(this);
         };
     }
 
