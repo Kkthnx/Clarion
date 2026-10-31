@@ -231,7 +231,9 @@ public sealed class WindowsAppxStore(IProcessRunner runner) : IAppxStore
 }
 
 [SupportedOSPlatform("windows")]
-public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
+/// <param name="runner">Runs PowerShell, which is used when the DISM API cannot be, and for every change.</param>
+/// <param name="fastReads">False makes every read go through PowerShell, which is what a test with a fake runner needs.</param>
+public sealed class WindowsFeatureStore(IProcessRunner runner, bool fastReads = true) : IFeatureStore
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(30);
     private readonly object _gate = new();
@@ -262,9 +264,13 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
             // A read that failed, for example because the rights are missing, is remembered until the next refresh. Otherwise each
             // setting would run PowerShell again to fail the same way.
             if (_featureFailure is not null) throw new InvalidOperationException(_featureFailure);
-            Dictionary<string, string> found;
-            try { found = FeatureScripts.ParseStates(Run(FeatureScripts.FeatureStates(missing)), "features", "FeatureName"); }
-            catch (InvalidOperationException ex) { _featureFailure = ex.Message; throw; }
+            // The DISM API answers in a fraction of the time PowerShell needs just to start. When it cannot be used, PowerShell asks as before.
+            var found = fastReads && missing.All(FeatureRules.IsValidName) ? WindowsDism.ReadFeatures(missing) : null;
+            if (found is null)
+            {
+                try { found = FeatureScripts.ParseStates(Run(FeatureScripts.FeatureStates(missing)), "features", "FeatureName"); }
+                catch (InvalidOperationException ex) { _featureFailure = ex.Message; throw; }
+            }
             foreach (var n in missing) _features[n] = found.TryGetValue(n, out var state) ? state : null;
         }
     }
@@ -289,8 +295,12 @@ public sealed class WindowsFeatureStore(IProcessRunner runner) : IFeatureStore
         {
             if (_capabilities.TryGetValue(name, out state)) return state is null ? null : FeatureRules.IsInstalledState(state);
         }
-        var map = FeatureScripts.ParseStates(Run(FeatureScripts.CapabilityState(name)), "capabilities", "Name");
-        state = map.Count == 0 ? null : map.Values.First();
+        state = fastReads && FeatureRules.IsValidName(name) ? WindowsDism.ReadCapability(name) : null;
+        if (state is null)
+        {
+            var map = FeatureScripts.ParseStates(Run(FeatureScripts.CapabilityState(name)), "capabilities", "Name");
+            state = map.Count == 0 ? null : map.Values.First();
+        }
         lock (_gate) _capabilities[name] = state;
         return state is null ? null : FeatureRules.IsInstalledState(state);
     }
@@ -422,7 +432,8 @@ public sealed class WindowsStreamingRunner : Clarion.Core.Actions.IStreamingRunn
 }
 
 [SupportedOSPlatform("windows")]
-public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
+/// <param name="fastReads">False makes every read go through PowerShell, which is what a test with a fake runner needs.</param>
+public sealed class WindowsDnsStore(IProcessRunner runner, bool fastReads = true) : IDnsStore
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(60);
 
@@ -434,6 +445,7 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
 
     public IReadOnlyList<AdapterDns> GetAdapters()
     {
+        if (fastReads && WindowsNetworkCim.Adapters() is { } fast) return fast;
         const string script =
             "$a=@(Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.HardwareInterface } | ForEach-Object { " +
             StaticServersScript +
@@ -460,6 +472,7 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
 
     public AdapterDns? Find(int ifIndex)
     {
+        if (fastReads && WindowsNetworkCim.Adapters(ifIndex) is { } fast) return fast.FirstOrDefault();
         var script =
             $"$a=@(Get-NetAdapter -InterfaceIndex {ifIndex} -ErrorAction SilentlyContinue | ForEach-Object {{ " +
             StaticServersScript +
@@ -487,6 +500,7 @@ public sealed class WindowsDnsStore(IProcessRunner runner) : IDnsStore
 
     public IReadOnlyList<DohRegistration> GetDohRegistrations()
     {
+        if (fastReads && WindowsNetworkCim.DohRegistrations() is { } fast) return fast;
         const string script =
             "$d=@(Get-DnsClientDohServerAddress | ForEach-Object { [pscustomobject]@{Address=$_.ServerAddress;Template=$_.DohTemplate;Auto=[bool]$_.AutoUpgrade;Fallback=[bool]$_.AllowFallbackToUdp} }); " +
             "ConvertTo-Json -InputObject @{doh=$d} -Depth 4 -Compress";

@@ -36,7 +36,7 @@ public sealed class DnsInputTests
     public void An_encrypted_dns_template_with_a_quote_in_it_is_never_run()
     {
         var runner = new FakeProcessRunner();
-        var store = new WindowsDnsStore(runner);
+        var store = new WindowsDnsStore(runner, fastReads: false);
 
         Assert.Throws<ArgumentException>(() =>
             store.UpsertDoh(new DohRegistration("1.1.1.1", "https://dns.example/q'; calc; '", true, false)));
@@ -51,7 +51,7 @@ public sealed class DnsInputTests
     public void Output_that_is_not_the_expected_json_reads_as_no_adapters_instead_of_throwing(string output)
     {
         var runner = new FakeProcessRunner { Respond = _ => new Clarion.Core.Abstractions.ProcessResult(0, output, "") };
-        var store = new WindowsDnsStore(runner);
+        var store = new WindowsDnsStore(runner, fastReads: false);
 
         Assert.Empty(store.GetAdapters());
         Assert.Null(store.Find(3));

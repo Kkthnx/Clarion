@@ -223,7 +223,7 @@ public sealed class FeatureTests : IDisposable
         {
             Respond = _ => new ProcessResult(0, """{"features":[{"FeatureName":"NetFx3","State":"Disabled"},{"FeatureName":"SMB1Protocol","State":"Enabled"}]}""", ""),
         };
-        var store = new WindowsFeatureStore(proc);
+        var store = new WindowsFeatureStore(proc, fastReads: false);
 
         store.Prefetch(["NetFx3", "SMB1Protocol", "NotHere"]);
 
@@ -240,7 +240,7 @@ public sealed class FeatureTests : IDisposable
     {
         if (!OperatingSystem.IsWindows()) return;
         var proc = new FakeProcessRunner { Respond = _ => new ProcessResult(1, "", "The requested operation requires elevation.") };
-        var store = new WindowsFeatureStore(proc);
+        var store = new WindowsFeatureStore(proc, fastReads: false);
 
         Assert.Throws<InvalidOperationException>(() => store.IsFeatureEnabled("NetFx3"));
         Assert.Throws<InvalidOperationException>(() => store.IsFeatureEnabled("DirectPlay"));
@@ -261,7 +261,7 @@ public sealed class FeatureTests : IDisposable
         {
             Respond = a => new ProcessResult(0, PowerShellHost.Decode(a).Contains("Disable-", StringComparison.Ordinal) ? "" : """{"features":[{"FeatureName":"DirectPlay","State":"Enabled"}]}""", ""),
         };
-        var store = new WindowsFeatureStore(proc);
+        var store = new WindowsFeatureStore(proc, fastReads: false);
 
         Assert.True(store.IsFeatureEnabled("DirectPlay"));
         Assert.True(store.IsFeatureEnabled("DirectPlay"));
