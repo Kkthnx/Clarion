@@ -33,6 +33,7 @@ public static class StartupList
         if (e.IsProtected) return "Part of Windows Security. .Clarion leaves it on, so virus and threat alerts keep showing.";
         if (!e.Program.Found && e.Program.Path is not null && !e.Origin.ToString().EndsWith("Folder", StringComparison.Ordinal))
             return "The program this points to is not there any more, so nothing starts from it.";
+        if (MakerControlApps.Find(e) is { } app) return MakerControlApps.Warning(app);
         return null;
     }
 }
