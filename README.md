@@ -7,7 +7,7 @@ A native Windows app to remove bloat, cut tracking, clean up, repair and tune yo
 
 ## What it does
 
-- 217 settings across privacy, app removal, tweaks, power, network, Windows features and updates. Each one explains what it does, what you gain, and what could go wrong, with an evidence grade.
+- 222 settings across privacy, app removal, tweaks, power, network, Windows features and updates. Each one explains what it does, what you gain, and what could go wrong, with an evidence grade.
 - Installs 255 apps as exact winget package IDs. The review shows publisher, license, installer host and checksum before anything installs, and revert uninstalls.
 - Cleanup scans shader, launcher, browser and Windows caches first, shows exact folders and sizes, skips files in use, and queues locked files for the next restart.
 - Startup lists what starts when you sign in, with a switch for each. A switch only changes the mark Task Manager reads, nothing is deleted, and every change is recorded and can be turned back on.

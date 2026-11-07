@@ -235,6 +235,7 @@ public sealed partial class MainWindow : Window
         if (args.IsSettingsSelected)
         {
             _pageTag = "settings";
+            App.Session.Page("settings");
             ContentFrame.Navigate(typeof(SettingsPage));
             UpdateBar();
             return;
@@ -242,6 +243,7 @@ public sealed partial class MainWindow : Window
 
         var tag = (args.SelectedItem as NavigationViewItem)?.Tag as string;
         _pageTag = tag;
+        App.Session.Page(tag ?? "");
         UpdateBar();
         switch (tag)
         {
@@ -634,6 +636,13 @@ public sealed partial class MainWindow : Window
         stopReading.Cancel();
         // Installing for one account only is a choice for this run, so it starts unticked again the next time.
         if (answer != ContentDialogResult.Primary || _app.PendingCount == 0)
+        {
+            foreach (var (item, _, _) in rows) item.SetUserScope(false);
+            return;
+        }
+
+        // Installing and removing apps runs for minutes, and a laptop that goes flat in the middle can leave one half installed.
+        if (_app.Pending.Any(p => p.InstallsApps || p.RemovesApps) && !await PowerGuard.ConfirmAsync(Content.XamlRoot, "Installing and removing apps"))
         {
             foreach (var (item, _, _) in rows) item.SetUserScope(false);
             return;

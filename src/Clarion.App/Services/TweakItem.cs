@@ -66,6 +66,12 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
     public string RecommendationHint => DetailHelpers.RecommendationHint(Tweak.Recommendation);
     public string RiskHint => DetailHelpers.RiskHint(Tweak.RiskLevel);
 
+    /// <summary>
+    /// A setting that is already on and suggested needs no "Suggested: turn on", which reads as an instruction to do what is done, and
+    /// one that is queued already has its own mark. What is left is the label that still says something: what to do, or why not.
+    /// </summary>
+    public bool ShowRecommendationChip => ShowRecommendation && !IsPending && !(Tweak.Recommendation == Recommendation.Recommended && IsApplied);
+
     /// <summary>False for the lowest risk, which every setting on the page says and so tells nothing in a one line row.</summary>
     public bool RiskIsNotable => Tweak.RiskLevel > RiskLevel.Safe;
 
@@ -168,6 +174,7 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
             OnPropertyChanged(nameof(IsUnavailable));
             OnPropertyChanged(nameof(RowOpacity));
             OnPropertyChanged(nameof(PendingText));
+            OnPropertyChanged(nameof(ShowRecommendationChip));
         }
     }
 
@@ -177,6 +184,7 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
         set
         {
             if (!SetProperty(ref _isOn, value)) return;
+            OnPropertyChanged(nameof(ShowRecommendationChip));
             OnPropertyChanged(nameof(IsPending));
             OnPropertyChanged(nameof(PendingText));
             if (!_syncing) PendingChanged?.Invoke(this, EventArgs.Empty);

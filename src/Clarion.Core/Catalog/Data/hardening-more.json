@@ -1,0 +1,154 @@
+[
+  {
+    "id": "privacy.ceip-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Opt out of the Customer Experience Improvement Program",
+    "summary": "Stop Windows from sending hardware and usage patterns to Microsoft for product trends.",
+    "what": "Sets the policy Turn off Windows Customer Experience Improvement Program, which opts every account on this PC out of the program.",
+    "benefit": "Less usage data leaves the PC. Microsoft's own policy text says the program collects hardware configuration and how the software and services are used.",
+    "risk": "Safe. Nothing stops working. Microsoft's policy text says the Inventory Collector and Application Telemetry are also off while this one is.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. It is a documented opt-out and takes nothing away.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Microsoft says the program does not collect names or addresses",
+      "Also switches off the Inventory Collector and Application Telemetry, per Microsoft's text for those policies",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\SQMClient\\Windows", "name": "CEIPEnable" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-icm" ],
+    "provenance": [ "ICM.admx CEIPEnable" ]
+  },
+  {
+    "id": "compat.inventory-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "System",
+    "name": "Turn off the Inventory Collector",
+    "summary": "Stop Windows from listing your programs, files, devices and drivers and sending the list to Microsoft.",
+    "what": "Sets the policy Turn off Inventory Collector. Microsoft says it also stops collection of install data through the Program Compatibility Assistant.",
+    "benefit": "Your list of installed programs and drivers is no longer gathered for Microsoft's compatibility checks.",
+    "risk": "Low. Microsoft uses the data to find compatibility problems, so a rare problem with an old program may take longer to be noticed on their side. Nothing changes in how programs run.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested if you want less data leaving the PC. It changes nothing you will see.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Has no effect to switch on if the Customer Experience Improvement Program is already off, because that turns it off too",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat", "name": "DisableInventory" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat" ],
+    "provenance": [ "AppCompat.admx AppCompatTurnOffProgramInventory" ]
+  },
+  {
+    "id": "compat.app-telemetry-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "System",
+    "name": "Turn off Application Telemetry",
+    "summary": "Stop Windows from tracking how programs use its system components.",
+    "what": "Sets the policy Turn off Application Telemetry. Microsoft describes it as anonymous usage tracking of specific Windows system components by applications.",
+    "benefit": "One less background usage collector.",
+    "risk": "Safe. It takes effect for programs started after the change, and a restart covers the ones already running.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It is documented and harmless, and the Customer Experience Improvement Program setting already covers it.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Microsoft says it is off anyway while the Customer Experience Improvement Program is off",
+      "Applies to programs started after the change",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat", "name": "AITEnable" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat" ],
+    "provenance": [ "AppCompat.admx AppCompatTurnOffApplicationImpactTelemetry" ]
+  },
+  {
+    "id": "network.llmnr-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Network",
+    "topic": "Network",
+    "name": "Turn off LLMNR name lookups",
+    "summary": "Stop asking other PCs on the network what a name means when DNS has no answer.",
+    "what": "Sets the policy Turn off multicast name resolution, which disables link local multicast name resolution (LLMNR) on every network adapter.",
+    "benefit": "Your PC no longer sends and answers these multicast name queries on a local network, which is useful on shared or public networks.",
+    "risk": "Low. Names are still resolved by DNS. On a small network with no DNS server that relies on LLMNR to find other PCs by name, those names may stop resolving, and an address still works.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Your choice. Fine on a home network with a normal router. Skip it if you find other PCs by name on a network without DNS.",
+    "facts": [
+      "Microsoft describes LLMNR as a secondary name resolution protocol that needs no DNS server",
+      "Enforced by a machine policy, so it applies to every adapter",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient", "name": "EnableMulticast" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-dnsclient" ],
+    "provenance": [ "DnsClient.admx Turn_Off_Multicast" ]
+  },
+  {
+    "id": "input.filter-keys-prompt-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Input",
+    "topic": "Mouse and keyboard",
+    "name": "Turn off the Filter Keys shortcut",
+    "summary": "Stop the pop-up when the right Shift key is held for eight seconds.",
+    "what": "Clears the flag that lets the right Shift hold switch Filter Keys on. Microsoft documents it as FKF_HOTKEYACTIVE, 0x4, in the FILTERKEYS structure.",
+    "benefit": "A held Shift in a game or a long edit no longer slows or blocks your keys with a Filter Keys prompt.",
+    "risk": "None. Filter Keys can still be turned on from Settings, Accessibility, Keyboard.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for gamers and fast typists. Skip it only if you use the shortcut yourself to switch Filter Keys on.",
+    "facts": [
+      "Changes only the shortcut flag, so the other Filter Keys choices stay as they are",
+      "Does not turn Filter Keys itself on or off",
+      "Applies to your account only",
+      "Revert puts back the value that was there before"
+    ],
+    "scope": "User",
+    "needsSignOut": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Accessibility\\Keyboard Response", "name": "Flags" }, "data": { "kind": "String", "value": "122" }, "mask": "4" }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Accessibility\\Keyboard Response", "name": "Flags" }, "data": { "kind": "String", "value": "126" }, "mask": "4" }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-filterkeys" ]
+  }
+]

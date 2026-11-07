@@ -113,7 +113,7 @@
                                                         <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2,0,0">
                                                             <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}"
                                                        ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
-                                                            <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}"
+                                                            <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" Visibility="{x:Bind RiskIsNotable}"
                                                        ToolTipService.ToolTip="{x:Bind RiskHint}" />
                                                         </StackPanel>
                                                         <TextBlock Text="{x:Bind StatusText, Mode=OneWay}" Visibility="{x:Bind HasStatus, Mode=OneWay}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />

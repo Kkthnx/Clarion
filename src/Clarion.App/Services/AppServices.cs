@@ -587,6 +587,19 @@ public sealed partial class AppServices : UiObservableObject
         if (PendingCount > 0) ReviewRequested?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Settings that are on and are a poor fit for this laptop, such as a power plan or a graphics mode that holds the chip at full speed
+    /// on a battery and a small cooling system. They may have been turned on by hand, or before a laptop was recognised. Empty on a desktop.
+    /// </summary>
+    public IReadOnlyList<TweakItem> LaptopPoorFits() => Items.Where(i => i.HoldsBackOnThisPc && i.IsApplied && i.CanToggle).ToList();
+
+    /// <summary>Queues the revert of every poor fit for this laptop, then opens the review dialog. Nothing changes until it is accepted.</summary>
+    public void QueueLaptopFixes()
+    {
+        foreach (var item in LaptopPoorFits()) item.IsOn = false;
+        if (PendingCount > 0) ReviewRequested?.Invoke(this, EventArgs.Empty);
+    }
+
     /// <summary>Queues the revert of one applied setting, then opens the review dialog.</summary>
     public void QueueRevert(string id)
     {

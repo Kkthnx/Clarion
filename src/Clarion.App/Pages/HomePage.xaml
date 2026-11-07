@@ -5,81 +5,183 @@
     xmlns:controls="using:Clarion.App.Controls"
     xmlns:svc="using:Clarion.App.Services">
 
+    <Page.Resources>
+        <!-- A row in a list of jobs: flat until the pointer is over it, and the whole row is the target. -->
+        <Style x:Key="JobRowStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="16,12,16,12" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+    </Page.Resources>
+
     <ScrollViewer>
         <StackPanel Padding="32,24,32,24" Spacing="24" MaxWidth="1100" HorizontalAlignment="Left">
-            <StackPanel Orientation="Horizontal" Spacing="18">
-                <Image Source="ms-appx:///Assets/Clarion.png" AutomationProperties.AccessibilityView="Raw" Width="72" Height="72" VerticalAlignment="Center" />
-                <StackPanel Spacing="4" VerticalAlignment="Center">
-                    <TextBlock Text=".Clarion" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                    <TextBlock Text="See it. Set it. Done." FontSize="16" Foreground="{ThemeResource ClAccentTextBrush}" />
+            <StackPanel Orientation="Horizontal" Spacing="14">
+                <Image Source="ms-appx:///Assets/Clarion.png" AutomationProperties.AccessibilityView="Raw" Width="48" Height="48" VerticalAlignment="Center" />
+                <StackPanel Spacing="0" VerticalAlignment="Center">
+                    <TextBlock Text=".Clarion" FontSize="24" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock Text="See it. Set it. Done." FontSize="14" Foreground="{ThemeResource ClAccentTextBrush}" />
                 </StackPanel>
             </StackPanel>
 
-            <InfoBar x:Name="AccountBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
-                     Title=".Clarion is running as a different account" />
+            <!-- Everything that needs a look sits together under one heading, close together, so it reads as one list and not as a wall of boxes. -->
+            <StackPanel x:Name="NoticeGroup" Spacing="8" Visibility="Collapsed">
+                <TextBlock x:Name="NoticeHeader" FontSize="14" FontWeight="SemiBold" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           AutomationProperties.HeadingLevel="Level2" />
+                <InfoBar x:Name="AccountBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
+                         Title=".Clarion is running as a different account" />
 
-            <InfoBar x:Name="DataBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="True"
-                     Title="A file in the data folder was set aside" />
+                <InfoBar x:Name="DataBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="True"
+                         Title="A file in the data folder was set aside" />
 
-            <InfoBar x:Name="LimitedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
-                     Title=".Clarion is running without administrator rights"
-                     Message="You can look at your settings and run Verify. Changing anything needs administrator rights, because .Clarion keeps its history in a folder only administrators can write to.">
-                <InfoBar.ActionButton>
-                    <Button Content="Restart as administrator" Click="OnRestartAsAdmin" />
-                </InfoBar.ActionButton>
-            </InfoBar>
+                <InfoBar x:Name="EndedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="True"
+                         Title=".Clarion did not close properly last time" Closed="OnEndedClosed">
+                    <InfoBar.ActionButton>
+                        <Button Content="Report a problem" Click="OnReportEnded" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
 
-            <InfoBar x:Name="SafeModeBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False" />
+                <InfoBar x:Name="LaptopBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
+                         Title="Some settings that are on do not suit this laptop">
+                    <InfoBar.ActionButton>
+                        <Button Content="Review turning them off" Click="OnFixLaptop" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
 
-            <InfoBar x:Name="MovedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
-                     Title="The monthly check starts a different copy of .Clarion"
-                     Message="It was set up from another folder, so it may not run. Set it up again from this copy to fix it.">
-                <InfoBar.ActionButton>
-                    <Button Content="Fix it" Click="OnFixMonthly" />
-                </InfoBar.ActionButton>
-            </InfoBar>
+                <InfoBar x:Name="LimitedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
+                         Title=".Clarion is running without administrator rights"
+                         Message="You can look at your settings and run Verify. Changing anything needs administrator rights, because .Clarion keeps its history in a folder only administrators can write to.">
+                    <InfoBar.ActionButton>
+                        <Button Content="Restart as administrator" Click="OnRestartAsAdmin" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
 
-            <InfoBar x:Name="UpdatedBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="True" Closed="OnUpdatedClosed">
-                <InfoBar.ActionButton>
-                    <Button Content="See what's new" Click="OnSeeWhatsNew" />
-                </InfoBar.ActionButton>
-            </InfoBar>
+                <InfoBar x:Name="SafeModeBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False" />
 
-            <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="False">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Button Content="See what changed" Click="OnSeeWhatsNew" />
-                    <HyperlinkButton Content="Open the release page" Click="OnOpenUpdate" />
-                    <HyperlinkButton Content="Hide this version" Click="OnHideUpdate" />
-                </StackPanel>
-            </InfoBar>
+                <InfoBar x:Name="MovedBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
+                         Title="The monthly check starts a different copy of .Clarion"
+                         Message="It was set up from another folder, so it may not run. Set it up again from this copy to fix it.">
+                    <InfoBar.ActionButton>
+                        <Button Content="Fix it" Click="OnFixMonthly" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
 
-            <InfoBar x:Name="ScheduledBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
-                     Title="The monthly check found changes">
-                <InfoBar.ActionButton>
-                    <Button Content="Review" Click="OnReviewScheduled" />
-                </InfoBar.ActionButton>
-            </InfoBar>
+                <InfoBar x:Name="UpdatedBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="True" Closed="OnUpdatedClosed">
+                    <InfoBar.ActionButton>
+                        <Button Content="See what's new" Click="OnSeeWhatsNew" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
 
-            <InfoBar x:Name="DriftBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False">
-                <InfoBar.ActionButton>
-                    <Button Content="Review" Click="OnReviewDrift" />
-                </InfoBar.ActionButton>
-            </InfoBar>
+                <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="False">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Button Content="See what changed" Click="OnSeeWhatsNew" />
+                        <HyperlinkButton Content="Open the release page" Click="OnOpenUpdate" />
+                        <HyperlinkButton Content="Hide this version" Click="OnHideUpdate" />
+                    </StackPanel>
+                </InfoBar>
 
-            <InfoBar x:Name="RestartBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False"
-                     Title="Windows is waiting for a restart">
-                <InfoBar.ActionButton>
-                    <Button Content="See what will be checked" Click="OnReviewDrift" />
-                </InfoBar.ActionButton>
-            </InfoBar>
+                <InfoBar x:Name="ScheduledBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False"
+                         Title="The monthly check found changes">
+                    <InfoBar.ActionButton>
+                        <Button Content="Review" Click="OnReviewScheduled" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
 
-            <InfoBar x:Name="ImageBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False">
-                <InfoBar.ActionButton>
-                    <Button Content="See why" Click="OnSeeImage" />
-                </InfoBar.ActionButton>
-            </InfoBar>
+                <InfoBar x:Name="DriftBar" Visibility="Collapsed" Severity="Warning" IsOpen="False" IsClosable="False">
+                    <InfoBar.ActionButton>
+                        <Button Content="Review" Click="OnReviewDrift" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
 
-            <!-- This PC at a glance. The hardware tiles fill in when the system report has been read. -->
+                <InfoBar x:Name="RestartBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False"
+                         Title="Windows is waiting for a restart">
+                    <InfoBar.ActionButton>
+                        <Button Content="See what will be checked" Click="OnReviewDrift" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
+
+                <InfoBar x:Name="ImageBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False">
+                    <InfoBar.ActionButton>
+                        <Button Content="See why" Click="OnSeeImage" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
+            </StackPanel>
+
+            <!-- The jobs people come back for, as one list. Each row opens the page that does it. -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Jobs" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" AutomationProperties.HeadingLevel="Level2" />
+                <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="8">
+                    <StackPanel>
+                        <Button Click="OnJobVerify" Style="{StaticResource JobRowStyle}" AutomationProperties.Name="Check that your settings still hold">
+                            <Grid ColumnSpacing="14">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE73E;" FontSize="18" Foreground="{ThemeResource ClAccentTextBrush}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" Spacing="2">
+                                    <TextBlock Text="Check that your settings still hold" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                    <TextBlock x:Name="JobVerifyNote" Text="Compares every setting .Clarion changed with what Windows has now." FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="2" Glyph="&#xE76C;" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+                        <Border Height="1" Background="{ThemeResource ClDividerBrush}" />
+                        <Button Click="OnJobCleanup" Style="{StaticResource JobRowStyle}" AutomationProperties.Name="Free up space">
+                            <Grid ColumnSpacing="14">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE74D;" FontSize="18" Foreground="{ThemeResource ClAccentTextBrush}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" Spacing="2">
+                                    <TextBlock Text="Free up space" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                    <TextBlock Text="Scan temp files, browser caches and game shaders. Nothing is deleted until you press Clean." FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="2" Glyph="&#xE76C;" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+                        <Border Height="1" Background="{ThemeResource ClDividerBrush}" />
+                        <Button Click="OnJobGaming" Style="{StaticResource JobRowStyle}" AutomationProperties.Name="Tune for games">
+                            <Grid ColumnSpacing="14">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE7FC;" FontSize="18" Foreground="{ThemeResource ClAccentTextBrush}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" Spacing="2">
+                                    <TextBlock Text="Tune for games" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                    <TextBlock Text="Game Mode, graphics scheduling, mouse and capture settings." FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="2" Glyph="&#xE76C;" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+                        <Border Height="1" Background="{ThemeResource ClDividerBrush}" />
+                        <Button Click="OnJobBroke" Style="{StaticResource JobRowStyle}" AutomationProperties.Name="Something stopped working">
+                            <Grid ColumnSpacing="14">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE9CE;" FontSize="18" Foreground="{ThemeResource ClAccentTextBrush}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" Spacing="2">
+                                    <TextBlock Text="Something stopped working" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                    <TextBlock Text="Pick the symptom and see which change may have caused it, with a button to undo it." FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="2" Glyph="&#xE76C;" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="Start with a preset" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                           Text="A preset queues a group of settings. Nothing changes until you review and press Apply at the bottom." />
+            </StackPanel>
+
+            <ItemsControl x:Name="PresetList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="12" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <!-- This PC at a glance. It is for reference, so it sits below the things to do. The tiles fill in when the system report has been read. -->
+            <TextBlock Text="This PC" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" AutomationProperties.HeadingLevel="Level2" />
             <Grid ColumnSpacing="12" RowSpacing="12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -99,19 +201,6 @@
             </Grid>
 
 
-            <StackPanel Spacing="4">
-                <TextBlock Text="Start with a preset" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
-                           Text="A preset queues a group of settings. Nothing changes until you review and press Apply at the bottom." />
-            </StackPanel>
-
-            <ItemsControl x:Name="PresetList">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Spacing="12" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
 
             <Border Background="{ThemeResource ClAccentTintBrush}" BorderBrush="{ThemeResource ClAccentBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="16">

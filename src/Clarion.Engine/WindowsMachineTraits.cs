@@ -37,6 +37,9 @@ public static class WindowsMachineTraits
 
     public static MachineTraits Detect()
     {
+        // For looking at the laptop pages on a desktop. It changes only what is shown and held back, never what is read from Windows.
+        if (Environment.GetEnvironmentVariable("CLARION_FORCE_LAPTOP") == "1")
+            return MachineTraits.Classify([10], hasBattery: true, ["Integrated graphics", "Discrete graphics"], "Test maker");
         try
         {
             var table = ReadTable();
@@ -52,6 +55,24 @@ public static class WindowsMachineTraits
         {
             // A PC that cannot be classified is treated as a desktop, which holds nothing back.
             return MachineTraits.Desktop;
+        }
+    }
+
+    /// <summary>Where the power comes from now. A PC without a battery, or one Windows cannot read, gives <see cref="PowerSource.None"/>.</summary>
+    public static PowerSource ReadPower()
+    {
+        // For looking at the warning without draining a battery, for example CLARION_FAKE_BATTERY=18.
+        if (int.TryParse(Environment.GetEnvironmentVariable("CLARION_FAKE_BATTERY"), out var fake) && fake is >= 0 and <= 100)
+            return new PowerSource(true, true, false, fake);
+        try
+        {
+            if (!GetSystemPowerStatus(out var s) || s.BatteryFlag == NoBattery || s.BatteryFlag == BatteryUnknown) return PowerSource.None;
+            // BatteryFlag is a set of flags, and bit 8 means the battery is charging. AcLineStatus is 0 when the charger is out and 1 when it is in.
+            return new PowerSource(true, s.AcLineStatus == 0, (s.BatteryFlag & 8) != 0, s.BatteryLifePercent <= 100 ? s.BatteryLifePercent : null);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            return PowerSource.None;
         }
     }
 

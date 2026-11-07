@@ -29,16 +29,43 @@ public sealed partial class TweakListPage : Page
         InitializeComponent();
         Visible = [];
         _ready = true;
+        // The listeners go on when the page is shown and off when it is left. They used to go on here, in the constructor, so a page that
+        // was made and left again before it ever showed (a quick run over the menu) never got its Unloaded and stayed on the program's
+        // objects for good. Measured on Clean up: 27 MB a visit when the menu was clicked every 10 ms.
+        Loaded += (_, _) => Attach();
+        Unloaded += (_, _) => Detach();
+    }
+
+    private bool _attached;
+    private bool _released;
+
+    private void Attach()
+    {
+        // A page is used once. One that was already left, because the menu was clicked on before it showed, must not start listening.
+        if (_attached || _released) return;
+        _attached = true;
         _app.ExpertModeChangedByUser += OnModeChanged;
         _app.StatesRefreshed += OnModeChanged;
-        Unloaded += (_, _) =>
+    }
+
+    private void Detach()
+    {
+        if (_attached)
         {
+            _attached = false;
             _app.ExpertModeChangedByUser -= OnModeChanged;
             _app.StatesRefreshed -= OnModeChanged;
-            // The rows are the program's own settings, so the bindings in them must be told to stop listening. See PageRelease.
-            PageRelease.Lists(this);
-        };
+        }
+        if (_released) return;
+        // From here on nothing may fill the list again. Emptying it below shrinks the list, which raises a size change, and a size change
+        // that set the rows back during the teardown is what this flag stops.
+        _released = true;
+        // The rows are the program's own settings, so the bindings in them must be told to stop listening. See PageRelease.
+        PageRelease.Lists(this);
     }
+
+    // Unloaded is not raised for a page that was measured and then left before it was shown, and its rows are already bound. This is.
+    protected override void OnNavigatedFrom(NavigationEventArgs e) => Detach();
 
     public ObservableCollection<TweakItem> Visible { get; }
 
@@ -73,6 +100,7 @@ public sealed partial class TweakListPage : Page
 
     private void ApplyColumns()
     {
+        if (_released) return;
         var wanted = CardColumns.For(List.ActualWidth, _compact);
         if (wanted == _columns && List.ItemsSource is not null) return;
         _columns = wanted;
@@ -113,7 +141,8 @@ public sealed partial class TweakListPage : Page
         ApplyDensity();
     }
 
-    private void OnModeChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(Rebuild);
+    // The call can arrive after the page was left, since it was queued before. A page that is gone must not fill its list again.
+    private void OnModeChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(() => { if (_attached) Rebuild(); });
 
     private void OnSearchTextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {

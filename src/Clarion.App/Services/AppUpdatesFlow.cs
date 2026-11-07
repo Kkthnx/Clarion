@@ -82,6 +82,7 @@ public static class AppUpdatesFlow
 
         var chosen = await PickAsync(root, updates, byPackage);
         if (chosen is null) return;
+        if (!await PowerGuard.ConfirmAsync(root, "Updating apps")) return;
         await UpdateAsync(root, app, chosen.Value.Updates, chosen.Value.AcceptTerms);
     }
 

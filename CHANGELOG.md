@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+Fixed
+- A long setting name, such as Opt out of the Customer Experience Improvement Program, ran out of its card in the two column list and pushed its i button out of sight. The name now takes the room that is left and wraps, and the i has a column of its own at the right of the name, lined up from row to row.
+- A window that closed with no word left nothing behind. An error on any thread but the window's own ended the program without reaching the handler that writes crash.log, and a crash inside Windows' own interface code writes nothing at all. Errors on other threads are now written to crash.log before the program goes, and a task that failed unseen is written there too. This is for the report of the window closing by itself while changing between Home, Apps and Clean up on a gaming laptop. The cause is not found yet, and this change cannot fix it, only show it next time.
+- A page that was made and left again before it was shown, which a quick run over the menu does, never got its Unloaded call and stayed on the program's objects. Pages now start listening when they are shown, stop when they are left, and let go of their lists when you navigate away as well as when they unload, and a call queued before the page was left no longer touches it afterwards. The Clean up list also could not set its rows back while it was being emptied. On the walk of this PC, memory from clicking Home and Clean up every 10 ms did not change (about 1 GB after 30 rounds before and after), and at 150 ms between clicks it stays at about 1 MB a round. The probe showed 1 page alive and no listeners on the rows, so the rest is Windows' own memory waiting for the collector, not a leak the program holds on to.
+
+Polish
+- Home opens on what needs you. The header is smaller, every notice sits under one heading ("2 things to look at"), a Jobs list follows (check settings, free up space, tune for games, something stopped working), then the presets, and the hardware tiles come last, since they are for reference. The Jobs row for Verify says how many settings changed back.
+- A setting that is already on and suggested no longer says Suggested: turn on, and a queued one shows only its queued mark. The Safe label is left off rows on every list, as it already was on the compact list, and is still in the details. On Privacy, where most settings are already on, the rows are shorter and a screen shows more of them. Low, Medium and High risk are still shown.
+
+New
+- Opt out of the Customer Experience Improvement Program, Turn off the Inventory Collector and Turn off Application Telemetry. Each is a Microsoft policy, checked by a test against the policy files that ship with Windows, and honored on Pro, Enterprise and Education. Microsoft's own text says the Inventory Collector and Application Telemetry are off while the program is off, so the first one covers the other two. Steps Recorder was left out, since it could not be shown to still do anything on this build.
+- Turn off LLMNR name lookups, from Microsoft's Turn off multicast name resolution policy. Optional and Low risk, since a small network without DNS can lose names that relied on it.
+- Turn off the Filter Keys shortcut, the right Shift held for eight seconds, for people who play or type fast. It changes only that flag (0x4, from Microsoft's FILTERKEYS reference), the way the Sticky Keys one does. On this PC the value read 114, which already has the flag off.
+- When the last session did not close, Home now says so, with the version and the page it was on, and offers Report a problem. A small file in your own folder (not the data folder, so it works without administrator rights) is made at start and removed when the program closes. A restart or shutdown of Windows since then is not counted as a crash.
+- Home now names the settings that are on and do not suit this laptop, such as NVIDIA prefer maximum performance, with the reason, and has a button that queues turning them off and opens the review. Nothing changes until you accept. Before this the warning only showed inside the setting's own details, so a setting turned on by hand or before the laptop was recognised was never pointed out.
+- Before installing or removing apps, updating apps, or starting a repair job that takes 5 minutes or more, .Clarion now asks first when the laptop is at 30% or less and the charger is not connected. The question says how much charge is left and how long the job takes, and Start anyway goes on. A desktop, a laptop on its charger or one that is charging is never asked.
+- CLARION_FORCE_LAPTOP=1 shows the laptop pages on a desktop, and CLARION_FAKE_BATTERY=18 shows the low battery question. Both change only what is shown.
+
 ## 1.4.0
 
 Fixed

@@ -36,6 +36,8 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
     public string Summary => Target.Summary;
     public string RecommendationText => Tooltip.RecommendationLabel;
     public string RiskText => DetailHelpers.RiskText(Target.RiskLevel);
+    /// <summary>The lowest risk is not shown on a row, since every row would say it. It is in the details.</summary>
+    public bool RiskIsNotable => Target.RiskLevel > Clarion.Core.Model.RiskLevel.Safe;
     public string RecommendationHint => DetailHelpers.RecommendationHint(Target.Recommendation);
     public string RiskHint => DetailHelpers.RiskHint(Target.RiskLevel);
     public string EvidenceText => Tooltip.EvidenceLabel;

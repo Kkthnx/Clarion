@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-472 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+477 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -1106,6 +1106,20 @@ Make pointer distance match hand distance.
   - `Set HKCU\Control Panel\Mouse\MouseThreshold1 to 0 (String)`
   - `Set HKCU\Control Panel\Mouse\MouseThreshold2 to 0 (String)`
 - **Needs:** signing out
+
+#### Turn off the Filter Keys shortcut
+
+`input.filter-keys-prompt-off` · Safe · Look and feel only · Suggested: turn on · checked on build 26200
+
+Stop the pop-up when the right Shift key is held for eight seconds.
+
+- **What it does:** Clears the flag that lets the right Shift hold switch Filter Keys on. Microsoft documents it as FKF_HOTKEYACTIVE, 0x4, in the FILTERKEYS structure.
+- **Benefit:** A held Shift in a game or a long edit no longer slows or blocks your keys with a Filter Keys prompt.
+- **Risk:** None. Filter Keys can still be turned on from Settings, Accessibility, Keyboard.
+- **Changes:**
+  - `Turn bit 0x4 off in HKCU\Control Panel\Accessibility\Keyboard Response\Flags (String)`
+- **Needs:** signing out
+- **Sources:** <https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-filterkeys>
 
 #### Turn off the Sticky Keys shortcut
 
@@ -4902,6 +4916,20 @@ Download Windows updates directly, with no peer uploads.
 - **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deliveryoptimization>
 
+#### Turn off LLMNR name lookups
+
+`network.llmnr-off` · Low · Helps in some cases · Optional: your choice · checked on build 26200
+
+Stop asking other PCs on the network what a name means when DNS has no answer.
+
+- **What it does:** Sets the policy Turn off multicast name resolution, which disables link local multicast name resolution (LLMNR) on every network adapter.
+- **Benefit:** Your PC no longer sends and answers these multicast name queries on a local network, which is useful on shared or public networks.
+- **Risk:** Low. Names are still resolved by DNS. On a small network with no DNS server that relies on LLMNR to find other PCs by name, those names may stop resolving, and an address still works.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient\EnableMulticast to 0 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-dnsclient>
+
 ## Power
 
 ### Power
@@ -5647,6 +5675,20 @@ Set the feedback frequency to Never for your account.
 - **Risk:** None.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Siuf\Rules\NumberOfSIUFInPeriod to 0 (DWord)`
+
+#### Opt out of the Customer Experience Improvement Program
+
+`privacy.ceip-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Stop Windows from sending hardware and usage patterns to Microsoft for product trends.
+
+- **What it does:** Sets the policy Turn off Windows Customer Experience Improvement Program, which opts every account on this PC out of the program.
+- **Benefit:** Less usage data leaves the PC. Microsoft's own policy text says the program collects hardware configuration and how the software and services are used.
+- **Risk:** Safe. Nothing stops working. Microsoft's policy text says the Inventory Collector and Application Telemetry are also off while this one is.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\SQMClient\Windows\CEIPEnable to 0 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-icm>
 
 #### Stop device companion app downloads
 
@@ -6496,6 +6538,20 @@ See what Windows is doing while it starts, shuts down, signs in and signs out.
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/enable-verbose-startup-shutdown-logon-logoff-status-messages>
 
+#### Turn off Application Telemetry
+
+`compat.app-telemetry-off` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Stop Windows from tracking how programs use its system components.
+
+- **What it does:** Sets the policy Turn off Application Telemetry. Microsoft describes it as anonymous usage tracking of specific Windows system components by applications.
+- **Benefit:** One less background usage collector.
+- **Risk:** Safe. It takes effect for programs started after the change, and a restart covers the ones already running.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat\AITEnable to 0 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat>
+
 #### Turn off Fast Startup
 
 `system.fast-startup-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
@@ -6508,6 +6564,20 @@ Make Shut down a full shutdown.
 - **Changes:**
   - `Set HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power\HiberbootEnabled to 0 (DWord)`
 - **Needs:** administrator rights, applies to every account; a restart
+
+#### Turn off the Inventory Collector
+
+`compat.inventory-off` · Low · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Stop Windows from listing your programs, files, devices and drivers and sending the list to Microsoft.
+
+- **What it does:** Sets the policy Turn off Inventory Collector. Microsoft says it also stops collection of install data through the Program Compatibility Assistant.
+- **Benefit:** Your list of installed programs and drivers is no longer gathered for Microsoft's compatibility checks.
+- **Risk:** Low. Microsoft uses the data to find compatibility problems, so a rare problem with an old program may take longer to be noticed on their side. Nothing changes in how programs run.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat\DisableInventory to 1 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat>
 
 #### Turn off the Program Compatibility Assistant
 

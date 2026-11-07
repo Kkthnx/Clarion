@@ -43,11 +43,11 @@
                                 <controls:AppMark Icon="{x:Bind Icon}" ImagePath="{x:Bind InstalledIconPath, Mode=OneWay}" LogoFile="{x:Bind LogoFilePath}" Label="{x:Bind Name}" Width="36" Height="36" Margin="0,0,16,0"
                                                   VerticalAlignment="Top" Visibility="{x:Bind IsApp}" />
                                 <StackPanel Grid.Column="1" Spacing="6" Margin="0,0,16,0">
-                                    <!-- The i sits right after the name, which takes only the room it needs. -->
+                                    <!-- The name takes the room that is left and wraps, and the i has a column of its own, so a long name cannot run out of the card. -->
                                     <Grid ColumnSpacing="4">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{x:Bind Name}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"
                                                    TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
@@ -56,9 +56,9 @@
                                     <TextBlock Text="{x:Bind Summary}" TextWrapping="Wrap"
                                                Foreground="{ThemeResource ClTextSecondaryBrush}" />
                                     <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-                                        <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}" Visibility="{x:Bind ShowRecommendation}"
+                                        <controls:Chip Text="{x:Bind RecommendationText}" Kind="{x:Bind RecommendationKind}" Visibility="{x:Bind ShowRecommendationChip, Mode=OneWay}"
                                                        ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
-                                        <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}"
+                                        <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" Visibility="{x:Bind RiskIsNotable}"
                                                        ToolTipService.ToolTip="{x:Bind RiskHint}" />
                                         <controls:Chip Text="{x:Bind PendingText, Mode=OneWay}" Kind="Accent"
                                                        Visibility="{x:Bind IsPending, Mode=OneWay}" />
@@ -139,7 +139,7 @@
                     <TextBlock Grid.Column="1" Text="{x:Bind Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" Margin="10,0,10,0" VerticalAlignment="Center">
-                        <controls:Chip Text="{x:Bind RecommendationShort}" Kind="{x:Bind RecommendationKind}" Visibility="{x:Bind ShowRecommendation}" ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
+                        <controls:Chip Text="{x:Bind RecommendationShort}" Kind="{x:Bind RecommendationKind}" Visibility="{x:Bind ShowRecommendationChip, Mode=OneWay}" ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
                         <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" Visibility="{x:Bind RiskIsNotable}"
                                   ToolTipService.ToolTip="{x:Bind RiskHint}" />
                         <controls:Chip Text="{x:Bind PendingText, Mode=OneWay}" Kind="Accent" Visibility="{x:Bind IsPending, Mode=OneWay}" />

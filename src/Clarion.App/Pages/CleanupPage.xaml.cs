@@ -21,22 +21,48 @@ public sealed partial class CleanupPage : Page
     {
         InitializeComponent();
         BuildGroups();
+        // The service and the rows outlive this page, which is made again on every visit. The listeners go on when the page shows and off
+        // when it is left, so a page that was made and left before it showed holds on to nothing.
+        Loaded += (_, _) => Attach();
+        Unloaded += (_, _) => Detach();
+    }
+
+    private bool _attached;
+    private bool _released;
+
+    // Unloaded is not raised for a page that was measured and then left before it was shown, and its rows are already bound. This is.
+    protected override void OnNavigatedFrom(NavigationEventArgs e) => Detach();
+
+    private void Attach()
+    {
+        // A page is used once. One that was already left, because the menu was clicked on before it showed, must not start listening.
+        if (_attached || _released) return;
+        _attached = true;
         AppServices.Instance.ExpertModeChangedByUser += OnExpertChanged;
         foreach (var i in _svc.Items) i.CheckedChanged += OnCheckedChanged;
         _svc.PropertyChanged += OnServiceChanged;
-        // The service and the rows outlive this page, which is made again on every visit.
-        Unloaded += (_, _) =>
+        // A scan that moved on between the page being made and shown is caught up here.
+        Refresh();
+    }
+
+    private void Detach()
+    {
+        if (_attached)
         {
+            _attached = false;
             AppServices.Instance.ExpertModeChangedByUser -= OnExpertChanged;
             foreach (var i in _svc.Items) i.CheckedChanged -= OnCheckedChanged;
             _svc.PropertyChanged -= OnServiceChanged;
-            PageRelease.Lists(this);
-        };
+        }
+        if (_released) return;
+        _released = true;
+        PageRelease.Lists(this);
     }
 
-    private void OnExpertChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(BuildGroups);
-    private void OnCheckedChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(UpdateSelected);
-    private void OnServiceChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(Refresh);
+    // A call queued before the page was left must not touch it afterwards.
+    private void OnExpertChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(() => { if (_attached) BuildGroups(); });
+    private void OnCheckedChanged(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(() => { if (_attached) UpdateSelected(); });
+    private void OnServiceChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(() => { if (_attached) Refresh(); });
 
     /// <summary>Rows marked for Expert mode only are not listed otherwise.</summary>
     private void BuildGroups()

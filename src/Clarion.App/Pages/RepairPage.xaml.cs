@@ -74,6 +74,7 @@ public sealed partial class RepairPage : Page
             XamlRoot = XamlRoot,
         };
         if (await confirm.ShowAsync() != ContentDialogResult.Primary) return;
+        if (!await PowerGuard.ConfirmAsync(XamlRoot, item.Name, item.Def.EstimatedMinutes)) return;
 
         if (item.Def.RestorePoint && !await MakeRestorePointAsync(item)) return;
         await RunWithLogAsync(item);

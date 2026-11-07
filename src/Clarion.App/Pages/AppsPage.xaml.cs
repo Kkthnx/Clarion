@@ -16,14 +16,33 @@ public sealed partial class AppsPage : Page
     public AppsPage()
     {
         InitializeComponent();
-        _app.PropertyChanged += OnAppChanged;
-        // A new page is made on every visit, so the handler on the app-wide object must go when the page does.
-        Unloaded += (_, _) =>
+        // A new page is made on every visit, so the handler on the app-wide object goes on when the page shows and off when it is left.
+        Loaded += (_, _) =>
         {
-            _app.PropertyChanged -= OnAppChanged;
-            PageRelease.Lists(this);
+            if (_attached || _released) return;
+            _attached = true;
+            _app.PropertyChanged += OnAppChanged;
         };
+        Unloaded += (_, _) => Detach();
     }
+
+    private bool _attached;
+    private bool _released;
+
+    private void Detach()
+    {
+        if (_attached)
+        {
+            _attached = false;
+            _app.PropertyChanged -= OnAppChanged;
+        }
+        if (_released) return;
+        _released = true;
+        PageRelease.Lists(this);
+    }
+
+    // Unloaded is not raised for a page that was measured and then left before it was shown, and its rows are already bound. This is.
+    protected override void OnNavigatedFrom(NavigationEventArgs e) => Detach();
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
@@ -36,7 +55,7 @@ public sealed partial class AppsPage : Page
 
     private void OnOpenRepair(object sender, RoutedEventArgs e) => _app.RequestNavigate("repair");
 
-    private void OnAppChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(ShowBanner);
+    private void OnAppChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(() => { if (_attached) ShowBanner(); });
 
     private void ShowBanner()
     {

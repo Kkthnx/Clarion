@@ -198,9 +198,16 @@
   {
     "id": "old-program-popups",
     "title": "An older program no longer gets compatibility help",
-    "tip": "With the Program Compatibility Assistant off, Windows stops offering fixes for older programs. You can still set compatibility options by hand on the program's properties, or revert the setting.",
+    "tip": "With the Program Compatibility Assistant off, Windows stops offering fixes for older programs. You can still set compatibility options by hand on the program's properties, or revert the setting. The Inventory Collector and Application Telemetry settings stop Windows from reporting what is installed and how programs use system parts, so a problem with an old program may be noticed later on Microsoft's side. Nothing changes in how programs run, and reverting either one puts the collection back.",
     "topics": [],
-    "tweakIds": ["compat.pca-off"]
+    "tweakIds": ["compat.pca-off", "compat.inventory-off", "compat.app-telemetry-off"]
+  },
+  {
+    "id": "name-not-found",
+    "title": "Another PC on my home network can no longer be reached by its name",
+    "tip": "With LLMNR off, a name is looked up only through DNS. On a network without a DNS server for local names, use the other PC's address instead, or revert the setting and restart.",
+    "topics": [],
+    "tweakIds": ["network.llmnr-off"]
   },
   {
     "id": "game-graphics",

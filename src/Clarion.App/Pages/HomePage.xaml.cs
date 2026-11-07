@@ -16,6 +16,13 @@ public sealed partial class HomePage : Page
         InitializeComponent();
         Loaded += async (_, _) =>
         {
+            if (!_attached && !_left)
+            {
+                _attached = true;
+                _app.PropertyChanged += OnAppChanged;
+            }
+            ShowEnded();
+            UpdateNotices();
             if (PresetList.Items.Count == 0) BuildPresets();
             Refresh();
             _ = FillTilesAsync();
@@ -27,6 +34,7 @@ public sealed partial class HomePage : Page
                 DataBar.Message = string.Join(" ", aside) + " If this was your own history, it is in that folder and can be put back by hand.";
                 DataBar.IsOpen = true;
                 DataBar.Visibility = Visibility.Visible;
+                UpdateNotices();
             }
             var account = await Task.Run(AccountCheck.Detect);
             if (account.Differs)
@@ -35,14 +43,88 @@ public sealed partial class HomePage : Page
                     "Settings that apply to one account will change that other account. Close .Clarion and start it again from your own account.";
                 AccountBar.IsOpen = true;
                 AccountBar.Visibility = AccountBar.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+                UpdateNotices();
             }
         };
-        _app.PropertyChanged += OnAppChanged;
-        // A new page is made on every visit, so the handler on the app-wide object must go when the page does.
-        Unloaded += (_, _) => _app.PropertyChanged -= OnAppChanged;
+        // A new page is made on every visit, so the handler on the app-wide object goes on when the page shows and off when it is left.
+        Unloaded += (_, _) => Detach();
     }
 
-    private void OnAppChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(Refresh);
+    private bool _attached;
+    private bool _left;
+
+    private void Detach()
+    {
+        _left = true;
+        _attached = false;
+        _app.PropertyChanged -= OnAppChanged;
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e) => Detach();
+
+    // Closed once, it stays closed for the rest of this session, so going back to Home does not bring it back.
+    private static bool _endedDismissed;
+
+    private static readonly Dictionary<string, string> PageNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["cleanup"] = "Clean up", ["whatsnew"] = "What's new", ["troubleshoot"] = "Troubleshoot",
+    };
+
+    /// <summary>Says so when the last session ended without closing, with the page it was on, and offers the problem report.</summary>
+    private void ShowEnded()
+    {
+        if (App.PreviousSession is not { } ended || _endedDismissed) return;
+        var page = ended.LastPage.Length == 0 ? "" : PageNames.TryGetValue(ended.LastPage, out var name) ? name : char.ToUpperInvariant(ended.LastPage[0]) + ended.LastPage[1..];
+        EndedBar.Message = $"Version {ended.Version} stopped without closing{(page.Length > 0 ? $", on the {page} page" : "")}. A crash, Task Manager or a power cut all look like this. " +
+            "If it keeps happening, send a report. It includes this note and your recent activity, and you read it before anything is sent.";
+        EndedBar.IsOpen = true;
+        EndedBar.Visibility = Visibility.Visible;
+    }
+
+    /// <summary>Names the settings that are on and do not suit a laptop, with the reason, and offers to review turning them off.</summary>
+    private void ShowLaptop()
+    {
+        var poor = _app.LaptopPoorFits();
+        LaptopBar.IsOpen = poor.Count > 0;
+        LaptopBar.Visibility = poor.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        if (poor.Count == 0) return;
+        LaptopBar.Title = poor.Count == 1 ? "A setting that is on does not suit this laptop" : $"{poor.Count} settings that are on do not suit this laptop";
+        LaptopBar.Message = string.Join(" ", poor.Select(i => $"{i.Name}: {i.PortableWarning}"));
+        if (LaptopBar.ActionButton is Button fix) fix.Content = poor.Count == 1 ? "Review turning it off" : "Review turning them off";
+    }
+
+    private void OnFixLaptop(object sender, RoutedEventArgs e) => _app.QueueLaptopFixes();
+
+    private void OnJobVerify(object sender, RoutedEventArgs e) => _app.RequestNavigate("verify");
+    private void OnJobCleanup(object sender, RoutedEventArgs e) => _app.RequestNavigate("cleanup");
+    private void OnJobGaming(object sender, RoutedEventArgs e) => _app.RequestSearch("gaming");
+    private void OnJobBroke(object sender, RoutedEventArgs e) => _app.RequestNavigate("troubleshoot");
+
+    /// <summary>The jobs list says what is true now where it can, such as how many settings changed back, and otherwise what the job does.</summary>
+    private void ShowJobs()
+    {
+        var changed = _app.DriftCount;
+        JobVerifyNote.Text = changed > 0
+            ? $"{changed} {(changed == 1 ? "setting was" : "settings were")} changed back since .Clarion set {(changed == 1 ? "it" : "them")}. Open this to see which."
+            : "Compares every setting .Clarion changed with what Windows has now.";
+    }
+
+    /// <summary>
+    /// Shows the heading over the notices only while at least one is open, with how many, so nothing sits under a heading with nothing under it.
+    /// A notice that opens later, such as the account check, calls this again.
+    /// </summary>
+    private void UpdateNotices()
+    {
+        var open = NoticeGroup.Children.OfType<InfoBar>().Count(b => b.IsOpen && b.Visibility == Visibility.Visible);
+        NoticeGroup.Visibility = open > 0 ? Visibility.Visible : Visibility.Collapsed;
+        NoticeHeader.Text = open == 1 ? "1 thing to look at" : $"{open} things to look at";
+    }
+
+    private void OnEndedClosed(InfoBar sender, InfoBarClosedEventArgs args) => _endedDismissed = true;
+
+    private void OnReportEnded(object sender, RoutedEventArgs e) => _app.RequestNavigate("feedback");
+
+    private void OnAppChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(() => { if (_attached) Refresh(); });
 
     private async void OnFixMonthly(object sender, RoutedEventArgs e)
     {
@@ -89,9 +171,12 @@ public sealed partial class HomePage : Page
         ShowUpdated();
         ShowUpdate();
         ShowScheduled();
+        ShowLaptop();
         ShowDrift();
         ShowRestart();
         ShowImage();
+        ShowJobs();
+        UpdateNotices();
     }
 
     private bool _tilesFilled;

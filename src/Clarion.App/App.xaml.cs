@@ -10,7 +10,31 @@ public partial class App : Application
     {
         InitializeComponent();
         UnhandledException += OnUnhandledException;
+        // An error on any other thread ends the program without ever reaching the handler above, and left no trace. It is written down
+        // before the program goes, so a report about a closing window has something to show.
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+        {
+            if (e.ExceptionObject is Exception ex) LogCrash(ex);
+            else LogCrash(new InvalidOperationException($"Unhandled non-exception object: {e.ExceptionObject}"));
+        };
+        // A task nobody waited for does not end the program, but its error says what went wrong in the background.
+        System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (_, e) =>
+        {
+            LogCrash(e.Exception);
+            e.SetObserved();
+        };
+        AppDomain.CurrentDomain.ProcessExit += (_, _) => Session.End();
     }
+
+    /// <summary>
+    /// Notes that a session is running, until it closes normally. When the next start finds it still there, the last session ended some
+    /// other way, and Home says so. It lives in the person's own folder, so it also works without administrator rights.
+    /// </summary>
+    public static Clarion.Core.Diagnostics.SessionMarker Session { get; } =
+        new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Clarion", "session.txt"));
+
+    /// <summary>The session that ended without closing before this one started, or null.</summary>
+    public static Clarion.Core.Diagnostics.EndedSession? PreviousSession { get; private set; }
 
     private readonly Clarion.Core.Diagnostics.CrashPolicy _crashPolicy = new();
 
@@ -104,6 +128,9 @@ public partial class App : Application
             return;
         // The theme and Expert mode were chosen last time. Without this they went back to the defaults on every start.
         Theme = Services.AppServices.Instance.Settings.Theme switch { "Light" => ElementTheme.Light, "Dark" => ElementTheme.Dark, _ => ElementTheme.Default };
+        PreviousSession = Session.Begin(Environment.ProcessId, Services.AppServices.Version, DateTime.UtcNow);
+        if (PreviousSession is { } ended)
+            Services.Log.Write($"The last session ended without closing (version {ended.Version}, started {ended.StartedUtc:u}, last page {(ended.LastPage.Length > 0 ? ended.LastPage : "unknown")}). crash.log may say why.");
         _window = new MainWindow();
         _window.Activate();
     }
