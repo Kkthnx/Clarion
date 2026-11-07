@@ -1,6 +1,6 @@
 # Design refresh, November 2026
 
-A short brief for the visual pass after 1.4.0. It covers Home and the settings rows. The rest of the app keeps its look.
+A short brief for the visual pass after 1.4.0 (shipped in 1.5.0). It covers Home and the settings rows. The rest of the app keeps its look.
 
 ## Design thesis
 

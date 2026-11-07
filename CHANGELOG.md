@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.5.0
 
 Fixed
 - A long setting name, such as Opt out of the Customer Experience Improvement Program, ran out of its card in the two column list and pushed its i button out of sight. The name now takes the room that is left and wraps, and the i has a column of its own at the right of the name, lined up from row to row.
