@@ -67,7 +67,9 @@ public sealed partial class HomePage : Page
 
     private static readonly Dictionary<string, string> PageNames = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["cleanup"] = "Clean up", ["whatsnew"] = "What's new", ["troubleshoot"] = "Troubleshoot",
+        ["cleanup"] = "Clean up",
+        ["whatsnew"] = "What's new",
+        ["troubleshoot"] = "Troubleshoot",
     };
 
     /// <summary>Says so when the last session ended without closing, with the page it was on, and offers the problem report.</summary>
