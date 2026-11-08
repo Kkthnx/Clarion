@@ -60,6 +60,7 @@ public sealed partial class TweakListPage : Page
         // From here on nothing may fill the list again. Emptying it below shrinks the list, which raises a size change, and a size change
         // that set the rows back during the teardown is what this flag stops.
         _released = true;
+        Chooser.Release();
         // The rows are the program's own settings, so the bindings in them must be told to stop listening. See PageRelease.
         PageRelease.Lists(this);
     }
@@ -95,6 +96,14 @@ public sealed partial class TweakListPage : Page
     // More than one card across when the window is wide enough, and never in the compact list. Each card needs about CardColumns.MinCardWidth for its
     // name, summary and switch, so a narrower list keeps one wide card, which reads better.
     private int _columns;
+
+    // The room for a setting's name is the card's width less the i button and its gap. See the row template.
+    private const double InfoButtonRoom = 34;
+
+    private void OnNameRowSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (sender is Grid { Children: [TextBlock name, ..] } row) name.MaxWidth = Math.Max(60, row.ActualWidth - InfoButtonRoom);
+    }
 
     private void OnListSizeChanged(object sender, SizeChangedEventArgs e) => ApplyColumns();
 

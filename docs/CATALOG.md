@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-477 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+480 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -4962,6 +4962,19 @@ Favor speed over saving energy.
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options>
 
+#### Pause search indexing on battery
+
+`power.search-index-battery-off` · Low · Helps in some cases · Optional: your choice · checked on build 26200
+
+Let the search indexer rest while a laptop runs on its battery.
+
+- **What it does:** Sets the policy Prevent indexing when running on battery power to conserve energy. The policy text says the indexer pauses whenever the computer is running on battery.
+- **Benefit:** Less background disk and processor work, and a little more battery, on a laptop that is unplugged.
+- **Risk:** Low. New or changed files may not show up in search until the charger is connected again. A desktop has no battery, so nothing changes there.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search\PreventIndexOnBattery to 1 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+
 #### Power saver plan
 
 `power.plan-saver` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
@@ -5650,6 +5663,20 @@ Stop Windows from adding the name of this PC to diagnostic data.
 - **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system>
 
+#### Limit the crash dumps sent to Microsoft
+
+`privacy.dump-collection-limit` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Keep full and heap memory dumps from being sent after a crash.
+
+- **What it does:** Sets the policy Limit Dump Collection. Microsoft's text says Windows Error Reporting is then limited to kernel mini dumps and user mode triage dumps.
+- **Benefit:** A crash report cannot carry a full copy of a program's memory, which can hold documents, names and passwords that were open.
+- **Risk:** Low. Only matters when optional diagnostic data is on. Whoever reads your crash reports gets less detail.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\LimitDumpCollection to 1 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system>
+
 #### Lowest diagnostic data level
 
 `privacy.diagnostic-data-minimum` · Low · Documented by the vendor · Suggested: turn on · checked on build 26200
@@ -5702,6 +5729,20 @@ Do not fetch extra vendor software and icons when a device is plugged in.
 - **Changes:**
   - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata\PreventDeviceMetadataFromNetwork to 1 (DWord)`
 - **Needs:** administrator rights, applies to every account
+
+#### Stop extra diagnostic log collection
+
+`privacy.diagnostic-logs-off` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Keep Windows from gathering additional logs when it wants more detail about a problem.
+
+- **What it does:** Sets the policy Limit Diagnostic Log Collection. Microsoft's text says additional diagnostic logs are then not collected.
+- **Benefit:** No extra logs are gathered and sent when Windows wants more information about a fault.
+- **Risk:** Low. Only matters when optional diagnostic data is on. Problems on this PC are less likely to be investigated in detail on Microsoft's side.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\LimitDiagnosticLogCollection to 1 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system>
 
 #### Stop feedback pop-ups
 

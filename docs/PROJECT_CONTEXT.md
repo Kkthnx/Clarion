@@ -27,6 +27,8 @@ Design thesis: a careful workbench for a PC you care about, where nothing change
 - The state read on that laptop took 17 to 21 s against 1.6 s on the development desktop. Which reader is slow there is not known. Log the slowest few readers by name next.
 - Not yet checked on a real laptop: the Home laptop notice and the battery question were only seen with the two developer switches above.
 - Visual refresh of Home and rows is in docs/DESIGN-REFRESH.md. Other pages keep their look. Light theme, high contrast and 150 percent scaling were not re-checked.
-- docs/RESEARCH-OTHER-TOOLS.md and RESEARCH-2026-10.md name other tools, which breaks the rule to never name them in the repo. Decide whether to keep or strip them.
+- The two research notes that named other tools were moved out of the repo on 2026-11-07 to `Documents\Clarion private notes`, and the names were taken out of CHANGELOG.md and one code comment. Older commits, tags and the published release texts still hold them. Rewriting that history was not done.
+- Checked on 2026-11-07 on Windows 11 Pro build 26200.9818 (the development desktop): the eight settings added in 1.5.0 and after read their state from the real registry through `--apply setup.json --preview`, and five of them were already on. None was applied and reverted by hand. The Home laptop notice, the battery question and the new rows were never seen on a real laptop.
+- Not found: a cause for issue 7. Four launches with 18 page switches each between Apps, Home and Clean up did not close the window or write to crash.log.
 - Ideas, each needs a new action type and real testing: per game GPU choice for hybrid laptops (a per user registry value per exe), Windows power mode, a job queue behind a running job, BitLocker awareness.
 - Ideas: Windows power mode overlay, per game graphics preference, BitLocker awareness, indexing setting, a drift reapply service, code signing.

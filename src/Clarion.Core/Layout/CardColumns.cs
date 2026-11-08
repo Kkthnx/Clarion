@@ -1,9 +1,8 @@
 namespace Clarion.Core.Layout;
 
 /// <summary>
-/// How many cards sit side by side in a list, and how a list is cut into rows of that many. Sparkle's Tweaks page does the same with a grid
-/// that goes from one to four columns at fixed window widths. Here the number comes from the width the list really has, since the window can
-/// be any size and the navigation takes a share of it, and a card never gets less room than it needs for its name, summary and switch.
+/// How many cards sit side by side in a list, and how a list is cut into rows of that many. The number comes from the width the list really
+/// has and not from fixed window widths, since the window can be any size and the navigation takes a share of it, and a card never gets less room than it needs for its name, summary and switch.
 /// </summary>
 public static class CardColumns
 {

@@ -43,11 +43,12 @@
                                 <controls:AppMark Icon="{x:Bind Icon}" ImagePath="{x:Bind InstalledIconPath, Mode=OneWay}" LogoFile="{x:Bind LogoFilePath}" Label="{x:Bind Name}" Width="36" Height="36" Margin="0,0,16,0"
                                                   VerticalAlignment="Top" Visibility="{x:Bind IsApp}" />
                                 <StackPanel Grid.Column="1" Spacing="6" Margin="0,0,16,0">
-                                    <!-- The name takes the room that is left and wraps, and the i has a column of its own, so a long name cannot run out of the card. -->
-                                    <Grid ColumnSpacing="4">
+                                    <!-- The i sits right after the name. A name in an Auto column is measured with no limit and runs out of a narrow card, so the
+                                         code behind caps it at the room the card really has, and it wraps. -->
+                                    <Grid ColumnSpacing="4" SizeChanged="OnNameRowSizeChanged">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{x:Bind Name}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"
                                                    TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />

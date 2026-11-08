@@ -22,13 +22,35 @@
     ],
     "scope": "Machine",
     "requires": {
-      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
     },
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\SQMClient\\Windows", "name": "CEIPEnable" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\SQMClient\\Windows",
+          "name": "CEIPEnable"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-icm" ],
-    "provenance": [ "ICM.admx CEIPEnable" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-icm"
+    ],
+    "provenance": [
+      "ICM.admx CEIPEnable"
+    ]
   },
   {
     "id": "compat.inventory-off",
@@ -52,13 +74,35 @@
     ],
     "scope": "Machine",
     "requires": {
-      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
     },
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat", "name": "DisableInventory" }, "data": { "kind": "DWord", "value": "1" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat",
+          "name": "DisableInventory"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat" ],
-    "provenance": [ "AppCompat.admx AppCompatTurnOffProgramInventory" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat"
+    ],
+    "provenance": [
+      "AppCompat.admx AppCompatTurnOffProgramInventory"
+    ]
   },
   {
     "id": "compat.app-telemetry-off",
@@ -83,13 +127,35 @@
     ],
     "scope": "Machine",
     "requires": {
-      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
     },
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat", "name": "AITEnable" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat",
+          "name": "AITEnable"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat" ],
-    "provenance": [ "AppCompat.admx AppCompatTurnOffApplicationImpactTelemetry" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat"
+    ],
+    "provenance": [
+      "AppCompat.admx AppCompatTurnOffApplicationImpactTelemetry"
+    ]
   },
   {
     "id": "network.llmnr-off",
@@ -113,13 +179,35 @@
     ],
     "scope": "Machine",
     "requires": {
-      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
     },
     "apply": [
-      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient", "name": "EnableMulticast" }, "data": { "kind": "DWord", "value": "0" } }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient",
+          "name": "EnableMulticast"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-dnsclient" ],
-    "provenance": [ "DnsClient.admx Turn_Off_Multicast" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-dnsclient"
+    ],
+    "provenance": [
+      "DnsClient.admx Turn_Off_Multicast"
+    ]
   },
   {
     "id": "input.filter-keys-prompt-off",
@@ -144,11 +232,190 @@
     "scope": "User",
     "needsSignOut": true,
     "apply": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Accessibility\\Keyboard Response", "name": "Flags" }, "data": { "kind": "String", "value": "122" }, "mask": "4" }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Control Panel\\Accessibility\\Keyboard Response",
+          "name": "Flags"
+        },
+        "data": {
+          "kind": "String",
+          "value": "122"
+        },
+        "mask": "4"
+      }
     ],
     "undo": [
-      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Accessibility\\Keyboard Response", "name": "Flags" }, "data": { "kind": "String", "value": "126" }, "mask": "4" }
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Control Panel\\Accessibility\\Keyboard Response",
+          "name": "Flags"
+        },
+        "data": {
+          "kind": "String",
+          "value": "126"
+        },
+        "mask": "4"
+      }
     ],
-    "sources": [ "https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-filterkeys" ]
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-filterkeys"
+    ]
+  },
+  {
+    "id": "privacy.dump-collection-limit",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Limit the crash dumps sent to Microsoft",
+    "summary": "Keep full and heap memory dumps from being sent after a crash.",
+    "what": "Sets the policy Limit Dump Collection. Microsoft's text says Windows Error Reporting is then limited to kernel mini dumps and user mode triage dumps.",
+    "benefit": "A crash report cannot carry a full copy of a program's memory, which can hold documents, names and passwords that were open.",
+    "risk": "Low. Only matters when optional diagnostic data is on. Whoever reads your crash reports gets less detail.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Your choice. Useful if you send optional diagnostic data and want crash reports to carry less. It changes nothing if you send required data only.",
+    "facts": [
+      "Microsoft says dumps are only sent when the device is set to send optional diagnostic data",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education, Windows 11 and later",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+          "name": "LimitDumpCollection"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "provenance": [
+      "DataCollection.admx LimitDumpCollection"
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ]
+  },
+  {
+    "id": "privacy.diagnostic-logs-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Diagnostics",
+    "name": "Stop extra diagnostic log collection",
+    "summary": "Keep Windows from gathering additional logs when it wants more detail about a problem.",
+    "what": "Sets the policy Limit Diagnostic Log Collection. Microsoft's text says additional diagnostic logs are then not collected.",
+    "benefit": "No extra logs are gathered and sent when Windows wants more information about a fault.",
+    "risk": "Low. Only matters when optional diagnostic data is on. Problems on this PC are less likely to be investigated in detail on Microsoft's side.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Your choice. Useful if you send optional diagnostic data and want it limited. It changes nothing if you send required data only.",
+    "facts": [
+      "Microsoft says the logs are only sent when the device is set to send optional diagnostic data",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education, Windows 11 and later",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+          "name": "LimitDiagnosticLogCollection"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "provenance": [
+      "DataCollection.admx LimitDiagnosticLogCollection"
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system"
+    ]
+  },
+  {
+    "id": "power.search-index-battery-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Power",
+    "topic": "Power",
+    "name": "Pause search indexing on battery",
+    "summary": "Let the search indexer rest while a laptop runs on its battery.",
+    "what": "Sets the policy Prevent indexing when running on battery power to conserve energy. The policy text says the indexer pauses whenever the computer is running on battery.",
+    "benefit": "Less background disk and processor work, and a little more battery, on a laptop that is unplugged.",
+    "risk": "Low. New or changed files may not show up in search until the charger is connected again. A desktop has no battery, so nothing changes there.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Your choice. Fits a laptop you often run unplugged. No effect on a desktop.",
+    "facts": [
+      "The definition is in the policy files that ship with Windows, and its text is quoted above",
+      "Enforced by a machine policy, so it applies to every account",
+      "Indexing continues when the charger is connected",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+          "name": "PreventIndexOnBattery"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ],
+    "provenance": [
+      "Search.admx PreventIndexOnBattery"
+    ]
   }
 ]

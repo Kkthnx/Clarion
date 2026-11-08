@@ -120,5 +120,10 @@ public sealed class LogDialog : IDisposable
         if (_shown is not null) await _shown;
     }
 
-    public void Dispose() => _stop.Dispose();
+    public void Dispose()
+    {
+        // A job that ends by an error before FinishAsync would otherwise leave the timer ticking, and it holds the dialog.
+        _timer.Stop();
+        _stop.Dispose();
+    }
 }

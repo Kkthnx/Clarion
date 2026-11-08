@@ -203,6 +203,20 @@
     "tweakIds": ["compat.pca-off", "compat.inventory-off", "compat.app-telemetry-off"]
   },
   {
+    "id": "less-diagnostic-detail",
+    "title": "Microsoft or a support person says they cannot get more detail about a crash or a problem on this PC",
+    "tip": "The dump and diagnostic log settings keep full memory dumps and extra logs from being sent when optional diagnostic data is on. Revert them if you want to send that detail again.",
+    "topics": [],
+    "tweakIds": ["privacy.dump-collection-limit", "privacy.diagnostic-logs-off"]
+  },
+  {
+    "id": "search-stale-on-battery",
+    "title": "A new file does not show up in search while my laptop is on battery",
+    "tip": "With indexing paused on battery, new and changed files are added to the index after the charger is connected. Revert the setting to index on battery too.",
+    "topics": [],
+    "tweakIds": ["power.search-index-battery-off"]
+  },
+  {
     "id": "name-not-found",
     "title": "Another PC on my home network can no longer be reached by its name",
     "tip": "With LLMNR off, a name is looked up only through DNS. On a network without a DNS server for local names, use the other PC's address instead, or revert the setting and restart.",

@@ -48,6 +48,16 @@ public sealed partial class DnsChooser : UserControl
         foreach (var i in _items) i.PropertyChanged -= OnItemChanged;
     }
 
+    /// <summary>
+    /// Lets go of the settings this chooser listens to. The page calls it when it is left, since a chooser that was made and left before it
+    /// showed never gets its Unloaded, and the settings live as long as the program.
+    /// </summary>
+    public void Release()
+    {
+        Detach();
+        _items = [];
+    }
+
     private static string KeyOf(TweakItem i) => i.Id[Prefix.Length..].Replace(EncryptedSuffix, "");
     private static bool IsEncrypted(TweakItem i) => i.Id.EndsWith(EncryptedSuffix, StringComparison.Ordinal);
 
