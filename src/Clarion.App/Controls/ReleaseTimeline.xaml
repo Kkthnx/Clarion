@@ -33,6 +33,8 @@
                                                Foreground="{ThemeResource ClTextPrimaryBrush}" />
                                     <controls:Chip Text="{x:Bind BadgeText}" Kind="{x:Bind BadgeKind}" Visibility="{x:Bind ShowBadge}" VerticalAlignment="Center" />
                                 </StackPanel>
+                                <TextBlock Text="{x:Bind Highlight}" FontSize="13" TextWrapping="Wrap" Visibility="{x:Bind HasHighlight}"
+                                           Foreground="{ThemeResource ClTextPrimaryBrush}" />
                                 <TextBlock Text="{x:Bind Summary}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource ClTextMutedBrush}" />
                             </StackPanel>
                         </Expander.Header>

@@ -18,7 +18,7 @@ public sealed record ChangeGroup(ChangeKind Kind, IReadOnlyList<string> Items)
 }
 
 /// <summary>What changed in one release, as the person reads it.</summary>
-public sealed record ReleaseNotes(string Version, bool PreRelease, DateTimeOffset? Published, string? Url, IReadOnlyList<ChangeGroup> Groups)
+public sealed record ReleaseNotes(string Version, bool PreRelease, DateTimeOffset? Published, string? Url, IReadOnlyList<ChangeGroup> Groups, string Highlight = "")
 {
     public int Total => Groups.Sum(g => g.Items.Count);
 
@@ -61,6 +61,23 @@ public static class ChangelogParser
         return Enum.GetValues<ChangeKind>().Where(items.ContainsKey).Select(k => new ChangeGroup(k, items[k])).ToList();
     }
 
+    /// <summary>
+    /// The plain sentence or two a release may open with, written before the first group word or dash line, for someone who does not
+    /// want to read every change. Empty when the release has none. Headings and links on lines of their own are not part of it.
+    /// </summary>
+    public static string ParseHighlight(string? text)
+    {
+        var lines = new List<string>();
+        foreach (var raw in (text ?? "").Replace("\r\n", "\n").Split('\n'))
+        {
+            var line = raw.Trim();
+            if (line.Length == 0) { if (lines.Count > 0) break; continue; }
+            if (Headings.ContainsKey(line.TrimEnd(':')) || line.StartsWith("- ", StringComparison.Ordinal) || line.StartsWith("* ", StringComparison.Ordinal) || line.StartsWith('#')) break;
+            lines.Add(Clean(line));
+        }
+        return string.Join(' ', lines);
+    }
+
     /// <summary>The releases in a changelog file, newest first as written. The Unreleased section is not a release and is skipped.</summary>
     public static IReadOnlyList<ReleaseNotes> ParseChangelog(string? markdown)
     {
@@ -73,7 +90,7 @@ public static class ChangelogParser
 
         return sections
             .Where(s => !s.Version.Equals("Unreleased", StringComparison.OrdinalIgnoreCase) && ReleaseVersion.Parse(s.Version) is not null)
-            .Select(s => new ReleaseNotes(s.Version, ReleaseVersion.Parse(s.Version)!.IsPreRelease, null, null, ParseGroups(string.Join('\n', s.Lines))))
+            .Select(s => new ReleaseNotes(s.Version, ReleaseVersion.Parse(s.Version)!.IsPreRelease, null, null, ParseGroups(string.Join('\n', s.Lines)), ParseHighlight(string.Join('\n', s.Lines))))
             .ToList();
     }
 
@@ -111,7 +128,7 @@ public static class WhatsNew
     /// <summary>The newer releases from GitHub as notes, newest first, with the page each one lives on.</summary>
     public static IReadOnlyList<ReleaseNotes> FromReleases(IEnumerable<ReleaseInfo> releases) =>
         releases.Select(r => new ReleaseNotes(
-            r.Tag.TrimStart('v', 'V'), r.PreRelease, r.Published, UpdateCheck.IsTrustedReleaseUrl(r.Url) ? r.Url : null, ChangelogParser.ParseGroups(r.Body))).ToList();
+            r.Tag.TrimStart('v', 'V'), r.PreRelease, r.Published, UpdateCheck.IsTrustedReleaseUrl(r.Url) ? r.Url : null, ChangelogParser.ParseGroups(r.Body), ChangelogParser.ParseHighlight(r.Body))).ToList();
 
     /// <summary>How many changes of each kind there are across the releases, for the count pills at the top.</summary>
     public static IReadOnlyDictionary<ChangeKind, int> Totals(IEnumerable<ReleaseNotes> notes)

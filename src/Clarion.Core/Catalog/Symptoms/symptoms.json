@@ -1,5 +1,12 @@
 [
   {
+    "id": "apps-reopen",
+    "title": "Apps open again by themselves after a restart, or no longer do",
+    "tip": "Windows can save your open apps and start them again when you sign back in. Turning that off gives a clean desktop after every restart. Reverting the setting gives Windows the choice again.",
+    "topics": [],
+    "tweakIds": ["system.restart-apps-off", "logon.auto-sign-in-after-update-off"]
+  },
+  {
     "id": "program-not-starting",
     "title": "A program no longer starts when Windows starts",
     "tip": "A program you stopped from starting with Windows is turned off in the list Task Manager's Startup tab reads. Turn it back on from the Startup tab or from Safety. Some programs also have their own Start with Windows option.",
@@ -151,7 +158,7 @@
     "title": "Copilot, Recall or Paint AI tools are missing",
     "tip": "These settings hide or turn off the AI features on purpose. Reverting brings them back where your Windows edition has them.",
     "topics": ["Copilot and Recall"],
-    "tweakIds": ["taskbar.copilot-button-off", "debloat.app.copilot", "perm.all-text-image-generation"]
+    "tweakIds": ["taskbar.copilot-button-off", "debloat.app.copilot", "perm.all-text-image-generation", "perm.user-text-image-generation"]
   },
   {
     "id": "personal-data-access",

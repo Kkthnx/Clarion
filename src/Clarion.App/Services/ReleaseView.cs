@@ -9,15 +9,17 @@ public sealed record ChangeGroupVm(string Title, ChipKind Kind, int Count, IRead
 /// <summary>One release on the timeline, ready to draw.</summary>
 public sealed record ReleaseVm(
     string Version, string Summary, string BadgeText, ChipKind BadgeKind, bool ShowBadge,
-    bool IsInstalled, bool IsExpanded, string? Url, IReadOnlyList<ChangeGroupVm> Groups)
+    bool IsInstalled, bool IsExpanded, string? Url, IReadOnlyList<ChangeGroupVm> Groups, string Highlight = "")
 {
+    public bool HasHighlight => Highlight.Length > 0;
+
     public bool IsNotInstalled => !IsInstalled;
     public bool HasGroups => Groups.Count > 0;
     public bool HasNoGroups => Groups.Count == 0;
     public bool HasUrl => Url is not null;
 
     /// <summary>What a screen reader says for the card, since its header is built from several parts and has no text of its own.</summary>
-    public string AccessibleName => ShowBadge ? $"{Version}, {BadgeText}, {Summary}" : $"{Version}, {Summary}";
+    public string AccessibleName => (ShowBadge ? $"{Version}, {BadgeText}, " : $"{Version}, ") + (HasHighlight ? $"{Highlight} " : "") + Summary;
 }
 
 public static class ReleaseViews
@@ -57,6 +59,7 @@ public static class ReleaseViews
             notes.Version,
             parts.Count > 0 ? string.Join(" · ", parts) : "No notes were written for this release.",
             badge, badgeKind, badge.Length > 0, installed, expanded, notes.Url,
-            notes.Groups.Select(g => new ChangeGroupVm(g.Title, ChipFor(g.Kind), g.Items.Count, g.Items)).ToList());
+            notes.Groups.Select(g => new ChangeGroupVm(g.Title, ChipFor(g.Kind), g.Items.Count, g.Items)).ToList(),
+            notes.Highlight);
     }
 }

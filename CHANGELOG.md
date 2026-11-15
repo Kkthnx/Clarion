@@ -2,7 +2,12 @@
 
 ## Unreleased
 
+More settings for Windows AI, ads and File Explorer, a calmer review window, and a clearer What's new page.
+
 New
+- Block apps from using Windows text and image generation for this account only, the Settings page that the all accounts policy locks. The page was seen locked on a PC that has the policy set. Microsoft does not document the per account value, and its name matches the policy.
+- Hide Gallery and Hide Home in the File Explorer sidebar, Do not reopen apps when you sign back in, No snap layouts when you hover over Maximize, No suggestions after you snap a window, and Stop the finish setting up your device reminders. The restart apps value and both snap values were read back from the real registry here by turning the Windows switch on and off and putting it back. The Gallery and Home values were already set on this PC. The setup reminders value is named by guides and Microsoft does not document it.
+- Do not sign in automatically after an update restart, from the Microsoft policy Sign-in and lock last interactive user automatically after a restart, which Microsoft says is on when the policy is not set. It is checked by the policy file test, and it is for shared or portable PCs.
 - Turn off Click to Do, Turn off the Settings agentic search and Keep Windows agent connectors off. Each is a Microsoft policy that ships in the policy files of Windows 11 25H2, checked by a test against those files, and honored on Pro, Enterprise and Education. Reports differ on whether Pro honors the Settings one, and the policy file lists it, so its text says that and it changes nothing beyond the policy value. Block apps from using Windows text and image generation (all accounts) forces the app privacy policy Let Windows apps make use of Text and image generation features of Windows to Deny.
 - No app promotions in the Share window, No Microsoft 365 Copilot prompt at sign-in, Turn off the compatibility scan for backed up apps, Keep your email and name off the sign-in screen and Stop new tray icons popping onto the taskbar. All five come from policy files that ship with Windows and are checked by the same test. Microsoft does not say which editions honor the Copilot sign-in one, and the text says that.
 - Stop Edge downloading its on device AI model, Remove the news feed from Edge's new tab page and Stop Edge Spotlight pictures, tips and notices. Each one cites its Microsoft Edge policy page, read on 2026-11-15, which gives the value and the Edge version it needs. Microsoft documents EdgeCopilotEnabled as not supported on Windows, so there is no setting for it.
@@ -11,11 +16,16 @@ New
 
 Polish
 - When reading the state of every setting is slow, the log now names the reader that took the time. A step that takes half a second or more writes a line such as Slow read: DnsHandler took 900 ms to prepare. A failed preparation of a read was kept in memory and never written anywhere, and it is written to the log now. This is for the report of a state read taking 17 to 21 seconds on a gaming laptop, where nothing said which reader was slow.
-
+- The review before applying says in plain words what each setting does, and the registry values behind it are one click away on Show the exact changes. In Expert mode they stay open as before. App installs and removals are shown as they were.
+- The Optional your choice label is left off the rows, since most rows said it and it told nothing. It is still in the details, and Suggested, If it fits and Avoid are shown as before.
+- A release in What's new can open with a plain sentence or two, shown above its counts. The newest releases have one, and a test asks every newest release to have one so the page stays readable.
+- The Remove Xbox Game Bar row now says that a controller button or Win+G can bring up a message about an ms-gamingoverlay link once the app is gone, and points to the two settings that turn those triggers off. Reports name that fix and it was not tested here.
 - Searching for a short word no longer matches nearly everything. A word of one or two letters has to start a word of the setting's text, where before it matched anywhere inside one. The search click to do found End task from the taskbar menu because do sits inside Windows. Longer words match as before.
 - The window opens maximized when it was maximized the last time it was closed. Only that choice is saved, not the size or the place, since a monitor may be gone by then.
 
 ## 1.5.1
+
+Three new settings, and the info button now sits right next to a setting's name.
 
 Fixed
 - The info button next to a setting's name sat far from the name in the wide one column list after the wrapping fix in 1.5.0. The name is now capped at the room the card really has, so a long name wraps in a narrow card and the button stays right after the name in a wide one.
@@ -27,6 +37,8 @@ New
 - Pause search indexing on battery, from the policy Prevent indexing when running on battery power to conserve energy. It matters on a laptop and changes nothing on a desktop. Its definition and text are in the policy files that ship with Windows, and Microsoft has no documentation page for it that could be found, so the entry carries no web source.
 
 ## 1.5.0
+
+Home opens on what needs you, laptops get safer defaults, and a window that closes by itself now leaves a trail.
 
 Fixed
 - A long setting name, such as Opt out of the Customer Experience Improvement Program, ran out of its card in the two column list and pushed its i button out of sight. The name now takes the room that is left and wraps, and the i has a column of its own at the right of the name, lined up from row to row.
@@ -48,6 +60,8 @@ New
 
 ## 1.4.0
 
+Clarion no longer grows in memory as you move between pages, and it now knows when it is on a laptop.
+
 Fixed
 - The program grew with every page you opened. A page is made again on each visit, but the rows it shows, such as the cleanup rows and the settings, live as long as the program. A page that was only dropped left a listener on every row it had shown, so each visit to Clean up, to a list of settings or to the Apps page added one more per row, and each one kept that visit's elements alive in native memory. A walk through all the pages 30 times took the program from 206 to 435 MB. Pages now let go of their lists when you leave them. The same walk ends at 380 MB, and growth after the first few rounds fell from about 4.2 MB a round to 0.9. The listeners on one cleanup row went from 3 to 8 in 8 visits before the change, and stay at 0 after it.
 
@@ -63,6 +77,8 @@ Polish
 - Setting CLARION_LEAK_PROBE=1 makes the program write to its log, every 10 seconds, how many pages are still alive after a full collection and how many listeners sit on a few sample rows. It is for finding leaks like the one above, and it does nothing unless that variable is set.
 
 ## 1.3.0
+
+Cleanup scans and the first read are faster, lists keep your place, and app updates now cover every app winget can update.
 
 Fixed
 - Prefer IPv4 over IPv6 wrote 32 over the whole DisabledComponents value. That value is a set of flags, and a PC that already had another one on, such as the tunnel bit (a stored 1 became 32), lost it, and one with IPv6 switched off in it (255) got IPv6 back. The setting now owns only its own bit, 0x20, checks only that bit and leaves the others as they were. Revert puts back the whole value that was there.
@@ -83,6 +99,8 @@ New
 - `--update-apps --all-apps` does the same from the command line. `--preview` lists them, and `--all-apps` cannot be mixed with `--only`.
 
 ## 1.2.0
+
+App logos draw correctly, a search with no answer says what to try, and Restart Explorer only touches your own sign in.
 
 Fixed
 - App logos drawn from an outline came out with some pieces in the wrong place. A logo made of several pieces, such as a word or a mark with a hole in it, writes its second and later pieces with a relative move after the close of the one before. SVG puts that move at the start of the shape just closed, and the drawing code of WinUI does not, so those pieces were displaced or went missing. The .NET mark showed as .NFT. 80 of the 110 outlines are written this way. Every outline is now made absolute once when it loads, which means the same thing everywhere, and the result was checked against an independent SVG library: the shape of all 110 is unchanged.

@@ -497,5 +497,218 @@
       { "type": "feature.set", "name": "HypervisorPlatform", "enabled": true }
     ],
     "sources": [ "https://learn.microsoft.com/en-us/virtualization/api/" ]
+  },
+  {
+    "id": "perm.user-text-image-generation",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block apps from using Windows text and image generation (this account)",
+    "summary": "Turn off app access to the text and image generation features of Windows for your account.",
+    "what": "Sets the per account app permission behind Settings, Privacy and security, Text and image generation to Deny.",
+    "benefit": "Apps that ask Windows for its on device writing and image tools cannot use them until you allow it again.",
+    "risk": "Low. Rewrite and image tools inside Notepad, Paint, Photos and similar apps stop working. Allow it again in Settings.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you do not use the built in writing and image tools. Most people should use this one and not the all accounts version.",
+    "facts": [
+      "Per account, so other accounts are not affected",
+      "The all accounts policy locks the same page in Settings, which was seen on a PC that had it set",
+      "Microsoft does not document the value, and its name matches the policy it belongs to",
+      "Revert restores exactly what was there before"
+    ],
+    "scope": "User",
+    "requires": { "minBuild": 26100 },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\systemAIModels", "name": "Value" }, "data": { "kind": "String", "value": "Deny" } }
+    ]
+  },
+  {
+    "id": "explorer.hide-gallery",
+    "lastVerifiedBuild": 26200,
+    "category": "Explorer",
+    "topic": "File Explorer",
+    "name": "Hide Gallery in the File Explorer sidebar",
+    "summary": "Take the Gallery entry out of the navigation pane.",
+    "what": "Unpins the Gallery shell folder from the navigation pane of File Explorer for your account.",
+    "benefit": "One less entry in the sidebar for a view of pictures that many people never open.",
+    "risk": "None. Your pictures stay where they are.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It changes only the sidebar.",
+    "facts": [
+      "Per account setting",
+      "Windows 11 only",
+      "File Explorer restarts once",
+      "Microsoft does not document the value, which is the one the shell folder itself reads",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "requires": { "minBuild": 22621 },
+    "restartsExplorer": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Classes\\CLSID\\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}", "name": "System.IsPinnedToNameSpaceTree" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "explorer.hide-home",
+    "lastVerifiedBuild": 26200,
+    "category": "Explorer",
+    "topic": "File Explorer",
+    "name": "Hide Home in the File Explorer sidebar",
+    "summary": "Take the Home entry out of the navigation pane.",
+    "what": "Unpins the Home shell folder from the navigation pane of File Explorer for your account.",
+    "benefit": "A sidebar that starts at your own folders and drives, without the recent and recommended files page.",
+    "risk": "None. Pair it with Open File Explorer to This PC so a new window does not open on a page that is gone.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It changes only the sidebar.",
+    "facts": [
+      "Per account setting",
+      "Windows 11 only",
+      "File Explorer restarts once",
+      "Microsoft does not document the value, which is the one the shell folder itself reads",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "requires": { "minBuild": 22000 },
+    "restartsExplorer": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Classes\\CLSID\\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}", "name": "System.IsPinnedToNameSpaceTree" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "system.restart-apps-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "System",
+    "name": "Do not reopen apps when you sign back in",
+    "summary": "Stop Windows from saving your open apps and starting them again after a restart.",
+    "what": "Turns off the sign-in option Automatically save my restartable apps and restart them when I sign back in, for your account.",
+    "benefit": "After a restart you get a clean desktop, with no apps coming back that you had closed in your head.",
+    "risk": "None. You open your apps yourself.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if apps keep coming back after a restart. It is already off on most PCs.",
+    "facts": [
+      "Per account setting",
+      "Read back from the real registry here by turning the Settings switch on and off",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", "name": "RestartApps" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "logon.auto-sign-in-after-update-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Lock screen",
+    "name": "Do not sign in automatically after an update restart",
+    "summary": "Stop Windows from holding your sign-in to finish setting up after a restart.",
+    "what": "Sets the policy Sign-in and lock last interactive user automatically after a restart to off, which is the policy behind Use my sign-in info to automatically finish setting up after an update.",
+    "benefit": "After a restart nobody is signed in until you sign in, and your account is not signed in behind the lock screen.",
+    "risk": "Low. Apps you had open are not brought back after an update, and some updates finish their setup after you sign in.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested on shared or portable PCs. Skip it if you want the PC ready as soon as it restarts.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Microsoft says it is on by default when the policy is not set",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 17763,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "name": "DisableAutomaticRestartSignOn" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-winlogon" ],
+    "provenance": [ "WinLogon.admx AutomaticRestartSignOn" ]
+  },
+  {
+    "id": "appearance.snap-layouts-hover-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Look and feel",
+    "name": "No snap layouts when you hover over Maximize",
+    "summary": "Stop the layout picker from opening when the pointer rests on the Maximize button.",
+    "what": "Unticks the Multitasking option Show snap layouts when I hover over a window's maximize button, for your account.",
+    "benefit": "A pointer that passes over Maximize no longer opens a panel of layouts.",
+    "risk": "None. Win+Z and dragging a window still snap it.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It only stops a panel from opening.",
+    "facts": [
+      "Per account setting",
+      "Windows 11 only",
+      "Read back from the real registry here by ticking the Settings option and unticking it",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "requires": { "minBuild": 22000 },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "EnableSnapAssistFlyout" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "appearance.snap-suggestions-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Look and feel",
+    "name": "No suggestions after you snap a window",
+    "summary": "Stop Windows from offering other windows to fill the rest of the screen.",
+    "what": "Unticks the Multitasking option When I snap a window, suggest what I can snap next to it, for your account.",
+    "benefit": "Snapping one window leaves the other half of the screen alone instead of showing a picker.",
+    "risk": "None. You can still snap a second window yourself.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It only stops a picker from appearing.",
+    "facts": [
+      "Per account setting",
+      "Windows 11 only",
+      "Read back from the real registry here by ticking the Settings option and unticking it",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "requires": { "minBuild": 22000 },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "SnapAssist" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "ads.setup-suggestions-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "Stop the finish setting up your device reminders",
+    "summary": "Turn off the prompts that suggest ways to get the most out of Windows.",
+    "what": "Turns off the Notifications option Suggest ways to get the most out of Windows and finish setting up this device, for your account.",
+    "benefit": "No full screen or toast prompts asking you to finish setup, sign in to a Microsoft account or try a service.",
+    "risk": "None. Every feature stays in Settings.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. You lose nothing you need.",
+    "facts": [
+      "Per account setting",
+      "Guides name this value for that option, and Microsoft does not document it",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\UserProfileEngagement", "name": "ScoobeSystemSettingEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
   }
 ]

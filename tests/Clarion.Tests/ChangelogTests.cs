@@ -38,6 +38,41 @@ public sealed class ChangelogTests
         - Installer.
         """;
 
+    // ---- highlight ----
+
+    [Fact]
+    public void A_release_may_open_with_a_plain_sentence_that_is_not_one_of_the_changes()
+    {
+        const string text = "\nTwo new settings, and a calmer window.\nIt reads better now.\n\nNew\n- Something.\n";
+
+        Assert.Equal("Two new settings, and a calmer window. It reads better now.", ChangelogParser.ParseHighlight(text));
+        Assert.Single(ChangelogParser.ParseGroups(text));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("\nNew\n- Something.\n")]
+    [InlineData("- A dash line first.\n")]
+    public void A_release_without_one_has_an_empty_highlight(string? text) => Assert.Equal("", ChangelogParser.ParseHighlight(text));
+
+    [Fact]
+    public void The_highlight_of_each_release_in_the_changelog_comes_from_its_own_section()
+    {
+        var all = ChangelogParser.ParseChangelog("# Changelog\n\n## 1.0.0\n\nQuieter and faster.\n\nFixed\n- A bug.\n\n## 0.9.0\n\nFixed\n- Another.\n");
+
+        Assert.Equal("Quieter and faster.", all.Single(n => n.Version == "1.0.0").Highlight);
+        Assert.Equal("", all.Single(n => n.Version == "0.9.0").Highlight);
+    }
+
+    [Fact]
+    public void The_newest_releases_in_the_real_changelog_have_a_plain_highlight()
+    {
+        var newest = ChangelogParser.LoadEmbedded().Take(3).ToList();
+
+        Assert.All(newest, n => Assert.True(n.Highlight.Length is > 10 and < 200, $"{n.Version} needs a one or two sentence highlight"));
+    }
+
     // ---- groups ----
 
     [Fact]

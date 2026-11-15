@@ -68,9 +68,11 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
 
     /// <summary>
     /// A setting that is already on and suggested needs no "Suggested: turn on", which reads as an instruction to do what is done, and
-    /// one that is queued already has its own mark. What is left is the label that still says something: what to do, or why not.
+    /// one that is queued already has its own mark. "Optional: your choice" is left off as well, since it is what most rows say and so it
+    /// tells nothing, and it is still in the details. What is left is the label that still says something: what to do, or why not.
     /// </summary>
-    public bool ShowRecommendationChip => ShowRecommendation && !IsPending && !(Tweak.Recommendation == Recommendation.Recommended && IsApplied);
+    public bool ShowRecommendationChip => ShowRecommendation && !IsPending && Tweak.Recommendation != Recommendation.Optional
+        && !(Tweak.Recommendation == Recommendation.Recommended && IsApplied);
 
     /// <summary>False for the lowest risk, which every setting on the page says and so tells nothing in a one line row.</summary>
     public bool RiskIsNotable => Tweak.RiskLevel > RiskLevel.Safe;

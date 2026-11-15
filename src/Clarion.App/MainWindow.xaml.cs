@@ -505,8 +505,29 @@ public sealed partial class MainWindow : Window
             });
             if (item.IsOn)
             {
-                foreach (var step in item.ExactChanges)
-                    block.Children.Add(Ui.Mono(step));
+                // A setting says in plain words what it does first. The registry values behind it are one click away, and open at once in Expert mode.
+                if (!item.InstallsApps && !item.RemovesApps) block.Children.Add(Ui.Note(item.Tweak.Summary));
+                if (item.InstallsApps || item.RemovesApps || _app.ExpertMode || item.ExactChanges.Count == 0)
+                {
+                    foreach (var step in item.ExactChanges)
+                        block.Children.Add(Ui.Mono(step));
+                }
+                else
+                {
+                    var steps = new StackPanel { Spacing = 2, Visibility = Visibility.Collapsed };
+                    foreach (var step in item.ExactChanges) steps.Children.Add(Ui.Mono(step));
+                    var count = item.ExactChanges.Count;
+                    var show = new HyperlinkButton { Content = count == 1 ? "Show the exact change" : $"Show the exact changes ({count})", Padding = new Thickness(0, 2, 8, 2), FontSize = 12 };
+                    Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(show, $"Show the exact changes for {item.Name}");
+                    show.Click += (_, _) =>
+                    {
+                        var open = steps.Visibility == Visibility.Collapsed;
+                        steps.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
+                        show.Content = open ? (count == 1 ? "Hide the exact change" : "Hide the exact changes") : count == 1 ? "Show the exact change" : $"Show the exact changes ({count})";
+                    };
+                    block.Children.Add(show);
+                    block.Children.Add(steps);
+                }
                 if (item.RemovesApps)
                     block.Children.Add(new TextBlock { Text = Clarion.Core.Appx.AppRemovalNotice.Text, FontSize = 12, TextWrapping = TextWrapping.Wrap, Foreground = Clarion.App.Controls.ThemeBrushes.Get("ClWarnText", Root.ActualTheme) });
                 if (item.InstallsApps)

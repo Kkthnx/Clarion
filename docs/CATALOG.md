@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-498 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+506 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -45,6 +45,32 @@ Move the Start button and icons to the left edge.
 - **Risk:** None.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAl to 0 (DWord)`
+- **Needs:** Windows build 22000 or later
+
+#### No snap layouts when you hover over Maximize
+
+`appearance.snap-layouts-hover-off` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Stop the layout picker from opening when the pointer rests on the Maximize button.
+
+- **What it does:** Unticks the Multitasking option Show snap layouts when I hover over a window's maximize button, for your account.
+- **Benefit:** A pointer that passes over Maximize no longer opens a panel of layouts.
+- **Risk:** None. Win+Z and dragging a window still snap it.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\EnableSnapAssistFlyout to 0 (DWord)`
+- **Needs:** Windows build 22000 or later
+
+#### No suggestions after you snap a window
+
+`appearance.snap-suggestions-off` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Stop Windows from offering other windows to fill the rest of the screen.
+
+- **What it does:** Unticks the Multitasking option When I snap a window, suggest what I can snap next to it, for your account.
+- **Benefit:** Snapping one window leaves the other half of the screen alone instead of showing a picker.
+- **Risk:** None. You can still snap a second window yourself.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\SnapAssist to 0 (DWord)`
 - **Needs:** Windows build 22000 or later
 
 #### Show seconds in the taskbar clock
@@ -459,7 +485,7 @@ Uninstall Xbox Game Bar for your account.
 
 - **What it does:** Removes the Microsoft.XboxGamingOverlay package for the current account. Other accounts are not touched.
 - **Benefit:** Less clutter in Start and search, and no background updates for the app.
-- **Risk:** Low. The app can be put back with Revert or from the Microsoft Store.
+- **Risk:** Low. The app can be put back with Revert or from the Microsoft Store. With it gone, a controller button or Win+G can bring up a message saying you need a new app to open an ms-gamingoverlay link.
 - **Changes:**
   - `Remove app Microsoft.XboxGamingOverlay for this account`
 
@@ -976,6 +1002,18 @@ Turn off tips, suggested apps and silent installs for the current user.
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SubscribedContent-353694Enabled to 0 (DWord)`
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SubscribedContent-353696Enabled to 0 (DWord)`
 
+#### Stop the finish setting up your device reminders
+
+`ads.setup-suggestions-off` · Safe · Helps in some cases · Suggested: turn on · checked on build 26200
+
+Turn off the prompts that suggest ways to get the most out of Windows.
+
+- **What it does:** Turns off the Notifications option Suggest ways to get the most out of Windows and finish setting up this device, for your account.
+- **Benefit:** No full screen or toast prompts asking you to finish setup, sign in to a Microsoft account or try a service.
+- **Risk:** None. Every feature stays in Settings.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement\ScoobeSystemSettingEnabled to 0 (DWord)`
+
 #### Turn off Windows Spotlight everywhere
 
 `ads.spotlight-off` · Low · Documented by the vendor · Suggested: turn on · checked on build 26200
@@ -1037,6 +1075,32 @@ Add End task to the right-click menu of taskbar apps.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings\TaskbarEndTask to 1 (DWord)`
 - **Needs:** Windows build 22631 or later
+
+#### Hide Gallery in the File Explorer sidebar
+
+`explorer.hide-gallery` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Take the Gallery entry out of the navigation pane.
+
+- **What it does:** Unpins the Gallery shell folder from the navigation pane of File Explorer for your account.
+- **Benefit:** One less entry in the sidebar for a view of pictures that many people never open.
+- **Risk:** None. Your pictures stay where they are.
+- **Changes:**
+  - `Set HKCU\Software\Classes\CLSID\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}\System.IsPinnedToNameSpaceTree to 0 (DWord)`
+- **Needs:** Windows build 22621 or later; File Explorer restarts
+
+#### Hide Home in the File Explorer sidebar
+
+`explorer.hide-home` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Take the Home entry out of the navigation pane.
+
+- **What it does:** Unpins the Home shell folder from the navigation pane of File Explorer for your account.
+- **Benefit:** A sidebar that starts at your own folders and drives, without the recent and recommended files page.
+- **Risk:** None. Pair it with Open File Explorer to This PC so a new window does not open on a page that is gone.
+- **Changes:**
+  - `Set HKCU\Software\Classes\CLSID\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}\System.IsPinnedToNameSpaceTree to 0 (DWord)`
+- **Needs:** Windows build 22000 or later; File Explorer restarts
 
 #### Open File Explorer to This PC
 
@@ -5669,6 +5733,19 @@ Force app access to the text and image generation features of Windows off for ev
 - **Needs:** Windows build 26100 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy>
 
+#### Block apps from using Windows text and image generation (this account)
+
+`perm.user-text-image-generation` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Turn off app access to the text and image generation features of Windows for your account.
+
+- **What it does:** Sets the per account app permission behind Settings, Privacy and security, Text and image generation to Deny.
+- **Benefit:** Apps that ask Windows for its on device writing and image tools cannot use them until you allow it again.
+- **Risk:** Low. Rewrite and image tools inside Notepad, Paint, Photos and similar apps stop working. Allow it again in Settings.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\systemAIModels\Value to Deny (String)`
+- **Needs:** Windows build 26100 or later
+
 #### Block voice activation on the lock screen
 
 `perm.all-voice-locked` · Medium · Documented by the vendor · Only if it fits you · checked on build 26200
@@ -6118,6 +6195,20 @@ The camera cannot be started from the lock screen.
   - `Set HKLM\Software\Policies\Microsoft\Windows\Personalization\NoLockScreenCamera to 1 (DWord)`
 - **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-settings>
+
+#### Do not sign in automatically after an update restart
+
+`logon.auto-sign-in-after-update-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Stop Windows from holding your sign-in to finish setting up after a restart.
+
+- **What it does:** Sets the policy Sign-in and lock last interactive user automatically after a restart to off, which is the policy behind Use my sign-in info to automatically finish setting up after an update.
+- **Benefit:** After a restart nobody is signed in until you sign in, and your account is not signed in behind the lock screen.
+- **Risk:** Low. Apps you had open are not brought back after an update, and some updates finish their setup after you sign in.
+- **Changes:**
+  - `Set HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System\DisableAutomaticRestartSignOn to 1 (DWord)`
+- **Needs:** Windows build 17763 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-winlogon>
 
 #### Hide app notifications on the lock screen
 
@@ -6782,6 +6873,18 @@ Let apps use paths longer than 260 characters.
   - `Set HKLM\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled to 1 (DWord)`
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation>
+
+#### Do not reopen apps when you sign back in
+
+`system.restart-apps-off` · Safe · Helps in some cases · Optional: your choice · checked on build 26200
+
+Stop Windows from saving your open apps and starting them again after a restart.
+
+- **What it does:** Turns off the sign-in option Automatically save my restartable apps and restart them when I sign back in, for your account.
+- **Benefit:** After a restart you get a clean desktop, with no apps coming back that you had closed in your head.
+- **Risk:** None. You open your apps yourself.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\RestartApps to 0 (DWord)`
 
 #### Show detailed startup and shutdown messages
 

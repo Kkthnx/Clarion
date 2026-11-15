@@ -619,15 +619,16 @@
     "summary": "Uninstall Xbox Game Bar for your account.",
     "what": "Removes the Microsoft.XboxGamingOverlay package for the current account. Other accounts are not touched.",
     "benefit": "Less clutter in Start and search, and no background updates for the app.",
-    "risk": "Low. The app can be put back with Revert or from the Microsoft Store.",
+    "risk": "Low. The app can be put back with Revert or from the Microsoft Store. With it gone, a controller button or Win+G can bring up a message saying you need a new app to open an ms-gamingoverlay link.",
     "evidence": "Situational",
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
-    "advice": "Skip it if you record clips or use Win+G.",
+    "advice": "Skip it if you record clips or use Win+G. If you remove it, also turn on Turn off Game Bar recording and Stop the controller button opening Game Bar, which reports say stops that message.",
     "facts": [
       "The overlay behind Win+G for capture and performance widgets",
       "Removes it for your account only",
-      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store",
+      "Reports say the message comes from Game Bar triggers that are still on, and turning them off stops it, which was not tested here"
     ],
     "scope": "User",
     "apply": [
