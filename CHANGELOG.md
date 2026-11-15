@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.6.0
 
 More settings for Windows AI, ads and File Explorer, a calmer review window, and a clearer What's new page.
 
