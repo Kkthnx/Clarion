@@ -33,6 +33,9 @@ public sealed record UserSettings
     /// <summary>A scheduled task runs a read only check after Windows Update's monthly patch day.</summary>
     public bool MonthlyVerify { get; init; }
 
+    /// <summary>The window was maximized when it was closed, so it opens maximized the next time. The size and place are not kept, since a monitor can be gone by then.</summary>
+    public bool StartMaximized { get; init; }
+
     public static readonly string[] Themes = ["System", "Light", "Dark"];
 
     /// <summary>

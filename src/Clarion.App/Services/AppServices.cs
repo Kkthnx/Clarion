@@ -432,8 +432,18 @@ public sealed partial class AppServices : UiObservableObject
         if (group.Count == 0) return;
         var states = await Task.Run(() =>
         {
-            Runtime.Engine.WarmUp(group.Select(i => i.Tweak));
-            return DetectAll(group);
+            var detectWatch = Stopwatch.StartNew();
+            // A warm up under a second is normal. A slower one is logged by handler name, so a PC where the read takes 20 seconds shows which reader it is.
+            Runtime.Engine.WarmUp(group.Select(i => i.Tweak), (handler, ms) =>
+            {
+                if (ms >= 500) Log.Write($"Slow read: {handler} took {ms} ms to prepare");
+            });
+            if (Runtime.Engine.WarmUpProblem is { } problem) Log.Write($"Preparing the read did not finish: {problem}");
+            var warmMs = detectWatch.ElapsedMilliseconds;
+            var read = DetectAll(group);
+            if (detectWatch.ElapsedMilliseconds - warmMs >= 500)
+                Log.Write($"Slow read: {group.Count} settings took {detectWatch.ElapsedMilliseconds - warmMs} ms to check after {warmMs} ms of preparing");
+            return read;
         });
         Apply(group, states);
         AppliedCount = Items.Count(i => i.IsApplied && !i.InstallsApps);

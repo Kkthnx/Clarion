@@ -25,11 +25,21 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
 
     /// <summary>Runs every handler warm-up at the same time. Slow lookups overlap instead of queueing.</summary>
-    public void WarmUp(IEnumerable<Tweak> tweaks)
+    /// <param name="tweaks">The settings about to be read.</param>
+    /// <param name="timed">Called once per handler with its name and how long its warm up took, from the thread that ran it.</param>
+    public void WarmUp(IEnumerable<Tweak> tweaks, Action<string, long>? timed = null)
     {
         var ops = tweaks.SelectMany(t => t.Apply).ToList();
         WarmUpProblem = null;
-        try { Parallel.ForEach(_handlers, h => h.Warm(ops)); }
+        try
+        {
+            Parallel.ForEach(_handlers, h =>
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                try { h.Warm(ops); }
+                finally { timed?.Invoke(h.GetType().Name, watch.ElapsedMilliseconds); }
+            });
+        }
         catch (AggregateException ex)
         {
             // Warming up only saves time, so a failure does not stop anything, but the reason is kept for the log.

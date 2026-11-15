@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+New
+- Turn off Click to Do, Turn off the Settings agentic search and Keep Windows agent connectors off. Each is a Microsoft policy that ships in the policy files of Windows 11 25H2, checked by a test against those files, and honored on Pro, Enterprise and Education. Reports differ on whether Pro honors the Settings one, and the policy file lists it, so its text says that and it changes nothing beyond the policy value. Block apps from using Windows text and image generation (all accounts) forces the app privacy policy Let Windows apps make use of Text and image generation features of Windows to Deny.
+- No app promotions in the Share window, No Microsoft 365 Copilot prompt at sign-in, Turn off the compatibility scan for backed up apps, Keep your email and name off the sign-in screen and Stop new tray icons popping onto the taskbar. All five come from policy files that ship with Windows and are checked by the same test. Microsoft does not say which editions honor the Copilot sign-in one, and the text says that.
+- Stop Edge downloading its on device AI model, Remove the news feed from Edge's new tab page and Stop Edge Spotlight pictures, tips and notices. Each one cites its Microsoft Edge policy page, read on 2026-11-15, which gives the value and the Edge version it needs. Microsoft documents EdgeCopilotEnabled as not supported on Windows, so there is no setting for it.
+- Stop the controller button opening Game Bar, Stop Windows changing your default printer, Compact spacing in File Explorer and Show the full folder path in the File Explorer title. These write the same per account values the Windows settings pages do. Microsoft does not document the first two values, and their rows say so.
+- Virtual Machine Platform and Windows Hypervisor Platform, for WSL 2, Android emulators and other virtual machine tools. Both need a restart and virtualization turned on in the firmware.
+
+Polish
+- When reading the state of every setting is slow, the log now names the reader that took the time. A step that takes half a second or more writes a line such as Slow read: DnsHandler took 900 ms to prepare. A failed preparation of a read was kept in memory and never written anywhere, and it is written to the log now. This is for the report of a state read taking 17 to 21 seconds on a gaming laptop, where nothing said which reader was slow.
+
+- Searching for a short word no longer matches nearly everything. A word of one or two letters has to start a word of the setting's text, where before it matched anywhere inside one. The search click to do found End task from the taskbar menu because do sits inside Windows. Longer words match as before.
+- The window opens maximized when it was maximized the last time it was closed. Only that choice is saved, not the size or the place, since a monitor may be gone by then.
+
 ## 1.5.1
 
 Fixed

@@ -24,6 +24,7 @@ public sealed partial class MainWindow : Window
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
         ResizeToFit();
+        if (_app.Settings.StartMaximized && AppWindow.Presenter is OverlappedPresenter { IsMaximizable: true } startPresenter) startPresenter.Maximize();
         AppWindow.Closing += OnClosing;
         Shell.LinkNotOpened += address => DispatcherQueue.TryEnqueue(() => ShowLinkNotOpened(address));
         _app.SafeStateEntered += (_, _) => DispatcherQueue.TryEnqueue(ShowSafeState);
@@ -135,7 +136,7 @@ public sealed partial class MainWindow : Window
 
     private async void OnClosing(AppWindow sender, AppWindowClosingEventArgs args)
     {
-        if (!_app.IsChangingThisPc) return;
+        if (!_app.IsChangingThisPc) { RememberMaximized(sender); return; }
         args.Cancel = true;
         // A job's log or a question may be open already, and WinUI shows one dialog at a time. That one is in front of the person, so it
         // is left alone and the window just stays open.
@@ -146,6 +147,19 @@ public sealed partial class MainWindow : Window
             CloseButtonText = "OK",
             XamlRoot = Content.XamlRoot,
         });
+    }
+
+    /// <summary>Keeps only whether the window was maximized. A window closed while minimized leaves the earlier choice as it was.</summary>
+    private void RememberMaximized(AppWindow window)
+    {
+        if (window.Presenter is not OverlappedPresenter presenter) return;
+        var maximized = presenter.State switch
+        {
+            OverlappedPresenterState.Maximized => true,
+            OverlappedPresenterState.Restored => false,
+            _ => _app.Settings.StartMaximized,
+        };
+        if (maximized != _app.Settings.StartMaximized) _app.UpdateSettings(s => s with { StartMaximized = maximized });
     }
 
     private void OnGlobalSearch(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) => OpenSearch(args.QueryText.Trim());

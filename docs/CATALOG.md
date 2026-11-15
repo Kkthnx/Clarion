@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-480 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+498 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -142,6 +142,19 @@ Remove the search box or icon from the taskbar.
 - **Risk:** None.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Search\SearchboxTaskbarMode to 0 (DWord)`
+
+#### Stop new tray icons popping onto the taskbar
+
+`taskbar.tray-promotion-off` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Keep newly added notification icons from being shown on the taskbar for a while.
+
+- **What it does:** Sets the policy Turn off automatic promotion of notification icons to the taskbar for your account. New icons stay where Windows puts them until you choose.
+- **Benefit:** A newly installed app does not push its icon onto the taskbar by itself.
+- **Risk:** None. You can still show or hide every icon in Settings.
+- **Changes:**
+  - `Set HKCU\Software\Policies\Microsoft\Windows\Explorer\NoSystraySystemPromotion to 1 (DWord)`
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-taskbar>
 
 #### Turn off Widgets
 
@@ -608,6 +621,20 @@ Remove the launcher bar on the right side of Edge.
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/hubssidebarenabled>
 
+#### Remove the news feed from Edge's new tab page
+
+`edge.new-tab-content-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Show a plain new tab page with no Microsoft content below the search box.
+
+- **What it does:** Applies the Edge policy Allow Microsoft content on the new tab page and turns it off. The content control on the page is set to Content off and cannot be changed.
+- **Benefit:** No news feed, promoted stories or sponsored cards on every new tab.
+- **Risk:** None. Quick links and the background picture are separate settings.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\NewTabPageContentEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/newtabpagecontentenabled>
+
 #### Send Microsoft only the required Edge data
 
 `edge.diagnostic-data-required` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
@@ -636,6 +663,20 @@ No first-run tour or splash screen for a new Edge profile.
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/hidefirstrunexperience>
 
+#### Stop Edge Spotlight pictures, tips and notices
+
+`edge.spotlight-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Turn off the customized backgrounds, suggestions, notifications and tips Edge shows for Microsoft services.
+
+- **What it does:** Applies the Edge policy Choose whether users can receive customized background images and text, suggestions, notifications, and tips for Microsoft services, set to off.
+- **Benefit:** Fewer Microsoft suggestions and notices inside the browser.
+- **Risk:** None. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\SpotlightExperiencesAndRecommendationsEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/spotlightexperiencesandrecommendationsenabled>
+
 #### Stop Edge asking to be your default
 
 `edge.default-browser-prompt-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
@@ -649,6 +690,20 @@ No prompts to make Edge the default browser and Bing the default search.
   - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\DefaultBrowserSettingsCampaignEnabled to 0 (DWord)`
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/defaultbrowsersettingscampaignenabled>
+
+#### Stop Edge downloading its on device AI model
+
+`edge.local-ai-model-off` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Keep Edge from downloading and storing a local generative AI model.
+
+- **What it does:** Applies the Edge policy Settings for GenAI local foundational model and sets it to Disallowed. Microsoft says the model is not downloaded, and one that is already there is deleted.
+- **Benefit:** Saves the disk space and the download, and no local model is used for Edge features.
+- **Risk:** Low. Edge features that run an AI model on the device are not available. Edge may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Edge\GenAILocalFoundationalModelSettings to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/genailocalfoundationalmodelsettings>
 
 #### Stop Edge feature tips and suggestions
 
@@ -818,6 +873,20 @@ Stop sync provider notices and offers inside File Explorer.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ShowSyncProviderNotifications to 0 (DWord)`
 
+#### No Microsoft 365 Copilot prompt at sign-in
+
+`ads.copilot-signin-prompt-off` · Safe · Helps in some cases · Suggested: turn on · checked on build 26200
+
+Stop Windows from launching Microsoft 365 Copilot setup guidance when you sign in.
+
+- **What it does:** Sets the Cloud Content policy Disable Copilot Pin Screen. Microsoft says it stops the Microsoft 365 Copilot setup guidance from launching at sign-in and does not disable Copilot or change licensing.
+- **Benefit:** No Copilot recommendation window after you sign in.
+- **Risk:** None. Copilot itself and any license are not touched.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\CloudContent\DisableCopilotPinScreen to 1 (DWord)`
+- **Needs:** Windows build 22000 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience>
+
 #### No Spotlight or tips on the lock screen
 
 `ads.lockscreen-tips-off` · Safe · Helps in some cases · Suggested: turn on · checked on build 26200
@@ -831,6 +900,20 @@ Stop the rotating lock screen pictures and tips for your account.
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\RotatingLockScreenEnabled to 0 (DWord)`
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\RotatingLockScreenOverlayEnabled to 0 (DWord)`
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SubscribedContent-338387Enabled to 0 (DWord)`
+
+#### No app promotions in the Share window
+
+`ads.share-promotions-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Stop the Share window from suggesting apps to install.
+
+- **What it does:** Sets the policy that stops the Windows Share window from showing promotional app suggestions.
+- **Benefit:** The Share window lists only what you can share to, with no suggested apps.
+- **Risk:** None.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\ShareSheet\DisableShareAppPromotions to 1 (DWord)`
+- **Needs:** Windows build 26100 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-sharing>
 
 #### No third party suggestions in Spotlight
 
@@ -929,6 +1012,19 @@ Stop Windows from showing tips, tricks and suggestions.
 
 ### File Explorer
 
+#### Compact spacing in File Explorer
+
+`explorer.compact-view` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Fit more files on screen by tightening the space between items.
+
+- **What it does:** Turns on the File Explorer option Decrease space between items (compact view) for your account.
+- **Benefit:** More rows of a folder fit on one screen, which helps with long lists.
+- **Risk:** None. Touch use gets smaller targets.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\UseCompactMode to 1 (DWord)`
+- **Needs:** Windows build 22000 or later
+
 #### End task from the taskbar menu
 
 `explorer.end-task-menu` · Safe · Look and feel only · Suggested: turn on · checked on build 26200
@@ -977,6 +1073,18 @@ Show files and folders marked hidden.
 - **Risk:** None. Be careful deleting files you do not recognize.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Hidden to 1 (DWord)`
+
+#### Show the full folder path in the File Explorer title
+
+`explorer.full-path-title` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Put the whole path of the open folder in the window title.
+
+- **What it does:** Turns on the File Explorer option Display the full path in the title bar for your account.
+- **Benefit:** The window title and the taskbar preview name the full folder path, which helps when several windows are open.
+- **Risk:** None.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState\FullPath to 1 (DWord)`
 
 ## Features
 
@@ -1047,6 +1155,34 @@ Let other computers sign in to this PC over SSH.
 - **Changes:**
   - `Install Windows capability OpenSSH.Server~~~~0.0.1.0`
 - **Needs:** administrator rights, applies to every account
+
+#### Virtual Machine Platform
+
+`features.vm-platform` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+The light virtualization layer that WSL 2 and many emulators need.
+
+- **What it does:** Turns on the Virtual Machine Platform optional feature. It is the part of Windows virtualization that does not need the full Hyper-V role.
+- **Benefit:** WSL 2 and other tools that run virtual machines or Android apps can start.
+- **Risk:** Low. Needs a restart and virtualization turned on in the firmware. It can change how some older virtual machine tools run beside it.
+- **Changes:**
+  - `Turn on Windows feature VirtualMachinePlatform`
+- **Needs:** Windows build 18362 or later; administrator rights, applies to every account; a restart
+- **Sources:** <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
+
+#### Windows Hypervisor Platform
+
+`features.hypervisor-platform` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Lets third party virtual machine and emulator software use the Windows hypervisor.
+
+- **What it does:** Turns on the Windows Hypervisor Platform optional feature, an interface that other virtualization software can use.
+- **Benefit:** Emulators and virtual machine tools that support it can run with hardware acceleration while Windows virtualization is on.
+- **Risk:** Low. Needs a restart and virtualization turned on in the firmware. Running the hypervisor can cost some game performance on certain PCs.
+- **Changes:**
+  - `Turn on Windows feature HypervisorPlatform`
+- **Needs:** Windows build 17134 or later; administrator rights, applies to every account; a restart
+- **Sources:** <https://learn.microsoft.com/en-us/virtualization/api/>
 
 #### Windows Sandbox
 
@@ -5519,6 +5655,20 @@ Stop apps from using trusted devices.
 - **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy>
 
+#### Block apps from using Windows text and image generation (all accounts)
+
+`perm.all-text-image-generation` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Force app access to the text and image generation features of Windows off for every account.
+
+- **What it does:** Applies the app privacy policy Let Windows apps make use of Text and image generation features of Windows and sets it to Force Deny. Nobody can turn it back on in Settings.
+- **Benefit:** No Windows app on this PC can call the built in generation features, and nobody can change that from Settings.
+- **Risk:** Low. Apps that offer rewrite or image tools through Windows lose them. The Settings switch is locked until you revert.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\AppPrivacy\LetAppsAccessSystemAIModels to 2 (DWord)`
+- **Needs:** Windows build 26100 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy>
+
 #### Block voice activation on the lock screen
 
 `perm.all-voice-locked` · Medium · Documented by the vendor · Only if it fits you · checked on build 26200
@@ -5575,6 +5725,20 @@ Force the location service off for every app and account.
 
 ### Copilot and Recall
 
+#### Keep Windows agent connectors off
+
+`ai.agent-connectors-off` · Low · Helps in some cases · Optional: your choice · checked on build 26200
+
+Stop AI agents from reaching Windows tools and files through agent connectors.
+
+- **What it does:** Sets the policy Configure Agent Connectors to Force Disable. Agent connectors let AI agents on the PC talk to tools and apps that Windows offers them.
+- **Benefit:** No agent can use a Windows agent connector, and nobody can turn them on from Settings while the policy is set.
+- **Risk:** Low. Only AI agent features that depend on connectors are affected, and they are experimental.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI\ConfigureAgentConnectors to 2 (DWord)`
+- **Needs:** Windows build 26100 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai>
+
 #### Make Recall unavailable
 
 `ai.recall-unavailable` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
@@ -5587,6 +5751,20 @@ Remove the Recall component so nobody can turn it on.
 - **Changes:**
   - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI\AllowRecallEnablement to 0 (DWord)`
 - **Needs:** Windows build 26100 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account; a restart
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai>
+
+#### Turn off Click to Do
+
+`ai.click-to-do-off` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Remove the screen analysis overlay that offers actions on what is on screen.
+
+- **What it does:** Sets the policy Disable Click to Do. Click to Do takes a screenshot of the screen when you start it and analyzes it on the device to offer actions. With the policy on, the component and the places that start it are not available.
+- **Benefit:** Nothing can capture and analyze your screen through Click to Do, and its shortcuts and menu entries stop doing anything.
+- **Risk:** Low. Copy text out of images and the other quick actions of Click to Do are gone until you revert.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI\DisableClickToDo to 1 (DWord)`
+- **Needs:** Windows build 26100 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai>
 
 #### Turn off Notepad AI features
@@ -5645,6 +5823,20 @@ Block the older Copilot in Windows pane with a policy.
 - **Changes:**
   - `Set HKCU\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot\TurnOffWindowsCopilot to 1 (DWord)`
 - **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai>
+
+#### Turn off the Settings agentic search
+
+`ai.settings-agent-off` · Safe · Helps in some cases · Optional: your choice · checked on build 26200
+
+Keep the natural language AI search in Settings turned off.
+
+- **What it does:** Sets the policy Disable Settings agentic search experience. With it on, Settings search is limited to its indexed and semantic results and does not use an AI model to suggest settings.
+- **Benefit:** Settings search stays a plain search and what you type there is not handed to an AI model.
+- **Risk:** None. Searching Settings by name keeps working.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI\DisableSettingsAgent to 1 (DWord)`
+- **Needs:** Windows build 26100 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai>
 
 ### Diagnostics
@@ -5940,6 +6132,20 @@ Notifications do not show while the PC is locked.
   - `Set HKLM\Software\Policies\Microsoft\Windows\System\DisableLockScreenAppNotifications to 1 (DWord)`
 - **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-settings>
+
+#### Keep your email and name off the sign-in screen
+
+`logon.hide-account-details` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Stop the sign-in screen from showing your email address or user name.
+
+- **What it does:** Sets the policy Block user from showing account details on sign-in, so nobody can choose to show the email address or user name there.
+- **Benefit:** A shared screen, a stream or a photo of the sign-in screen does not give away your account name.
+- **Risk:** Low. You must remember your account name, since the sign-in screen no longer shows it to you.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\System\BlockUserFromShowingAccountDetailsOnSignin to 1 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-logon>
 
 ### Search
 
@@ -6465,6 +6671,18 @@ Present DirectX 10 and 11 games in a window with the newer flip model.
 - **Needs:** Windows build 22621 or later
 - **Sources:** <https://devblogs.microsoft.com/directx/updates-in-graphics-and-gaming/>
 
+#### Stop the controller button opening Game Bar
+
+`gaming.game-bar-controller-off` · Safe · Helps in some cases · Optional: your choice · checked on build 26200
+
+Keep the Xbox button on a controller from opening Game Bar over your game.
+
+- **What it does:** Sets the per account value behind the Game Bar option Open Xbox Game Bar using this button on a controller to off.
+- **Benefit:** A press of the guide button no longer throws a Game Bar overlay on top of the game or the desktop.
+- **Risk:** None. Game Bar still opens with Win+G.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\GameBar\UseNexusForGameBarEnabled to 0 (DWord)`
+
 #### Turn off Multi-Plane Overlay
 
 `gaming.mpo-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
@@ -6579,6 +6797,18 @@ See what Windows is doing while it starts, shuts down, signs in and signs out.
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/enable-verbose-startup-shutdown-logon-logoff-status-messages>
 
+#### Stop Windows changing your default printer
+
+`system.printer-follows-last-used-off` · Safe · Helps in some cases · Optional: your choice · checked on build 26200
+
+Keep your chosen default printer instead of the one you used last.
+
+- **What it does:** Sets the per account value behind the Settings switch Let Windows manage my default printer to off.
+- **Benefit:** The default printer stays the one you picked, not whichever printer you printed to last.
+- **Risk:** None. You choose the default printer yourself again.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows NT\CurrentVersion\Windows\LegacyDefaultPrinterMode to 1 (DWord)`
+
 #### Turn off Application Telemetry
 
 `compat.app-telemetry-off` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
@@ -6633,6 +6863,20 @@ No more pop-ups offering compatibility fixes after an older program runs badly.
   - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat\DisablePCA to 1 (DWord)`
 - **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat>
+
+#### Turn off the compatibility scan for backed up apps
+
+`compat.win32-app-backup-off` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Stop Windows from scanning installed apps for compatibility problems after a backup.
+
+- **What it does:** Sets the policy Turn off compatibility scan for backed up applications. The scan evaluates installed applications for compatibility problems and is skipped with the policy on.
+- **Benefit:** One less background scan of what is installed on the PC.
+- **Risk:** None. Apps run the same and only the backup compatibility report is not made.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\AppCompat\DisableWin32AppBackup to 1 (DWord)`
+- **Needs:** Windows build 26100 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-appdeviceinventory>
 
 ## Updates
 

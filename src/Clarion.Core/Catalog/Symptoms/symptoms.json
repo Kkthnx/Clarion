@@ -151,7 +151,7 @@
     "title": "Copilot, Recall or Paint AI tools are missing",
     "tip": "These settings hide or turn off the AI features on purpose. Reverting brings them back where your Windows edition has them.",
     "topics": ["Copilot and Recall"],
-    "tweakIds": ["taskbar.copilot-button-off", "debloat.app.copilot"]
+    "tweakIds": ["taskbar.copilot-button-off", "debloat.app.copilot", "perm.all-text-image-generation"]
   },
   {
     "id": "personal-data-access",
@@ -184,9 +184,9 @@
   {
     "id": "printing-fails",
     "title": "I cannot print, or other computers cannot print through this PC",
-    "tip": "Turning off printing support stops all printing, and the print server setting stops other computers using this PC's printers. Both need the print spooler, so reverting the newest one is the quickest test.",
+    "tip": "Turning off printing support stops all printing, and the print server setting stops other computers using this PC's printers. Both need the print spooler, so reverting the newest one is the quickest test. If the default printer is the one thing that is wrong, the setting that stops Windows changing it only keeps the printer you chose, and reverting it gives Windows the choice again.",
     "topics": [],
-    "tweakIds": ["services.print-spooler-off", "printing.no-print-server"]
+    "tweakIds": ["services.print-spooler-off", "printing.no-print-server", "system.printer-follows-last-used-off"]
   },
   {
     "id": "services-stopped",
@@ -200,7 +200,7 @@
     "title": "An older program no longer gets compatibility help",
     "tip": "With the Program Compatibility Assistant off, Windows stops offering fixes for older programs. You can still set compatibility options by hand on the program's properties, or revert the setting. The Inventory Collector and Application Telemetry settings stop Windows from reporting what is installed and how programs use system parts, so a problem with an old program may be noticed later on Microsoft's side. Nothing changes in how programs run, and reverting either one puts the collection back.",
     "topics": [],
-    "tweakIds": ["compat.pca-off", "compat.inventory-off", "compat.app-telemetry-off"]
+    "tweakIds": ["compat.pca-off", "compat.inventory-off", "compat.app-telemetry-off", "compat.win32-app-backup-off"]
   },
   {
     "id": "less-diagnostic-detail",

@@ -31,6 +31,15 @@ public sealed class SearchMatchTests
     public void Characters_that_mean_something_elsewhere_are_just_text(string query) =>
         Assert.False(SearchMatch.Matches(query, Mouse));
 
+    [Theory]
+    [InlineData("pointer to do", false)] // "do" is only inside "Windows", not the start of a word
+    [InlineData("pointer to", true)]
+    [InlineData("pointer ac", true)]
+    [InlineData("mouse in", true)]
+    [InlineData("ou", false)]
+    public void A_one_or_two_letter_word_has_to_start_a_word(string query, bool expected) =>
+        Assert.Equal(expected, SearchMatch.Matches(query, ["Make the pointer go to Windows", "Mouse acceleration", "Input"]));
+
     [Fact]
     public void An_empty_search_with_no_filter_has_a_plain_message() =>
         Assert.Equal("Nothing to show here.", SearchMatch.EmptyMessage("", false, false));

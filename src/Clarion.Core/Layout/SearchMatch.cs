@@ -5,12 +5,26 @@ public static class SearchMatch
 {
     /// <summary>
     /// Every word typed has to be found somewhere in the texts of the setting, in any order, so "accel mouse" finds the mouse acceleration
-    /// setting. Case is ignored. Nothing typed matches everything.
+    /// setting. Case is ignored. Nothing typed matches everything. A word of one or two letters has to start a word of the text,
+    /// because anywhere in the text it matches almost everything, such as "do" inside "Windows" for the search "click to do".
     /// </summary>
     public static bool Matches(string query, IReadOnlyList<string> texts)
     {
         var words = query.Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        return words.All(word => texts.Any(text => text.Contains(word, StringComparison.CurrentCultureIgnoreCase)));
+        return words.All(word => texts.Any(text => Found(text, word)));
+    }
+
+    private static bool Found(string text, string word)
+    {
+        var from = 0;
+        while (from <= text.Length - word.Length)
+        {
+            var at = text.IndexOf(word, from, StringComparison.CurrentCultureIgnoreCase);
+            if (at < 0) return false;
+            if (word.Length > 2 || at == 0 || !char.IsLetterOrDigit(text[at - 1])) return true;
+            from = at + 1;
+        }
+        return false;
     }
 
     /// <summary>The sentence shown in place of the list when nothing is left, saying why and what to try.</summary>

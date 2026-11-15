@@ -1,0 +1,501 @@
+[
+  {
+    "id": "ai.click-to-do-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Copilot and Recall",
+    "name": "Turn off Click to Do",
+    "summary": "Remove the screen analysis overlay that offers actions on what is on screen.",
+    "what": "Sets the policy Disable Click to Do. Click to Do takes a screenshot of the screen when you start it and analyzes it on the device to offer actions. With the policy on, the component and the places that start it are not available.",
+    "benefit": "Nothing can capture and analyze your screen through Click to Do, and its shortcuts and menu entries stop doing anything.",
+    "risk": "Low. Copy text out of images and the other quick actions of Click to Do are gone until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use Click to Do. Skip it if you copy text from images with it.",
+    "facts": [
+      "Microsoft says the analysis runs on the device and Click to Do cannot take screenshots while it is closed",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 26100,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsAI", "name": "DisableClickToDo" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai" ],
+    "provenance": [ "WindowsCopilot.admx DisableClickToDo" ]
+  },
+  {
+    "id": "ai.settings-agent-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Copilot and Recall",
+    "name": "Turn off the Settings agentic search",
+    "summary": "Keep the natural language AI search in Settings turned off.",
+    "what": "Sets the policy Disable Settings agentic search experience. With it on, Settings search is limited to its indexed and semantic results and does not use an AI model to suggest settings.",
+    "benefit": "Settings search stays a plain search and what you type there is not handed to an AI model.",
+    "risk": "None. Searching Settings by name keeps working.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you prefer a plain Settings search. It only matters on builds that have the agentic search.",
+    "facts": [
+      "Microsoft's policy file lists Pro, Enterprise and Education, and reports differ on whether Pro honors it",
+      "Nothing breaks if an edition ignores it",
+      "Enforced by a machine policy, so it applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 26100,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsAI", "name": "DisableSettingsAgent" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai" ],
+    "provenance": [ "WindowsCopilot.admx DisableSettingsAgent" ]
+  },
+  {
+    "id": "ai.agent-connectors-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Copilot and Recall",
+    "name": "Keep Windows agent connectors off",
+    "summary": "Stop AI agents from reaching Windows tools and files through agent connectors.",
+    "what": "Sets the policy Configure Agent Connectors to Force Disable. Agent connectors let AI agents on the PC talk to tools and apps that Windows offers them.",
+    "benefit": "No agent can use a Windows agent connector, and nobody can turn them on from Settings while the policy is set.",
+    "risk": "Low. Only AI agent features that depend on connectors are affected, and they are experimental.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if you want AI agents kept away from your PC. It is a guard, since the feature is off by default.",
+    "facts": [
+      "Microsoft lists the choices as User is in control, Force Enable and Force Disable",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 26100,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsAI", "name": "ConfigureAgentConnectors" }, "data": { "kind": "DWord", "value": "2" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai" ],
+    "provenance": [ "CAM_AI.admx ConfigureAgentConnectors" ]
+  },
+  {
+    "id": "perm.all-text-image-generation",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "App permissions",
+    "name": "Block apps from using Windows text and image generation (all accounts)",
+    "summary": "Force app access to the text and image generation features of Windows off for every account.",
+    "what": "Applies the app privacy policy Let Windows apps make use of Text and image generation features of Windows and sets it to Force Deny. Nobody can turn it back on in Settings.",
+    "benefit": "No Windows app on this PC can call the built in generation features, and nobody can change that from Settings.",
+    "risk": "Low. Apps that offer rewrite or image tools through Windows lose them. The Settings switch is locked until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for shared or locked down PCs, or if you never use the built in writing and image tools.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Users cannot change it from Settings while it is on",
+      "Policies are honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 26100,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "Software\\Policies\\Microsoft\\Windows\\AppPrivacy", "name": "LetAppsAccessSystemAIModels" }, "data": { "kind": "DWord", "value": "2" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy" ],
+    "provenance": [ "AppPrivacy.admx LetAppsAccessSystemAIModels" ]
+  },
+  {
+    "id": "ads.share-promotions-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "No app promotions in the Share window",
+    "summary": "Stop the Share window from suggesting apps to install.",
+    "what": "Sets the policy that stops the Windows Share window from showing promotional app suggestions.",
+    "benefit": "The Share window lists only what you can share to, with no suggested apps.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. You lose nothing you need.",
+    "facts": [
+      "Windows 11 24H2 and later",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 26100,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "Software\\Policies\\Microsoft\\Windows\\ShareSheet", "name": "DisableShareAppPromotions" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-sharing" ],
+    "provenance": [ "Sharing.admx DisableShareAppPromotions" ]
+  },
+  {
+    "id": "ads.copilot-signin-prompt-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "No Microsoft 365 Copilot prompt at sign-in",
+    "summary": "Stop Windows from launching Microsoft 365 Copilot setup guidance when you sign in.",
+    "what": "Sets the Cloud Content policy Disable Copilot Pin Screen. Microsoft says it stops the Microsoft 365 Copilot setup guidance from launching at sign-in and does not disable Copilot or change licensing.",
+    "benefit": "No Copilot recommendation window after you sign in.",
+    "risk": "None. Copilot itself and any license are not touched.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who does not want a Copilot prompt at sign-in.",
+    "facts": [
+      "Microsoft does not say which editions honor it, and the other Cloud Content policies are honored on Enterprise and Education only",
+      "Enforced by a machine policy, so it applies to every account",
+      "Windows 11 only",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22000,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent", "name": "DisableCopilotPinScreen" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience" ],
+    "provenance": [ "CloudContent.admx DisableCopilotPinScreen" ]
+  },
+  {
+    "id": "compat.win32-app-backup-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "System",
+    "name": "Turn off the compatibility scan for backed up apps",
+    "summary": "Stop Windows from scanning installed apps for compatibility problems after a backup.",
+    "what": "Sets the policy Turn off compatibility scan for backed up applications. The scan evaluates installed applications for compatibility problems and is skipped with the policy on.",
+    "benefit": "One less background scan of what is installed on the PC.",
+    "risk": "None. Apps run the same and only the backup compatibility report is not made.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use Windows Backup to move apps to a new PC.",
+    "facts": [
+      "Windows 11 24H2 and later",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 26100,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "Software\\Policies\\Microsoft\\Windows\\AppCompat", "name": "DisableWin32AppBackup" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-appdeviceinventory" ],
+    "provenance": [ "AppDeviceInventory.admx TurnOffWin32AppBackup" ]
+  },
+  {
+    "id": "logon.hide-account-details",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Lock screen",
+    "name": "Keep your email and name off the sign-in screen",
+    "summary": "Stop the sign-in screen from showing your email address or user name.",
+    "what": "Sets the policy Block user from showing account details on sign-in, so nobody can choose to show the email address or user name there.",
+    "benefit": "A shared screen, a stream or a photo of the sign-in screen does not give away your account name.",
+    "risk": "Low. You must remember your account name, since the sign-in screen no longer shows it to you.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested for shared or public PCs and for streaming. Skip it if you forget which account you use.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "Software\\Policies\\Microsoft\\Windows\\System", "name": "BlockUserFromShowingAccountDetailsOnSignin" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-logon" ],
+    "provenance": [ "Logon.admx BlockUserFromShowingAccountDetailsOnSignin" ]
+  },
+  {
+    "id": "taskbar.tray-promotion-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Taskbar and widgets",
+    "name": "Stop new tray icons popping onto the taskbar",
+    "summary": "Keep newly added notification icons from being shown on the taskbar for a while.",
+    "what": "Sets the policy Turn off automatic promotion of notification icons to the taskbar for your account. New icons stay where Windows puts them until you choose.",
+    "benefit": "A newly installed app does not push its icon onto the taskbar by itself.",
+    "risk": "None. You can still show or hide every icon in Settings.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It only stops icons from appearing on their own.",
+    "facts": [
+      "Per account setting",
+      "Users can still show or hide icons in Settings",
+      "Revert removes the policy value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\Windows\\Explorer", "name": "NoSystraySystemPromotion" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-taskbar" ],
+    "provenance": [ "Taskbar.admx NoSystraySystemPromotion" ]
+  },
+  {
+    "id": "edge.local-ai-model-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Stop Edge downloading its on device AI model",
+    "summary": "Keep Edge from downloading and storing a local generative AI model.",
+    "what": "Applies the Edge policy Settings for GenAI local foundational model and sets it to Disallowed. Microsoft says the model is not downloaded, and one that is already there is deleted.",
+    "benefit": "Saves the disk space and the download, and no local model is used for Edge features.",
+    "risk": "Low. Edge features that run an AI model on the device are not available. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use Edge's AI features.",
+    "facts": [
+      "Needs Edge 132 or later",
+      "Applies to every account",
+      "Takes effect without restarting Edge",
+      "Revert removes the policy value, and Edge may download the model again"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "GenAILocalFoundationalModelSettings" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/genailocalfoundationalmodelsettings" ]
+  },
+  {
+    "id": "edge.new-tab-content-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Remove the news feed from Edge's new tab page",
+    "summary": "Show a plain new tab page with no Microsoft content below the search box.",
+    "what": "Applies the Edge policy Allow Microsoft content on the new tab page and turns it off. The content control on the page is set to Content off and cannot be changed.",
+    "benefit": "No news feed, promoted stories or sponsored cards on every new tab.",
+    "risk": "None. Quick links and the background picture are separate settings.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who does not read the feed. Edge may show a managed by your organization notice while any policy is set.",
+    "facts": [
+      "Needs Edge 91 or later",
+      "Applies to every profile, signed in or not",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "NewTabPageContentEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/newtabpagecontentenabled" ]
+  },
+  {
+    "id": "edge.spotlight-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Microsoft Edge",
+    "name": "Stop Edge Spotlight pictures, tips and notices",
+    "summary": "Turn off the customized backgrounds, suggestions, notifications and tips Edge shows for Microsoft services.",
+    "what": "Applies the Edge policy Choose whether users can receive customized background images and text, suggestions, notifications, and tips for Microsoft services, set to off.",
+    "benefit": "Fewer Microsoft suggestions and notices inside the browser.",
+    "risk": "None. Edge may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who finds the tips and suggestions distracting.",
+    "facts": [
+      "Needs Edge 86 or later",
+      "Applies to every account",
+      "Takes effect the next time Edge starts",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "SpotlightExperiencesAndRecommendationsEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/spotlightexperiencesandrecommendationsenabled" ]
+  },
+  {
+    "id": "gaming.game-bar-controller-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Gaming",
+    "name": "Stop the controller button opening Game Bar",
+    "summary": "Keep the Xbox button on a controller from opening Game Bar over your game.",
+    "what": "Sets the per account value behind the Game Bar option Open Xbox Game Bar using this button on a controller to off.",
+    "benefit": "A press of the guide button no longer throws a Game Bar overlay on top of the game or the desktop.",
+    "risk": "None. Game Bar still opens with Win+G.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you play with a controller and the overlay gets in the way.",
+    "facts": [
+      "Per account setting",
+      "Writes the value the Game Bar settings page does, which Microsoft does not document",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\GameBar", "name": "UseNexusForGameBarEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "system.printer-follows-last-used-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "System",
+    "name": "Stop Windows changing your default printer",
+    "summary": "Keep your chosen default printer instead of the one you used last.",
+    "what": "Sets the per account value behind the Settings switch Let Windows manage my default printer to off.",
+    "benefit": "The default printer stays the one you picked, not whichever printer you printed to last.",
+    "risk": "None. You choose the default printer yourself again.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you use more than one printer and want one to stay the default.",
+    "facts": [
+      "Per account setting",
+      "Writes the value the Printers and scanners page does, which Microsoft does not document",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows", "name": "LegacyDefaultPrinterMode" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  },
+  {
+    "id": "explorer.compact-view",
+    "lastVerifiedBuild": 26200,
+    "category": "Explorer",
+    "topic": "File Explorer",
+    "name": "Compact spacing in File Explorer",
+    "summary": "Fit more files on screen by tightening the space between items.",
+    "what": "Turns on the File Explorer option Decrease space between items (compact view) for your account.",
+    "benefit": "More rows of a folder fit on one screen, which helps with long lists.",
+    "risk": "None. Touch use gets smaller targets.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It changes only how tight the file list looks.",
+    "facts": [
+      "Per account setting",
+      "Windows 11 only",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "requires": { "minBuild": 22000 },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "UseCompactMode" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  },
+  {
+    "id": "explorer.full-path-title",
+    "lastVerifiedBuild": 26200,
+    "category": "Explorer",
+    "topic": "File Explorer",
+    "name": "Show the full folder path in the File Explorer title",
+    "summary": "Put the whole path of the open folder in the window title.",
+    "what": "Turns on the File Explorer option Display the full path in the title bar for your account.",
+    "benefit": "The window title and the taskbar preview name the full folder path, which helps when several windows are open.",
+    "risk": "None.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It changes only the window title.",
+    "facts": [
+      "Per account setting",
+      "Applies to File Explorer windows opened afterward",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CabinetState", "name": "FullPath" }, "data": { "kind": "DWord", "value": "1" } }
+    ]
+  },
+  {
+    "id": "features.vm-platform",
+    "lastVerifiedBuild": 26200,
+    "category": "Features",
+    "topic": "Windows features",
+    "name": "Virtual Machine Platform",
+    "summary": "The light virtualization layer that WSL 2 and many emulators need.",
+    "what": "Turns on the Virtual Machine Platform optional feature. It is the part of Windows virtualization that does not need the full Hyper-V role.",
+    "benefit": "WSL 2 and other tools that run virtual machines or Android apps can start.",
+    "risk": "Low. Needs a restart and virtualization turned on in the firmware. It can change how some older virtual machine tools run beside it.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if a tool you use asks for it, such as WSL 2.",
+    "facts": [
+      "Needs hardware virtualization enabled in the firmware",
+      "Windows Subsystem for Linux 2 needs it",
+      "Restart required"
+    ],
+    "scope": "Machine",
+    "requires": { "minBuild": 18362 },
+    "needsReboot": true,
+    "apply": [
+      { "type": "feature.set", "name": "VirtualMachinePlatform", "enabled": true }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/wsl/install-manual" ]
+  },
+  {
+    "id": "features.hypervisor-platform",
+    "lastVerifiedBuild": 26200,
+    "category": "Features",
+    "topic": "Windows features",
+    "name": "Windows Hypervisor Platform",
+    "summary": "Lets third party virtual machine and emulator software use the Windows hypervisor.",
+    "what": "Turns on the Windows Hypervisor Platform optional feature, an interface that other virtualization software can use.",
+    "benefit": "Emulators and virtual machine tools that support it can run with hardware acceleration while Windows virtualization is on.",
+    "risk": "Low. Needs a restart and virtualization turned on in the firmware. Running the hypervisor can cost some game performance on certain PCs.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only if a tool you use asks for it, such as an Android emulator.",
+    "facts": [
+      "Needs hardware virtualization enabled in the firmware",
+      "Restart required"
+    ],
+    "scope": "Machine",
+    "requires": { "minBuild": 17134 },
+    "needsReboot": true,
+    "apply": [
+      { "type": "feature.set", "name": "HypervisorPlatform", "enabled": true }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/virtualization/api/" ]
+  }
+]
