@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.7.0
+
+Chrome and Firefox settings, keyboard and Game Bar link settings, storage and startup options, and a tidier look.
 
 New
 - Chrome and Firefox, which had no settings before. Stop Chrome sending usage and crash reports, Stop Chrome sending the pages you visit for search ideas, Stop Chrome running after you close it, Stop Chrome promotions and welcome pages, Turn off Chrome price tracking and Turn off Chrome's generative AI features. For Firefox, Stop Firefox telemetry and Stop Firefox studies. Each one is the browser's own policy, read from Google's policy definitions in the Chromium source and Mozilla's policy documentation on 2026-11-15, with the browser version it needs. Both browsers may show a managed by your organization notice while a policy is set.
