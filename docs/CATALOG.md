@@ -2,11 +2,23 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-506 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+531 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
 ### Look and feel
+
+#### Always show scrollbars
+
+`appearance.scrollbars-always` · Safe · Helps in some cases · Optional: your choice · checked on build 26200
+
+Keep scrollbars on screen instead of hiding them until the pointer moves.
+
+- **What it does:** Turns off the Accessibility option that hides scrollbars automatically, for your account.
+- **Benefit:** You can see how long a page is and grab the bar without waiting for it to appear.
+- **Risk:** None. Windows apps that use their own scrollbars are not affected.
+- **Changes:**
+  - `Set HKCU\Control Panel\Accessibility\DynamicScrollbars to 0 (DWord)`
 
 #### Classic right-click menu
 
@@ -85,6 +97,20 @@ Count the seconds in the clock at the end of the taskbar.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ShowSecondsInSystemClock to 1 (DWord)`
 - **Needs:** Windows build 22621 or later
+
+#### Turn off window snapping
+
+`appearance.window-snapping-off` · Safe · Helps in some cases · Optional: your choice · checked on build 26200
+
+Stop windows from resizing and docking when you drag them to a screen edge.
+
+- **What it does:** Turns off the Windows feature that arranges a window when it is dragged to an edge or corner, for your account. It is the same switch as Snap windows under Multitasking.
+- **Benefit:** A window stays the size you gave it wherever you drop it.
+- **Risk:** None. Win+Z layouts and the snap shortcuts stop working with it.
+- **Changes:**
+  - `Set HKCU\Control Panel\Desktop\WindowArrangementActive to 0 (String)`
+- **Needs:** signing out
+- **Sources:** <https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfoa>
 
 ### Sign-in screen
 
@@ -589,6 +615,123 @@ No built-in crypto wallet in Brave.
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://github.com/brave/brave-core/blob/master/components/policy/resources/templates/policy_definitions/BraveSoftware/BraveWalletDisabled.yaml>
 
+### Firefox
+
+#### Stop Firefox studies
+
+`firefox.studies-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Keep Firefox from running Shield studies that change how it behaves.
+
+- **What it does:** Applies the Firefox policy DisableFirefoxStudies. Firefox does not take part in studies, which are experiments Mozilla runs in the browser.
+- **Benefit:** Firefox behaves the same on every start and does not join experiments on its own.
+- **Risk:** None. Firefox may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Mozilla\Firefox\DisableFirefoxStudies to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://mozilla.github.io/policy-templates/>
+
+#### Stop Firefox telemetry
+
+`firefox.telemetry-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Stop Firefox from uploading or storing telemetry data.
+
+- **What it does:** Applies the Firefox policy DisableTelemetry. Mozilla says telemetry is not uploaded and, since Firefox 83, not stored locally either.
+- **Benefit:** Firefox sends no usage data to Mozilla.
+- **Risk:** None. Firefox may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Mozilla\Firefox\DisableTelemetry to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://mozilla.github.io/policy-templates/>
+
+### Google Chrome
+
+#### Stop Chrome promotions and welcome pages
+
+`chrome.promotions-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Keep Chrome from showing promotional content and full tab welcome pages.
+
+- **What it does:** Applies the Chrome policy Enable showing promotional content and sets it to disabled. Google says this covers the welcome pages that ask you to sign in or make Chrome your default.
+- **Benefit:** No full page promotions for Chrome features or for making Chrome the default.
+- **Risk:** None. Chrome may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Google\Chrome\PromotionsEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://chromeenterprise.google/policies/>
+
+#### Stop Chrome running after you close it
+
+`chrome.background-off` · Low · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+End Chrome's background process when the last window is closed.
+
+- **What it does:** Applies the Chrome policy Continue running background apps when Google Chrome is closed and sets it to disabled. Chrome stops starting a background process at sign-in.
+- **Benefit:** Chrome uses no memory or processor time once you close it.
+- **Risk:** Low. Notifications from sites and extensions that need the background process stop until Chrome is open.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Google\Chrome\BackgroundModeEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://chromeenterprise.google/policies/>
+
+#### Stop Chrome sending the pages you visit for search ideas
+
+`chrome.url-data-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Turn off URL-keyed anonymized data collection.
+
+- **What it does:** Applies the Chrome policy Enable URL-keyed anonymized data collection and sets it to disabled. Google says this feature sends the addresses of pages you visit to make search and browsing better.
+- **Benefit:** The addresses of the pages you open are not sent to Google for this feature.
+- **Risk:** None. Chrome may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Google\Chrome\UrlKeyedAnonymizedDataCollectionEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://chromeenterprise.google/policies/>
+
+#### Stop Chrome sending usage and crash reports
+
+`chrome.metrics-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Turn off the anonymous usage and crash data Chrome sends to Google.
+
+- **What it does:** Applies the Chrome policy Enable reporting of usage and crash-related data and sets it to disabled. Chrome sends no usage or crash data to Google and the option is locked in its settings.
+- **Benefit:** Less data leaves the browser, and the Help improve Chrome switch cannot be turned back on by accident.
+- **Risk:** None. Chrome may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Google\Chrome\MetricsReportingEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://chromeenterprise.google/policies/>
+
+#### Turn off Chrome price tracking
+
+`chrome.shopping-off` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Remove the shopping list and price tracking prompts from Chrome.
+
+- **What it does:** Applies the Chrome policy Allow the shopping list feature to be enabled and sets it to disabled. The price tracking button and the tracked products list are not shown.
+- **Benefit:** No price tracking buttons on shopping pages.
+- **Risk:** None. Chrome may show a managed by your organization notice while any policy is set.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Google\Chrome\ShoppingListEnabled to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://chromeenterprise.google/policies/>
+
+#### Turn off Chrome's generative AI features
+
+`chrome.ai-off` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Set Chrome's generative AI features to not allowed and keep Gemini out of the browser.
+
+- **What it does:** Applies two Chrome policies. The default for all covered generative AI features is set to Do not allow, and Settings for Gemini integration is set to Do not allow.
+- **Benefit:** Features such as Help me write and the Gemini integration are not offered, and what you type is not used to improve AI models.
+- **Risk:** Low. The AI writing and assistant features of Chrome are not available until you revert.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Google\Chrome\GenAiDefaultSettings to 2 (DWord)`
+  - `Set HKLM\SOFTWARE\Policies\Google\Chrome\GeminiSettings to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://chromeenterprise.google/policies/>
+
 ### Microsoft Edge
 
 #### Always send Do Not Track from Edge
@@ -1046,6 +1189,47 @@ Stop Windows from showing tips, tricks and suggestions.
 - **Needs:** Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience>
 
+#### Turn off cloud optimized content
+
+`ads.cloud-content-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Make Windows show its plain default content where it would pull cloud content.
+
+- **What it does:** Sets the Cloud Content policy Turn off cloud optimized content. Windows experiences that use the cloud optimized content component show their default fallback content instead.
+- **Benefit:** Less content chosen and delivered by Microsoft in Windows surfaces, such as tips and promotions.
+- **Risk:** None. The surfaces still work and show their standard content.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\CloudContent\DisableCloudOptimizedContent to 1 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience>
+
+#### Turn off feature advertisement notifications
+
+`ads.feature-ads-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Hide notification balloons that Windows marks as feature advertisements.
+
+- **What it does:** Sets the policy Turn off feature advertisement balloon notifications for your account.
+- **Benefit:** Fewer balloons that advertise Windows features.
+- **Risk:** None. Other notifications are not touched.
+- **Changes:**
+  - `Set HKCU\Software\Policies\Microsoft\Windows\Explorer\NoBalloonFeatureAdvertisements to 1 (DWord)`
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-taskbar>
+
+#### Turn off the Get Started experience
+
+`ads.get-started-off` · Safe · Documented by the vendor · Suggested: turn on · checked on build 26200
+
+Stop Windows from launching its Get Started guidance by itself.
+
+- **What it does:** Sets the Cloud Content policy Disable Get Started. Get Started does not launch automatically and closes at once if opened by hand, and its background tasks do not run.
+- **Benefit:** No welcome and learn about Windows prompts after setup or an update.
+- **Risk:** None.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\CloudContent\DisableGetStarted to 1 (DWord)`
+- **Needs:** Windows build 22000 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience>
+
 ## Explorer
 
 ### File Explorer
@@ -1149,6 +1333,20 @@ Put the whole path of the open folder in the window title.
 - **Risk:** None.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState\FullPath to 1 (DWord)`
+
+#### Stop File Explorer showing cloud recommended files
+
+`explorer.cloud-recent-off` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Keep File Explorer from asking the cloud for files based on your account activity.
+
+- **What it does:** Sets the policy Show files based on your account and cloud provider activity to off. File Explorer stops requesting cloud file metadata for the Home page and views such as Recent, Recommended, Favorites and Shared.
+- **Benefit:** The Home page no longer fills with files Microsoft or OneDrive picked for you, and Explorer makes fewer cloud requests.
+- **Risk:** Low. Cloud based Recommended and Shared lists in File Explorer stay empty.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\Explorer\DisableGraphRecentItems to 1 (DWord)`
+- **Needs:** Windows build 22621 or later; Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-fileexplorer>
 
 ## Features
 
@@ -1292,6 +1490,46 @@ Open cascading menus without the short delay.
   - `Set HKCU\Control Panel\Desktop\MenuShowDelay to 0 (String)`
 - **Needs:** signing out
 
+#### Never open the touch keyboard by itself
+
+`input.touch-keyboard-never` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Keep the on-screen keyboard from appearing when you tap a text box.
+
+- **What it does:** Sets the Typing option Show the touch keyboard to Never for your account.
+- **Benefit:** No keyboard sliding up over your screen when a touch screen or a missing keyboard makes Windows think you need one.
+- **Risk:** Low. On a tablet without a keyboard you open the touch keyboard from the taskbar by hand.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\TabletTip\1.7\TouchKeyboardTapInvoke to 0 (DWord)`
+- **Needs:** Windows build 22000 or later
+
+#### No text suggestions when typing on a physical keyboard
+
+`input.physical-keyboard-suggestions-off` · Safe · Not proven by measurement · Optional: your choice · checked on build 26200
+
+Stop the suggestion bar that can appear while you type on a real keyboard.
+
+- **What it does:** Turns off the Typing option Show text suggestions when typing on the physical keyboard for your account.
+- **Benefit:** No popup of word suggestions over what you are typing.
+- **Risk:** None. Typing works the same.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Input\Settings\EnableHwkbTextPrediction to 0 (DWord)`
+- **Needs:** Windows build 22000 or later
+
+#### Turn off autocorrect and misspelling underlines
+
+`input.autocorrect-off` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Stop Windows from correcting and underlining words as you type.
+
+- **What it does:** Sets two policies for your account, Turn off autocorrect misspelled words and Turn off highlight misspelled words.
+- **Benefit:** What you type stays as you typed it, and no red lines appear under words in places that use the Windows spelling options.
+- **Risk:** None. Apps with their own spell check keep it.
+- **Changes:**
+  - `Set HKCU\Software\Policies\Microsoft\Control Panel\International\TurnOffAutocorrectMisspelledWords to 1 (DWord)`
+  - `Set HKCU\Software\Policies\Microsoft\Control Panel\International\TurnOffHighlightMisspelledWords to 1 (DWord)`
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-globalization>
+
 #### Turn off mouse acceleration
 
 `input.mouse-accel-off` · Safe · Look and feel only · Only if it fits you · checked on build 26200
@@ -1306,6 +1544,20 @@ Make pointer distance match hand distance.
   - `Set HKCU\Control Panel\Mouse\MouseThreshold1 to 0 (String)`
   - `Set HKCU\Control Panel\Mouse\MouseThreshold2 to 0 (String)`
 - **Needs:** signing out
+
+#### Turn off text suggestions on the on-screen keyboard
+
+`input.text-suggestions-off` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Stop the word suggestions that appear above the touch keyboard and handwriting panel.
+
+- **What it does:** Sets two policies for your account, Turn off offer text predictions as I type and Disable text prediction for the Touch Keyboard and Handwriting panel.
+- **Benefit:** No row of word suggestions while you type on the on-screen keyboard.
+- **Risk:** None. Typing works the same without the suggestions.
+- **Changes:**
+  - `Set HKCU\Software\Policies\Microsoft\Control Panel\International\TurnOffOfferTextPredictions to 1 (DWord)`
+  - `Set HKCU\Software\Policies\Microsoft\TabletTip\1.7\DisablePrediction to 1 (DWord)`
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-globalization>, <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-tabletpcinputpanel>
 
 #### Turn off the Filter Keys shortcut
 
@@ -1333,6 +1585,18 @@ Stop the pop-up when Shift is pressed five times.
 - **Changes:**
   - `Turn bit 0x4 off in HKCU\Control Panel\Accessibility\StickyKeys\Flags (String)`
 - **Needs:** signing out
+
+#### Turn off typing insights
+
+`input.typing-insights-off` · Safe · Helps in some cases · Optional: your choice · checked on build 26200
+
+Stop Windows from keeping a record of your typing to improve suggestions and corrections.
+
+- **What it does:** Turns off the Typing option Typing insights for your account.
+- **Benefit:** Windows stops tracking how you type to improve word suggestions and spelling fixes.
+- **Risk:** None. Suggestions may get less personal.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Input\Settings\InsightsEnabled to 0 (DWord)`
 
 ## Install
 
@@ -6421,6 +6685,20 @@ Stop OneDrive from syncing files without uninstalling it.
 - **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system>
 
+#### Keep OneDrive quiet until you sign in to it
+
+`privacy.onedrive-quiet-start` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Stop the OneDrive sync program from using the network before you sign in to OneDrive.
+
+- **What it does:** Sets the OneDrive policy that prevents OneDrive.exe from generating network traffic, such as checking for updates, until you sign in to OneDrive or start syncing files.
+- **Benefit:** A PC where OneDrive is installed but not used makes no OneDrive network requests.
+- **Risk:** Low. OneDrive does not start by itself until you sign in to it or choose files to sync.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Microsoft\OneDrive\PreventNetworkTrafficPreUserSignIn to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/sharepoint/use-group-policy>
+
 #### Stop cloud backup of text messages
 
 `sync.message-backup-off` · Low · Documented by the vendor · Optional: your choice · checked on build 26200
@@ -6762,6 +7040,29 @@ Present DirectX 10 and 11 games in a window with the newer flip model.
 - **Needs:** Windows build 22621 or later
 - **Sources:** <https://devblogs.microsoft.com/directx/updates-in-graphics-and-gaming/>
 
+#### Stop the Get an app to open this ms-gamebar link message
+
+`gaming.game-bar-link-message-off` · Medium · Not proven by measurement · Only if it fits you · checked on build 26200
+
+Give the Game Bar links a harmless handler, so Windows stops asking you to find an app in the Store.
+
+- **What it does:** For your account only, registers the ms-gamebar, ms-gamebarservices and ms-gamingoverlay links with a small do nothing Windows program, systray.exe, instead of leaving them with no handler.
+- **Benefit:** The Get an app to open this ms-gamebar link box that can appear when you use a controller or press a Game Bar key stops appearing on a PC where Xbox Game Bar is removed.
+- **Risk:** Medium. If Xbox Game Bar is installed, these links no longer open it for your account, and Win+G or the controller button may stop working. Revert removes the handlers.
+- **Changes:**
+  - `Set HKCU\Software\Classes\ms-gamebar\(Default) to URL:ms-gamebar (String)`
+  - `Set HKCU\Software\Classes\ms-gamebar\URL Protocol to  (String)`
+  - `Set HKCU\Software\Classes\ms-gamebar\NoOpenWith to  (String)`
+  - `Set HKCU\Software\Classes\ms-gamebar\shell\open\command\(Default) to %SystemRoot%\System32\systray.exe (ExpandString)`
+  - `Set HKCU\Software\Classes\ms-gamebarservices\(Default) to URL:ms-gamebarservices (String)`
+  - `Set HKCU\Software\Classes\ms-gamebarservices\URL Protocol to  (String)`
+  - `Set HKCU\Software\Classes\ms-gamebarservices\NoOpenWith to  (String)`
+  - `Set HKCU\Software\Classes\ms-gamebarservices\shell\open\command\(Default) to %SystemRoot%\System32\systray.exe (ExpandString)`
+  - `Set HKCU\Software\Classes\ms-gamingoverlay\(Default) to URL:ms-gamingoverlay (String)`
+  - `Set HKCU\Software\Classes\ms-gamingoverlay\URL Protocol to  (String)`
+  - `Set HKCU\Software\Classes\ms-gamingoverlay\NoOpenWith to  (String)`
+  - `Set HKCU\Software\Classes\ms-gamingoverlay\shell\open\command\(Default) to %SystemRoot%\System32\systray.exe (ExpandString)`
+
 #### Stop the controller button opening Game Bar
 
 `gaming.game-bar-controller-off` · Safe · Helps in some cases · Optional: your choice · checked on build 26200
@@ -6773,6 +7074,20 @@ Keep the Xbox button on a controller from opening Game Bar over your game.
 - **Risk:** None. Game Bar still opens with Win+G.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\GameBar\UseNexusForGameBarEnabled to 0 (DWord)`
+
+#### Turn off Game Bar recording for every account
+
+`gaming.game-dvr-policy-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Disallow Windows game recording and broadcasting for the whole PC.
+
+- **What it does:** Sets the policy that enables or disables Windows Game Recording and Broadcasting to disabled. Windows game recording is not allowed for any account.
+- **Benefit:** No background recording or broadcasting on any account, and it cannot be turned back on from Game Bar settings.
+- **Risk:** Low. Game Bar clips, the record last 30 seconds feature and broadcasting stop working for everyone.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR\AllowGameDVR to 0 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-applicationmanagement>
 
 #### Turn off Multi-Plane Overlay
 
@@ -6900,6 +7215,19 @@ See what Windows is doing while it starts, shuts down, signs in and signs out.
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/enable-verbose-startup-shutdown-logon-logoff-status-messages>
 
+#### Stop PC makers running software at startup
+
+`system.wpbt-off` · Medium · Not proven by measurement · Only if it fits you · checked on build 26200
+
+Block the firmware of the PC from starting programs inside Windows at boot.
+
+- **What it does:** Sets DisableWpbtExecution. The Windows Platform Binary Table lets a PC maker put a program in the firmware that Windows runs at startup, which some makers use to install their own tools again after a clean install.
+- **Benefit:** A clean Windows install stays clean, without a maker app coming back by itself.
+- **Risk:** Medium. Anti-theft and recovery software that works this way stops starting, and on some laptops it is how the tool for fan modes, lighting or Fn keys gets installed. Needs a restart.
+- **Changes:**
+  - `Set HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\DisableWpbtExecution to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account; a restart
+
 #### Stop Windows changing your default printer
 
 `system.printer-follows-last-used-off` · Safe · Helps in some cases · Optional: your choice · checked on build 26200
@@ -6938,6 +7266,20 @@ Make Shut down a full shutdown.
 - **Changes:**
   - `Set HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power\HiberbootEnabled to 0 (DWord)`
 - **Needs:** administrator rights, applies to every account; a restart
+
+#### Turn off Storage Sense
+
+`system.storage-sense-off` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Stop Windows from cleaning files by itself when the disk runs low.
+
+- **What it does:** Sets the policy Allow Storage Sense to disabled. Storage Sense does not turn on, and it does not remove temporary files, Recycle Bin items or old Downloads files on its own.
+- **Benefit:** Nothing is deleted behind your back, which matters if you keep files in Downloads or the Recycle Bin.
+- **Risk:** Low. The disk does not clean itself when it fills up, so Clean up or Settings has to be run by hand.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\StorageSense\AllowStorageSenseGlobal to 0 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-storage>
 
 #### Turn off the Inventory Collector
 
@@ -7012,6 +7354,21 @@ Wait 30 days after release before a new Windows version is offered.
 - **Changes:**
   - `Set HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate\DeferFeatureUpdates to 1 (DWord)`
   - `Set HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate\DeferFeatureUpdatesPeriodInDays to 30 (DWord)`
+- **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update>
+
+#### Delay feature updates by 365 days
+
+`updates.defer-feature-365` · Low · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Wait a year after release before a new Windows version is offered.
+
+- **What it does:** Applies the Windows Update policy that defers feature updates for 365 days, the longest delay Microsoft documents for the General Availability Channel.
+- **Benefit:** Other people find the early problems first. Security updates still arrive on time.
+- **Risk:** Low. New features arrive a year later than they would otherwise, and the version you stay on must still be in support.
+- **Changes:**
+  - `Set HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate\DeferFeatureUpdates to 1 (DWord)`
+  - `Set HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate\DeferFeatureUpdatesPeriodInDays to 365 (DWord)`
 - **Needs:** Professional, ProfessionalWorkstation, ProfessionalEducation, Enterprise, Education, IoTEnterprise; administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update>
 

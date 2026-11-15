@@ -44,7 +44,7 @@
                                                                 <ColumnDefinition Width="Auto" />
                                                                 <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="{x:Bind Name}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                                                            <TextBlock Text="{x:Bind Name}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                                                             <controls:InfoButton Grid.Column="1" Item="{x:Bind}" AlwaysTechnical="True" TechnicalTitle="Exact commands"
                                                                                  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-3,0,-3" />
                                                         </Grid>

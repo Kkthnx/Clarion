@@ -193,9 +193,9 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <controls:InfoTile x:Name="WindowsTile" Glyph="&#xE770;" Title="Windows" Kind="Accent" />
-                <controls:InfoTile x:Name="CpuTile" Grid.Column="1" Glyph="&#xE950;" Title="Processor" Kind="Cyan" />
-                <controls:InfoTile x:Name="MemoryTile" Grid.Column="2" Glyph="&#xEEA1;" Title="Memory" Kind="Ok" />
-                <controls:InfoTile x:Name="GraphicsTile" Grid.Row="1" Glyph="&#xE7F4;" Title="Graphics" Kind="Warn" />
+                <controls:InfoTile x:Name="CpuTile" Grid.Column="1" Glyph="&#xE950;" Title="Processor" Kind="Accent" />
+                <controls:InfoTile x:Name="MemoryTile" Grid.Column="2" Glyph="&#xEEA1;" Title="Memory" Kind="Accent" />
+                <controls:InfoTile x:Name="GraphicsTile" Grid.Row="1" Glyph="&#xE7F4;" Title="Graphics" Kind="Accent" />
                 <controls:InfoTile x:Name="StorageTile" Grid.Row="1" Grid.Column="1" Glyph="&#xEDA2;" Title="Storage" Kind="Accent" />
                 <controls:InfoTile x:Name="ClarionTile" Grid.Row="1" Grid.Column="2" Glyph="&#xE73E;" Title="Settings in effect" Kind="Cyan" />
             </Grid>

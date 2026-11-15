@@ -120,7 +120,7 @@
             <Color x:Key="ClCyanTextColor">#3FD0E0</Color>
             <Color x:Key="ClOkTextColor">#4CC38A</Color>
             <Color x:Key="ClWarnTextColor">#E3B341</Color>
-            <Color x:Key="ClDangerTextColor">#E76159</Color>
+            <Color x:Key="ClDangerTextColor">#EE7770</Color>
             <SolidColorBrush x:Key="ClBaseBrush" Color="{StaticResource ClBaseColor}" />
             <SolidColorBrush x:Key="ClSidebarBrush" Color="{StaticResource ClSidebarColor}" />
             <SolidColorBrush x:Key="ClSurface1Brush" Color="{StaticResource ClSurface1Color}" />

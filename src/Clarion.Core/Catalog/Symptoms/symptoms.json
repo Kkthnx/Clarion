@@ -1,5 +1,19 @@
 [
   {
+    "id": "disk-fills-up",
+    "title": "The disk fills up and nothing cleans itself, or files in Downloads and the Recycle Bin are no longer removed",
+    "tip": "With Storage Sense off, Windows never clears temporary files, the Recycle Bin or old Downloads files on its own. Run Clean up when space runs low, or revert the setting to let Windows do it.",
+    "topics": [],
+    "tweakIds": ["system.storage-sense-off"]
+  },
+  {
+    "id": "maker-app-missing",
+    "title": "The PC maker's app for fan modes, keyboard lighting or Fn keys did not come back after a clean install",
+    "tip": "Some makers install their tool from the firmware at startup. Blocking that stops it, and the tool then has to be downloaded from the maker. Reverting the setting and restarting lets it install again.",
+    "topics": [],
+    "tweakIds": ["system.wpbt-off"]
+  },
+  {
     "id": "apps-reopen",
     "title": "Apps open again by themselves after a restart, or no longer do",
     "tip": "Windows can save your open apps and start them again when you sign back in. Turning that off gives a clean desktop after every restart. Reverting the setting gives Windows the choice again.",
@@ -109,6 +123,20 @@
     "title": "Edge starts slower or has lost its sidebar, shopping or personalization",
     "tip": "Edge policies change what Edge does at startup and in the browser. Reverting removes the policy value.",
     "topics": ["Microsoft Edge"],
+    "tweakIds": []
+  },
+  {
+    "id": "chrome-different",
+    "title": "Chrome shows a managed by your organization notice, or its background process, promotions or AI features are gone",
+    "tip": "Chrome policies change what Chrome does at startup, in the background and in its settings. The notice is how Chrome says a policy is set. Reverting removes the policy value and the notice goes with it.",
+    "topics": ["Google Chrome"],
+    "tweakIds": []
+  },
+  {
+    "id": "firefox-different",
+    "title": "Firefox shows a managed by your organization notice, or its telemetry or studies options are locked",
+    "tip": "Firefox policies lock the options they set. The notice is how Firefox says a policy is set. Reverting removes the policy value and the options are free again.",
+    "topics": ["Firefox"],
     "tweakIds": []
   },
   {

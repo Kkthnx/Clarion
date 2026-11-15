@@ -1,0 +1,204 @@
+[
+  {
+    "id": "chrome.metrics-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Google Chrome",
+    "name": "Stop Chrome sending usage and crash reports",
+    "summary": "Turn off the anonymous usage and crash data Chrome sends to Google.",
+    "what": "Applies the Chrome policy Enable reporting of usage and crash-related data and sets it to disabled. Chrome sends no usage or crash data to Google and the option is locked in its settings.",
+    "benefit": "Less data leaves the browser, and the Help improve Chrome switch cannot be turned back on by accident.",
+    "risk": "None. Chrome may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who uses Chrome and wants less data sent.",
+    "facts": [
+      "Applies to every account",
+      "Chrome reads the policy at its next start",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Google\\Chrome", "name": "MetricsReportingEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://chromeenterprise.google/policies/" ]
+  },
+  {
+    "id": "chrome.url-data-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Google Chrome",
+    "name": "Stop Chrome sending the pages you visit for search ideas",
+    "summary": "Turn off URL-keyed anonymized data collection.",
+    "what": "Applies the Chrome policy Enable URL-keyed anonymized data collection and sets it to disabled. Google says this feature sends the addresses of pages you visit to make search and browsing better.",
+    "benefit": "The addresses of the pages you open are not sent to Google for this feature.",
+    "risk": "None. Chrome may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who uses Chrome.",
+    "facts": [
+      "Applies to every account",
+      "Needs Chrome 69 or later",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Google\\Chrome", "name": "UrlKeyedAnonymizedDataCollectionEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://chromeenterprise.google/policies/" ]
+  },
+  {
+    "id": "chrome.background-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Google Chrome",
+    "name": "Stop Chrome running after you close it",
+    "summary": "End Chrome's background process when the last window is closed.",
+    "what": "Applies the Chrome policy Continue running background apps when Google Chrome is closed and sets it to disabled. Chrome stops starting a background process at sign-in.",
+    "benefit": "Chrome uses no memory or processor time once you close it.",
+    "risk": "Low. Notifications from sites and extensions that need the background process stop until Chrome is open.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Recommended",
+    "advice": "Suggested unless you rely on web notifications while Chrome is closed.",
+    "facts": [
+      "Applies to every account",
+      "Needs Chrome 19 or later on Windows",
+      "Chrome locks the option in its settings while it is set",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Google\\Chrome", "name": "BackgroundModeEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://chromeenterprise.google/policies/" ]
+  },
+  {
+    "id": "chrome.promotions-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Google Chrome",
+    "name": "Stop Chrome promotions and welcome pages",
+    "summary": "Keep Chrome from showing promotional content and full tab welcome pages.",
+    "what": "Applies the Chrome policy Enable showing promotional content and sets it to disabled. Google says this covers the welcome pages that ask you to sign in or make Chrome your default.",
+    "benefit": "No full page promotions for Chrome features or for making Chrome the default.",
+    "risk": "None. Chrome may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who finds the promotions distracting.",
+    "facts": [
+      "Applies to every account",
+      "Needs Chrome 128 or later",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Google\\Chrome", "name": "PromotionsEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://chromeenterprise.google/policies/" ]
+  },
+  {
+    "id": "chrome.shopping-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Google Chrome",
+    "name": "Turn off Chrome price tracking",
+    "summary": "Remove the shopping list and price tracking prompts from Chrome.",
+    "what": "Applies the Chrome policy Allow the shopping list feature to be enabled and sets it to disabled. The price tracking button and the tracked products list are not shown.",
+    "benefit": "No price tracking buttons on shopping pages.",
+    "risk": "None. Chrome may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use price tracking.",
+    "facts": [
+      "Applies to every account",
+      "Needs Chrome 107 or later",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Google\\Chrome", "name": "ShoppingListEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://chromeenterprise.google/policies/" ]
+  },
+  {
+    "id": "chrome.ai-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Google Chrome",
+    "name": "Turn off Chrome's generative AI features",
+    "summary": "Set Chrome's generative AI features to not allowed and keep Gemini out of the browser.",
+    "what": "Applies two Chrome policies. The default for all covered generative AI features is set to Do not allow, and Settings for Gemini integration is set to Do not allow.",
+    "benefit": "Features such as Help me write and the Gemini integration are not offered, and what you type is not used to improve AI models.",
+    "risk": "Low. The AI writing and assistant features of Chrome are not available until you revert.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use Chrome's AI features.",
+    "facts": [
+      "Applies to every account",
+      "The default policy needs Chrome 130 or later and the Gemini one needs Chrome 137 or later on Windows",
+      "Revert removes both policy values"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Google\\Chrome", "name": "GenAiDefaultSettings" }, "data": { "kind": "DWord", "value": "2" } },
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Google\\Chrome", "name": "GeminiSettings" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://chromeenterprise.google/policies/" ]
+  },
+  {
+    "id": "firefox.telemetry-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Firefox",
+    "name": "Stop Firefox telemetry",
+    "summary": "Stop Firefox from uploading or storing telemetry data.",
+    "what": "Applies the Firefox policy DisableTelemetry. Mozilla says telemetry is not uploaded and, since Firefox 83, not stored locally either.",
+    "benefit": "Firefox sends no usage data to Mozilla.",
+    "risk": "None. Firefox may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who uses Firefox and wants less data sent.",
+    "facts": [
+      "Applies to every account",
+      "Needs Firefox 60 or later",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Mozilla\\Firefox", "name": "DisableTelemetry" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://mozilla.github.io/policy-templates/" ]
+  },
+  {
+    "id": "firefox.studies-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Firefox",
+    "name": "Stop Firefox studies",
+    "summary": "Keep Firefox from running Shield studies that change how it behaves.",
+    "what": "Applies the Firefox policy DisableFirefoxStudies. Firefox does not take part in studies, which are experiments Mozilla runs in the browser.",
+    "benefit": "Firefox behaves the same on every start and does not join experiments on its own.",
+    "risk": "None. Firefox may show a managed by your organization notice while any policy is set.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who uses Firefox.",
+    "facts": [
+      "Applies to every account",
+      "Needs Firefox 60 or later",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Mozilla\\Firefox", "name": "DisableFirefoxStudies" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://mozilla.github.io/policy-templates/" ]
+  }
+]

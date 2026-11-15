@@ -12,7 +12,7 @@
                 <StackPanel Spacing="4" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text=".Clarion" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
-                        <Border VerticalAlignment="Center" Padding="8,2,8,2" CornerRadius="10" BorderThickness="1"
+                        <Border VerticalAlignment="Center" Padding="8,2,8,2" CornerRadius="4" BorderThickness="1"
                                 Background="{ThemeResource ClAccentTintBrush}" BorderBrush="{ThemeResource ClAccentBrush}">
                             <TextBlock Text="{x:Bind svc:AppServices.Version}" FontSize="12" Foreground="{ThemeResource ClAccentTextBrush}" />
                         </Border>

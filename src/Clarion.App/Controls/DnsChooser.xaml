@@ -12,7 +12,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Spacing="2">
-                    <TextBlock Text="DNS provider" FontSize="15" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
+                    <TextBlock Text="DNS provider" FontSize="16" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock x:Name="CurrentText" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">

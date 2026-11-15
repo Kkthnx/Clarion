@@ -21,7 +21,7 @@
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Spacing="10" Padding="16,0,0,0" VerticalAlignment="Center">
                 <Image Source="ms-appx:///Assets/Clarion.png" AutomationProperties.AccessibilityView="Raw" Width="22" Height="22" VerticalAlignment="Center" />
-                <TextBlock Text=".Clarion" FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" VerticalAlignment="Center" />
+                <TextBlock Text=".Clarion" FontSize="14" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" VerticalAlignment="Center" />
                 <TextBlock Text="{x:Bind svc:AppServices.Version}" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" VerticalAlignment="Center" />
             </StackPanel>
             <AutoSuggestBox x:Name="GlobalSearch" Grid.Column="2" Width="340" Height="32" Margin="0,4,0,4"
@@ -139,10 +139,10 @@
                                     <StackPanel Orientation="Horizontal" Spacing="10">
                                         <Grid Width="16" Height="16" VerticalAlignment="Center">
                                             <ProgressRing Width="14" Height="14" IsActive="True" Visibility="{x:Bind RunningVisibility, Mode=OneWay}" />
-                                            <FontIcon FontSize="13" Glyph="{x:Bind Glyph, Mode=OneWay}" Foreground="{x:Bind GlyphBrush, Mode=OneWay}"
+                                            <FontIcon FontSize="12" Glyph="{x:Bind Glyph, Mode=OneWay}" Foreground="{x:Bind GlyphBrush, Mode=OneWay}"
                                                       Visibility="{x:Bind GlyphVisibility, Mode=OneWay}" />
                                         </Grid>
-                                        <TextBlock Text="{x:Bind Text}" FontFamily="Cascadia Mono" FontSize="12.5"
+                                        <TextBlock Text="{x:Bind Text}" FontFamily="Cascadia Mono" FontSize="12"
                                                    Foreground="{ThemeResource ClTextPrimaryBrush}" TextWrapping="Wrap" />
                                     </StackPanel>
                                     <TextBlock Text="{x:Bind Detail, Mode=OneWay}" Visibility="{x:Bind DetailVisibility, Mode=OneWay}"

@@ -3,7 +3,7 @@
   --base:#0F141B;--sidebar:#121820;--s1:#161D27;--s2:#1C2430;--s3:#243040;--border:#2B3646;--divider:#1F2833;
   --text:#E6EBF2;--text2:#A7B3C4;--muted:#8D98A7;
   --accent:#5C8BCF;--accent-tint:#1B2A42;--on-accent:#0B1016;--accent-text:#6994D3;
-  --ok:#4CC38A;--ok-tint:#12301F;--warn:#E3B341;--warn-tint:#33290E;--danger-tint:#3A1614;--danger-text:#E76159;
+  --ok:#4CC38A;--ok-tint:#12301F;--warn:#E3B341;--warn-tint:#33290E;--danger-tint:#3A1614;--danger-text:#EE7770;
   color-scheme:dark;
 }
 :root[data-theme="light"]{

@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+New
+- Chrome and Firefox, which had no settings before. Stop Chrome sending usage and crash reports, Stop Chrome sending the pages you visit for search ideas, Stop Chrome running after you close it, Stop Chrome promotions and welcome pages, Turn off Chrome price tracking and Turn off Chrome's generative AI features. For Firefox, Stop Firefox telemetry and Stop Firefox studies. Each one is the browser's own policy, read from Google's policy definitions in the Chromium source and Mozilla's policy documentation on 2026-11-15, with the browser version it needs. Both browsers may show a managed by your organization notice while a policy is set.
+- Turn off text suggestions on the on-screen keyboard, Turn off autocorrect and misspelling underlines, Never open the touch keyboard by itself, Turn off typing insights and No text suggestions when typing on a physical keyboard. The first two are Microsoft policies checked against the policy files that ship with Windows. The other three use values that guides name and Microsoft does not document. The touch keyboard value and the typing insights value were seen on this PC, and the physical keyboard one was not, so it is graded Unproven and says so.
+- Turn off Game Bar recording for every account, from the Windows Game Recording and Broadcasting policy. The Remove Xbox Game Bar row now says that turning the recording values off did not stop the ms-gamingoverlay message for one person on Microsoft's forum.
+- Stop the Get an app to open this ms-gamebar link message, for the box that appears when a Game Bar link has no app to open it, such as on a PC where Xbox Game Bar is removed. People report that giving the ms-gamebar, ms-gamebarservices and ms-gamingoverlay links a harmless handler stops it. It is set for your account only, is graded Unproven, and its risk text says that Game Bar links stop opening Game Bar while it is on. It was written to this PC by hand first, and the effect still has to be seen.
+- Turn off Storage Sense from the Allow Storage Sense policy, Stop PC makers running software at startup (DisableWpbtExecution, graded Unproven, since Microsoft documents the table and not the value, and held back on a laptop with a warning), Always show scrollbars and Turn off window snapping. Their values were seen on the PC they were found on, and the ones Microsoft does not document say so.
+- Delay feature updates by 365 days, the longest delay Microsoft documents for the General Availability Channel, beside the 30, 90 and 180 day ones.
+- Turn off cloud optimized content, Turn off the Get Started experience, Stop File Explorer showing cloud recommended files, Turn off feature advertisement notifications and Keep OneDrive quiet until you sign in to it. All five are Microsoft policies checked against the policy files that ship with Windows.
+- The System page lists whether memory integrity is on, read through the same Windows class as the Virtualization based security line, with no switch. docs/FEATURES.md now says why memory integrity, the speed registry values that guides promise and the Copilot app removal policy are not offered.
+
+Polish
+- Text sizes and corner radii follow one scale across the pages. Titles of rows and cards are 16, small icons are 12, and cards and tiles use an 8 pixel corner. The Processor, Memory and Graphics tiles on Home share the accent color instead of three, and the red used for danger text is lighter, which the existing contrast test checks in both themes.
+
 ## 1.6.0
 
 More settings for Windows AI, ads and File Explorer, a calmer review window, and a clearer What's new page.

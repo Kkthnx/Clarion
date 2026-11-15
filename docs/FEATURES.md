@@ -148,6 +148,10 @@ Exact values below are the intended implementation. Each must be re-verified aga
 - Registry cleaners.
 - Third party driver or activation tools.
 - Any tweak that cannot be undone.
+- A switch for memory integrity (virtualization based security). It is an exploit mitigation. Press benchmarks of its cost range from about 3 percent to 25 percent and none found was a controlled test on current builds. A read only status line is the option that fits.
+- Registry values that guides promise will speed up games or the network, such as SystemResponsiveness, NetworkThrottlingIndex, TcpAckFrequency, TCPNoDelay, Win32PrioritySeparation, DisablePagingExecutive and LargeSystemCache. No controlled measurement was found for them on current Windows, and a setting with no evidence is not offered.
+- The RemoveMicrosoftCopilotApp policy. Microsoft says it only acts when three conditions hold, and reports differ on which editions honor it.
+- Pointing the Game Bar links at another program for every account. The setting that does it is per account only, is graded Unproven and says so, because it changes how those links open.
 
 ## 10. Compatibility
 

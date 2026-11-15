@@ -27,7 +27,7 @@
             <Border x:Name="InstallCard" Visibility="Collapsed" CornerRadius="8" Padding="20" BorderThickness="1"
                     Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Windows install check" FontSize="13" Foreground="{ThemeResource ClTextMutedBrush}" />
+                    <TextBlock Text="Windows install check" FontSize="14" Foreground="{ThemeResource ClTextMutedBrush}" />
                     <TextBlock x:Name="Headline" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock x:Name="Explanation" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
                     <ItemsControl x:Name="Signals">
@@ -46,7 +46,7 @@
             <Border x:Name="UpdateCard" Visibility="Collapsed" CornerRadius="8" Padding="20" BorderThickness="1"
                     Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Windows Update right now" FontSize="13" Foreground="{ThemeResource ClTextMutedBrush}" />
+                    <TextBlock Text="Windows Update right now" FontSize="14" Foreground="{ThemeResource ClTextMutedBrush}" />
                     <TextBlock x:Name="UpdateHeadline" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                     <TextBlock x:Name="UpdateExplanation" TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}" />
                     <ItemsControl x:Name="UpdateFindings">

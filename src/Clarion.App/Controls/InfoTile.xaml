@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- A small card: a colored icon, what it is, its main value and a line of detail. The color comes from visual states, so it follows the theme. -->
-    <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="10" Padding="16,14,16,14">
+    <Border Background="{ThemeResource ClSurface1Brush}" BorderBrush="{ThemeResource ClBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,14,16,14">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="Kinds">
                 <VisualState x:Name="Accent">
@@ -38,7 +38,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Border x:Name="IconBox" Width="44" Height="44" CornerRadius="10" VerticalAlignment="Top" Background="{ThemeResource ClSurface3Brush}">
+            <Border x:Name="IconBox" Width="44" Height="44" CornerRadius="8" VerticalAlignment="Top" Background="{ThemeResource ClSurface3Brush}">
                 <FontIcon x:Name="Icon" FontSize="20" Foreground="{ThemeResource ClTextSecondaryBrush}" />
             </Border>
             <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">

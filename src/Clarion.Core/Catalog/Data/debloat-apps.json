@@ -623,12 +623,12 @@
     "evidence": "Situational",
     "riskLevel": "Low",
     "recommendation": "OnlyIf",
-    "advice": "Skip it if you record clips or use Win+G. If you remove it, also turn on Turn off Game Bar recording and Stop the controller button opening Game Bar, which reports say stops that message.",
+    "advice": "Skip it if you record clips or use Win+G. If you remove it, also turn on Turn off Game Bar recording and Stop the controller button opening Game Bar. They remove the triggers but did not stop the message for everyone.",
     "facts": [
       "The overlay behind Win+G for capture and performance widgets",
       "Removes it for your account only",
       "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store",
-      "Reports say the message comes from Game Bar triggers that are still on, and turning them off stops it, which was not tested here"
+      "Turning the recording values off did not stop the message for one person on Microsoft's forum, and these settings were not tested against it"
     ],
     "scope": "User",
     "apply": [

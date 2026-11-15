@@ -21,6 +21,18 @@ public sealed class SystemInfoTests
 
     private static RegistryTarget Local(string path, string name) => new(RegistryHive.LocalMachine, path, name);
 
+    [Theory]
+    [InlineData(",\"memoryIntegrity\":true", "Memory integrity: On")]
+    [InlineData(",\"memoryIntegrity\":false", "Memory integrity: Off")]
+    [InlineData("", "Memory integrity: Not available")]
+    public void Memory_integrity_is_shown_as_a_read_only_fact(string extra, string line)
+    {
+        var (probe, _, _) = Make();
+        var json = Sample.TrimEnd().TrimEnd('}') + extra + "}";
+
+        Assert.Contains(line, probe.Build(json).ToText());
+    }
+
     [Fact]
     public void A_standard_install_reads_as_standard_and_lists_the_facts()
     {

@@ -41,6 +41,7 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
         $tpm = Try-Get { Get-Tpm }
         $secure = Try-Get { Confirm-SecureBootUEFI }
         $vbs = Try-Get { (Get-CimInstance -Namespace root\Microsoft\Windows\DeviceGuard -ClassName Win32_DeviceGuard).VirtualizationBasedSecurityStatus }
+        $hvci = Try-Get { [bool](@((Get-CimInstance -Namespace root\Microsoft\Windows\DeviceGuard -ClassName Win32_DeviceGuard).SecurityServicesRunning) -contains 2) }
         $av = @(Try-Get { Get-CimInstance -Namespace root\SecurityCenter2 -ClassName AntiVirusProduct | ForEach-Object { $_.displayName } })
         $lic = Try-Get { Get-CimInstance SoftwareLicensingProduct -Property Name,ProductKeyChannel,LicenseStatus,ApplicationId,PartialProductKey -Filter "ApplicationId='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL" | Select-Object -First 1 }
         $store = [bool](Try-Get { Get-AppxPackage -AllUsers Microsoft.WindowsStore | Select-Object -First 1 })
@@ -59,7 +60,7 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
           gpus = @($gpu | ForEach-Object { [pscustomobject]@{ Name = $_.Name; Driver = $_.DriverVersion } })
           disks = $disks
           tpmPresent = $(if ($tpm) { [bool]$tpm.TpmPresent }); tpmReady = $(if ($tpm) { [bool]$tpm.TpmReady })
-          secureBoot = $secure; vbs = $vbs; av = $av
+          secureBoot = $secure; vbs = $vbs; memoryIntegrity = $hvci; av = $av
           licChannel = $lic.ProductKeyChannel; licStatus = $(if ($lic) { [int]$lic.LicenseStatus }); licName = $lic.Name
           store = $store; edge = $edge
           ghostToolbox = $ghost; atlasMarker = $atlas; revisionTool = $revision; lastCheck = (Wu-Date $wu.LastSearchSuccessDate); lastInstall = (Wu-Date $wu.LastInstallationSuccessDate)
@@ -118,6 +119,7 @@ public sealed class SystemProbe(IRegistryStore registry, IServiceStore services,
             new("Secure Boot", Bool(j, "secureBoot") switch { true => "On", false => "Off", null => "Not available" }),
             new("TPM", Bool(j, "tpmPresent") switch { true => Bool(j, "tpmReady") == true ? "Present and ready" : "Present", false => "Not found", null => "Unknown" }),
             new("Virtualization based security", Int(j, "vbs") switch { 2 => "Running", 1 => "Enabled but not running", _ => "Off" }),
+            new("Memory integrity", Bool(j, "memoryIntegrity") switch { true => "On", false => "Off", null => "Not available" }),
             new("Antivirus", antivirus.Length > 0 ? antivirus : "None reported"),
         };
 

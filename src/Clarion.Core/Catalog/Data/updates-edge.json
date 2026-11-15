@@ -486,5 +486,71 @@
     "sources": [
       "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/edgeshoppingassistantenabled"
     ]
+  },
+  {
+    "id": "updates.defer-feature-365",
+    "lastVerifiedBuild": 26200,
+    "category": "Updates",
+    "topic": "Updates",
+    "name": "Delay feature updates by 365 days",
+    "summary": "Wait a year after release before a new Windows version is offered.",
+    "what": "Applies the Windows Update policy that defers feature updates for 365 days, the longest delay Microsoft documents for the General Availability Channel.",
+    "benefit": "Other people find the early problems first. Security updates still arrive on time.",
+    "risk": "Low. New features arrive a year later than they would otherwise, and the version you stay on must still be in support.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only for PCs that must stay on one version for as long as possible. You will get new Windows versions a year late.",
+    "facts": [
+      "Only feature updates are delayed, monthly security updates still install",
+      "You choose one delay, picking another replaces it",
+      "Microsoft documents 365 days as the most the General Availability Channel allows",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy values"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "exclusiveGroup": "feature-deferral",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "DeferFeatureUpdates"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+          "name": "DeferFeatureUpdatesPeriodInDays"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "365"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update"
+    ],
+    "provenance": [
+      "WindowsUpdate.admx DeferFeatureUpdates"
+    ]
   }
 ]

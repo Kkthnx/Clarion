@@ -710,5 +710,713 @@
     "apply": [
       { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\UserProfileEngagement", "name": "ScoobeSystemSettingEnabled" }, "data": { "kind": "DWord", "value": "0" } }
     ]
+  },
+  {
+    "id": "ads.cloud-content-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "Turn off cloud optimized content",
+    "summary": "Make Windows show its plain default content where it would pull cloud content.",
+    "what": "Sets the Cloud Content policy Turn off cloud optimized content. Windows experiences that use the cloud optimized content component show their default fallback content instead.",
+    "benefit": "Less content chosen and delivered by Microsoft in Windows surfaces, such as tips and promotions.",
+    "risk": "None. The surfaces still work and show their standard content.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. You lose nothing you need.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Microsoft does not say which editions honor it, and the other Cloud Content policies are honored on Enterprise and Education only",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent", "name": "DisableCloudOptimizedContent" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience" ],
+    "provenance": [ "CloudContent.admx DisableCloudOptimizedContent" ]
+  },
+  {
+    "id": "ads.get-started-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "Turn off the Get Started experience",
+    "summary": "Stop Windows from launching its Get Started guidance by itself.",
+    "what": "Sets the Cloud Content policy Disable Get Started. Get Started does not launch automatically and closes at once if opened by hand, and its background tasks do not run.",
+    "benefit": "No welcome and learn about Windows prompts after setup or an update.",
+    "risk": "None.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who does not want the guided tour.",
+    "facts": [
+      "Windows 11 only",
+      "Enforced by a machine policy, so it applies to every account",
+      "Microsoft does not say which editions honor it, and the other Cloud Content policies are honored on Enterprise and Education only",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22000,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "Software\\Policies\\Microsoft\\Windows\\CloudContent", "name": "DisableGetStarted" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience" ],
+    "provenance": [ "CloudContent.admx DisableGetStarted" ]
+  },
+  {
+    "id": "explorer.cloud-recent-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Explorer",
+    "topic": "File Explorer",
+    "name": "Stop File Explorer showing cloud recommended files",
+    "summary": "Keep File Explorer from asking the cloud for files based on your account activity.",
+    "what": "Sets the policy Show files based on your account and cloud provider activity to off. File Explorer stops requesting cloud file metadata for the Home page and views such as Recent, Recommended, Favorites and Shared.",
+    "benefit": "The Home page no longer fills with files Microsoft or OneDrive picked for you, and Explorer makes fewer cloud requests.",
+    "risk": "Low. Cloud based Recommended and Shared lists in File Explorer stay empty.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if you do not use the recommended files in File Explorer.",
+    "facts": [
+      "Windows 11 22H2 and later",
+      "Enforced by a machine policy, so it applies to every account",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "minBuild": 22621,
+      "editions": [ "Professional", "ProfessionalWorkstation", "ProfessionalEducation", "Enterprise", "Education", "IoTEnterprise" ]
+    },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "Software\\Policies\\Microsoft\\Windows\\Explorer", "name": "DisableGraphRecentItems" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-fileexplorer" ],
+    "provenance": [ "Explorer.admx DisableGraphRecentItems" ]
+  },
+  {
+    "id": "ads.feature-ads-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Suggestions and ads",
+    "name": "Turn off feature advertisement notifications",
+    "summary": "Hide notification balloons that Windows marks as feature advertisements.",
+    "what": "Sets the policy Turn off feature advertisement balloon notifications for your account.",
+    "benefit": "Fewer balloons that advertise Windows features.",
+    "risk": "None. Other notifications are not touched.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone. You lose nothing you need.",
+    "facts": [
+      "Per account setting",
+      "Revert removes the policy value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\Windows\\Explorer", "name": "NoBalloonFeatureAdvertisements" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-taskbar" ],
+    "provenance": [ "Taskbar.admx NoBalloonFeatureAdvertisements" ]
+  },
+  {
+    "id": "privacy.onedrive-quiet-start",
+    "lastVerifiedBuild": 26200,
+    "category": "Privacy",
+    "topic": "Sync and clipboard",
+    "name": "Keep OneDrive quiet until you sign in to it",
+    "summary": "Stop the OneDrive sync program from using the network before you sign in to OneDrive.",
+    "what": "Sets the OneDrive policy that prevents OneDrive.exe from generating network traffic, such as checking for updates, until you sign in to OneDrive or start syncing files.",
+    "benefit": "A PC where OneDrive is installed but not used makes no OneDrive network requests.",
+    "risk": "Low. OneDrive does not start by itself until you sign in to it or choose files to sync.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "Optional",
+    "advice": "Suggested if OneDrive is installed and you do not use it.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Microsoft\\OneDrive", "name": "PreventNetworkTrafficPreUserSignIn" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/sharepoint/use-group-policy" ],
+    "provenance": [ "SkyDrive.admx PreventNetworkTrafficPreUserSignIn" ]
+  },
+  {
+    "id": "input.text-suggestions-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Input",
+    "topic": "Mouse and keyboard",
+    "name": "Turn off text suggestions on the on-screen keyboard",
+    "summary": "Stop the word suggestions that appear above the touch keyboard and handwriting panel.",
+    "what": "Sets two policies for your account, Turn off offer text predictions as I type and Disable text prediction for the Touch Keyboard and Handwriting panel.",
+    "benefit": "No row of word suggestions while you type on the on-screen keyboard.",
+    "risk": "None. Typing works the same without the suggestions.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. Suggested if the suggestion row gets in the way.",
+    "facts": [
+      "Per account setting",
+      "Microsoft says the first policy does not stop an app from changing the option itself",
+      "The physical keyboard suggestions are a separate setting",
+      "Revert removes the policy values"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\Control Panel\\International", "name": "TurnOffOfferTextPredictions" }, "data": { "kind": "DWord", "value": "1" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\TabletTip\\1.7", "name": "DisablePrediction" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-globalization",
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-tabletpcinputpanel"
+    ],
+    "provenance": [ "Globalization.admx TurnOffOfferTextPredictions", "TabletPCInputPanel.admx Prediction_1" ]
+  },
+  {
+    "id": "input.autocorrect-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Input",
+    "topic": "Mouse and keyboard",
+    "name": "Turn off autocorrect and misspelling underlines",
+    "summary": "Stop Windows from correcting and underlining words as you type.",
+    "what": "Sets two policies for your account, Turn off autocorrect misspelled words and Turn off highlight misspelled words.",
+    "benefit": "What you type stays as you typed it, and no red lines appear under words in places that use the Windows spelling options.",
+    "risk": "None. Apps with their own spell check keep it.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. Suggested if autocorrect changes words you meant to type.",
+    "facts": [
+      "Per account setting",
+      "Microsoft says the policies do not stop an app from changing the option itself",
+      "Revert removes the policy values"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\Control Panel\\International", "name": "TurnOffAutocorrectMisspelledWords" }, "data": { "kind": "DWord", "value": "1" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Policies\\Microsoft\\Control Panel\\International", "name": "TurnOffHighlightMisspelledWords" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-globalization" ],
+    "provenance": [ "Globalization.admx TurnOffAutocorrectMisspelledWords", "Globalization.admx TurnOffHighlightMisspelledWords" ]
+  },
+  {
+    "id": "input.touch-keyboard-never",
+    "lastVerifiedBuild": 26200,
+    "category": "Input",
+    "topic": "Mouse and keyboard",
+    "name": "Never open the touch keyboard by itself",
+    "summary": "Keep the on-screen keyboard from appearing when you tap a text box.",
+    "what": "Sets the Typing option Show the touch keyboard to Never for your account.",
+    "benefit": "No keyboard sliding up over your screen when a touch screen or a missing keyboard makes Windows think you need one.",
+    "risk": "Low. On a tablet without a keyboard you open the touch keyboard from the taskbar by hand.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if the touch keyboard appears on a desktop or a laptop that has a keyboard. Skip it on a tablet.",
+    "facts": [
+      "Per account setting",
+      "Guides name this value and its 0, 1 and 2 choices, and Microsoft does not document it",
+      "It reads 1, which is the When no keyboard is attached choice, on the PC it was found on",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "requires": { "minBuild": 22000 },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\TabletTip\\1.7", "name": "TouchKeyboardTapInvoke" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "input.typing-insights-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Input",
+    "topic": "Mouse and keyboard",
+    "name": "Turn off typing insights",
+    "summary": "Stop Windows from keeping a record of your typing to improve suggestions and corrections.",
+    "what": "Turns off the Typing option Typing insights for your account.",
+    "benefit": "Windows stops tracking how you type to improve word suggestions and spelling fixes.",
+    "risk": "None. Suggestions may get less personal.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Suggested if you want less typing data kept on the PC.",
+    "facts": [
+      "Per account setting",
+      "Guides name this value and Microsoft does not document it, and it already reads off on the PC it was found on",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Input\\Settings", "name": "InsightsEnabled" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "input.physical-keyboard-suggestions-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Input",
+    "topic": "Mouse and keyboard",
+    "name": "No text suggestions when typing on a physical keyboard",
+    "summary": "Stop the suggestion bar that can appear while you type on a real keyboard.",
+    "what": "Turns off the Typing option Show text suggestions when typing on the physical keyboard for your account.",
+    "benefit": "No popup of word suggestions over what you are typing.",
+    "risk": "None. Typing works the same.",
+    "evidence": "Unproven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. Try it if a suggestion popup appears while you type, and revert it if nothing changes.",
+    "facts": [
+      "Per account setting",
+      "The value name comes from guides written for early Windows 11 builds, and it was not read back on this PC or on a current build",
+      "Revert restores the earlier value or removes this one"
+    ],
+    "scope": "User",
+    "requires": { "minBuild": 22000 },
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Input\\Settings", "name": "EnableHwkbTextPrediction" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "gaming.game-dvr-policy-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Gaming",
+    "name": "Turn off Game Bar recording for every account",
+    "summary": "Disallow Windows game recording and broadcasting for the whole PC.",
+    "what": "Sets the policy that enables or disables Windows Game Recording and Broadcasting to disabled. Windows game recording is not allowed for any account.",
+    "benefit": "No background recording or broadcasting on any account, and it cannot be turned back on from Game Bar settings.",
+    "risk": "Low. Game Bar clips, the record last 30 seconds feature and broadcasting stop working for everyone.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if nobody on this PC records gameplay with Game Bar. The per account version is enough for one person.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR", "name": "AllowGameDVR" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [ "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-applicationmanagement" ],
+    "provenance": [ "GameDVR.admx AllowGameDVR" ]
+  },
+  {
+    "id": "gaming.game-bar-link-message-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Gaming",
+    "name": "Stop the Get an app to open this ms-gamebar link message",
+    "summary": "Give the Game Bar links a harmless handler, so Windows stops asking you to find an app in the Store.",
+    "what": "For your account only, registers the ms-gamebar, ms-gamebarservices and ms-gamingoverlay links with a small do nothing Windows program, systray.exe, instead of leaving them with no handler.",
+    "benefit": "The Get an app to open this ms-gamebar link box that can appear when you use a controller or press a Game Bar key stops appearing on a PC where Xbox Game Bar is removed.",
+    "risk": "Medium. If Xbox Game Bar is installed, these links no longer open it for your account, and Win+G or the controller button may stop working. Revert removes the handlers.",
+    "evidence": "Unproven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Use it only when Xbox Game Bar is removed and the message keeps coming back. Skip it if you use Game Bar.",
+    "facts": [
+      "Per account setting, so other accounts are not affected",
+      "People report this fixes the message, and it was not tested on a PC where Game Bar is installed",
+      "Turning off the controller button and Game Bar recording first removes the usual triggers",
+      "Revert removes the handlers it added, and the link keys it created stay empty"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebar",
+          "name": ""
+        },
+        "data": {
+          "kind": "String",
+          "value": "URL:ms-gamebar"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebar",
+          "name": "URL Protocol"
+        },
+        "data": {
+          "kind": "String",
+          "value": ""
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebar",
+          "name": "NoOpenWith"
+        },
+        "data": {
+          "kind": "String",
+          "value": ""
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebar\\shell\\open\\command",
+          "name": ""
+        },
+        "data": {
+          "kind": "ExpandString",
+          "value": "%SystemRoot%\\System32\\systray.exe"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebarservices",
+          "name": ""
+        },
+        "data": {
+          "kind": "String",
+          "value": "URL:ms-gamebarservices"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebarservices",
+          "name": "URL Protocol"
+        },
+        "data": {
+          "kind": "String",
+          "value": ""
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebarservices",
+          "name": "NoOpenWith"
+        },
+        "data": {
+          "kind": "String",
+          "value": ""
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebarservices\\shell\\open\\command",
+          "name": ""
+        },
+        "data": {
+          "kind": "ExpandString",
+          "value": "%SystemRoot%\\System32\\systray.exe"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamingoverlay",
+          "name": ""
+        },
+        "data": {
+          "kind": "String",
+          "value": "URL:ms-gamingoverlay"
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamingoverlay",
+          "name": "URL Protocol"
+        },
+        "data": {
+          "kind": "String",
+          "value": ""
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamingoverlay",
+          "name": "NoOpenWith"
+        },
+        "data": {
+          "kind": "String",
+          "value": ""
+        }
+      },
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamingoverlay\\shell\\open\\command",
+          "name": ""
+        },
+        "data": {
+          "kind": "ExpandString",
+          "value": "%SystemRoot%\\System32\\systray.exe"
+        }
+      }
+    ],
+    "undo": [
+      {
+        "type": "registry.delete",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebar\\shell\\open\\command",
+          "name": ""
+        }
+      },
+      {
+        "type": "registry.delete",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebar",
+          "name": "NoOpenWith"
+        }
+      },
+      {
+        "type": "registry.delete",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebar",
+          "name": ""
+        }
+      },
+      {
+        "type": "registry.delete",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebarservices\\shell\\open\\command",
+          "name": ""
+        }
+      },
+      {
+        "type": "registry.delete",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebarservices",
+          "name": "NoOpenWith"
+        }
+      },
+      {
+        "type": "registry.delete",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamebarservices",
+          "name": ""
+        }
+      },
+      {
+        "type": "registry.delete",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamingoverlay\\shell\\open\\command",
+          "name": ""
+        }
+      },
+      {
+        "type": "registry.delete",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamingoverlay",
+          "name": "NoOpenWith"
+        }
+      },
+      {
+        "type": "registry.delete",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Software\\Classes\\ms-gamingoverlay",
+          "name": ""
+        }
+      }
+    ]
+  },
+  {
+    "id": "system.storage-sense-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "System",
+    "name": "Turn off Storage Sense",
+    "summary": "Stop Windows from cleaning files by itself when the disk runs low.",
+    "what": "Sets the policy Allow Storage Sense to disabled. Storage Sense does not turn on, and it does not remove temporary files, Recycle Bin items or old Downloads files on its own.",
+    "benefit": "Nothing is deleted behind your back, which matters if you keep files in Downloads or the Recycle Bin.",
+    "risk": "Low. The disk does not clean itself when it fills up, so Clean up or Settings has to be run by hand.",
+    "evidence": "Proven",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested if you want to decide what is deleted. Skip it on a small drive that runs low on space.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Microsoft says Storage Sense turns on by itself when the PC runs into low disk space",
+      "Honored on Pro, Enterprise and Education",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "requires": {
+      "editions": [
+        "Professional",
+        "ProfessionalWorkstation",
+        "ProfessionalEducation",
+        "Enterprise",
+        "Education",
+        "IoTEnterprise"
+      ]
+    },
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "Software\\Policies\\Microsoft\\Windows\\StorageSense",
+          "name": "AllowStorageSenseGlobal"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-storage"
+    ],
+    "provenance": [
+      "StorageSense.admx SS_AllowStorageSenseGlobal"
+    ]
+  },
+  {
+    "id": "system.wpbt-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "System",
+    "name": "Stop PC makers running software at startup",
+    "summary": "Block the firmware of the PC from starting programs inside Windows at boot.",
+    "what": "Sets DisableWpbtExecution. The Windows Platform Binary Table lets a PC maker put a program in the firmware that Windows runs at startup, which some makers use to install their own tools again after a clean install.",
+    "benefit": "A clean Windows install stays clean, without a maker app coming back by itself.",
+    "risk": "Medium. Anti-theft and recovery software that works this way stops starting, and on some laptops it is how the tool for fan modes, lighting or Fn keys gets installed. Needs a restart.",
+    "evidence": "Unproven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Suggested only on a desktop or after a clean install where a maker app keeps returning. Skip it if you rely on a maker tool or anti-theft software.",
+    "facts": [
+      "Microsoft documents the table, and its own document does not mention this value",
+      "Community tools set this value and it is already set on the PC it was found on",
+      "Enforced for every account, and it needs a restart",
+      "Revert removes the value"
+    ],
+    "scope": "Machine",
+    "needsReboot": true,
+    "portable": "Caution",
+    "portableNote": "On a laptop, the maker can use this to install the app that handles fan modes, keyboard lighting and Fn keys, and it may not come back once it is blocked.",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "LocalMachine",
+          "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager",
+          "name": "DisableWpbtExecution"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "1"
+        }
+      }
+    ]
+  },
+  {
+    "id": "appearance.scrollbars-always",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Look and feel",
+    "name": "Always show scrollbars",
+    "summary": "Keep scrollbars on screen instead of hiding them until the pointer moves.",
+    "what": "Turns off the Accessibility option that hides scrollbars automatically, for your account.",
+    "benefit": "You can see how long a page is and grab the bar without waiting for it to appear.",
+    "risk": "None. Windows apps that use their own scrollbars are not affected.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It changes only how scrollbars show.",
+    "facts": [
+      "Per account setting",
+      "Windows calls it Always show scrollbars under Accessibility, Visual effects",
+      "Microsoft does not document the value, and guides name it",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Control Panel\\Accessibility",
+          "name": "DynamicScrollbars"
+        },
+        "data": {
+          "kind": "DWord",
+          "value": "0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "appearance.window-snapping-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Look and feel",
+    "name": "Turn off window snapping",
+    "summary": "Stop windows from resizing and docking when you drag them to a screen edge.",
+    "what": "Turns off the Windows feature that arranges a window when it is dragged to an edge or corner, for your account. It is the same switch as Snap windows under Multitasking.",
+    "benefit": "A window stays the size you gave it wherever you drop it.",
+    "risk": "None. Win+Z layouts and the snap shortcuts stop working with it.",
+    "evidence": "Situational",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. Suggested if windows keep resizing when you move them near an edge.",
+    "facts": [
+      "Per account setting",
+      "Sign out and in for it to take effect",
+      "The value belongs to the documented window arranging option, and Microsoft does not name the registry value",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "needsSignOut": true,
+    "apply": [
+      {
+        "type": "registry.set",
+        "target": {
+          "hive": "CurrentUser",
+          "path": "Control Panel\\Desktop",
+          "name": "WindowArrangementActive"
+        },
+        "data": {
+          "kind": "String",
+          "value": "0"
+        }
+      }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfoa"
+    ]
   }
 ]
