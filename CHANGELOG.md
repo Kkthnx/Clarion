@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.8.0
+
+Update from inside the app, a Gaming page, a calmer look with check boxes and a shorter menu, .NET 10, and cleaner upgrades.
 
 New
 - Turn off the Toggle Keys shortcut, so holding Num Lock in a game no longer opens the Toggle Keys question. It clears only the hotkey bit Microsoft documents, like the Sticky Keys one, and is now in the Gaming preset.
