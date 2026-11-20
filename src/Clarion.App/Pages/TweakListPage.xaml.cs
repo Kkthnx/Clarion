@@ -280,7 +280,7 @@ public sealed partial class TweakListPage : Page
     }
 
     private bool Matches(TweakItem i) =>
-        _query.Length == 0 || SearchMatch.Matches(_query, [i.Name, i.Summary, i.Tweak.Topic, i.Category, .. i.ExactChanges]);
+        _query.Length == 0 || SearchMatch.Matches(_query, (string[])[i.Name, i.Summary, i.Tweak.Topic, i.Category, .. i.ExactChanges]);
 
     private bool PassesFilter(TweakItem i) => _filter switch
     {

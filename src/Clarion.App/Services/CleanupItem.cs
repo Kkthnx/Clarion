@@ -129,7 +129,7 @@ public sealed class CleanupItem : UiObservableObject, IDetailSource
         get
         {
             if (_busy) return "Cleaning";
-            if (_result is not null) return string.Join(" ", _result.Notes.Count > 0 ? _result.Notes : [$"{_result.FilesDeleted} files removed."]);
+            if (_result is not null) return string.Join(" ", _result.Notes.Count > 0 ? _result.Notes : (string[])[$"{_result.FilesDeleted} files removed."]);
             if (_scan is null) return "";
             if (_scan.RunningApps.Count > 0) return $"Close {Target.CloseLabel(_scan.RunningApps)} first";
             return _scan.Present ? $"{_scan.Files} files" : "Not on this PC";

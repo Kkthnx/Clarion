@@ -112,8 +112,8 @@ public sealed partial class VerifyPage : Page
     private async void OnFixOne(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { Tag: string id }) return;
-        if (Clarion.Core.Startup.StartupTweaks.IsStartupId(id)) await FixStartupAsync([id]);
-        else _app.QueueFix([id]);
+        if (Clarion.Core.Startup.StartupTweaks.IsStartupId(id)) await FixStartupAsync((string[])[id]);
+        else _app.QueueFix((string[])[id]);
     }
 
     /// <summary>A startup entry is turned off again at once, as it was the first time, and the check is run again.</summary>

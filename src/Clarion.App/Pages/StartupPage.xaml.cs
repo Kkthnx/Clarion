@@ -49,7 +49,7 @@ public sealed partial class StartupPage : Page
         var query = Search.Text.Trim();
         var shown = _entries
             .Where(e => filter == "All" || (filter == "On") == e.Enabled)
-            .Where(e => SearchMatch.Matches(query, [e.Name, e.Program.Publisher, e.Program.Description, e.Command]))
+            .Where(e => SearchMatch.Matches(query, (string[])[e.Name, e.Program.Publisher, e.Program.Description, e.Command]))
             .ToList();
         List.ItemsSource = shown.Select(e => new StartupRowItem(e, _app.IsElevated)).ToList();
         Empty.Visibility = shown.Count == 0 && _entries.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
