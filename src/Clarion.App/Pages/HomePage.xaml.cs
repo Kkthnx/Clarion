@@ -69,7 +69,8 @@ public sealed partial class HomePage : Page
     {
         ["cleanup"] = "Clean up",
         ["whatsnew"] = "What's new",
-        ["troubleshoot"] = "Troubleshoot",
+        ["troubleshoot"] = "What broke",
+        ["feedback"] = "Report a problem",
     };
 
     /// <summary>Says so when the last session ended without closing, with the page it was on, and offers the problem report.</summary>
@@ -99,7 +100,7 @@ public sealed partial class HomePage : Page
 
     private void OnJobVerify(object sender, RoutedEventArgs e) => _app.RequestNavigate("verify");
     private void OnJobCleanup(object sender, RoutedEventArgs e) => _app.RequestNavigate("cleanup");
-    private void OnJobGaming(object sender, RoutedEventArgs e) => _app.RequestSearch("gaming");
+    private void OnJobGaming(object sender, RoutedEventArgs e) => _app.RequestNavigate("gaming");
     private void OnJobBroke(object sender, RoutedEventArgs e) => _app.RequestNavigate("troubleshoot");
 
     /// <summary>The jobs list says what is true now where it can, such as how many settings changed back, and otherwise what the job does.</summary>
@@ -280,9 +281,10 @@ public sealed partial class HomePage : Page
         if (offer is null) return;
         UpdateBar.Title = $"{offer.Name} is available";
         var count = _app.NewerReleases.Count;
-        UpdateBar.Message = count > 1
-            ? $"You have {AppServices.Version}, which is {count} releases behind. .Clarion does not download or install anything itself."
-            : $"You have {AppServices.Version}. .Clarion does not download or install anything itself.";
+        var behind = count > 1 ? $"You have {AppServices.Version}, which is {count} releases behind." : $"You have {AppServices.Version}.";
+        UpdateBar.Message = _app.CanUpdateInApp
+            ? $"{behind} See what changed, then update from there. Nothing is downloaded until you press Update now."
+            : $"{behind} This copy is updated from the release page.";
     }
 
     private void OnOpenUpdate(object sender, RoutedEventArgs e)

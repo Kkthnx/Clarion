@@ -111,7 +111,7 @@ Full keyboard navigation, Narrator labels on every control, 4.5:1 text contrast,
 9. **Verification.** After each operation the app reads the value back. A mismatch marks the step failed and halts the batch.
 10. **Safe mode recovery note.** The Safety page shows how to open System Restore from recovery if the shell fails to load.
 11. **Dependency warnings.** Removing an app shows what depends on it.
-12. **No silent network use.** The only outbound calls are to the package manager and the update check, both visible in the log.
+12. **No silent network use.** The only outbound calls are to the package manager, the update check and, when the person presses Update now, the update download, all visible in the log.
 
 ## 6. Code architecture
 
@@ -178,7 +178,7 @@ Most tweaks are data only. Scripts exist only for operations with no clean nativ
 
 ### Distribution
 
-Zip portable build and installer from the GitHub release page. `scripts/make-package-manifests.ps1` writes winget and Scoop manifests. The update check reads the GitHub release list and is off until the user turns it on.
+Zip portable build and installer from the GitHub release page. `scripts/make-package-manifests.ps1` writes winget and Scoop manifests. The update check reads the GitHub release list and is off until the user turns it on. The installed copy can update itself when the person presses Update now: it downloads the release's setup program into the administrators-only data folder, checks it against the SHA-256 GitHub lists for it, then runs it silently with /RELAUNCH, and setup clears the old version's program files before copying the new ones. A portable copy is sent to the release page.
 
 ### Telemetry in .Clarion itself
 

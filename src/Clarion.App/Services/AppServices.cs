@@ -73,7 +73,7 @@ public sealed partial class AppServices : UiObservableObject
 
     public void MarkScheduledSeen() => _scheduledResult.MarkSeen();
 
-    /// <summary>A newer version that is on offer, or null. Clarion only points to the page. It never downloads or installs.</summary>
+    /// <summary>A newer version that is on offer, or null. It is downloaded and installed only when the person presses Update now.</summary>
     public UpdateOffer? UpdateAvailable { get; private set; }
 
     /// <summary>
@@ -114,6 +114,78 @@ public sealed partial class AppServices : UiObservableObject
         var last = Settings.LastUpdateCheck;
         if (!Settings.CheckForUpdates || (last is { } l && DateTimeOffset.UtcNow - l < TimeSpan.FromHours(20))) return;
         await CheckForUpdateAsync(manual: false);
+    }
+
+    /// <summary>Where an update's setup program is downloaded to: inside the data folder, which only administrators can write to.</summary>
+    public static string UpdateFolder => Path.Combine(EngineFactory.DefaultDataDirectory, "updates");
+
+    /// <summary>The log the setup program writes during an update from inside .Clarion. Kept, so a failed update can be read afterwards.</summary>
+    public static string UpdateLog => Path.Combine(UpdateFolder, "setup.log");
+
+    /// <summary>
+    /// True when the offered release has a setup program .Clarion can check and run, and this copy is the installed one. A portable copy is
+    /// sent to the release page, since running setup would install a second copy beside it.
+    /// </summary>
+    public bool CanUpdateInApp =>
+        UpdateAvailable?.Release is { } release && UpdateInstall.SetupOf(release) is not null && IsInstalledCopy();
+
+    private static bool IsInstalledCopy()
+    {
+        try
+        {
+            using var hive = Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, Microsoft.Win32.RegistryView.Registry64);
+            using var key = hive.OpenSubKey(UpdateInstall.InstallerKey);
+            return UpdateInstall.IsInstalledCopy(AppContext.BaseDirectory, key?.GetValue("InstallLocation") as string);
+        }
+        catch (Exception ex) when (ex is System.Security.SecurityException or UnauthorizedAccessException or IOException)
+        {
+            Log.Write($"Could not read where .Clarion is installed: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>Downloads the setup program of the offered release and checks it. Throws <see cref="UpdateCheckException"/> with a sentence to show.</summary>
+    public Task<string> DownloadUpdateAsync(IProgress<double> progress, CancellationToken cancel) =>
+        UpdateAvailable?.Release is { } release
+            ? new UpdateDownloader(Version, UpdateFolder).DownloadSetupAsync(release, progress, cancel)
+            : throw new UpdateCheckException("There is no update to download. Check for updates again.");
+
+    /// <summary>
+    /// Starts the checked setup program, which closes .Clarion, replaces it and starts it again. Returns false, and logs why, when it could
+    /// not start, and then .Clarion keeps running as it was.
+    /// </summary>
+    public static bool StartUpdate(string setupPath)
+    {
+        try
+        {
+            var info = new ProcessStartInfo(setupPath, UpdateInstall.SetupArguments(UpdateLog)) { UseShellExecute = true, WorkingDirectory = UpdateFolder };
+            using var started = Process.Start(info);
+            Log.Write($"Update started: {Path.GetFileName(setupPath)}. Setup writes its log to {UpdateLog}.");
+            return started is not null;
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException or FileNotFoundException)
+        {
+            Log.Write($"The update could not be started: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Removes setup programs left from an earlier update, about 60 MB each. By the time .Clarion runs again the update is done or was
+    /// abandoned, and either way the file is not needed. The setup log stays.
+    /// </summary>
+    private static void RemoveDownloadedSetup()
+    {
+        try
+        {
+            if (!Directory.Exists(UpdateFolder)) return;
+            foreach (var file in Directory.EnumerateFiles(UpdateFolder, "Clarion-*-setup.exe*"))
+            {
+                try { File.Delete(file); }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { Log.Write($"An old update file could not be removed: {ex.Message}"); }
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { Log.Write($"The update folder could not be read: {ex.Message}"); }
     }
 
     public void HideUpdate()
@@ -175,6 +247,7 @@ public sealed partial class AppServices : UiObservableObject
         DetectUpdatedVersion();
         Runtime = EngineFactory.Create();
         foreach (var note in EngineFactory.DataFolderNotes) Log.Write(note);
+        RemoveDownloadedSetup();
         Profile = Runtime.Profile;
         _systemReport = new(Runtime.System.Read);
         var tweaks = CatalogLoader.LoadEmbedded();

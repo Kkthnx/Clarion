@@ -10,7 +10,7 @@ Design thesis: a careful workbench for a PC you care about, where nothing change
 
 ## Stack and commands
 
-- WinUI 3 unpackaged on .NET 9. Engine in `Clarion.Core` and `Clarion.Engine`, UI in `Clarion.App`, tests in `tests/Clarion.Tests` (xUnit).
+- WinUI 3 unpackaged on .NET 10. Engine in `Clarion.Core` and `Clarion.Engine`, UI in `Clarion.App`, tests in `tests/Clarion.Tests` (xUnit).
 - Tests: `dotnet test`. Build: `dotnet build src/Clarion.App -p:Platform=x64`. The app needs administrator rights, and `CLARION_NO_ELEVATE=1` skips the prompt for testing.
 - Developer switches: `CLARION_LEAK_PROBE=1` (pages and listeners in the log), `CLARION_FORCE_LAPTOP=1` (show laptop behaviour on a desktop), `CLARION_FAKE_BATTERY=18` (show the low battery question), `CLARION_REAL_TESTS=1` (tests that read the real system).
 - Crash trail: `C:\ProgramData\Clarion\crash.log` for errors, `clarion.log` for activity, `%LOCALAPPDATA%\Clarion\session.txt` while a session runs (removed on a normal close).

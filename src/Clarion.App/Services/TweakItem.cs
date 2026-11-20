@@ -176,6 +176,7 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
             OnPropertyChanged(nameof(IsUnavailable));
             OnPropertyChanged(nameof(RowOpacity));
             OnPropertyChanged(nameof(PendingText));
+            OnPropertyChanged(nameof(RowStateText));
             OnPropertyChanged(nameof(ShowRecommendationChip));
         }
     }
@@ -186,11 +187,23 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
         set
         {
             if (!SetProperty(ref _isOn, value)) return;
+            OnPropertyChanged(nameof(IsOnChecked));
+            OnPropertyChanged(nameof(RowStateText));
             OnPropertyChanged(nameof(ShowRecommendationChip));
             OnPropertyChanged(nameof(IsPending));
             OnPropertyChanged(nameof(PendingText));
             if (!_syncing) PendingChanged?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    /// <summary>
+    /// The row's check box. A check box and not a switch, because nothing changes until Review and apply, and a switch reads as done the
+    /// moment it moves. The box has no third state, so anything but checked is off.
+    /// </summary>
+    public bool? IsOnChecked
+    {
+        get => IsOn;
+        set => IsOn = value == true;
     }
 
     public string LastError
@@ -212,11 +225,16 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
             if (!SetProperty(ref _isChecking, value)) return;
             OnPropertyChanged(nameof(CanToggle));
             OnPropertyChanged(nameof(StateText));
+            OnPropertyChanged(nameof(RowStateText));
         }
     }
 
     /// <summary>True when Clarion applied this earlier but Windows has since changed it back.</summary>
-    public bool IsDrifted { get => _isDrifted; set => SetProperty(ref _isDrifted, value); }
+    public bool IsDrifted
+    {
+        get => _isDrifted;
+        set { if (SetProperty(ref _isDrifted, value)) { OnPropertyChanged(nameof(StateText)); OnPropertyChanged(nameof(RowStateText)); } }
+    }
 
     /// <summary>Registry only tweaks read in milliseconds. Services, apps and features need PowerShell.</summary>
     public bool ReadsQuickly => Tweak.Apply.All(o => o is SetRegistryValue or DeleteRegistryValue or SetRegistryListEntry);
@@ -257,6 +275,13 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
         : "";
 
 
+    /// <summary>
+    /// The words beside the check box: how it is now, and, once something is queued, what Apply will do. "Off now. Will turn on." The box alone
+    /// cannot say whether a tick is the state or the request.
+    /// </summary>
+    public string RowStateText => !IsPending ? StateText
+        : $"{StateText} now. " + (InstallsApps ? (IsOn ? "Will install." : "Will uninstall.") : IsOn ? "Will turn on." : "Will revert.");
+
     public event EventHandler? PendingChanged;
 
     /// <summary>Sets the toggle to match the real state without counting as a user change.</summary>
@@ -277,6 +302,7 @@ public sealed partial class TweakItem : UiObservableObject, IDetailSource
         OnPropertyChanged(nameof(IsPending));
         OnPropertyChanged(nameof(PendingText));
         OnPropertyChanged(nameof(StateText));
+        OnPropertyChanged(nameof(RowStateText));
     }
 
     public void MarkChecking() => IsChecking = true;

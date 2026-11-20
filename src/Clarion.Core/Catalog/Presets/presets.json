@@ -42,6 +42,7 @@
   "gaming": [
     "input.mouse-accel-off",
     "input.sticky-keys-prompt-off",
+    "input.toggle-keys-prompt-off",
     "input.menu-show-delay-zero",
     "network.delivery-optimization-http",
     "privacy.telemetry-tasks",

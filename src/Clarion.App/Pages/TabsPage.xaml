@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="Clarion.App.Pages.TabsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Pages that belong together, as tabs under one menu entry. The menu had 14 entries, and Microsoft's guidance for a left menu is 5 to 10. -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <SelectorBar x:Name="Tabs" Margin="26,10,32,0" SelectionChanged="OnTabChanged" />
+        <Frame x:Name="Inner" Grid.Row="1" />
+    </Grid>
+</Page>

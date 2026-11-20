@@ -47,6 +47,8 @@ public sealed partial class MainWindow : Window
         };
         UpdateWhatsNewBadge();
         _app.NavigateRequested += (_, tag) => DispatcherQueue.TryEnqueue(() => GoTo(tag));
+        // A tab under Repair, Changes or About is the page on screen, so the bottom bar follows it and not its menu entry.
+        TabsPage.TabShown += (_, tag) => { _pageTag = tag; App.Session.Page(tag); UpdateBar(); };
         _app.SearchRequested += (_, q) => DispatcherQueue.TryEnqueue(() => OpenSearch(q));
         _app.ReviewRequested += (_, _) => DispatcherQueue.TryEnqueue(() => OnReview(this, new RoutedEventArgs()));
 
@@ -230,9 +232,13 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    /// <summary>The lists of settings. The first two are pages of their own, and the rest are the tabs of the Windows page.</summary>
+    /// <summary>The lists of settings. Gaming, Privacy, Debloat and Apps are pages of their own, and the rest are the tabs of the Windows page.</summary>
     internal static readonly Dictionary<string, PageArgs> Sections = new()
     {
+        // Gaming settings live in four categories, so the page gathers them by topic: Game Mode and Game Bar, graphics, NVIDIA, power,
+        // mouse and keyboard, and the game launchers from the Apps list.
+        ["gaming"] = new("Gaming", "Settings that matter while you play, in one place. Each one still says what it does and how to undo it.",
+            ["System", "Privacy", "Input", "Power", "Install"], Topics: ["Gaming", "NVIDIA graphics", "Mouse and keyboard", "Power", "Games"]),
         ["privacy"] = new("Privacy", "Stop Windows from collecting and sharing more than it needs to.", ["Privacy", "Security"]),
         ["debloat"] = new("Debloat", "Remove apps you do not use. Every removal can be reverted.", ["Debloat"]),
         ["apps"] = new("Apps", "Install the programs you want with winget. Each is pinned to one exact package.", ["Install"]),
@@ -264,15 +270,8 @@ public sealed partial class MainWindow : Window
             case "home": ContentFrame.Navigate(typeof(HomePage)); break;
             case "windows": ContentFrame.Navigate(typeof(WindowsPage)); break;
             case "apps": ContentFrame.Navigate(typeof(AppsPage)); break;
-            case "feedback": ContentFrame.Navigate(typeof(FeedbackPage)); break;
-            case "system": ContentFrame.Navigate(typeof(SystemPage)); break;
-            case "troubleshoot": ContentFrame.Navigate(typeof(TroubleshootPage)); break;
-            case "verify": ContentFrame.Navigate(typeof(VerifyPage)); break;
-            case "whatsnew": ContentFrame.Navigate(typeof(WhatsNewPage)); break;
-            case "about": ContentFrame.Navigate(typeof(AboutPage)); break;
-            case "safety": ContentFrame.Navigate(typeof(SafetyPage)); break;
             case "cleanup": ContentFrame.Navigate(typeof(CleanupPage)); break;
-            case "repair": ContentFrame.Navigate(typeof(RepairPage)); break;
+            case not null when TabsPage.Groups.ContainsKey(tag): ContentFrame.Navigate(typeof(TabsPage), tag); break;
             case not null when Sections.TryGetValue(tag, out var args2): ContentFrame.Navigate(typeof(TweakListPage), args2); break;
         }
     }
@@ -373,7 +372,7 @@ public sealed partial class MainWindow : Window
         loop.Children.Add(new TextBlock { Text = "How it works", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         foreach (var line in new[]
         {
-            "1. Queue. Switch settings on or off. Nothing changes yet.",
+            "1. Queue. Tick the settings you want, clear the ones you do not. Nothing changes yet.",
             "2. Review. You see every exact change, then press Apply.",
             "3. Verify. Later, .Clarion checks that Windows has not put things back.",
             "4. Revert. Any change can be undone from the Safety page.",
@@ -444,12 +443,16 @@ public sealed partial class MainWindow : Window
         // The five Windows lists are tabs of one page, so asking for one selects that page and the tab.
         var windowsTab = WindowsPage.IsTab(tag);
         if (windowsTab) { WindowsPage.Tab = tag; tag = "windows"; }
+        // Verify, What broke, What's new and the rest are tabs under Repair, Changes or About now, and are still asked for by their own names.
+        var group = windowsTab ? null : TabsPage.GroupOf(tag);
+        if (group is not null) { TabsPage.Select(group, tag); tag = group; }
 
         var target = Nav.MenuItems.Concat(Nav.FooterMenuItems).OfType<NavigationViewItem>()
             .FirstOrDefault(i => i.Tag as string == tag);
         if (target is null) return;
         // Already on the page: the selection does not change, so the tab is shown directly.
         if (windowsTab && ReferenceEquals(Nav.SelectedItem, target)) ContentFrame.Navigate(typeof(WindowsPage));
+        else if (group is not null && ReferenceEquals(Nav.SelectedItem, target)) ContentFrame.Navigate(typeof(TabsPage), group);
         else Nav.SelectedItem = target;
     }
 
@@ -556,7 +559,7 @@ public sealed partial class MainWindow : Window
             else
             {
                 // The steps Revert will run, read from the history exactly as the engine reads it, so nothing is a surprise.
-                var preview = Clarion.Core.Reports.RevertPreview.For(_app.Runtime.Journal.OutstandingFor(item.Id), item.Tweak.Undo);
+                var preview = Clarion.Core.Reports.RevertPreview.For(_app.Runtime.Journal.OutstandingFor(item.Id), item.Tweak.Undo, _app.Runtime.Journal.HeldByOthers(item.Id));
                 foreach (var step in preview.Lines)
                     block.Children.Add(Ui.Mono(step));
                 block.Children.Add(Ui.Note(preview.FromHistory ? "Puts back the value that was recorded before the change." : "Nothing was recorded for this one, so the default shown is used."));

@@ -37,7 +37,7 @@ Chosen: B.
 
 - Home: a 48 pixel header, then one group "N things to look at" holding every notice, then a Jobs list (check settings, free up space, tune for games, something stopped working), then presets, then This PC. The jobs are one list inside one container, not four cards.
 - Rows: the Suggested label is hidden once a setting is on and while it is queued. The Safe label is hidden on rows (Low, Medium and High stay). Both are still in the details under the i. Same for Clean up and Repair.
-- Color keeps one meaning: green low risk, amber caution, red high risk, blue action.
+- Color keeps one meaning: blue action, amber caution, red high risk, green done. Low risk has no color.
 
 ## Checked
 

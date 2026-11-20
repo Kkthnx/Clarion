@@ -177,9 +177,15 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
         try
         {
             var steps = new List<(Operation Op, Operation Inverse)>();
+            // A step another setting that is still on also made is left in place, so reverting one setting cannot undo part of another.
+            // Windows Subsystem for Linux turns on the Virtual Machine Platform, which is a setting of its own too. It is still written to
+            // the history as reverted, so this setting no longer counts as on.
+            var keep = new List<(Operation Op, Operation Inverse)>();
             if (outstanding.Count > 0)
             {
-                steps.AddRange(outstanding.Reverse().Select(e => (e.Undo, e.Operation)));
+                var heldByOthers = journal.HeldByOthers(tweak.Id);
+                foreach (var e in outstanding.Reverse())
+                    (heldByOthers.Contains(e.Operation) ? keep : steps).Add((e.Undo, e.Operation));
             }
             else
             {
@@ -197,7 +203,7 @@ public sealed class TweakEngine(IEnumerable<IOperationHandler> handlers, ChangeJ
                 handler.Execute(op);
                 if (!handler.IsSatisfied(op)) throw new InvalidOperationException($"Verification failed: {op.Describe()}");
             }
-            foreach (var (op, inverse) in steps)
+            foreach (var (op, inverse) in steps.Concat(keep))
                 journal.Append(new JournalEntry(batchId, tweak.Id, JournalAction.Revert, _clock.GetUtcNow(), op, inverse));
             return TweakResult.Ok();
         }

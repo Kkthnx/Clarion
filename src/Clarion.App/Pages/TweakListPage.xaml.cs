@@ -10,7 +10,9 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Clarion.App.Pages;
 
-public sealed record PageArgs(string Title, string Subtitle, string[] Categories, string Query = "");
+/// <summary>What one list shows. Empty categories means every category. Topics, when given, narrows it further, for a page such as Gaming whose
+/// settings sit in several categories.</summary>
+public sealed record PageArgs(string Title, string Subtitle, string[] Categories, string Query = "", string[]? Topics = null);
 
 public sealed partial class TweakListPage : Page
 {
@@ -230,6 +232,7 @@ public sealed partial class TweakListPage : Page
         {
             var inScope = _app.Items
                 .Where(i => _args.Categories.Length == 0 || _args.Categories.Contains(i.Category, StringComparer.OrdinalIgnoreCase))
+                .Where(i => _args.Topics is null || _args.Topics.Contains(i.Tweak.Topic, StringComparer.OrdinalIgnoreCase))
                 .Where(i => _app.ExpertMode || (i.Tweak.RiskLevel <= RiskLevel.Low && i.Tweak.Evidence != Evidence.Unproven))
                 .ToList();
 
@@ -245,6 +248,8 @@ public sealed partial class TweakListPage : Page
                 .Where(Matches)
                 .Where(PassesFilter)
                 .OrderBy(i => i.IsSupported ? (i.IsUnavailable ? 1 : 0) : 2)
+                // On a page that mixes settings with apps to install, such as Gaming, the settings come first.
+                .ThenBy(i => i.InstallsApps)
                 .ThenBy(i => i.Tweak.Recommendation)
                 .ThenBy(i => i.Name, StringComparer.CurrentCultureIgnoreCase)
                 .ToList();

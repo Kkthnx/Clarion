@@ -45,12 +45,25 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Content="Open the release page" Style="{StaticResource AccentButtonStyle}" Click="OnOpenLatest" />
-                            <Button Content="Hide this version" Click="OnHide" />
+                        <StackPanel x:Name="UpdateButtons" Orientation="Horizontal" Spacing="10">
+                            <Button x:Name="UpdateNowButton" Content="Update now" Style="{StaticResource AccentButtonStyle}" Click="OnUpdateNow" />
+                            <Button x:Name="OpenPageButton" Content="Open the release page" Click="OnOpenLatest" />
+                            <Button x:Name="HideButton" Content="Hide this version" Click="OnHide" />
                         </StackPanel>
-                        <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}"
-                                   Text="The button opens the page in your browser. .Clarion does not download or install anything itself." />
+                        <!-- While the setup program downloads. It can be stopped, and nothing changes until the file is whole and checked. -->
+                        <StackPanel x:Name="DownloadPanel" Spacing="8" Visibility="Collapsed">
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ProgressBar x:Name="DownloadBar" Maximum="1" VerticalAlignment="Center" AutomationProperties.Name="Update download" />
+                                <Button x:Name="CancelDownloadButton" Grid.Column="1" Content="Stop" Click="OnCancelDownload" />
+                            </Grid>
+                        </StackPanel>
+                        <TextBlock x:Name="UpdateStatus" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ClTextSecondaryBrush}"
+                                   AutomationProperties.LiveSetting="Polite" />
+                        <TextBlock x:Name="UpdateNote" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}" />
                     </StackPanel>
                 </StackPanel>
             </Border>

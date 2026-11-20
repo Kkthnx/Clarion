@@ -28,7 +28,7 @@ public sealed class CatalogDisciplineTests
     [
         "DiagTrack",
         "Spooler", "MapsBroker", "TrkWks", "CDPSvc", "SSDPSRV", "upnphost",
-        "XblAuthManager", "XblGameSave", "XboxNetApiSvc", "SCardSvr", "ScDeviceEnum", "SCPolicySvc",
+        "XblAuthManager", "XblGameSave", "XboxNetApiSvc", "SCardSvr", "ScDeviceEnum", "SCPolicySvc", "WSearch",
     ];
 
     [Fact]

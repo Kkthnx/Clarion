@@ -6,7 +6,10 @@ namespace Clarion.App.Controls;
 
 public enum ChipKind { Neutral, Accent, Cyan, Ok, Warn, Danger }
 
-/// <summary>A small colored label. Color means one thing: green safe, amber caution, red high risk, cyan live state, blue action.</summary>
+/// <summary>
+/// A small colored label. Color means one thing: blue something to do, amber caution, red high risk, green done. The words always say it too,
+/// so the color is never the only sign. Cyan is kept as a name for older call sites and draws in the same blue.
+/// </summary>
 public sealed partial class Chip : UserControl
 {
     public static readonly DependencyProperty TextProperty =

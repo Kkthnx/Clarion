@@ -75,7 +75,8 @@
                     </InfoBar.ActionButton>
                 </InfoBar>
 
-                <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Success" IsOpen="False" IsClosable="False">
+                <!-- Informational, not Success: green is kept for something that is done, and an update on offer is something to do. -->
+                <InfoBar x:Name="UpdateBar" Visibility="Collapsed" Severity="Informational" IsOpen="False" IsClosable="False">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <Button Content="See what changed" Click="OnSeeWhatsNew" />
                         <HyperlinkButton Content="Open the release page" Click="OnOpenUpdate" />
@@ -197,7 +198,7 @@
                 <controls:InfoTile x:Name="MemoryTile" Grid.Column="2" Glyph="&#xEEA1;" Title="Memory" Kind="Accent" />
                 <controls:InfoTile x:Name="GraphicsTile" Grid.Row="1" Glyph="&#xE7F4;" Title="Graphics" Kind="Accent" />
                 <controls:InfoTile x:Name="StorageTile" Grid.Row="1" Grid.Column="1" Glyph="&#xEDA2;" Title="Storage" Kind="Accent" />
-                <controls:InfoTile x:Name="ClarionTile" Grid.Row="1" Grid.Column="2" Glyph="&#xE73E;" Title="Settings in effect" Kind="Cyan" />
+                <controls:InfoTile x:Name="ClarionTile" Grid.Row="1" Grid.Column="2" Glyph="&#xE73E;" Title="Settings in effect" Kind="Accent" />
             </Grid>
 
 

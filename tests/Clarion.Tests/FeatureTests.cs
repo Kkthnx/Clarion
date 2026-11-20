@@ -85,6 +85,30 @@ public sealed class FeatureTests : IDisposable
     }
 
     [Fact]
+    public void Reverting_one_setting_leaves_a_feature_another_setting_still_on_also_turned_on()
+    {
+        // Windows Subsystem for Linux turns on the Virtual Machine Platform, which is a setting of its own as well. In the other order the
+        // platform already reads as on, so turning its own setting on records nothing and Revert of the subsystem is free to turn it off.
+        _store.AddFeature("Microsoft-Windows-Subsystem-Linux", false);
+        _store.AddFeature("VirtualMachinePlatform", false);
+        var wsl = Make(new SetWindowsFeature("Microsoft-Windows-Subsystem-Linux", true), new SetWindowsFeature("VirtualMachinePlatform", true)) with { Id = "features.wsl" };
+        var platform = Make(new SetWindowsFeature("VirtualMachinePlatform", true)) with { Id = "features.vm-platform" };
+        var (first, second) = (platform, wsl);
+        Assert.True(_engine.Apply(first, Guid.NewGuid()).Success);
+        Assert.True(_engine.Apply(second, Guid.NewGuid()).Success);
+
+        Assert.True(_engine.Revert(first, Guid.NewGuid()).Success);
+        Assert.True(_store.IsFeatureEnabled("VirtualMachinePlatform"));
+        Assert.Equal(TweakState.Applied, _engine.Detect(second));
+
+        // The second one goes back as its own history says. It saw the platform already on, so the platform stays on, which is harmless,
+        // and nothing is left counted as on.
+        Assert.True(_engine.Revert(second, Guid.NewGuid()).Success);
+        Assert.False(_store.IsFeatureEnabled("Microsoft-Windows-Subsystem-Linux"));
+        Assert.Empty(new ChangeJournal(Path.Combine(_dir, "j.jsonl")).TweakIdsWithOutstanding());
+    }
+
+    [Fact]
     public void A_feature_that_was_already_on_stays_on_after_revert()
     {
         _store.AddFeature("VirtualMachinePlatform", true);

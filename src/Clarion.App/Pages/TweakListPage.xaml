@@ -37,8 +37,8 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
-                                    <!-- A fixed width, so the state text changing from "Checking" to "On" cannot change how the name wraps. -->
-                                    <ColumnDefinition Width="84" />
+                                    <!-- A fixed width, so the state text changing from "Checking" to "Off now. Will turn on." cannot change how the name wraps. -->
+                                    <ColumnDefinition Width="132" />
                                 </Grid.ColumnDefinitions>
                                 <controls:AppMark Icon="{x:Bind Icon}" ImagePath="{x:Bind InstalledIconPath, Mode=OneWay}" LogoFile="{x:Bind LogoFilePath}" Label="{x:Bind Name}" Width="36" Height="36" Margin="0,0,16,0"
                                                   VerticalAlignment="Top" Visibility="{x:Bind IsApp}" />
@@ -61,8 +61,6 @@
                                                        ToolTipService.ToolTip="{x:Bind RecommendationHint}" />
                                         <controls:Chip Text="{x:Bind RiskText}" Kind="{x:Bind RiskKind}" Visibility="{x:Bind RiskIsNotable}"
                                                        ToolTipService.ToolTip="{x:Bind RiskHint}" />
-                                        <controls:Chip Text="{x:Bind PendingText, Mode=OneWay}" Kind="Accent"
-                                                       Visibility="{x:Bind IsPending, Mode=OneWay}" />
                                         <controls:Chip Text="Changed back by Windows" Kind="Warn"
                                                        Visibility="{x:Bind IsDrifted, Mode=OneWay}" />
                                     </StackPanel>
@@ -78,14 +76,14 @@
                                                    Foreground="{ThemeResource ClTextMutedBrush}" />
                                     </StackPanel>
                                 </StackPanel>
-                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="4" HorizontalAlignment="Right">
-                                    <ToggleSwitch IsOn="{x:Bind IsOn, Mode=TwoWay}" IsEnabled="{x:Bind CanToggle, Mode=OneWay}"
-                                                  AutomationProperties.Name="{x:Bind Name}"
-                                                  OnContent="" OffContent="" MinWidth="0" HorizontalAlignment="Right" />
-                                    <TextBlock Text="{x:Bind StateText, Mode=OneWay}" FontSize="12" HorizontalAlignment="Right"
-                                               TextWrapping="Wrap" TextAlignment="Right"
-                                               Foreground="{ThemeResource ClTextMutedBrush}" />
-                                </StackPanel>
+                                <!-- A check box, since ticking only queues the change. Its words say how it is now and what Apply will do. -->
+                                <CheckBox Grid.Column="2" VerticalAlignment="Center" MinWidth="0"
+                                          IsChecked="{x:Bind IsOnChecked, Mode=TwoWay}" IsEnabled="{x:Bind CanToggle, Mode=OneWay}"
+                                          AutomationProperties.Name="{x:Bind Name}"
+                                          AutomationProperties.HelpText="{x:Bind RowStateText, Mode=OneWay}">
+                                    <TextBlock Text="{x:Bind RowStateText, Mode=OneWay}" FontSize="12" TextWrapping="Wrap"
+                                               Foreground="{ThemeResource ClTextSecondaryBrush}" />
+                                </CheckBox>
                             </Grid>
                           </Grid>
                         </Border>
@@ -152,8 +150,10 @@
                                   Visibility="{x:Bind IsLocked}" ToolTipService.ToolTip="{x:Bind LockReason}" />
                     </StackPanel>
                     <controls:InfoButton Grid.Column="3" Item="{x:Bind}" Margin="0,-6,6,-6" />
-                    <ToggleSwitch Grid.Column="4" IsOn="{x:Bind IsOn, Mode=TwoWay}" IsEnabled="{x:Bind CanToggle, Mode=OneWay}"
-                                  AutomationProperties.Name="{x:Bind Name}" OnContent="" OffContent="" MinWidth="0" MinHeight="0" Margin="0,-6,0,-6" VerticalAlignment="Center" />
+                    <CheckBox Grid.Column="4" IsChecked="{x:Bind IsOnChecked, Mode=TwoWay}" IsEnabled="{x:Bind CanToggle, Mode=OneWay}"
+                              AutomationProperties.Name="{x:Bind Name}" AutomationProperties.HelpText="{x:Bind RowStateText, Mode=OneWay}"
+                              ToolTipService.ToolTip="{x:Bind RowStateText, Mode=OneWay}"
+                              MinWidth="0" MinHeight="0" Padding="0" Margin="0,-6,0,-6" VerticalAlignment="Center" />
                 </Grid>
             </Border>
         </DataTemplate>

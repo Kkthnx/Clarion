@@ -102,14 +102,15 @@
             <Color x:Key="ClSurface3Color">#243040</Color>
             <Color x:Key="ClBorderColor">#2B3646</Color>
             <Color x:Key="ClDividerColor">#1F2833</Color>
+            <Color x:Key="ClControlBorderColor">#627389</Color>
             <Color x:Key="ClTextPrimaryColor">#E6EBF2</Color>
             <Color x:Key="ClTextSecondaryColor">#A7B3C4</Color>
             <Color x:Key="ClTextMutedColor">#8D98A7</Color>
             <Color x:Key="ClAccentColor">#5C8BCF</Color>
             <Color x:Key="ClAccentTintColor">#1B2A42</Color>
             <Color x:Key="ClOnAccentColor">#0B1016</Color>
-            <Color x:Key="ClCyanColor">#3FD0E0</Color>
-            <Color x:Key="ClCyanTintColor">#102B31</Color>
+            <Color x:Key="ClCyanColor">#5C8BCF</Color>
+            <Color x:Key="ClCyanTintColor">#1B2A42</Color>
             <Color x:Key="ClOkColor">#4CC38A</Color>
             <Color x:Key="ClOkTintColor">#12301F</Color>
             <Color x:Key="ClWarnColor">#E3B341</Color>
@@ -117,7 +118,7 @@
             <Color x:Key="ClDangerColor">#E5534B</Color>
             <Color x:Key="ClDangerTintColor">#3A1614</Color>
             <Color x:Key="ClAccentTextColor">#6994D3</Color>
-            <Color x:Key="ClCyanTextColor">#3FD0E0</Color>
+            <Color x:Key="ClCyanTextColor">#6994D3</Color>
             <Color x:Key="ClOkTextColor">#4CC38A</Color>
             <Color x:Key="ClWarnTextColor">#E3B341</Color>
             <Color x:Key="ClDangerTextColor">#EE7770</Color>
@@ -128,6 +129,11 @@
             <SolidColorBrush x:Key="ClSurface3Brush" Color="{StaticResource ClSurface3Color}" />
             <SolidColorBrush x:Key="ClBorderBrush" Color="{StaticResource ClBorderColor}" />
             <SolidColorBrush x:Key="ClDividerBrush" Color="{StaticResource ClDividerColor}" />
+            <SolidColorBrush x:Key="ClControlBorderBrush" Color="{StaticResource ClControlBorderColor}" />
+            <!-- Edges of the search boxes and lists people type in or pick from. WCAG 1.4.11 asks 3 to 1 for the edge that shows where a control is,
+                 and the stock edge is fainter than that on these cards. -->
+            <SolidColorBrush x:Key="TextControlBorderBrush" Color="{StaticResource ClControlBorderColor}" />
+            <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="{StaticResource ClControlBorderColor}" />
             <SolidColorBrush x:Key="ClTextPrimaryBrush" Color="{StaticResource ClTextPrimaryColor}" />
             <SolidColorBrush x:Key="ClTextSecondaryBrush" Color="{StaticResource ClTextSecondaryColor}" />
             <SolidColorBrush x:Key="ClTextMutedBrush" Color="{StaticResource ClTextMutedColor}" />
@@ -164,14 +170,15 @@
             <Color x:Key="ClSurface3Color">#E6ECF3</Color>
             <Color x:Key="ClBorderColor">#D3DAE4</Color>
             <Color x:Key="ClDividerColor">#E1E6ED</Color>
+            <Color x:Key="ClControlBorderColor">#7A8698</Color>
             <Color x:Key="ClTextPrimaryColor">#131A24</Color>
             <Color x:Key="ClTextSecondaryColor">#4A5668</Color>
             <Color x:Key="ClTextMutedColor">#5E6978</Color>
             <Color x:Key="ClAccentColor">#3F6DB5</Color>
             <Color x:Key="ClAccentTintColor">#DDE8F7</Color>
             <Color x:Key="ClOnAccentColor">#FFFFFF</Color>
-            <Color x:Key="ClCyanColor">#0E8797</Color>
-            <Color x:Key="ClCyanTintColor">#D6F0F3</Color>
+            <Color x:Key="ClCyanColor">#3F6DB5</Color>
+            <Color x:Key="ClCyanTintColor">#DDE8F7</Color>
             <Color x:Key="ClOkColor">#1F8F5F</Color>
             <Color x:Key="ClOkTintColor">#DAF1E5</Color>
             <Color x:Key="ClWarnColor">#9A6B00</Color>
@@ -179,7 +186,7 @@
             <Color x:Key="ClDangerColor">#C4372F</Color>
             <Color x:Key="ClDangerTintColor">#F8DAD7</Color>
             <Color x:Key="ClAccentTextColor">#3B66AA</Color>
-            <Color x:Key="ClCyanTextColor">#0C7482</Color>
+            <Color x:Key="ClCyanTextColor">#3B66AA</Color>
             <Color x:Key="ClOkTextColor">#1A7850</Color>
             <Color x:Key="ClWarnTextColor">#8B6000</Color>
             <Color x:Key="ClDangerTextColor">#B4332B</Color>
@@ -190,6 +197,11 @@
             <SolidColorBrush x:Key="ClSurface3Brush" Color="{StaticResource ClSurface3Color}" />
             <SolidColorBrush x:Key="ClBorderBrush" Color="{StaticResource ClBorderColor}" />
             <SolidColorBrush x:Key="ClDividerBrush" Color="{StaticResource ClDividerColor}" />
+            <SolidColorBrush x:Key="ClControlBorderBrush" Color="{StaticResource ClControlBorderColor}" />
+            <!-- Edges of the search boxes and lists people type in or pick from. WCAG 1.4.11 asks 3 to 1 for the edge that shows where a control is,
+                 and the stock edge is fainter than that on these cards. -->
+            <SolidColorBrush x:Key="TextControlBorderBrush" Color="{StaticResource ClControlBorderColor}" />
+            <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="{StaticResource ClControlBorderColor}" />
             <SolidColorBrush x:Key="ClTextPrimaryBrush" Color="{StaticResource ClTextPrimaryColor}" />
             <SolidColorBrush x:Key="ClTextSecondaryBrush" Color="{StaticResource ClTextSecondaryColor}" />
             <SolidColorBrush x:Key="ClTextMutedBrush" Color="{StaticResource ClTextMutedColor}" />
@@ -232,6 +244,7 @@
             <StaticResource x:Key="ClOkTintColor" ResourceKey="SystemColorWindowColor" />
             <StaticResource x:Key="ClTextMutedColor" ResourceKey="SystemColorGrayTextColor" />
             <StaticResource x:Key="ClDividerColor" ResourceKey="SystemColorWindowTextColor" />
+            <StaticResource x:Key="ClControlBorderColor" ResourceKey="SystemColorWindowTextColor" />
             <SolidColorBrush x:Key="ClAccentTintBrush" Color="{StaticResource ClAccentTintColor}" />
             <SolidColorBrush x:Key="ClBorderBrush" Color="{StaticResource ClBorderColor}" />
             <SolidColorBrush x:Key="ClSurface3Brush" Color="{StaticResource ClSurface3Color}" />
@@ -263,6 +276,8 @@
             <SolidColorBrush x:Key="ClWarnTextBrush" Color="{StaticResource ClWarnTextColor}" />
             <SolidColorBrush x:Key="ClDangerTextBrush" Color="{StaticResource ClDangerTextColor}" />
             <SolidColorBrush x:Key="ClDividerBrush" Color="{StaticResource ClDividerColor}" />
+            <!-- The control edges are left to the High Contrast theme itself. -->
+            <SolidColorBrush x:Key="ClControlBorderBrush" Color="{StaticResource ClControlBorderColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 

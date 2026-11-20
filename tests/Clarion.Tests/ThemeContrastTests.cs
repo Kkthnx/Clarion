@@ -90,4 +90,21 @@ public sealed partial class ThemeContrastTests
                 }
         Assert.Empty(low);
     }
+
+    /// <summary>
+    /// The edge of a box people type in or pick from must reach 3 to 1 against what is around it (WCAG 1.4.11), or the box cannot be found.
+    /// The global search sits on the sidebar colour, the page search on the page and the cards.
+    /// </summary>
+    [Fact]
+    public void Control_edges_reach_three_to_one_on_every_surface_they_sit_on_in_both_themes()
+    {
+        var low = new List<string>();
+        foreach (var (theme, colors) in Themes())
+            foreach (var background in new[] { "Base", "Sidebar", "Surface1", "Surface2" })
+            {
+                var ratio = Contrast(colors["ControlBorder"], colors[background]);
+                if (ratio < 3.0) low.Add($"{theme}: ControlBorder on {background} is {ratio:0.00}");
+            }
+        Assert.Empty(low);
+    }
 }

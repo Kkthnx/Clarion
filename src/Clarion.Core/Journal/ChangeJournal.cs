@@ -178,6 +178,16 @@ public sealed class ChangeJournal
     }
 
     /// <summary>
+    /// The steps that settings other than this one made and that are still on. Revert leaves these in place, so undoing one setting cannot
+    /// undo part of another that made the same change. Reads the file once.
+    /// </summary>
+    public IReadOnlySet<Operation> HeldByOthers(string tweakId) =>
+        OutstandingByTweak()
+            .Where(p => !string.Equals(p.Key, tweakId, StringComparison.OrdinalIgnoreCase))
+            .SelectMany(p => p.Value.Select(e => e.Operation))
+            .ToHashSet();
+
+    /// <summary>
     /// The recorded steps of every tweak the person told Clarion to stop checking, as long as nothing has been applied or
     /// reverted since. Keyed by tweak id.
     /// </summary>

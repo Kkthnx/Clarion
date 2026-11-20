@@ -51,9 +51,29 @@ Name: "{autodesktop}\.Clarion"; Filename: "{app}\Clarion.exe"; Tasks: desktopico
 ; The program was called Clarion before it was called .Clarion, so the shortcuts made under the old name are removed on upgrade.
 Type: files; Name: "{autoprograms}\Clarion.lnk"
 Type: files; Name: "{autodesktop}\Clarion.lnk"
+; Setup copies the new files over the old ones and never removes a file the new version no longer ships. Each .NET update leaves a debugging
+; library named after its version, and logos taken out of the program stayed behind. These two go in any folder, since only .Clarion puts them there.
+Type: files; Name: "{app}\mscordaccore_*.dll"
+Type: filesandordirs; Name: "{app}\Assets\AppLogos"
+; In the folder setup made for .Clarion, the program files of the old version are all cleared first, so nothing from it is left mixed in with
+; the new one. Not in a folder the person picked that has another name, where other files could live. Settings, history and logs are kept
+; in ProgramData and the account's own folder, never here, and the uninstaller files are left alone.
+Type: files; Name: "{app}\*.dll"; Check: IsOwnFolder
+Type: files; Name: "{app}\*.winmd"; Check: IsOwnFolder
+Type: files; Name: "{app}\*.pri"; Check: IsOwnFolder
+Type: files; Name: "{app}\*.pdb"; Check: IsOwnFolder
+Type: files; Name: "{app}\*.json"; Check: IsOwnFolder
+Type: files; Name: "{app}\*.png"; Check: IsOwnFolder
+Type: files; Name: "{app}\createdump.exe"; Check: IsOwnFolder
+Type: files; Name: "{app}\RestartAgent.exe"; Check: IsOwnFolder
+Type: filesandordirs; Name: "{app}\Assets"; Check: IsOwnFolder
+; Last, because IsOwnFolder looks for it.
+Type: files; Name: "{app}\Clarion.exe"; Check: IsOwnFolder
 
 [Run]
 Filename: "{app}\Clarion.exe"; Description: "Start .Clarion"; Flags: nowait postinstall skipifsilent runascurrentuser
+; An update started from inside .Clarion runs silently with /RELAUNCH, so the program comes back by itself when the update is done.
+Filename: "{app}\Clarion.exe"; Flags: nowait runascurrentuser; Check: WantsRelaunch
 
 [UninstallDelete]
 ; The one-file flag for starting without the administrator prompt lives in the account's own folder. This reaches the account that runs the uninstall.
@@ -65,6 +85,30 @@ Type: dirifempty; Name: "{localappdata}\Clarion"
 Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""\Clarion\Monthly check"" /F"; Flags: runhidden; RunOnceId: "RemoveMonthlyCheck"
 
 [Code]
+{ True when the install folder is one .Clarion already lives in and it is named Clarion, as setup names it. A first install, or a folder the
+  person picked under another name, keeps every file that is already there. }
+function IsOwnFolder: Boolean;
+var
+  Dir: String;
+begin
+  Dir := RemoveBackslashUnlessRoot(ExpandConstant('{app}'));
+  Result := FileExists(AddBackslash(Dir) + 'Clarion.exe') and (CompareText(ExtractFileName(Dir), 'Clarion') = 0);
+end;
+
+function WantsRelaunch: Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  if not WizardSilent then Exit;
+  for I := 1 to ParamCount do
+    if CompareText(ParamStr(I), '/RELAUNCH') = 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+end;
+
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   DataDir: String;

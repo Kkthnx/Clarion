@@ -29,7 +29,7 @@ public static class ReleaseViews
         ChangeKind.New => ChipKind.Accent,
         ChangeKind.Safer => ChipKind.Ok,
         ChangeKind.Fixed => ChipKind.Warn,
-        ChangeKind.Polish => ChipKind.Cyan,
+        ChangeKind.Polish => ChipKind.Neutral,
         _ => ChipKind.Neutral,
     };
 

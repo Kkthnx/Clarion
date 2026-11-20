@@ -15,7 +15,7 @@ The voice is in [docs/BRAND.md](docs/BRAND.md): plain, short, honest. No hype, n
 
 ## Build and test
 
-You need the .NET 9 SDK on Windows 11.
+You need the .NET 10 SDK on Windows 11.
 
 ```
 dotnet build Clarion.sln -c Release

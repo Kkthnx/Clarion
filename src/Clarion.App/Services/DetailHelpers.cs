@@ -9,7 +9,8 @@ public static class DetailHelpers
 {
     public static ChipKind RecommendationKind(Recommendation r) => r switch
     {
-        Recommendation.Recommended => ChipKind.Ok,
+        // Blue is for what to do. Green is kept for things that are done, so a suggestion never reads as already finished.
+        Recommendation.Recommended => ChipKind.Accent,
         Recommendation.OnlyIf => ChipKind.Warn,
         Recommendation.Avoid => ChipKind.Danger,
         _ => ChipKind.Neutral,
@@ -17,7 +18,7 @@ public static class DetailHelpers
 
     public static ChipKind RiskKind(RiskLevel r) => r switch
     {
-        RiskLevel.Safe or RiskLevel.Low => ChipKind.Ok,
+        RiskLevel.Safe or RiskLevel.Low => ChipKind.Neutral,
         RiskLevel.Medium => ChipKind.Warn,
         _ => ChipKind.Danger,
     };

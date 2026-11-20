@@ -7,7 +7,7 @@ A native Windows app to remove bloat, cut tracking, clean up, repair and tune yo
 
 ## What it does
 
-- 276 settings across privacy, app removal, tweaks, power, network, Windows features and updates. Each one explains what it does, what you gain, and what could go wrong, with an evidence grade.
+- 284 settings across privacy, app removal, tweaks, power, network, Windows features and updates. Each one explains what it does, what you gain, and what could go wrong, with an evidence grade.
 - Installs 255 apps as exact winget package IDs. The review shows publisher, license, installer host and checksum before anything installs, and revert uninstalls.
 - Cleanup scans shader, launcher, browser and Windows caches first, shows exact folders and sizes, skips files in use, and queues locked files for the next restart.
 - Startup lists what starts when you sign in, with a switch for each. A switch only changes the mark Task Manager reads, nothing is deleted, and every change is recorded and can be turned back on.
@@ -17,6 +17,8 @@ A native Windows app to remove bloat, cut tracking, clean up, repair and tune yo
 ## Get it
 
 Download `Clarion-<version>-setup.exe` (or the portable zip) from the [latest release](https://github.com/Kkthnx/Clarion/releases/latest). Not code signed yet, so SmartScreen shows its warning on first run; every download has a SHA256 file next to it so you can verify it. Needs Windows 10 version 2004 or later, 64-bit.
+
+After that, the installed copy can update itself. When a newer version is out, What's new offers Update now, which downloads the setup program from the release, checks its SHA-256, installs it and opens .Clarion again. Your settings and history are kept. The portable zip is updated by downloading the new zip.
 
 ## Quick start
 
@@ -32,6 +34,7 @@ Free forever. If it saved you time, chip in:
 - [Ko-fi](https://ko-fi.com/kkthnx)
 - [Buy Me a Coffee](https://buymeacoffee.com/kkthnx)
 - [PayPal](https://www.paypal.com/paypalme/kkthnxtv)
+- [Cash App](https://cash.app/$JERussell20) ($JERussell20)
 
 Every bit goes back into building more.
 

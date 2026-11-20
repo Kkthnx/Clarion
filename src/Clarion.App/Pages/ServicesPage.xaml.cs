@@ -84,7 +84,7 @@ public sealed class ServiceRowItem
         Code = s.Name;
         StartText = s.Start is { } start ? ServiceGuide.StartLabel(start) : "Start type unknown";
 
-        RunKind = s.Running ? ChipKind.Cyan : ChipKind.Neutral;
+        RunKind = ChipKind.Neutral;
         RunText = !s.Running ? "Stopped" : s.MemoryBytes is { } m ? $"Running, {m / 1048576.0:0.0} MB" : s.SharedHost ? "Running, shared process" : "Running";
         RunTip = s.Running
             ? "The memory is the working set of the process that hosts this service, right now. A service that shares its process with others shows none."
@@ -96,7 +96,7 @@ public sealed class ServiceRowItem
             AdviceTip = ServiceGuide.Hint(g.Advice);
             AdviceKind = g.Advice switch
             {
-                ServiceAdvice.OkToDisable => ChipKind.Ok,
+                ServiceAdvice.OkToDisable => ChipKind.Neutral,
                 ServiceAdvice.DontDisable => ChipKind.Warn,
                 ServiceAdvice.ShouldDisable => ChipKind.Accent,
                 _ => ChipKind.Neutral,

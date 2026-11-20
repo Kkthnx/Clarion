@@ -59,6 +59,9 @@
                 <NavigationViewItem Content="Home" Tag="home">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE80F;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="Gaming" Tag="gaming">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE7FC;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="Privacy" Tag="privacy">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE72E;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
@@ -68,39 +71,26 @@
                 <NavigationViewItem Content="Apps" Tag="apps">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE896;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="Windows" Tag="windows">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE71D;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="Clean up" Tag="cleanup">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE74D;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <!-- Repair also holds What broke and System, Changes holds Verify and Safety. See TabsPage. -->
                 <NavigationViewItem Content="Repair" Tag="repair">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE90F;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Name="WindowsItem" Content="Windows" Tag="windows">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE71D;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
                 <NavigationViewItemSeparator />
-                <NavigationViewItem x:Name="VerifyItem" Content="Verify" Tag="verify">
+                <NavigationViewItem Content="Changes" Tag="changes">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE73E;" /></NavigationViewItem.Icon>
                     <NavigationViewItem.InfoBadge><InfoBadge x:Name="VerifyBadge" Visibility="Collapsed" /></NavigationViewItem.InfoBadge>
-                </NavigationViewItem>
-                <NavigationViewItem Content="What broke" Tag="troubleshoot">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE9CE;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Safety" Tag="safety">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE7EF;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="System" Tag="system">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE770;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Report a problem" Tag="feedback">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE8BD;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
+                <!-- About also holds What's new and Report a problem. -->
                 <NavigationViewItem Content="About" Tag="about">
-                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE77B;" /></NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="What's new" Tag="whatsnew">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE946;" /></NavigationViewItem.Icon>
                     <NavigationViewItem.InfoBadge><InfoBadge x:Name="WhatsNewBadge" Visibility="Collapsed" /></NavigationViewItem.InfoBadge>
                 </NavigationViewItem>

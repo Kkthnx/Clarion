@@ -2,7 +2,7 @@
 
 This page is written from the catalog by `Clarion.exe --catalog-doc`. Do not edit it by hand. Change the catalog and write the page again.
 
-531 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
+539 settings. Each one names what it changes, how risky it is, how well the effect is documented, and where that comes from.
 
 ## Appearance
 
@@ -97,6 +97,33 @@ Count the seconds in the clock at the end of the taskbar.
 - **Changes:**
   - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ShowSecondsInSystemClock to 1 (DWord)`
 - **Needs:** Windows build 22621 or later
+
+#### Turn off transparency effects
+
+`appearance.transparency-off` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Draw Start, the taskbar and menus as solid surfaces.
+
+- **What it does:** Sets EnableTransparency to 0 for your account, the value the Transparency effects switch under Settings, Personalization, Colors writes.
+- **Benefit:** Solid surfaces are easier to read, and the desktop does a little less blur work, which can matter on older graphics.
+- **Risk:** None. It changes only how Windows surfaces look.
+- **Changes:**
+  - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize\EnableTransparency to 0 (DWord)`
+
+#### Turn off window and taskbar animations
+
+`appearance.window-animations-off` · Safe · Look and feel only · Optional: your choice · checked on build 26200
+
+Minimize, maximize and the taskbar happen at once instead of animating.
+
+- **What it does:** Turns off two boxes under Performance Options, Visual Effects for your account. MinAnimate is set to 0 for Animate windows when minimizing and maximizing, and TaskbarAnimations is set to 0 for Animations in the taskbar.
+- **Benefit:** Alt-tabbing out of a game and opening windows feels quicker, since there is no animation to wait for.
+- **Risk:** None. Other visual effects stay as they are.
+- **Changes:**
+  - `Set HKCU\Control Panel\Desktop\WindowMetrics\MinAnimate to 0 (String)`
+  - `Set HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAnimations to 0 (DWord)`
+- **Needs:** signing out
+- **Sources:** <https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow>
 
 #### Turn off window snapping
 
@@ -453,6 +480,18 @@ Uninstall Skype for your account.
 - **Risk:** Low. The app can be put back with Revert or from the Microsoft Store.
 - **Changes:**
   - `Remove app Microsoft.SkypeApp for this account`
+
+#### Remove Snipping Tool
+
+`debloat.app.screensketch` · Low · Helps in some cases · Only if it fits you · checked on build 26200
+
+Uninstall Snipping Tool for your account.
+
+- **What it does:** Removes the Microsoft.ScreenSketch package for the current account. Other accounts are not touched.
+- **Benefit:** One less app in Start and no background updates for it, if you use another screenshot app.
+- **Risk:** Low. Win+Shift+S and Print Screen still open the Windows capture bar, which is part of Windows itself, but the editor and screen recording go away. The app can be put back with Revert or from the Microsoft Store.
+- **Changes:**
+  - `Remove app Microsoft.ScreenSketch for this account`
 
 #### Remove Solitaire Collection
 
@@ -1286,6 +1325,20 @@ Take the Home entry out of the navigation pane.
   - `Set HKCU\Software\Classes\CLSID\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}\System.IsPinnedToNameSpaceTree to 0 (DWord)`
 - **Needs:** Windows build 22000 or later; File Explorer restarts
 
+#### No new app can open this file notices
+
+`explorer.new-app-alert-off` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Stop Windows asking about a new app each time one can open a file type.
+
+- **What it does:** Sets the policy Do not show the new application installed notification to enabled. Windows stops the notice that a newly installed app can open a file type or link you just opened.
+- **Benefit:** Your chosen apps keep opening your files without a question after you install something new.
+- **Risk:** None. You can still change which app opens a file type under Settings, Apps, Default apps.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer\NoNewAppAlert to 1 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-windowsexplorer>
+
 #### Open File Explorer to This PC
 
 `explorer.open-to-this-pc` · Safe · Look and feel only · Optional: your choice · checked on build 26200
@@ -1516,6 +1569,20 @@ Stop the suggestion bar that can appear while you type on a real keyboard.
   - `Set HKCU\Software\Microsoft\Input\Settings\EnableHwkbTextPrediction to 0 (DWord)`
 - **Needs:** Windows build 22000 or later
 
+#### Shortest key repeat delay
+
+`input.keyboard-repeat-delay-short` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
+
+Start repeating a held key after about a quarter of a second.
+
+- **What it does:** Sets the keyboard repeat delay for your account to 0, the shortest of the four steps Windows allows. Microsoft gives 0 as about 250 ms and the usual 1 as about 500 ms. The repeat speed is left as it is.
+- **Benefit:** A held key starts repeating sooner, which helps with movement keys in some games and with moving through text.
+- **Risk:** None. If keys repeat when you did not mean them to, Revert puts back the earlier delay, or change it under Control Panel, Keyboard.
+- **Changes:**
+  - `Set HKCU\Control Panel\Keyboard\KeyboardDelay to 0 (String)`
+- **Needs:** signing out
+- **Sources:** <https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow>
+
 #### Turn off autocorrect and misspelling underlines
 
 `input.autocorrect-off` · Safe · Documented by the vendor · Optional: your choice · checked on build 26200
@@ -1585,6 +1652,20 @@ Stop the pop-up when Shift is pressed five times.
 - **Changes:**
   - `Turn bit 0x4 off in HKCU\Control Panel\Accessibility\StickyKeys\Flags (String)`
 - **Needs:** signing out
+
+#### Turn off the Toggle Keys shortcut
+
+`input.toggle-keys-prompt-off` · Safe · Look and feel only · Suggested: turn on · checked on build 26200
+
+Stop the beep and pop-up when Num Lock is held for five seconds.
+
+- **What it does:** Clears the hotkey bit in the Toggle Keys flags for your account, the bit Microsoft names TKF_HOTKEYACTIVE. Only that bit changes, so any other Toggle Keys choice in the value stays as it is.
+- **Benefit:** Holding Num Lock in a game or a long key bind no longer opens the Toggle Keys question.
+- **Risk:** None. Toggle Keys can still be turned on from Settings, Accessibility, Keyboard.
+- **Changes:**
+  - `Turn bit 0x4 off in HKCU\Control Panel\Accessibility\ToggleKeys\Flags (String)`
+- **Needs:** signing out
+- **Sources:** <https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-togglekeys>
 
 #### Turn off typing insights
 
@@ -6909,6 +6990,20 @@ Stop the services that find and talk to UPnP devices on your network.
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services>
 
+#### Turn off Windows Search indexing
+
+`services.search-indexing-off` · Medium · Helps in some cases · Only if it fits you · checked on build 26200
+
+Stop and disable the service that indexes files and mail in the background.
+
+- **What it does:** Stops the Windows Search service (WSearch) and sets it to Disabled. Microsoft lists it as OK to disable in its service guidance for dedicated devices.
+- **Benefit:** No indexing reads and writes on the disk while you play or work, and a little less memory in use.
+- **Risk:** Medium. Searching files from Start or File Explorer gets slower, since it has to look through folders each time. Search in classic Outlook and some other apps that rely on the index stops working well. App search in Start still works.
+- **Changes:**
+  - `Set service WSearch start type to Disabled`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services>
+
 #### Turn off Xbox Live services
 
 `services.xbox-live-off` · Low · Helps in some cases · Only if it fits you · checked on build 26200
@@ -7428,3 +7523,17 @@ Windows will not restart on its own while someone is signed in.
   - `Set HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU\NoAutoRebootWithLoggedOnUsers to 1 (DWord)`
 - **Needs:** administrator rights, applies to every account
 - **Sources:** <https://learn.microsoft.com/en-us/windows/deployment/update/waas-restart>
+
+#### Stop Microsoft Store apps updating by themselves
+
+`updates.store-auto-update-off` · Medium · Documented by the vendor · Only if it fits you · checked on build 26200
+
+Store apps update only when you ask the Store to.
+
+- **What it does:** Sets the policy Turn off Automatic Download and Install of updates for the Microsoft Store to enabled, which writes AutoDownload as 2. Store apps and games stop downloading updates in the background.
+- **Benefit:** No Store app or game downloads in the middle of a match or a download you are waiting on.
+- **Risk:** Medium. Store apps, including Xbox app games and some Windows parts that ship through the Store, stay on old versions until you update them from the Store's Downloads page. That includes security fixes.
+- **Changes:**
+  - `Set HKLM\SOFTWARE\Policies\Microsoft\WindowsStore\AutoDownload to 2 (DWord)`
+- **Needs:** administrator rights, applies to every account
+- **Sources:** <https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-applicationmanagement>

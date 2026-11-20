@@ -2,7 +2,8 @@
 <Page x:Class="Clarion.App.Pages.AboutPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:svc="using:Clarion.App.Services">
+    xmlns:svc="using:Clarion.App.Services"
+    xmlns:controls="using:Clarion.App.Controls">
 
     <ScrollViewer>
         <StackPanel Padding="32,24,32,24" Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
@@ -73,14 +74,33 @@
                 <TextBlock Text="Support .Clarion" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource ClTextPrimaryBrush}" />
                 <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource ClTextSecondaryBrush}"
                            Text=".Clarion is free, and it stays free. If it saved you a headache, a donation keeps development going." />
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button Style="{StaticResource AccentButtonStyle}" Click="OnPayPal" AutomationProperties.Name="Donate with PayPal, opens in your browser">
+                <!-- Four equal ways to give, so none is pushed over the others. They wrap in a narrow window. -->
+                <controls:WrapPanel HorizontalSpacing="10" VerticalSpacing="10">
+                    <Button Click="OnKoFi" AutomationProperties.Name="Support on Ko-fi, opens in your browser">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <FontIcon Glyph="&#xEB51;" FontSize="14" />
-                            <TextBlock Text="Donate with PayPal" />
+                            <TextBlock Text="Ko-fi" />
                         </StackPanel>
                     </Button>
-                </StackPanel>
+                    <Button Click="OnBuyMeACoffee" AutomationProperties.Name="Support on Buy Me a Coffee, opens in your browser">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xEB51;" FontSize="14" />
+                            <TextBlock Text="Buy Me a Coffee" />
+                        </StackPanel>
+                    </Button>
+                    <Button Click="OnPayPal" AutomationProperties.Name="Donate with PayPal, opens in your browser">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xEB51;" FontSize="14" />
+                            <TextBlock Text="PayPal" />
+                        </StackPanel>
+                    </Button>
+                    <Button Click="OnCashApp" AutomationProperties.Name="Send with Cash App to $JERussell20, opens in your browser">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xEB51;" FontSize="14" />
+                            <TextBlock Text="Cash App $JERussell20" />
+                        </StackPanel>
+                    </Button>
+                </controls:WrapPanel>
                 <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource ClTextMutedBrush}"
                            Text="Donations will never be a requirement. The full app is free either way." />
             </StackPanel>

@@ -1,0 +1,232 @@
+[
+  {
+    "id": "input.toggle-keys-prompt-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Input",
+    "topic": "Mouse and keyboard",
+    "name": "Turn off the Toggle Keys shortcut",
+    "summary": "Stop the beep and pop-up when Num Lock is held for five seconds.",
+    "what": "Clears the hotkey bit in the Toggle Keys flags for your account, the bit Microsoft names TKF_HOTKEYACTIVE. Only that bit changes, so any other Toggle Keys choice in the value stays as it is.",
+    "benefit": "Holding Num Lock in a game or a long key bind no longer opens the Toggle Keys question.",
+    "risk": "None. Toggle Keys can still be turned on from Settings, Accessibility, Keyboard.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Recommended",
+    "advice": "Suggested for everyone who does not use Toggle Keys, especially gamers.",
+    "facts": [
+      "Microsoft documents the hotkey bit as TKF_HOTKEYACTIVE, value 4",
+      "Only the hotkey bit (4) is changed",
+      "Toggle Keys itself can still be turned on in Settings",
+      "Sign out to apply"
+    ],
+    "scope": "User",
+    "needsSignOut": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Accessibility\\ToggleKeys", "name": "Flags" }, "data": { "kind": "String", "value": "58" }, "mask": "4" }
+    ],
+    "undo": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Accessibility\\ToggleKeys", "name": "Flags" }, "data": { "kind": "String", "value": "62" }, "mask": "4" }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-togglekeys"
+    ]
+  },
+  {
+    "id": "input.keyboard-repeat-delay-short",
+    "lastVerifiedBuild": 26200,
+    "category": "Input",
+    "topic": "Mouse and keyboard",
+    "name": "Shortest key repeat delay",
+    "summary": "Start repeating a held key after about a quarter of a second.",
+    "what": "Sets the keyboard repeat delay for your account to 0, the shortest of the four steps Windows allows. Microsoft gives 0 as about 250 ms and the usual 1 as about 500 ms. The repeat speed is left as it is.",
+    "benefit": "A held key starts repeating sooner, which helps with movement keys in some games and with moving through text.",
+    "risk": "None. If keys repeat when you did not mean them to, Revert puts back the earlier delay, or change it under Control Panel, Keyboard.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. Most games read the key state directly, so it matters most for typing and menus.",
+    "facts": [
+      "Microsoft documents four steps, from 0 (about 250 ms) to 3 (about 1 second)",
+      "The actual delay can vary with the keyboard",
+      "Applies to your account only",
+      "Sign out to apply"
+    ],
+    "scope": "User",
+    "needsSignOut": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Keyboard", "name": "KeyboardDelay" }, "data": { "kind": "String", "value": "0" } }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow"
+    ]
+  },
+  {
+    "id": "appearance.transparency-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Look and feel",
+    "name": "Turn off transparency effects",
+    "summary": "Draw Start, the taskbar and menus as solid surfaces.",
+    "what": "Sets EnableTransparency to 0 for your account, the value the Transparency effects switch under Settings, Personalization, Colors writes.",
+    "benefit": "Solid surfaces are easier to read, and the desktop does a little less blur work, which can matter on older graphics.",
+    "risk": "None. It changes only how Windows surfaces look.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. Do not expect higher frame rates in games from it.",
+    "facts": [
+      "Windows calls it Transparency effects under Personalization, Colors",
+      "Applies to your account only",
+      "Takes effect at once",
+      "Revert restores the earlier value"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "EnableTransparency" }, "data": { "kind": "DWord", "value": "0" } }
+    ]
+  },
+  {
+    "id": "appearance.window-animations-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Appearance",
+    "topic": "Look and feel",
+    "name": "Turn off window and taskbar animations",
+    "summary": "Minimize, maximize and the taskbar happen at once instead of animating.",
+    "what": "Turns off two boxes under Performance Options, Visual Effects for your account. MinAnimate is set to 0 for Animate windows when minimizing and maximizing, and TaskbarAnimations is set to 0 for Animations in the taskbar.",
+    "benefit": "Alt-tabbing out of a game and opening windows feels quicker, since there is no animation to wait for.",
+    "risk": "None. Other visual effects stay as they are.",
+    "evidence": "Cosmetic",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. It changes how quickly windows appear, not how fast the PC is.",
+    "facts": [
+      "Matches two boxes in Performance Options, Visual Effects",
+      "Applies to your account only",
+      "Sign out to apply",
+      "Revert restores both earlier values"
+    ],
+    "scope": "User",
+    "needsSignOut": true,
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Control Panel\\Desktop\\WindowMetrics", "name": "MinAnimate" }, "data": { "kind": "String", "value": "0" } },
+      { "type": "registry.set", "target": { "hive": "CurrentUser", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarAnimations" }, "data": { "kind": "DWord", "value": "0" } }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow"
+    ]
+  },
+  {
+    "id": "services.search-indexing-off",
+    "lastVerifiedBuild": 26200,
+    "category": "System",
+    "topic": "Background services",
+    "name": "Turn off Windows Search indexing",
+    "summary": "Stop and disable the service that indexes files and mail in the background.",
+    "what": "Stops the Windows Search service (WSearch) and sets it to Disabled. Microsoft lists it as OK to disable in its service guidance for dedicated devices.",
+    "benefit": "No indexing reads and writes on the disk while you play or work, and a little less memory in use.",
+    "risk": "Medium. Searching files from Start or File Explorer gets slower, since it has to look through folders each time. Search in classic Outlook and some other apps that rely on the index stops working well. App search in Start still works.",
+    "evidence": "Situational",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Only if you rarely search for files by name or content, and you do not search mail in classic Outlook.",
+    "facts": [
+      "Microsoft lists Windows Search (WSearch) as OK to disable for dedicated devices",
+      "The index is not deleted, and indexing picks up again after Revert",
+      "Stops the service now and keeps it from starting at the next boot",
+      "Revert puts back the start type that was there before"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "service.start-type", "name": "WSearch", "startType": "Disabled" }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services"
+    ]
+  },
+  {
+    "id": "updates.store-auto-update-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Updates",
+    "topic": "Updates",
+    "name": "Stop Microsoft Store apps updating by themselves",
+    "summary": "Store apps update only when you ask the Store to.",
+    "what": "Sets the policy Turn off Automatic Download and Install of updates for the Microsoft Store to enabled, which writes AutoDownload as 2. Store apps and games stop downloading updates in the background.",
+    "benefit": "No Store app or game downloads in the middle of a match or a download you are waiting on.",
+    "risk": "Medium. Store apps, including Xbox app games and some Windows parts that ship through the Store, stay on old versions until you update them from the Store's Downloads page. That includes security fixes.",
+    "evidence": "Proven",
+    "riskLevel": "Medium",
+    "recommendation": "OnlyIf",
+    "advice": "Only if you will open the Store and update by hand now and then. Otherwise leave it to Windows.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "The Store's own setting cannot turn updates back on while the policy is set",
+      "Windows Update for Windows itself is not affected",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\WindowsStore", "name": "AutoDownload" }, "data": { "kind": "DWord", "value": "2" } }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-applicationmanagement"
+    ],
+    "provenance": [
+      "WindowsStore.admx DisableAutoInstall"
+    ]
+  },
+  {
+    "id": "explorer.new-app-alert-off",
+    "lastVerifiedBuild": 26200,
+    "category": "Explorer",
+    "topic": "File Explorer",
+    "name": "No new app can open this file notices",
+    "summary": "Stop Windows asking about a new app each time one can open a file type.",
+    "what": "Sets the policy Do not show the new application installed notification to enabled. Windows stops the notice that a newly installed app can open a file type or link you just opened.",
+    "benefit": "Your chosen apps keep opening your files without a question after you install something new.",
+    "risk": "None. You can still change which app opens a file type under Settings, Apps, Default apps.",
+    "evidence": "Proven",
+    "riskLevel": "Safe",
+    "recommendation": "Optional",
+    "advice": "Your choice. Useful if new installs keep asking to take over your files or links.",
+    "facts": [
+      "Enforced by a machine policy, so it applies to every account",
+      "Default apps are not changed",
+      "Revert removes the policy value"
+    ],
+    "scope": "Machine",
+    "apply": [
+      { "type": "registry.set", "target": { "hive": "LocalMachine", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer", "name": "NoNewAppAlert" }, "data": { "kind": "DWord", "value": "1" } }
+    ],
+    "sources": [
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-windowsexplorer"
+    ],
+    "provenance": [
+      "WindowsExplorer.admx NoNewAppAlert"
+    ]
+  },
+  {
+    "id": "debloat.app.screensketch",
+    "lastVerifiedBuild": 26200,
+    "category": "Debloat",
+    "topic": "Apps",
+    "name": "Remove Snipping Tool",
+    "summary": "Uninstall Snipping Tool for your account.",
+    "what": "Removes the Microsoft.ScreenSketch package for the current account. Other accounts are not touched.",
+    "benefit": "One less app in Start and no background updates for it, if you use another screenshot app.",
+    "risk": "Low. Win+Shift+S and Print Screen still open the Windows capture bar, which is part of Windows itself, but the editor and screen recording go away. The app can be put back with Revert or from the Microsoft Store.",
+    "evidence": "Situational",
+    "riskLevel": "Low",
+    "recommendation": "OnlyIf",
+    "advice": "Only if you use another screenshot app. Win+Shift+S cannot be given to another app, so set your screenshot app to Print Screen or its own key instead.",
+    "facts": [
+      "On build 26200, Win+Shift+S still opened the Windows capture bar after this package was removed",
+      "On build 26200, other apps could not take Win+Shift+S while Windows held it",
+      "Removes it for your account only",
+      "Revert restores it if Windows still has the files, otherwise reinstall from the Microsoft Store"
+    ],
+    "scope": "User",
+    "apply": [
+      { "type": "appx.remove", "name": "Microsoft.ScreenSketch", "allUsers": false, "deprovision": false }
+    ]
+  }
+]

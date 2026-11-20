@@ -56,10 +56,14 @@ public sealed record ReleaseVersion(int Major, int Minor, int Patch, IReadOnlyLi
     public static bool operator <=(ReleaseVersion a, ReleaseVersion b) => a.CompareTo(b) <= 0;
 }
 
-public sealed record ReleaseInfo(string Tag, string Name, string Url, bool PreRelease, bool Draft, DateTimeOffset? Published, string Body = "");
+public sealed record ReleaseInfo(string Tag, string Name, string Url, bool PreRelease, bool Draft, DateTimeOffset? Published, string Body = "",
+    IReadOnlyList<ReleaseAsset>? Assets = null);
 
-/// <summary>A newer version that is on offer. Clarion only points to the page. It never downloads or installs anything.</summary>
-public sealed record UpdateOffer(string Tag, string Name, string Url, bool PreRelease);
+/// <summary>
+/// A newer version that is on offer. <see cref="Release"/> carries its files, so the setup program can be downloaded and checked from inside
+/// .Clarion when the person asks. Without a usable setup program the offer only points to the page.
+/// </summary>
+public sealed record UpdateOffer(string Tag, string Name, string Url, bool PreRelease, ReleaseInfo? Release = null);
 
 /// <summary>Where the list of releases comes from. A fake stands in for it in tests.</summary>
 public interface IReleaseSource
@@ -96,11 +100,27 @@ public static class UpdateCheck
                     tag, Text(e, "name"), Text(e, "html_url"),
                     Flag(e, "prerelease"), Flag(e, "draft"),
                     DateTimeOffset.TryParse(Text(e, "published_at"), out var when) ? when : null,
-                    Text(e, "body")));
+                    Text(e, "body"), Assets(e)));
             }
             return list;
         }
         catch (JsonException) { return []; }
+    }
+
+    private static List<ReleaseAsset> Assets(JsonElement release)
+    {
+        var list = new List<ReleaseAsset>();
+        if (!release.TryGetProperty("assets", out var assets) || assets.ValueKind != JsonValueKind.Array) return list;
+        foreach (var a in assets.EnumerateArray())
+        {
+            if (a.ValueKind != JsonValueKind.Object) continue;
+            var name = Text(a, "name");
+            var url = Text(a, "browser_download_url");
+            if (name.Length == 0 || url.Length == 0) continue;
+            var size = a.TryGetProperty("size", out var s) && s.TryGetInt64(out var bytes) ? bytes : 0;
+            list.Add(new ReleaseAsset(name, url, size, UpdateInstall.ParseDigest(Text(a, "digest"))));
+        }
+        return list;
     }
 
     private static string Text(JsonElement e, string name) =>
@@ -116,7 +136,7 @@ public static class UpdateCheck
     public static UpdateOffer? Newest(string currentVersion, IEnumerable<ReleaseInfo> releases)
     {
         var newest = NewerThan(currentVersion, releases).FirstOrDefault();
-        return newest is null ? null : new UpdateOffer(newest.Tag, string.IsNullOrWhiteSpace(newest.Name) ? newest.Tag : newest.Name, newest.Url, newest.PreRelease);
+        return newest is null ? null : new UpdateOffer(newest.Tag, string.IsNullOrWhiteSpace(newest.Name) ? newest.Tag : newest.Name, newest.Url, newest.PreRelease, newest);
     }
 
     /// <summary>

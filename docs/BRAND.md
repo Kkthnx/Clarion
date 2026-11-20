@@ -60,13 +60,11 @@ Plain, short, honest. Say what a change does, what it gives, and what it risks. 
 | Accent pressed | `accent.pressed` | `#4673B3` |
 | Accent subtle fill | `accent.tint` | `#1B2A42` |
 | Text on accent | `accent.onfill` | `#0B1016` |
-| Cyan (active, live, info) | `cyan.base` | `#3FD0E0` |
-| Cyan dim | `cyan.dim` | `#1E8FA0` |
-| Cyan tint | `cyan.tint` | `#102B31` |
-| Success (applied, safe) | `ok` | `#4CC38A` |
+| Control edge (search, lists) | `border.control` | `#627389` |
+| Success (done, applied) | `ok` | `#4CC38A` |
 | Caution | `warn` | `#E3B341` |
 | Danger (high risk) | `danger` | `#E5534B` |
-| Focus ring | `focus` | `#3FD0E0` |
+| Focus ring | `focus` | The Windows focus visual, so it follows High Contrast |
 
 Use dark text on accent fills. White on `#5C8BCF` falls below 4.5:1, dark text on it clears 5:1.
 
@@ -80,17 +78,19 @@ Use dark text on accent fills. White on `#5C8BCF` falls below 4.5:1, dark text o
 | Primary text | `#131A24` |
 | Secondary text | `#4A5668` |
 | Accent | `#3F6DB5` |
-| Cyan | `#0E8797` |
+| Control edge | `#7A8698` |
 | Success / Caution / Danger | `#1F8F5F` / `#9A6B00` / `#C4372F` |
 
 ## Usage rules
 
-1. Cyan means live state only. An applied tweak, a running task, a current value.
-2. Steel blue means action. Primary buttons, selection, links.
-3. Green, amber and red appear only in risk and result badges, never as decoration.
-4. Flat surfaces, 1px borders, 8px corner radius, no gradients, no heavy shadows.
-5. Motion under 200ms, and off when the system asks for reduced motion.
-6. Every state has a text or icon cue so color is never the only signal.
+1. Steel blue means action. Primary buttons, selection, links, and the Suggested label.
+2. Amber means caution and red means high risk. Low risk has no color, since most settings are low risk and a color on every row says nothing.
+3. Green means done only. A finished run, a check that passed, an installed release. Never a suggestion, so nothing reads as finished before it is.
+4. Cyan is retired. Its tokens draw in the accent blue so older call sites keep working.
+5. The edge of a box people type in or pick from reaches 3 to 1 against what is around it (WCAG 1.4.11). A test checks it in both themes.
+6. Flat surfaces, 1px borders, 8px corner radius, no gradients, no heavy shadows.
+7. Motion under 200ms, and off when the system asks for reduced motion.
+8. Every state has a text or icon cue so color is never the only signal.
 
 ## Type
 

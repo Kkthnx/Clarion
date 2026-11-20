@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased
+
+New
+- Turn off the Toggle Keys shortcut, so holding Num Lock in a game no longer opens the Toggle Keys question. It clears only the hotkey bit Microsoft documents, like the Sticky Keys one, and is now in the Gaming preset.
+- Shortest key repeat delay, the 0 step Microsoft documents as about 250 ms, Turn off transparency effects, and Turn off window and taskbar animations. On this PC all four values read back as already set.
+- Turn off Windows Search indexing, for people who rarely search files by name. Microsoft lists the Windows Search service as OK to disable in its service guidance for dedicated devices. The risk text says file search gets slower and classic Outlook search suffers. SysMain was left out on purpose, since the same guidance says not to disable it.
+- Stop Microsoft Store apps updating by themselves and No new app can open this file notices. Both are Microsoft policies checked against the policy files that ship with Windows.
+- Remove Snipping Tool. Its text says what was seen on build 26200, where Win+Shift+S still opened the Windows capture bar after the package was removed and no other app could take that key, so a screenshot app should use Print Screen or its own key.
+- Update from inside .Clarion. When a newer version is out, What's new offers Update now. It downloads the setup program from this project's GitHub release into the administrators-only data folder, checks it against the SHA-256 GitHub lists for it, and deletes it without running it if it does not match. Then .Clarion closes, the update installs with its progress showing, and .Clarion opens again. Settings and history are kept, the download can be stopped, and queued changes are warned about first. The portable zip and copies that are not the installed one still get the release page. This works from this version on, so 1.7.0 still needs the next setup program downloaded once by hand.
+- Ko-fi, Buy Me a Coffee and Cash App beside PayPal on the About page.
+- A Gaming page. Game Mode and Game Bar, graphics, NVIDIA, power plans, mouse and keyboard, and the game launchers from Apps are in one list, with the settings before the apps, and the Tune for games job on Home opens it.
+
+Safer
+- Built on .NET 10, which Microsoft supports until November 2028. .NET 9 went out of support on 10 November 2026, and since .Clarion ships with its own copy of .NET, that copy would no longer get security fixes.
+
+Fixed
+- Installing a new version over an old one never removed files the new one no longer ships. Each .NET update left a 1.3 MB debugging library named after its version, three of them by 1.7.0, and logos taken out of the program stayed in the folder. Setup now clears the old program files in its own Clarion folder before copying the new ones, and in a folder picked by hand it removes only those two kinds of leftover. Settings, history, logs and the uninstaller are untouched.
+- A list shown as two or three cards across kept one listener on each setting it showed for every visit, so the program grew a little each time a page was opened. Measured on Debloat, a setting gained one listener per visit, and now none are left after leaving.
+- Reverting Virtual Machine Platform turned it off even while Windows Subsystem for Linux, which turned it on as well and needs it, was still on. Revert now leaves a step in place that another setting that is on also made, and the review says so.
+
+Polish
+- Settings in the lists have a check box in place of a switch, with words beside it such as "Off now. Will turn on.". Nothing changes until Review and apply, and a switch read as if the change was already made. Switches stay where they act at once, such as Startup and Settings.
+- The menu has 9 entries instead of 14, within the 5 to 10 Microsoft suggests. Verify and Safety are tabs under Changes, What broke and System are tabs under Repair, and What's new and Report a problem are tabs under About. Links to those pages still land on the right tab, and the Verify count and the What's new dot moved with them.
+- Color has one meaning each. Blue is something to do, amber caution, red high risk, and green only something done. Suggested labels are blue and Low risk has no color, where both were green before. The cyan is gone.
+- The edges of the search boxes and lists reach 3 to 1 against the page in both themes, as WCAG asks for controls. A test checks it.
+
 ## 1.7.0
 
 Chrome and Firefox settings, keyboard and Game Bar link settings, storage and startup options, and a tidier look.
